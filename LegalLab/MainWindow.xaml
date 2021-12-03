@@ -1,0 +1,45 @@
+﻿<Window x:Class="LegalLab.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LegalLab"
+        mc:Ignorable="d"
+        Title="TAG Legal Lab" Height="450" Width="800" Background="#FFE5E5E5">
+    <Grid>
+        <TabControl>
+            <TabItem Header="Network ID">
+                <StackPanel Orientation="Horizontal" Background="#FFE5E5E5" Height="Auto">
+                    <StackPanel Orientation="Vertical" Width="250" Margin="10">
+                        <Label Padding="0">XMPP Server:</Label>
+                        <TextBox Name="XmppServer"/>
+                        <Label Padding="0,10,0,0">Account:</Label>
+                        <TextBox Name="XmppAccount"/>
+                        <Label Padding="0,10,0,0">Password:</Label>
+                        <PasswordBox Name="XmppPassword"/>
+                        <CheckBox Name="CreateAccount" Margin="0,10,0,0" Content="Create Account, if none exists."/>
+                        <CheckBox Name="TrustServer" Margin="0,10,0,0" Content="Trust server certificate."/>
+                        <CheckBox Name="AllowInsecure" Margin="0,10,0,0" Content="Allow insecure algorithms."/>
+                        <CheckBox Name="StorePassword" Margin="0,10,0,0" Content="Store password instead of digest."/>
+                        <Button Name="Connect" Margin="10,10,10,0">Connect</Button>
+                        <Button Name="RandomizePassword" Margin="10,10,10,0">Randomize Password</Button>
+                    </StackPanel>
+                    <ListView Name="Sniffer" Width="Auto">
+                    </ListView>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Legal ID">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+            <TabItem Header="Wallet">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+            <TabItem Header="Contracts">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+        </TabControl>
+        <StatusBar VerticalAlignment="Bottom">
+            <StatusBarItem Name="XmppState">Offline</StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>
