@@ -12,11 +12,17 @@ namespace LegalLab.Models
 		/// Starts the model.
 		/// </summary>
 		/// <returns></returns>
-		public abstract Task Start();
+		public virtual Task Start()
+		{
+			return Task.CompletedTask;
+		}
 
 		/// <summary>
 		/// Stops the model.
 		/// </summary>
-		public abstract Task Stop();
+		public virtual Task Stop()
+		{
+			return Task.CompletedTask;
+		}
 	}
 }

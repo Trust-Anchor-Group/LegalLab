@@ -5,7 +5,8 @@
         xmlns:conv="clr-namespace:LegalLab.Converters"
         mc:Ignorable="d"
         x:Class="LegalLab.MainWindow"
-        Title="TAG Legal Lab" Height="450" Width="800" Background="#FFE5E5E5">
+        Title="TAG Legal Lab" Height="450" Width="800" Background="#FFE5E5E5" 
+        SizeChanged="Window_SizeChanged" StateChanged="Window_StateChanged" LocationChanged="Window_LocationChanged">
     <Grid>
         <TabControl>
             <TabItem Name="NetworkTab" Header="Network ID">
@@ -23,9 +24,9 @@
                             <CheckBox Name="AllowInsecureAuthentication" Margin="0,10,0,0" Content="Allow insecure authentication." IsChecked="{Binding AllowInsecureAlgorithms}"/>
                             <CheckBox Name="AllowUnencrypted" Margin="0,10,0,0" Content="Allow unencrypted communication." IsChecked="{Binding AllowUnencryptedCommunication}"/>
                             <CheckBox Name="StorePassword" Margin="0,10,0,0" Content="Store password instead of digest." IsChecked="{Binding StorePasswordInsteadOfDigest}"/>
-                            <Label Padding="0,10,0,0">API Key (for creating accounts):</Label>
+                            <Label Padding="0,10,0,0" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}">API Key (for creating accounts):</Label>
                             <TextBox Name="ApiKey" Text="{Binding ApiKey}" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}"/>
-                            <Label Padding="0,10,0,0">API Key Secret (for creating accounts):</Label>
+                            <Label Padding="0,10,0,0" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}">API Key Secret (for creating accounts):</Label>
                             <PasswordBox Name="ApiKeySecret" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}" PasswordChanged="ApiKeySecret_PasswordChanged"/>
                             <Button Name="Connect" Margin="10,10,10,0">Connect</Button>
                             <Button Name="RandomizePassword" Margin="10,10,10,0">Randomize Password</Button>

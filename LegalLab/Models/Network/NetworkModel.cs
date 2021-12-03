@@ -127,22 +127,5 @@ namespace LegalLab.Models.Network
 			get => this.storePasswordInsteadOfDigest.Value;
 			set => this.storePasswordInsteadOfDigest.Value = value;
 		}
-
-		/// <summary>
-		/// Starts the model.
-		/// </summary>
-		/// <returns></returns>
-		public override Task Start()
-		{
-			return Task.CompletedTask;
-		}
-
-		/// <summary>
-		/// Stops the model.
-		/// </summary>
-		public override Task Stop()
-		{
-			return Task.CompletedTask;
-		}
 	}
 }
