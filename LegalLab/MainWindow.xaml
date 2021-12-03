@@ -1,29 +1,36 @@
-﻿<Window x:Class="LegalLab.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:LegalLab"
+        xmlns:conv="clr-namespace:LegalLab.Converters"
         mc:Ignorable="d"
+        x:Class="LegalLab.MainWindow"
         Title="TAG Legal Lab" Height="450" Width="800" Background="#FFE5E5E5">
     <Grid>
         <TabControl>
-            <TabItem Header="Network ID">
+            <TabItem Name="NetworkTab" Header="Network ID">
                 <StackPanel Orientation="Horizontal" Background="#FFE5E5E5" Height="Auto">
-                    <StackPanel Orientation="Vertical" Width="250" Margin="10">
-                        <Label Padding="0">XMPP Server:</Label>
-                        <TextBox Name="XmppServer"/>
-                        <Label Padding="0,10,0,0">Account:</Label>
-                        <TextBox Name="XmppAccount"/>
-                        <Label Padding="0,10,0,0">Password:</Label>
-                        <PasswordBox Name="XmppPassword"/>
-                        <CheckBox Name="CreateAccount" Margin="0,10,0,0" Content="Create Account, if none exists."/>
-                        <CheckBox Name="TrustServer" Margin="0,10,0,0" Content="Trust server certificate."/>
-                        <CheckBox Name="AllowInsecure" Margin="0,10,0,0" Content="Allow insecure algorithms."/>
-                        <CheckBox Name="StorePassword" Margin="0,10,0,0" Content="Store password instead of digest."/>
-                        <Button Name="Connect" Margin="10,10,10,0">Connect</Button>
-                        <Button Name="RandomizePassword" Margin="10,10,10,0">Randomize Password</Button>
-                    </StackPanel>
+                    <ScrollViewer>
+                        <StackPanel Orientation="Vertical" Width="250" Margin="10">
+                            <Label Padding="0">XMPP Server:</Label>
+                            <TextBox Name="XmppServer" Text="{Binding XmppServer}"/>
+                            <Label Padding="0,10,0,0">Account:</Label>
+                            <TextBox Name="XmppAccount" Text="{Binding Account}"/>
+                            <Label Padding="0,10,0,0">Password:</Label>
+                            <PasswordBox Name="XmppPassword" PasswordChanged="XmppPassword_PasswordChanged"/>
+                            <CheckBox Name="CreateAccount" Margin="0,10,0,0" Content="Create Account, if none exists." IsChecked="{Binding CreateAccount}"/>
+                            <CheckBox Name="TrustServer" Margin="0,10,0,0" Content="Trust server certificate." IsChecked="{Binding TrustServerCertificate}"/>
+                            <CheckBox Name="AllowInsecureAuthentication" Margin="0,10,0,0" Content="Allow insecure authentication." IsChecked="{Binding AllowInsecureAlgorithms}"/>
+                            <CheckBox Name="AllowUnencrypted" Margin="0,10,0,0" Content="Allow unencrypted communication." IsChecked="{Binding AllowUnencryptedCommunication}"/>
+                            <CheckBox Name="StorePassword" Margin="0,10,0,0" Content="Store password instead of digest." IsChecked="{Binding StorePasswordInsteadOfDigest}"/>
+                            <Label Padding="0,10,0,0">API Key (for creating accounts):</Label>
+                            <TextBox Name="ApiKey" Text="{Binding ApiKey}" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}"/>
+                            <Label Padding="0,10,0,0">API Key Secret (for creating accounts):</Label>
+                            <PasswordBox Name="ApiKeySecret" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}" PasswordChanged="ApiKeySecret_PasswordChanged"/>
+                            <Button Name="Connect" Margin="10,10,10,0">Connect</Button>
+                            <Button Name="RandomizePassword" Margin="10,10,10,0">Randomize Password</Button>
+                        </StackPanel>
+                    </ScrollViewer>
                     <ListView Name="Sniffer" Width="Auto">
                     </ListView>
                 </StackPanel>
@@ -37,9 +44,16 @@
             <TabItem Header="Contracts">
                 <Grid Background="#FFE5E5E5"/>
             </TabItem>
+            <TabItem Header="Events">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+            <TabItem Header="Script">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
         </TabControl>
-        <StatusBar VerticalAlignment="Bottom">
+        <StatusBar Name="StatusBar" VerticalAlignment="Bottom">
             <StatusBarItem Name="XmppState">Offline</StatusBarItem>
+            <StatusBarItem Name="Status"></StatusBarItem>
         </StatusBar>
     </Grid>
 </Window>
