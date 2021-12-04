@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Waher.Runtime.Settings;
 
@@ -84,7 +85,7 @@ namespace LegalLab.Models
 			if (this.changed)
 			{
 				await RuntimeSettings.SetAsync(this.category + "." + this.Name, this.value);
-				
+
 				this.changed = false;
 				PersistedModel.RemoveDelayedSave(ref this.scheduledSave);
 			}

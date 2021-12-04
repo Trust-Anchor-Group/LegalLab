@@ -85,7 +85,7 @@ namespace LegalLab
 
 				// View Models
 
-				windowSizeModel = await InstantiateModel<WindowSizeModel>(this.WindowState, this.Left, this.Top, this.Width, this.Height);
+				windowSizeModel = await InstantiateModel<WindowSizeModel>(this.WindowState, this.Left, this.Top, this.Width, this.Height, this.TabControl.SelectedIndex);
 				networkModel = await InstantiateModel<NetworkModel>();
 			}
 			catch (Exception ex)
@@ -314,37 +314,6 @@ namespace LegalLab
 
 		#endregion
 
-		#region Layout & Position
-
-		private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-		{
-			if (!(windowSizeModel is null) && this.WindowState == WindowState.Normal)
-			{
-				if (e.WidthChanged && e.NewSize.Width > 0)
-					windowSizeModel.Width = e.NewSize.Width;
-
-				if (e.HeightChanged && e.NewSize.Height > 0)
-					windowSizeModel.Height = e.NewSize.Height;
-			}
-		}
-
-		private void Window_LocationChanged(object sender, EventArgs e)
-		{
-			if (!(windowSizeModel is null) && this.WindowState == WindowState.Normal)
-			{
-				windowSizeModel.Left = this.Left;
-				windowSizeModel.Top = this.Top;
-			}
-		}
-
-		private void Window_StateChanged(object sender, EventArgs e)
-		{
-			if (!(windowSizeModel is null))
-				windowSizeModel.State = this.WindowState;
-		}
-
-		#endregion
-
 		#region Network
 
 		private void XmppPassword_PasswordChanged(object sender, RoutedEventArgs e)
@@ -363,6 +332,5 @@ namespace LegalLab
 		}
 
 		#endregion
-
 	}
 }

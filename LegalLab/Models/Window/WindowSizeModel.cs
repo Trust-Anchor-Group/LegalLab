@@ -11,17 +11,18 @@ namespace LegalLab.Models.Window
 	[Singleton]
 	public class WindowSizeModel : PersistedModel
 	{
+		private readonly PersistedProperty<WindowState> state;
 		private readonly PersistedProperty<double> width;
 		private readonly PersistedProperty<double> height;
 		private readonly PersistedProperty<double> left;
 		private readonly PersistedProperty<double> top;
-		private readonly PersistedProperty<WindowState> state;
+		private readonly PersistedProperty<long> tabIndex;
 
 		/// <summary>
 		/// Main window size model
 		/// </summary>
 		public WindowSizeModel()
-			: this(WindowState.Normal, 0, 0, 0, 0)
+			: this(WindowState.Normal, 0, 0, 0, 0, 0)
 		{
 		}
 
@@ -33,7 +34,7 @@ namespace LegalLab.Models.Window
 		/// <param name="Top">Top coordinate</param>
 		/// <param name="Width">Width of window</param>
 		/// <param name="Height">Height of window</param>
-		public WindowSizeModel(WindowState State, double Left, double Top, double Width, double Height)
+		public WindowSizeModel(WindowState State, double Left, double Top, double Width, double Height, int TabIndex)
 			: base()
 		{
 			this.Add(this.width = new PersistedProperty<double>("MainWindow", nameof(this.Width), true, Width, this));
@@ -41,6 +42,7 @@ namespace LegalLab.Models.Window
 			this.Add(this.left = new PersistedProperty<double>("MainWindow", nameof(this.Left), true, Left, this));
 			this.Add(this.top = new PersistedProperty<double>("MainWindow", nameof(this.Top), true, Top, this));
 			this.Add(this.state = new PersistedProperty<WindowState>("MainWindow", nameof(this.State), true, State, this));
+			this.Add(this.tabIndex = new PersistedProperty<long>("MainWindow", nameof(this.TabIndex), true, TabIndex, this));
 		}
 
 		/// <summary>
@@ -89,6 +91,15 @@ namespace LegalLab.Models.Window
 		}
 
 		/// <summary>
+		/// Selected tab
+		/// </summary>
+		public int TabIndex
+		{
+			get => (int)this.tabIndex.Value;
+			set => this.tabIndex.Value = value;
+		}
+
+		/// <summary>
 		/// Starts the model.
 		/// </summary>
 		public override Task Start()
@@ -100,10 +111,60 @@ namespace LegalLab.Models.Window
 				MainWindow.currentInstance.Top = this.Top;
 				MainWindow.currentInstance.Width = this.Width;
 				MainWindow.currentInstance.Height = this.Height;
+				MainWindow.currentInstance.TabControl.SelectedIndex = this.TabIndex;
 				MainWindow.currentInstance.Visibility = Visibility.Visible;
+
+				MainWindow.currentInstance.SizeChanged += WindowSizeChanged;
+				MainWindow.currentInstance.LocationChanged += WindowLocationChanged;
+				MainWindow.currentInstance.StateChanged += WindowStateChanged;
+				MainWindow.currentInstance.TabControl.SelectionChanged += TabIndexChanged;
 			});
 
 			return base.Start();
+		}
+
+		/// <summary>
+		/// Stops the model.
+		/// </summary>
+		public override Task Stop()
+		{
+			MainWindow.currentInstance.SizeChanged -= WindowSizeChanged;
+			MainWindow.currentInstance.LocationChanged -= WindowLocationChanged;
+			MainWindow.currentInstance.StateChanged -= WindowStateChanged;
+			MainWindow.currentInstance.TabControl.SelectionChanged -= TabIndexChanged;
+
+			return base.Stop();
+		}
+
+		private void WindowSizeChanged(object sender, SizeChangedEventArgs e)
+		{
+			if (MainWindow.currentInstance.WindowState == WindowState.Normal)
+			{
+				if (e.WidthChanged && e.NewSize.Width > 0)
+					this.Width = e.NewSize.Width;
+
+				if (e.HeightChanged && e.NewSize.Height > 0)
+					this.Height = e.NewSize.Height;
+			}
+		}
+
+		private void WindowLocationChanged(object sender, EventArgs e)
+		{
+			if (MainWindow.currentInstance.WindowState == WindowState.Normal)
+			{
+				this.Left = this.Left;
+				this.Top = this.Top;
+			}
+		}
+
+		private void WindowStateChanged(object sender, EventArgs e)
+		{
+			this.State = MainWindow.currentInstance.WindowState;
+		}
+
+		private void TabIndexChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+		{
+			this.TabIndex = MainWindow.currentInstance.TabControl.SelectedIndex;
 		}
 	}
 }
