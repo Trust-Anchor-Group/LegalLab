@@ -1,4 +1,6 @@
-﻿using LegalLab.Models.Network.Sniffer;
+﻿using EDaler;
+using LegalLab.Models.Legal;
+using LegalLab.Models.Network.Sniffer;
 using System;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
@@ -9,6 +11,7 @@ using Waher.Networking.DNS;
 using Waher.Networking.DNS.ResourceRecords;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.ServiceDiscovery;
 using Waher.Runtime.Inventory;
 
 namespace LegalLab.Models.Network
@@ -25,6 +28,8 @@ namespace LegalLab.Models.Network
 		private readonly PersistedProperty<string> passwordMethod;
 		private readonly PersistedProperty<string> apiKey;
 		private readonly PersistedProperty<string> apiKeySecret;
+		private readonly PersistedProperty<string> legalComponentJid;
+		private readonly PersistedProperty<string> eDalerComponentJid;
 		private readonly PersistedProperty<bool> createAccount;
 		private readonly PersistedProperty<bool> trustServerCertificate;
 		private readonly PersistedProperty<bool> allowInsecureAlgorithms;
@@ -38,7 +43,7 @@ namespace LegalLab.Models.Network
 		private readonly Command randomizePassword;
 
 		private XmppClient client;
-		private ContractsClient contracts;
+		private LegalModel legalModel;
 
 		public NetworkModel()
 			: base()
@@ -54,6 +59,9 @@ namespace LegalLab.Models.Network
 			this.Add(this.allowInsecureAlgorithms = new PersistedProperty<bool>("XMPP", nameof(this.AllowInsecureAlgorithms), false, false, this));
 			this.Add(this.storePasswordInsteadOfDigest = new PersistedProperty<bool>("XMPP", nameof(this.StorePasswordInsteadOfDigest), false, false, this));
 			this.Add(this.connectOnStartup = new PersistedProperty<bool>("XMPP", nameof(this.ConnectOnStartup), false, false, this));
+
+			this.Add(this.legalComponentJid = new PersistedProperty<string>("XMPP", nameof(this.LegalComponentJid), true, string.Empty, this));
+			this.Add(this.eDalerComponentJid = new PersistedProperty<string>("XMPP", nameof(this.EDalerComponentJid), true, string.Empty, this));
 
 			this.password2 = new Property<string>(nameof(this.Password2), string.Empty, this);
 			this.state = new Property<XmppState>(nameof(this.State), XmppState.Offline, this);
@@ -174,6 +182,24 @@ namespace LegalLab.Models.Network
 		}
 
 		/// <summary>
+		/// Legal Component JID
+		/// </summary>
+		public string LegalComponentJid
+		{
+			get => this.legalComponentJid.Value;
+			set => this.legalComponentJid.Value = value;
+		}
+
+		/// <summary>
+		/// e-Daler Component JID
+		/// </summary>
+		public string EDalerComponentJid
+		{
+			get => this.eDalerComponentJid.Value;
+			set => this.eDalerComponentJid.Value = value;
+		}
+
+		/// <summary>
 		/// Connection command
 		/// </summary>
 		public ICommand Connect => this.connect;
@@ -216,6 +242,11 @@ namespace LegalLab.Models.Network
 		}
 
 		/// <summary>
+		/// Legal ID model
+		/// </summary>
+		public LegalModel Legal => this.legalModel;
+
+		/// <summary>
 		/// Starts the model.
 		/// </summary>
 		public override async Task Start()
@@ -242,19 +273,22 @@ namespace LegalLab.Models.Network
 		/// <summary>
 		/// Stops the model.
 		/// </summary>
-		public override Task Stop()
+		public override async Task Stop()
 		{
 			MainWindow.currentInstance.XmppPassword.PasswordChanged -= this.PasswordChanged;
 			MainWindow.currentInstance.XmppPassword2.PasswordChanged -= this.Password2Changed;
 			MainWindow.currentInstance.ApiKeySecret.PasswordChanged -= this.ApiKeySecretChanged;
 
-			this.contracts?.Dispose();
-			this.contracts = null;
+			if (!(this.legalModel is null))
+			{
+				await this.legalModel.Stop();
+				this.legalModel = null;
+			}
 
 			this.client?.Dispose();
 			this.client = null;
 
-			return base.Stop();
+			await base.Stop();
 		}
 
 		private void PasswordChanged(object sender, RoutedEventArgs e)
@@ -316,6 +350,12 @@ namespace LegalLab.Models.Network
 					Port = 5222;    // Default XMPP Client-to-Server port.
 				}
 
+				if (!(this.legalModel is null))
+				{
+					await this.legalModel.Stop();
+					this.legalModel = null;
+				}
+
 				ListViewSniffer Sniffer = new ListViewSniffer(MainWindow.currentInstance.SnifferListView, 1000);
 
 				if (string.IsNullOrEmpty(this.PasswordMethod))
@@ -375,6 +415,36 @@ namespace LegalLab.Models.Network
 					}
 
 					await this.Save();
+
+					if (this.legalModel is null)
+					{
+						if (string.IsNullOrEmpty(this.LegalComponentJid) || string.IsNullOrEmpty(this.EDalerComponentJid))
+						{
+							ServiceItemsDiscoveryEventArgs e = await this.client.ServiceItemsDiscoveryAsync(string.Empty);
+							if (e.Ok)
+							{
+								foreach (Item Component in e.Items)
+								{
+									ServiceDiscoveryEventArgs e2 = await this.client.ServiceDiscoveryAsync(Component.JID);
+
+									if (e2.HasFeature(ContractsClient.NamespaceLegalIdentities) &&
+										e2.HasFeature(ContractsClient.NamespaceSmartContracts))
+									{
+										this.LegalComponentJid = Component.JID;
+									}
+									else if (e2.HasFeature(EDalerClient.NamespaceEDaler))
+										this.EDalerComponentJid = Component.JID;
+								}
+							}
+						}
+
+						if (!string.IsNullOrEmpty(this.LegalComponentJid))
+						{
+							this.legalModel = new LegalModel(this.client, this.LegalComponentJid);
+							await this.legalModel.Load();
+							await this.legalModel.Start();
+						}
+					}
 					break;
 
 				case XmppState.Error:
@@ -393,8 +463,11 @@ namespace LegalLab.Models.Network
 		/// </summary>
 		public void ExecuteDisconnect()
 		{
-			this.contracts?.Dispose();
-			this.contracts = null;
+			this.LegalComponentJid = string.Empty;
+			this.EDalerComponentJid = string.Empty;
+
+			this.legalModel?.Dispose();
+			this.legalModel = null;
 
 			this.client?.Dispose();
 			this.client = null;

@@ -12,24 +12,24 @@
                     <ScrollViewer>
                         <StackPanel Orientation="Vertical" Width="250" Margin="10">
                             <Label Padding="0">XMPP Server:</Label>
-                            <TextBox Name="XmppServer" Text="{Binding XmppServer}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                            <TextBox Text="{Binding XmppServer}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
                             <Label Padding="0,10,0,0">Account:</Label>
-                            <TextBox Name="XmppAccount" Text="{Binding Account}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                            <TextBox Text="{Binding Account}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
                             <Label Padding="0,10,0,0">Password:</Label>
                             <PasswordBox Name="XmppPassword" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
-                            <CheckBox Name="CreateAccount" Margin="0,10,0,0" Content="Create Account, if none exists." IsChecked="{Binding CreateAccount}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                            <CheckBox Margin="0,10,0,0" Content="Create Account, if none exists." IsChecked="{Binding CreateAccount}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
                             <Label Padding="0,10,0,0" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}">Repeat Password:</Label>
                             <PasswordBox Name="XmppPassword2" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
                             <Label Padding="0,10,0,0" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}">API Key (for creating accounts):</Label>
-                            <TextBox Name="ApiKey" Text="{Binding ApiKey}" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                            <TextBox Text="{Binding ApiKey}" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
                             <Label Padding="0,10,0,0" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}">API Key Secret (for creating accounts):</Label>
                             <PasswordBox Name="ApiKeySecret" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
-                            <CheckBox Name="TrustServer" Margin="0,10,0,0" Content="Trust server certificate." IsChecked="{Binding TrustServerCertificate}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
-                            <CheckBox Name="AllowInsecureAuthentication" Margin="0,10,0,0" Content="Allow insecure authentication." IsChecked="{Binding AllowInsecureAlgorithms}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
-                            <CheckBox Name="StorePassword" Margin="0,10,0,0" Content="Store password instead of digest." IsChecked="{Binding StorePasswordInsteadOfDigest}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
-                            <Button Name="Connect" Margin="10,10,10,0" Command="{Binding Connect}" Visibility="{Binding ConnectOnStartup, Converter={conv:NotBooleanToVisibility}}">Connect</Button>
-                            <Button Name="Disconnect" Margin="10,10,10,0" Command="{Binding Disconnect}" Visibility="{Binding ConnectOnStartup, Converter={conv:BooleanToVisibility}}">Disconnect</Button>
-                            <Button Name="RandomizePassword" Margin="10,10,10,0" Command="{Binding RandomizePassword}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}">Randomize Password</Button>
+                            <CheckBox Margin="0,10,0,0" Content="Trust server certificate." IsChecked="{Binding TrustServerCertificate}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                            <CheckBox Margin="0,10,0,0" Content="Allow insecure authentication." IsChecked="{Binding AllowInsecureAlgorithms}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                            <CheckBox Margin="0,10,0,0" Content="Store password instead of digest." IsChecked="{Binding StorePasswordInsteadOfDigest}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                            <Button Margin="10,10,10,0" Command="{Binding Connect}" Visibility="{Binding ConnectOnStartup, Converter={conv:NotBooleanToVisibility}}">Connect</Button>
+                            <Button Margin="10,10,10,0" Command="{Binding Disconnect}" Visibility="{Binding ConnectOnStartup, Converter={conv:BooleanToVisibility}}">Disconnect</Button>
+                            <Button Margin="10,10,10,0" Command="{Binding RandomizePassword}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}">Randomize Password</Button>
                         </StackPanel>
                     </ScrollViewer>
                     <!-- Sniffer from IoTGateway project, with permission -->
@@ -78,19 +78,47 @@
                     </ListView>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Legal ID">
+            <TabItem Name="LegalIdTab" Header="Legal ID">
+                <StackPanel Orientation="Horizontal" Background="#FFE5E5E5" Height="Auto">
+                    <ScrollViewer>
+                        <StackPanel Orientation="Vertical" Width="250" Margin="10">
+                            <Label Padding="0">First Name:</Label>
+                            <TextBox Text="{Binding FirstName}"/>
+                            <Label Padding="0,10,0,0">Middle Name:</Label>
+                            <TextBox Text="{Binding MiddleName}"/>
+                            <Label Padding="0,10,0,0">Last Name:</Label>
+                            <TextBox Text="{Binding LastName}"/>
+                            <Label Padding="0,10,0,0">Personal Number:</Label>
+                            <TextBox Text="{Binding PersonalNumber}"/>
+                            <Label Padding="0,10,0,0">Address:</Label>
+                            <TextBox Text="{Binding Address}"/>
+                            <Label Padding="0,10,0,0">Address, row 2:</Label>
+                            <TextBox Text="{Binding Address2}"/>
+                            <Label Padding="0,10,0,0">Postal Code (or ZIP):</Label>
+                            <TextBox Text="{Binding Zip}"/>
+                            <Label Padding="0,10,0,0">Area:</Label>
+                            <TextBox Text="{Binding Area}"/>
+                            <Label Padding="0,10,0,0">City:</Label>
+                            <TextBox Text="{Binding City}"/>
+                            <Label Padding="0,10,0,0">Region:</Label>
+                            <TextBox Text="{Binding Region}"/>
+                            <Label Padding="0,10,0,0">Country:</Label>
+                            <ComboBox ItemsSource="{Binding CountryCodes}" DisplayMemberPath="Country" SelectedValuePath="Code" SelectedValue="{Binding Country}"/>
+                            <Button Margin="10,10,10,0" Command="{Binding Apply}">Apply</Button>
+                        </StackPanel>
+                    </ScrollViewer>
+                </StackPanel>
+            </TabItem>
+            <TabItem Name="WalletTab" Header="Wallet">
                 <Grid Background="#FFE5E5E5"/>
             </TabItem>
-            <TabItem Header="Wallet">
+            <TabItem Name="ContractsTab" Header="Contracts">
                 <Grid Background="#FFE5E5E5"/>
             </TabItem>
-            <TabItem Header="Contracts">
+            <TabItem Name="EventsTab" Header="Events">
                 <Grid Background="#FFE5E5E5"/>
             </TabItem>
-            <TabItem Header="Events">
-                <Grid Background="#FFE5E5E5"/>
-            </TabItem>
-            <TabItem Header="Script">
+            <TabItem Name="ScriptTab" Header="Script">
                 <Grid Background="#FFE5E5E5"/>
             </TabItem>
         </TabControl>

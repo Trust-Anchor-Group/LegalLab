@@ -155,6 +155,16 @@ namespace LegalLab
 			return Task.FromResult(new KeyValuePair<byte[], byte[]>(Key, IV));
 		}
 
+		/// <summary>
+		/// Window Size model
+		/// </summary>
+		public static WindowSizeModel WindowSizeModel => windowSizeModel;
+
+		/// <summary>
+		/// Network model
+		/// </summary>
+		public static NetworkModel NetworkModel => networkModel;
+
 		#endregion
 
 		#region Standard UI
