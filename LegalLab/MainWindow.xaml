@@ -13,23 +13,24 @@
                     <ScrollViewer>
                         <StackPanel Orientation="Vertical" Width="250" Margin="10">
                             <Label Padding="0">XMPP Server:</Label>
-                            <TextBox Name="XmppServer" Text="{Binding XmppServer}"/>
+                            <TextBox Name="XmppServer" Text="{Binding XmppServer}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
                             <Label Padding="0,10,0,0">Account:</Label>
-                            <TextBox Name="XmppAccount" Text="{Binding Account}"/>
+                            <TextBox Name="XmppAccount" Text="{Binding Account}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
                             <Label Padding="0,10,0,0">Password:</Label>
-                            <PasswordBox Name="XmppPassword" PasswordChanged="XmppPassword_PasswordChanged"/>
-                            <CheckBox Name="CreateAccount" Margin="0,10,0,0" Content="Create Account, if none exists." IsChecked="{Binding CreateAccount}"/>
+                            <PasswordBox Name="XmppPassword" PasswordChanged="XmppPassword_PasswordChanged" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                            <CheckBox Name="CreateAccount" Margin="0,10,0,0" Content="Create Account, if none exists." IsChecked="{Binding CreateAccount}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
                             <Label Padding="0,10,0,0" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}">Repeat Password:</Label>
-                            <PasswordBox Name="XmppPassword2" PasswordChanged="XmppPassword2_PasswordChanged" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}"/>
+                            <PasswordBox Name="XmppPassword2" PasswordChanged="XmppPassword2_PasswordChanged" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
                             <Label Padding="0,10,0,0" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}">API Key (for creating accounts):</Label>
-                            <TextBox Name="ApiKey" Text="{Binding ApiKey}" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}"/>
+                            <TextBox Name="ApiKey" Text="{Binding ApiKey}" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
                             <Label Padding="0,10,0,0" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}">API Key Secret (for creating accounts):</Label>
-                            <PasswordBox Name="ApiKeySecret" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}" PasswordChanged="ApiKeySecret_PasswordChanged"/>
-                            <CheckBox Name="TrustServer" Margin="0,10,0,0" Content="Trust server certificate." IsChecked="{Binding TrustServerCertificate}"/>
-                            <CheckBox Name="AllowInsecureAuthentication" Margin="0,10,0,0" Content="Allow insecure authentication." IsChecked="{Binding AllowInsecureAlgorithms}"/>
-                            <CheckBox Name="StorePassword" Margin="0,10,0,0" Content="Store password instead of digest." IsChecked="{Binding StorePasswordInsteadOfDigest}"/>
-                            <Button Name="Connect" Margin="10,10,10,0" Command="{Binding Connect}">Connect</Button>
-                            <Button Name="RandomizePassword" Margin="10,10,10,0" Command="{Binding RandomizePassword}">Randomize Password</Button>
+                            <PasswordBox Name="ApiKeySecret" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}" PasswordChanged="ApiKeySecret_PasswordChanged" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                            <CheckBox Name="TrustServer" Margin="0,10,0,0" Content="Trust server certificate." IsChecked="{Binding TrustServerCertificate}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                            <CheckBox Name="AllowInsecureAuthentication" Margin="0,10,0,0" Content="Allow insecure authentication." IsChecked="{Binding AllowInsecureAlgorithms}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                            <CheckBox Name="StorePassword" Margin="0,10,0,0" Content="Store password instead of digest." IsChecked="{Binding StorePasswordInsteadOfDigest}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                            <Button Name="Connect" Margin="10,10,10,0" Command="{Binding Connect}" Visibility="{Binding ConnectOnStartup, Converter={conv:NotBooleanToVisibility}}">Connect</Button>
+                            <Button Name="Disconnect" Margin="10,10,10,0" Command="{Binding Disconnect}" Visibility="{Binding ConnectOnStartup, Converter={conv:BooleanToVisibility}}">Disconnect</Button>
+                            <Button Name="RandomizePassword" Margin="10,10,10,0" Command="{Binding RandomizePassword}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}">Randomize Password</Button>
                         </StackPanel>
                     </ScrollViewer>
                     <ListView Name="Sniffer" Width="Auto">
@@ -53,7 +54,7 @@
             </TabItem>
         </TabControl>
         <StatusBar Name="StatusBar" VerticalAlignment="Bottom">
-            <StatusBarItem Name="XmppState">Offline</StatusBarItem>
+            <StatusBarItem Name="XmppState" Content="{Binding State}"/>
             <StatusBarItem Name="Status"></StatusBarItem>
         </StatusBar>
     </Grid>

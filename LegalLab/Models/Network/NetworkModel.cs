@@ -28,11 +28,11 @@ namespace LegalLab.Models.Network
 		private readonly PersistedProperty<bool> allowInsecureAlgorithms;
 		private readonly PersistedProperty<bool> storePasswordInsteadOfDigest;
 		private readonly PersistedProperty<bool> connectOnStartup;
-
-		private string password2 = string.Empty;
-		private bool connecting = false;
+		private readonly Property<string> password2;
+		private readonly Property<XmppState> state;
 
 		private readonly Command connect;
+		private readonly Command disconnect;
 		private readonly Command randomizePassword;
 
 		private XmppClient client;
@@ -41,19 +41,23 @@ namespace LegalLab.Models.Network
 		public NetworkModel()
 			: base()
 		{
-			this.Add(this.xmppServer = new PersistedProperty<string>("XMPP", "Server", false, string.Empty));
-			this.Add(this.account = new PersistedProperty<string>("XMPP", "Account", false, string.Empty));
-			this.Add(this.password = new PersistedProperty<string>("XMPP", "Password", false, string.Empty));
-			this.Add(this.passwordMethod = new PersistedProperty<string>("XMPP", "PasswordMethod", false, string.Empty));
-			this.Add(this.apiKey = new PersistedProperty<string>("XMPP", "ApiKey", false, string.Empty));
-			this.Add(this.apiKeySecret = new PersistedProperty<string>("XMPP", "ApiKeySecret", false, string.Empty));
-			this.Add(this.createAccount = new PersistedProperty<bool>("XMPP", "CreateAccount", false, false));
-			this.Add(this.trustServerCertificate = new PersistedProperty<bool>("XMPP", "TrustServer", false, false));
-			this.Add(this.allowInsecureAlgorithms = new PersistedProperty<bool>("XMPP", "InsecureAuthentication", false, false));
-			this.Add(this.storePasswordInsteadOfDigest = new PersistedProperty<bool>("XMPP", "StorePassword", false, false));
-			this.Add(this.connectOnStartup = new PersistedProperty<bool>("XMPP", "ConnectOnStartup", false, false));
+			this.Add(this.xmppServer = new PersistedProperty<string>("XMPP", nameof(this.XmppServer), false, string.Empty, this));
+			this.Add(this.account = new PersistedProperty<string>("XMPP", nameof(this.Account), false, string.Empty, this));
+			this.Add(this.password = new PersistedProperty<string>("XMPP", nameof(this.Password), false, string.Empty, this));
+			this.Add(this.passwordMethod = new PersistedProperty<string>("XMPP", nameof(this.PasswordMethod), false, string.Empty, this));
+			this.Add(this.apiKey = new PersistedProperty<string>("XMPP", nameof(this.ApiKey), false, string.Empty, this));
+			this.Add(this.apiKeySecret = new PersistedProperty<string>("XMPP", nameof(this.ApiKeySecret), false, string.Empty, this));
+			this.Add(this.createAccount = new PersistedProperty<bool>("XMPP", nameof(this.CreateAccount), false, false, this));
+			this.Add(this.trustServerCertificate = new PersistedProperty<bool>("XMPP", nameof(this.TrustServerCertificate), false, false, this));
+			this.Add(this.allowInsecureAlgorithms = new PersistedProperty<bool>("XMPP", nameof(this.AllowInsecureAlgorithms), false, false, this));
+			this.Add(this.storePasswordInsteadOfDigest = new PersistedProperty<bool>("XMPP", nameof(this.StorePasswordInsteadOfDigest), false, false, this));
+			this.Add(this.connectOnStartup = new PersistedProperty<bool>("XMPP", nameof(this.ConnectOnStartup), false, false, this));
+
+			this.password2 = new Property<string>(nameof(this.Password2), string.Empty, this);
+			this.state = new Property<XmppState>(nameof(this.State), XmppState.Offline, this);
 
 			this.connect = new Command(this.CanExecuteConnect, this.ExecuteConnect);
+			this.disconnect = new Command(this.CanExecuteDisconnect, this.ExecuteDisconnect);
 			this.randomizePassword = new Command(this.ExecuteRandomizePassword);
 		}
 
@@ -124,7 +128,11 @@ namespace LegalLab.Models.Network
 		public bool CreateAccount
 		{
 			get => this.createAccount.Value;
-			set => this.createAccount.Value = value;
+			set
+			{
+				this.createAccount.Value = value;
+				this.connect.RaiseCanExecuteChanged();
+			}
 		}
 
 		/// <summary>
@@ -169,39 +177,39 @@ namespace LegalLab.Models.Network
 		public ICommand Connect => this.connect;
 
 		/// <summary>
+		/// Disconnection command
+		/// </summary>
+		public ICommand Disconnect => this.disconnect;
+
+		/// <summary>
 		/// Password randomization command
 		/// </summary>
 		public ICommand RandomizePassword => this.randomizePassword;
-
-		/// <summary>
-		/// If a connection procedure is underway
-		/// </summary>
-		public bool Connecting
-		{ 
-			get => this.connecting;
-			set
-			{
-				if (this.connecting != value)
-				{
-					this.connecting = value;
-					this.connect.RaiseCanExecuteChanged();
-				}
-			}
-		}
 
 		/// <summary>
 		/// Second entry of password
 		/// </summary>
 		public string Password2
 		{
-			get => this.password2;
+			get => this.password2.Value;
 			set
 			{
-				if (this.password2 != value)
-				{
-					this.password2 = value;
-					this.connect.RaiseCanExecuteChanged();
-				}
+				this.password2.Value = value;
+				this.connect.RaiseCanExecuteChanged();
+			}
+		}
+
+		/// <summary>
+		/// Connection state.
+		/// </summary>
+		public XmppState State
+		{
+			get => this.state.Value;
+			set
+			{
+				this.state.Value = value;
+				this.connect.RaiseCanExecuteChanged();
+				this.disconnect.RaiseCanExecuteChanged();
 			}
 		}
 
@@ -213,6 +221,7 @@ namespace LegalLab.Models.Network
 			MainWindow.UpdateGui(() =>
 			{
 				MainWindow.currentInstance.NetworkTab.DataContext = this;
+				MainWindow.currentInstance.XmppState.DataContext = this;
 
 				MainWindow.currentInstance.XmppPassword.Password = this.Password;
 				MainWindow.currentInstance.ApiKeySecret.Password = this.ApiKeySecret;
@@ -222,6 +231,20 @@ namespace LegalLab.Models.Network
 				this.ExecuteConnect();
 
 			await base.Start();
+		}
+
+		/// <summary>
+		/// Stops the model.
+		/// </summary>
+		public override Task Stop()
+		{
+			this.contracts?.Dispose();
+			this.contracts = null;
+
+			this.client?.Dispose();
+			this.client = null;
+
+			return base.Stop();
 		}
 
 		public void ExecuteRandomizePassword()
@@ -240,7 +263,7 @@ namespace LegalLab.Models.Network
 
 		private bool CanExecuteConnect()
 		{
-			return !this.Connecting && this.password.Value == this.password2;
+			return this.client is null && (!this.CreateAccount || this.Password == this.Password2);
 		}
 
 		/// <summary>
@@ -252,8 +275,6 @@ namespace LegalLab.Models.Network
 			{
 				string Host;
 				int Port;
-
-				this.Connecting = true;
 
 				try
 				{
@@ -288,7 +309,7 @@ namespace LegalLab.Models.Network
 					this.client.AllowPlain = false;
 					this.client.AllowScramSHA1 = false;
 				}
-				
+
 				this.client.OnStateChanged += Client_OnStateChanged;
 				this.client.OnConnectionError += Client_OnConnectionError;
 
@@ -297,7 +318,6 @@ namespace LegalLab.Models.Network
 			catch (Exception ex)
 			{
 				MainWindow.ErrorBox("Unable to connect to the XMPP network. Error reported: " + ex.Message);
-				this.Connecting = false;
 			}
 		}
 
@@ -309,14 +329,13 @@ namespace LegalLab.Models.Network
 
 		private async Task Client_OnStateChanged(object Sender, XmppState NewState)
 		{
-			MainWindow.UpdateGui(() => MainWindow.currentInstance.XmppState.Content = NewState.ToString());
+			this.State = NewState;
 
 			switch (NewState)
 			{
 				case XmppState.Connected:
 					this.client.OnConnectionError -= Client_OnConnectionError;
 
-					this.Connecting = false;
 					this.ConnectOnStartup = true;
 					this.CreateAccount = false;
 					this.ApiKey = string.Empty;
@@ -333,9 +352,29 @@ namespace LegalLab.Models.Network
 
 				case XmppState.Error:
 				case XmppState.Offline:
-					this.Connecting = false;
 					break;
 			}
 		}
+
+		private bool CanExecuteDisconnect()
+		{
+			return !(this.client is null);
+		}
+
+		/// <summary>
+		/// Disconnects from the network
+		/// </summary>
+		public void ExecuteDisconnect()
+		{
+			this.contracts?.Dispose();
+			this.contracts = null;
+
+			this.client?.Dispose();
+			this.client = null;
+
+			this.State = XmppState.Offline;
+			this.ConnectOnStartup = false;
+		}
+
 	}
 }

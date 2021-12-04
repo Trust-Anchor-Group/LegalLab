@@ -36,11 +36,11 @@ namespace LegalLab.Models.Window
 		public WindowSizeModel(WindowState State, double Left, double Top, double Width, double Height)
 			: base()
 		{
-			this.Add(this.width = new PersistedProperty<double>("MainWindow", "Width", true, Width));
-			this.Add(this.height = new PersistedProperty<double>("MainWindow", "Height", true, Height));
-			this.Add(this.left = new PersistedProperty<double>("MainWindow", "Left", true, Left));
-			this.Add(this.top = new PersistedProperty<double>("MainWindow", "Top", true, Top));
-			this.Add(this.state = new PersistedProperty<WindowState>("MainWindow", "State", true, State));
+			this.Add(this.width = new PersistedProperty<double>("MainWindow", nameof(this.Width), true, Width, this));
+			this.Add(this.height = new PersistedProperty<double>("MainWindow", nameof(this.Height), true, Height, this));
+			this.Add(this.left = new PersistedProperty<double>("MainWindow", nameof(this.Left), true, Left, this));
+			this.Add(this.top = new PersistedProperty<double>("MainWindow", nameof(this.Top), true, Top, this));
+			this.Add(this.state = new PersistedProperty<WindowState>("MainWindow", nameof(this.State), true, State, this));
 		}
 
 		/// <summary>

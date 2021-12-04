@@ -7,14 +7,12 @@ namespace LegalLab.Models
 	/// <summary>
 	/// Generic class for persistant properties
 	/// </summary>
-	public class PersistedProperty<T> : IPersistedProperty
+	public class PersistedProperty<T> : Property<T>, IPersistedProperty
 	{
-		private T value = default;
 		private DateTime scheduledSave = DateTime.MinValue;
 		private bool changed = false;
 		private readonly bool liveUpdates = false;
 		private readonly string category;
-		private readonly string name;
 
 		/// <summary>
 		/// Generic class for persistant properties
@@ -23,23 +21,18 @@ namespace LegalLab.Models
 		/// <param name="Name">Property name</param>
 		/// <param name="LiveUpdates">If updates to the parameter should be persisted live.</param>
 		/// <param name="DefaultValue">Default value of property</param>
-		public PersistedProperty(string Category, string Name, bool LiveUpdates, T DefaultValue)
+		/// <param name="Model">Model hosting the property</param>
+		public PersistedProperty(string Category, string Name, bool LiveUpdates, T DefaultValue, IModel Model)
+			: base(Name, DefaultValue, Model)
 		{
 			this.category = Category;
-			this.name = Name;
 			this.liveUpdates = LiveUpdates;
-			this.value = DefaultValue;
 		}
 
 		/// <summary>
 		/// Property Category
 		/// </summary>
 		public string Category => this.category;
-
-		/// <summary>
-		/// Property Name
-		/// </summary>
-		public string Name => this.name;
 
 		/// <summary>
 		/// If updates to the parameter should be persisted live.
@@ -49,7 +42,7 @@ namespace LegalLab.Models
 		/// <summary>
 		/// Current value of the property
 		/// </summary>
-		public T Value
+		public override T Value
 		{
 			get => this.value;
 			set
@@ -65,6 +58,8 @@ namespace LegalLab.Models
 
 				if (this.liveUpdates)
 					PersistedModel.DelayedSave(this, ref scheduledSave);
+
+				this.Model.RaisePropertyChanged(this.Name);
 			}
 		}
 
@@ -78,7 +73,7 @@ namespace LegalLab.Models
 		/// </summary>
 		public async Task Load()
 		{
-			this.value = (T)await RuntimeSettings.GetAsync(this.category + "." + this.name, this.value);
+			this.value = (T)await RuntimeSettings.GetAsync(this.category + "." + this.Name, this.value);
 		}
 
 		/// <summary>
@@ -88,7 +83,7 @@ namespace LegalLab.Models
 		{
 			if (this.changed)
 			{
-				await RuntimeSettings.SetAsync(this.category + "." + this.name, this.value);
+				await RuntimeSettings.SetAsync(this.category + "." + this.Name, this.value);
 				
 				this.changed = false;
 				PersistedModel.RemoveDelayedSave(ref this.scheduledSave);
