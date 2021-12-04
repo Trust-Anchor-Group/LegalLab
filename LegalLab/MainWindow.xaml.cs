@@ -1,7 +1,9 @@
 ﻿using LegalLab.Models;
 using LegalLab.Models.Network;
+using LegalLab.Models.Window;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -126,16 +128,29 @@ namespace LegalLab
 		/// <returns>A pair of (Key, IV).</returns>
 		private Task<KeyValuePair<byte[], byte[]>> GetFileEncryptionKeys(string FileName)
 		{
-			SHAKE256 H = new SHAKE256((32 + 16) << 3);
-			byte[] Entropy = Encoding.UTF8.GetBytes(Assembly.GetExecutingAssembly().FullName);
-			byte[] Data = Encoding.UTF8.GetBytes(FileName);
-			byte[] Protected = ProtectedData.Protect(Data, Entropy, DataProtectionScope.CurrentUser);
-			byte[] Digest = H.ComputeVariable(Protected);
+			string KeyName = FileName + ".key";
+			byte[] Entropy = Encoding.UTF8.GetBytes(FileName);
+			byte[] Protected;
+			byte[] Data;
+
+			if (File.Exists(KeyName))
+				Protected = File.ReadAllBytes(KeyName);
+			else
+			{
+				using RandomNumberGenerator Rnd = RandomNumberGenerator.Create();
+				Data = new byte[32 + 16];
+				Rnd.GetBytes(Data);
+				Protected = ProtectedData.Protect(Data, Entropy, DataProtectionScope.CurrentUser);
+				File.WriteAllBytes(KeyName, Protected);
+			}
+
+			Data = ProtectedData.Unprotect(Protected, Entropy, DataProtectionScope.CurrentUser);
+
 			byte[] Key = new byte[32];
 			byte[] IV = new byte[16];
 
-			Array.Copy(Digest, 0, Key, 0, 32);
-			Array.Copy(Digest, 32, IV, 0, 16);
+			Array.Copy(Data, 0, Key, 0, 32);
+			Array.Copy(Data, 32, IV, 0, 16);
 
 			return Task.FromResult(new KeyValuePair<byte[], byte[]>(Key, IV));
 		}

@@ -2,7 +2,7 @@
 using System.Windows;
 using Waher.Runtime.Inventory;
 
-namespace LegalLab.Models
+namespace LegalLab.Models.Window
 {
 	/// <summary>
 	/// Main window size model
@@ -33,12 +33,13 @@ namespace LegalLab.Models
 		/// <param name="Width">Width of window</param>
 		/// <param name="Height">Height of window</param>
 		public WindowSizeModel(WindowState State, double Left, double Top, double Width, double Height)
+			: base()
 		{
-			this.width = new PersistantProperty<double>("MainWindow", "Width", true, Width);
-			this.height = new PersistantProperty<double>("MainWindow", "Height", true, Height);
-			this.left = new PersistantProperty<double>("MainWindow", "Left", true, Left);
-			this.top = new PersistantProperty<double>("MainWindow", "Top", true, Top);
-			this.state = new PersistantProperty<WindowState>("MainWindow", "State", true, State);
+			this.Add(this.width = new PersistantProperty<double>("MainWindow", "Width", true, Width));
+			this.Add(this.height = new PersistantProperty<double>("MainWindow", "Height", true, Height));
+			this.Add(this.left = new PersistantProperty<double>("MainWindow", "Left", true, Left));
+			this.Add(this.top = new PersistantProperty<double>("MainWindow", "Top", true, Top));
+			this.Add(this.state = new PersistantProperty<WindowState>("MainWindow", "State", true, State));
 		}
 
 		/// <summary>

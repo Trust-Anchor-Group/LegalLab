@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Waher.Runtime.Inventory;
 
 namespace LegalLab.Models.Network
@@ -21,6 +20,22 @@ namespace LegalLab.Models.Network
 		private readonly PersistantProperty<bool> allowInsecureAlgorithms = new PersistantProperty<bool>("XMPP", "InsecureAuthentication", false, false);
 		private readonly PersistantProperty<bool> allowUnencryptedCommunication = new PersistantProperty<bool>("XMPP", "AllowUnencrypted", false, false);
 		private readonly PersistantProperty<bool> storePasswordInsteadOfDigest = new PersistantProperty<bool>("XMPP", "StorePassword", false, false);
+
+		public NetworkModel()
+			: base()
+		{
+			this.Add(this.xmppServer = new PersistantProperty<string>("XMPP", "Server", false, string.Empty));
+			this.Add(this.account = new PersistantProperty<string>("XMPP", "Account", false, string.Empty));
+			this.Add(this.password = new PersistantProperty<string>("XMPP", "Password", false, string.Empty));
+			this.Add(this.passwordMethod = new PersistantProperty<string>("XMPP", "PasswordMethod", false, string.Empty));
+			this.Add(this.apiKey = new PersistantProperty<string>("XMPP", "ApiKey", false, string.Empty));
+			this.Add(this.apiKeySecret = new PersistantProperty<string>("XMPP", "ApiKeySecret", false, string.Empty));
+			this.Add(this.createAccount = new PersistantProperty<bool>("XMPP", "CreateAccount", false, false));
+			this.Add(this.trustServerCertificate = new PersistantProperty<bool>("XMPP", "TrustServer", false, false));
+			this.Add(this.allowInsecureAlgorithms = new PersistantProperty<bool>("XMPP", "InsecureAuthentication", false, false));
+			this.Add(this.allowUnencryptedCommunication = new PersistantProperty<bool>("XMPP", "AllowUnencrypted", false, false));
+			this.Add(this.storePasswordInsteadOfDigest = new PersistantProperty<bool>("XMPP", "StorePassword", false, false));
+		}
 
 		/// <summary>
 		/// Domain name of XMPP Server
