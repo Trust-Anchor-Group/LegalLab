@@ -19,16 +19,17 @@
                             <Label Padding="0,10,0,0">Password:</Label>
                             <PasswordBox Name="XmppPassword" PasswordChanged="XmppPassword_PasswordChanged"/>
                             <CheckBox Name="CreateAccount" Margin="0,10,0,0" Content="Create Account, if none exists." IsChecked="{Binding CreateAccount}"/>
-                            <CheckBox Name="TrustServer" Margin="0,10,0,0" Content="Trust server certificate." IsChecked="{Binding TrustServerCertificate}"/>
-                            <CheckBox Name="AllowInsecureAuthentication" Margin="0,10,0,0" Content="Allow insecure authentication." IsChecked="{Binding AllowInsecureAlgorithms}"/>
-                            <CheckBox Name="AllowUnencrypted" Margin="0,10,0,0" Content="Allow unencrypted communication." IsChecked="{Binding AllowUnencryptedCommunication}"/>
-                            <CheckBox Name="StorePassword" Margin="0,10,0,0" Content="Store password instead of digest." IsChecked="{Binding StorePasswordInsteadOfDigest}"/>
+                            <Label Padding="0,10,0,0" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}">Repeat Password:</Label>
+                            <PasswordBox Name="XmppPassword2" PasswordChanged="XmppPassword2_PasswordChanged" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}"/>
                             <Label Padding="0,10,0,0" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}">API Key (for creating accounts):</Label>
                             <TextBox Name="ApiKey" Text="{Binding ApiKey}" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}"/>
                             <Label Padding="0,10,0,0" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}">API Key Secret (for creating accounts):</Label>
                             <PasswordBox Name="ApiKeySecret" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}" PasswordChanged="ApiKeySecret_PasswordChanged"/>
-                            <Button Name="Connect" Margin="10,10,10,0">Connect</Button>
-                            <Button Name="RandomizePassword" Margin="10,10,10,0">Randomize Password</Button>
+                            <CheckBox Name="TrustServer" Margin="0,10,0,0" Content="Trust server certificate." IsChecked="{Binding TrustServerCertificate}"/>
+                            <CheckBox Name="AllowInsecureAuthentication" Margin="0,10,0,0" Content="Allow insecure authentication." IsChecked="{Binding AllowInsecureAlgorithms}"/>
+                            <CheckBox Name="StorePassword" Margin="0,10,0,0" Content="Store password instead of digest." IsChecked="{Binding StorePasswordInsteadOfDigest}"/>
+                            <Button Name="Connect" Margin="10,10,10,0" Command="{Binding Connect}">Connect</Button>
+                            <Button Name="RandomizePassword" Margin="10,10,10,0" Command="{Binding RandomizePassword}">Randomize Password</Button>
                         </StackPanel>
                     </ScrollViewer>
                     <ListView Name="Sniffer" Width="Auto">
