@@ -39,6 +39,7 @@ namespace LegalLab
 
 		public MainWindow()
 		{
+			this.Visibility = Visibility.Hidden;
 			InitializeComponent();
 			Initialize();
 		}
@@ -87,11 +88,8 @@ namespace LegalLab
 
 				// View Models
 
-				windowSizeModel = Types.InstantiateDefault<WindowSizeModel>(false, this.WindowState, this.Left, this.Top, this.Width, this.Height);
-				await windowSizeModel.Load();
-
-				networkModel = Types.Instantiate<NetworkModel>(false);
-				await networkModel.Load();
+				windowSizeModel = await InstantiateModel<WindowSizeModel>(this.WindowState, this.Left, this.Top, this.Width, this.Height);
+				networkModel = await InstantiateModel<NetworkModel>();
 
 				UpdateGui(() =>
 				{
@@ -105,12 +103,32 @@ namespace LegalLab
 
 					this.XmppPassword.Password = networkModel.Password;
 					this.ApiKeySecret.Password = networkModel.ApiKeySecret;
+					this.Visibility = Visibility.Visible;
 				});
 			}
 			catch (Exception ex)
 			{
 				ErrorBox(ex.Message);
 			}
+		}
+
+		/// <summary>
+		/// Instantiates a view model.
+		/// </summary>
+		/// <typeparam name="T">Type of view model</typeparam>
+		/// <param name="Arguments">Optional list of arguments.</param>
+		/// <returns>Instantiated view model.</returns>
+		private static async Task<T> InstantiateModel<T>(params object[] Arguments)
+			where T : Model
+		{
+			T Result = Types.InstantiateDefault<T>(false, Arguments);
+
+			if (Result is PersistedModel P)
+				await P.Load();
+
+			await Result.Start();
+
+			return Result;
 		}
 
 		protected override void OnClosed(EventArgs e)

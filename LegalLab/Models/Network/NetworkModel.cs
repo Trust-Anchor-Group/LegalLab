@@ -7,34 +7,34 @@ namespace LegalLab.Models.Network
 	/// Network Model
 	/// </summary>
 	[Singleton]
-	public class NetworkModel : PersistantModel
+	public class NetworkModel : PersistedModel
 	{
-		private readonly PersistantProperty<string> xmppServer = new PersistantProperty<string>("XMPP", "Server", false, string.Empty);
-		private readonly PersistantProperty<string> account = new PersistantProperty<string>("XMPP", "Account", false, string.Empty);
-		private readonly PersistantProperty<string> password = new PersistantProperty<string>("XMPP", "Password", false, string.Empty);
-		private readonly PersistantProperty<string> passwordMethod = new PersistantProperty<string>("XMPP", "PasswordMethod", false, string.Empty);
-		private readonly PersistantProperty<string> apiKey = new PersistantProperty<string>("XMPP", "ApiKey", false, string.Empty);
-		private readonly PersistantProperty<string> apiKeySecret = new PersistantProperty<string>("XMPP", "ApiKeySecret", false, string.Empty);
-		private readonly PersistantProperty<bool> createAccount = new PersistantProperty<bool>("XMPP", "CreateAccount", false, false);
-		private readonly PersistantProperty<bool> trustServerCertificate = new PersistantProperty<bool>("XMPP", "TrustServer", false, false);
-		private readonly PersistantProperty<bool> allowInsecureAlgorithms = new PersistantProperty<bool>("XMPP", "InsecureAuthentication", false, false);
-		private readonly PersistantProperty<bool> allowUnencryptedCommunication = new PersistantProperty<bool>("XMPP", "AllowUnencrypted", false, false);
-		private readonly PersistantProperty<bool> storePasswordInsteadOfDigest = new PersistantProperty<bool>("XMPP", "StorePassword", false, false);
+		private readonly PersistedProperty<string> xmppServer = new PersistedProperty<string>("XMPP", "Server", false, string.Empty);
+		private readonly PersistedProperty<string> account = new PersistedProperty<string>("XMPP", "Account", false, string.Empty);
+		private readonly PersistedProperty<string> password = new PersistedProperty<string>("XMPP", "Password", false, string.Empty);
+		private readonly PersistedProperty<string> passwordMethod = new PersistedProperty<string>("XMPP", "PasswordMethod", false, string.Empty);
+		private readonly PersistedProperty<string> apiKey = new PersistedProperty<string>("XMPP", "ApiKey", false, string.Empty);
+		private readonly PersistedProperty<string> apiKeySecret = new PersistedProperty<string>("XMPP", "ApiKeySecret", false, string.Empty);
+		private readonly PersistedProperty<bool> createAccount = new PersistedProperty<bool>("XMPP", "CreateAccount", false, false);
+		private readonly PersistedProperty<bool> trustServerCertificate = new PersistedProperty<bool>("XMPP", "TrustServer", false, false);
+		private readonly PersistedProperty<bool> allowInsecureAlgorithms = new PersistedProperty<bool>("XMPP", "InsecureAuthentication", false, false);
+		private readonly PersistedProperty<bool> allowUnencryptedCommunication = new PersistedProperty<bool>("XMPP", "AllowUnencrypted", false, false);
+		private readonly PersistedProperty<bool> storePasswordInsteadOfDigest = new PersistedProperty<bool>("XMPP", "StorePassword", false, false);
 
 		public NetworkModel()
 			: base()
 		{
-			this.Add(this.xmppServer = new PersistantProperty<string>("XMPP", "Server", false, string.Empty));
-			this.Add(this.account = new PersistantProperty<string>("XMPP", "Account", false, string.Empty));
-			this.Add(this.password = new PersistantProperty<string>("XMPP", "Password", false, string.Empty));
-			this.Add(this.passwordMethod = new PersistantProperty<string>("XMPP", "PasswordMethod", false, string.Empty));
-			this.Add(this.apiKey = new PersistantProperty<string>("XMPP", "ApiKey", false, string.Empty));
-			this.Add(this.apiKeySecret = new PersistantProperty<string>("XMPP", "ApiKeySecret", false, string.Empty));
-			this.Add(this.createAccount = new PersistantProperty<bool>("XMPP", "CreateAccount", false, false));
-			this.Add(this.trustServerCertificate = new PersistantProperty<bool>("XMPP", "TrustServer", false, false));
-			this.Add(this.allowInsecureAlgorithms = new PersistantProperty<bool>("XMPP", "InsecureAuthentication", false, false));
-			this.Add(this.allowUnencryptedCommunication = new PersistantProperty<bool>("XMPP", "AllowUnencrypted", false, false));
-			this.Add(this.storePasswordInsteadOfDigest = new PersistantProperty<bool>("XMPP", "StorePassword", false, false));
+			this.Add(this.xmppServer = new PersistedProperty<string>("XMPP", "Server", false, string.Empty));
+			this.Add(this.account = new PersistedProperty<string>("XMPP", "Account", false, string.Empty));
+			this.Add(this.password = new PersistedProperty<string>("XMPP", "Password", false, string.Empty));
+			this.Add(this.passwordMethod = new PersistedProperty<string>("XMPP", "PasswordMethod", false, string.Empty));
+			this.Add(this.apiKey = new PersistedProperty<string>("XMPP", "ApiKey", false, string.Empty));
+			this.Add(this.apiKeySecret = new PersistedProperty<string>("XMPP", "ApiKeySecret", false, string.Empty));
+			this.Add(this.createAccount = new PersistedProperty<bool>("XMPP", "CreateAccount", false, false));
+			this.Add(this.trustServerCertificate = new PersistedProperty<bool>("XMPP", "TrustServer", false, false));
+			this.Add(this.allowInsecureAlgorithms = new PersistedProperty<bool>("XMPP", "InsecureAuthentication", false, false));
+			this.Add(this.allowUnencryptedCommunication = new PersistedProperty<bool>("XMPP", "AllowUnencrypted", false, false));
+			this.Add(this.storePasswordInsteadOfDigest = new PersistedProperty<bool>("XMPP", "StorePassword", false, false));
 		}
 
 		/// <summary>

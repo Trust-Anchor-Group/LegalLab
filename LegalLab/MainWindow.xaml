@@ -4,8 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:conv="clr-namespace:LegalLab.Converters"
         mc:Ignorable="d"
-        x:Class="LegalLab.MainWindow"
-        Title="TAG Legal Lab" Height="450" Width="800" Background="#FFE5E5E5" 
+        x:Class="LegalLab.MainWindow" Title="TAG Legal Lab" Height="450" Width="800" Background="#FFE5E5E5"
         SizeChanged="Window_SizeChanged" StateChanged="Window_StateChanged" LocationChanged="Window_LocationChanged">
     <Grid>
         <TabControl>

@@ -8,7 +8,7 @@ namespace LegalLab.Models
 	/// <summary>
 	/// Abstract base class for persistant view models
 	/// </summary>
-	public abstract class PersistantModel : Model
+	public abstract class PersistedModel : Model
 	{
 		private static readonly Scheduler scheduler = new Scheduler();
 
@@ -17,7 +17,7 @@ namespace LegalLab.Models
 		/// </summary>
 		/// <param name="Property">Property to be persisted</param>
 		/// <param name="ScheduledFor">Schedule for when the property is to be persisted.</param>
-		public static void DelayedSave(IPersistantProperty Property, ref DateTime ScheduledFor)
+		public static void DelayedSave(IPersistedProperty Property, ref DateTime ScheduledFor)
 		{
 			if (ScheduledFor != DateTime.MinValue)
 				scheduler.Remove(ScheduledFor);
@@ -40,17 +40,17 @@ namespace LegalLab.Models
 
 		private static async Task SaveProperty(object P)
 		{
-			IPersistantProperty Property = (IPersistantProperty)P;
+			IPersistedProperty Property = (IPersistedProperty)P;
 			await Property.Save();
 		}
 
-		private readonly LinkedList<IPersistantProperty> properties = new LinkedList<IPersistantProperty>();
+		private readonly LinkedList<IPersistedProperty> properties = new LinkedList<IPersistedProperty>();
 
 		/// <summary>
 		/// Adds a persistant property
 		/// </summary>
 		/// <param name="Property">Property</param>
-		protected void Add(IPersistantProperty Property)
+		protected void Add(IPersistedProperty Property)
 		{
 			this.properties.AddLast(Property);
 		}
@@ -60,7 +60,7 @@ namespace LegalLab.Models
 		/// </summary>
 		public async Task Load()
 		{
-			foreach (IPersistantProperty Property in this.properties)
+			foreach (IPersistedProperty Property in this.properties)
 				await Property.Load();
 		}
 
@@ -69,7 +69,7 @@ namespace LegalLab.Models
 		/// </summary>
 		public async Task Save()
 		{
-			foreach (IPersistantProperty Property in this.properties)
+			foreach (IPersistedProperty Property in this.properties)
 				await Property.Save();
 		}
 	}

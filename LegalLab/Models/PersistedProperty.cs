@@ -7,7 +7,7 @@ namespace LegalLab.Models
 	/// <summary>
 	/// Generic class for persistant properties
 	/// </summary>
-	public class PersistantProperty<T> : IPersistantProperty
+	public class PersistedProperty<T> : IPersistedProperty
 	{
 		private T value = default;
 		private DateTime scheduledSave = DateTime.MinValue;
@@ -23,7 +23,7 @@ namespace LegalLab.Models
 		/// <param name="Name">Property name</param>
 		/// <param name="LiveUpdates">If updates to the parameter should be persisted live.</param>
 		/// <param name="DefaultValue">Default value of property</param>
-		public PersistantProperty(string Category, string Name, bool LiveUpdates, T DefaultValue)
+		public PersistedProperty(string Category, string Name, bool LiveUpdates, T DefaultValue)
 		{
 			this.category = Category;
 			this.name = Name;
@@ -64,7 +64,7 @@ namespace LegalLab.Models
 				this.changed = true;
 
 				if (this.liveUpdates)
-					PersistantModel.DelayedSave(this, ref scheduledSave);
+					PersistedModel.DelayedSave(this, ref scheduledSave);
 			}
 		}
 
@@ -91,7 +91,7 @@ namespace LegalLab.Models
 				await RuntimeSettings.SetAsync(this.category + "." + this.name, this.value);
 				
 				this.changed = false;
-				PersistantModel.RemoveDelayedSave(ref this.scheduledSave);
+				PersistedModel.RemoveDelayedSave(ref this.scheduledSave);
 			}
 		}
 	}

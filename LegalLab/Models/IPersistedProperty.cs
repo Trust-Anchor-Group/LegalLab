@@ -6,7 +6,7 @@ namespace LegalLab.Models
 	/// <summary>
 	/// Generic class for persistant properties
 	/// </summary>
-	public interface IPersistantProperty
+	public interface IPersistedProperty
 	{
 		/// <summary>
 		/// Loads the property from persisted storage.

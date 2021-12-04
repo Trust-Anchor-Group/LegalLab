@@ -8,13 +8,13 @@ namespace LegalLab.Models.Window
 	/// Main window size model
 	/// </summary>
 	[Singleton]
-	public class WindowSizeModel : PersistantModel
+	public class WindowSizeModel : PersistedModel
 	{
-		private readonly PersistantProperty<double> width;
-		private readonly PersistantProperty<double> height;
-		private readonly PersistantProperty<double> left;
-		private readonly PersistantProperty<double> top;
-		private readonly PersistantProperty<WindowState> state;
+		private readonly PersistedProperty<double> width;
+		private readonly PersistedProperty<double> height;
+		private readonly PersistedProperty<double> left;
+		private readonly PersistedProperty<double> top;
+		private readonly PersistedProperty<WindowState> state;
 
 		/// <summary>
 		/// Main window size model
@@ -35,11 +35,11 @@ namespace LegalLab.Models.Window
 		public WindowSizeModel(WindowState State, double Left, double Top, double Width, double Height)
 			: base()
 		{
-			this.Add(this.width = new PersistantProperty<double>("MainWindow", "Width", true, Width));
-			this.Add(this.height = new PersistantProperty<double>("MainWindow", "Height", true, Height));
-			this.Add(this.left = new PersistantProperty<double>("MainWindow", "Left", true, Left));
-			this.Add(this.top = new PersistantProperty<double>("MainWindow", "Top", true, Top));
-			this.Add(this.state = new PersistantProperty<WindowState>("MainWindow", "State", true, State));
+			this.Add(this.width = new PersistedProperty<double>("MainWindow", "Width", true, Width));
+			this.Add(this.height = new PersistedProperty<double>("MainWindow", "Height", true, Height));
+			this.Add(this.left = new PersistedProperty<double>("MainWindow", "Left", true, Left));
+			this.Add(this.top = new PersistedProperty<double>("MainWindow", "Top", true, Top));
+			this.Add(this.state = new PersistedProperty<WindowState>("MainWindow", "State", true, State));
 		}
 
 		/// <summary>
