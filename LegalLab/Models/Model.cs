@@ -11,7 +11,6 @@ namespace LegalLab.Models
 		/// <summary>
 		/// Starts the model.
 		/// </summary>
-		/// <returns></returns>
 		public virtual Task Start()
 		{
 			return Task.CompletedTask;

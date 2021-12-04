@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using Waher.Runtime.Inventory;
 
@@ -85,6 +86,24 @@ namespace LegalLab.Models.Window
 		{
 			get => this.state.Value;
 			set => this.state.Value = value;
+		}
+
+		/// <summary>
+		/// Starts the model.
+		/// </summary>
+		public override Task Start()
+		{
+			MainWindow.UpdateGui(() =>
+			{
+				MainWindow.currentInstance.WindowState = this.State;
+				MainWindow.currentInstance.Left = this.Left;
+				MainWindow.currentInstance.Top = this.Top;
+				MainWindow.currentInstance.Width = this.Width;
+				MainWindow.currentInstance.Height = this.Height;
+				MainWindow.currentInstance.Visibility = Visibility.Visible;
+			});
+
+			return base.Start();
 		}
 	}
 }

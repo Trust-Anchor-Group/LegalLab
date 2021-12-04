@@ -3,9 +3,7 @@ using LegalLab.Models.Network;
 using LegalLab.Models.Window;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -19,7 +17,6 @@ using Waher.Persistence;
 using Waher.Persistence.Files;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Inventory.Loader;
-using Waher.Security.SHA3;
 
 namespace LegalLab
 {
@@ -90,21 +87,6 @@ namespace LegalLab
 
 				windowSizeModel = await InstantiateModel<WindowSizeModel>(this.WindowState, this.Left, this.Top, this.Width, this.Height);
 				networkModel = await InstantiateModel<NetworkModel>();
-
-				UpdateGui(() =>
-				{
-					this.WindowState = windowSizeModel.State;
-					this.Left = windowSizeModel.Left;
-					this.Top = windowSizeModel.Top;
-					this.Width = windowSizeModel.Width;
-					this.Height = windowSizeModel.Height;
-
-					this.NetworkTab.DataContext = networkModel;
-
-					this.XmppPassword.Password = networkModel.Password;
-					this.ApiKeySecret.Password = networkModel.ApiKeySecret;
-					this.Visibility = Visibility.Visible;
-				});
 			}
 			catch (Exception ex)
 			{

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Waher.Runtime.Inventory;
 
 namespace LegalLab.Models.Network
@@ -141,6 +142,22 @@ namespace LegalLab.Models.Network
 		{
 			get => this.storePasswordInsteadOfDigest.Value;
 			set => this.storePasswordInsteadOfDigest.Value = value;
+		}
+
+		/// <summary>
+		/// Starts the model.
+		/// </summary>
+		public override Task Start()
+		{
+			MainWindow.UpdateGui(() =>
+			{
+				MainWindow.currentInstance.NetworkTab.DataContext = this;
+
+				MainWindow.currentInstance.XmppPassword.Password = this.Password;
+				MainWindow.currentInstance.ApiKeySecret.Password = this.ApiKeySecret;
+			});
+
+			return base.Start();
 		}
 	}
 }
