@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LegalLab.Models.Network.Sniffer;
+using System;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows;
@@ -315,10 +316,12 @@ namespace LegalLab.Models.Network
 					Port = 5222;    // Default XMPP Client-to-Server port.
 				}
 
+				ListViewSniffer Sniffer = new ListViewSniffer(MainWindow.currentInstance.SnifferListView, 1000);
+
 				if (string.IsNullOrEmpty(this.PasswordMethod))
-					this.client = new XmppClient(Host, Port, this.Account, this.Password, "en", typeof(MainWindow).Assembly);
+					this.client = new XmppClient(Host, Port, this.Account, this.Password, "en", typeof(MainWindow).Assembly, Sniffer);
 				else
-					this.client = new XmppClient(Host, Port, this.Account, this.Password, this.PasswordMethod, "en", typeof(MainWindow).Assembly);
+					this.client = new XmppClient(Host, Port, this.Account, this.Password, this.PasswordMethod, "en", typeof(MainWindow).Assembly, Sniffer);
 
 				if (this.CreateAccount)
 					this.client.AllowRegistration(this.ApiKey, this.ApiKeySecret);

@@ -32,7 +32,49 @@
                             <Button Name="RandomizePassword" Margin="10,10,10,0" Command="{Binding RandomizePassword}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}">Randomize Password</Button>
                         </StackPanel>
                     </ScrollViewer>
-                    <ListView Name="Sniffer" Width="Auto">
+                    <!-- Sniffer from IoTGateway project, with permission -->
+                    <ListView Name="SnifferListView" HorizontalAlignment="Left" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible">
+                        <ListView.Resources>
+                            <Style TargetType="{x:Type GridViewColumnHeader}">
+                                <Setter Property="HorizontalContentAlignment" Value="Left" />
+                                <Setter Property="Padding" Value="5,0,0,0" />
+                            </Style>
+                        </ListView.Resources>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Time" Width="70" DisplayMemberBinding="{Binding Time}"/>
+                                <GridViewColumn Header="Content" Width="600">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock TextWrapping="Wrap" Text="{Binding Message}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Setter Property="Foreground" Value="{Binding ForegroundColor, Converter={conv:ColorToString}}" />
+                                <Setter Property="Background" Value="{Binding BackgroundColor, Converter={conv:ColorToString}}" />
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Margin" Value="0"/>
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="VerticalContentAlignment" Value="Top"/>
+                                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Opacity" Value="0.75"/>
+                                        <Setter Property="Foreground" Value="{Binding ForegroundColor, Converter={conv:ColorToString}}" />
+                                        <Setter Property="Background" Value="{Binding BackgroundColor, Converter={conv:ColorToString}}" />
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Opacity" Value="0.5"/>
+                                        <Setter Property="Foreground" Value="{Binding ForegroundColor, Converter={conv:ColorToString}}" />
+                                        <Setter Property="Background" Value="{Binding BackgroundColor, Converter={conv:ColorToString}}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.ItemContainerStyle>
                     </ListView>
                 </StackPanel>
             </TabItem>

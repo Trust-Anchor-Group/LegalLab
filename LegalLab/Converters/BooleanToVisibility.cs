@@ -7,7 +7,7 @@ using System.Windows.Markup;
 namespace LegalLab.Converters
 {
 	/// <summary>
-	/// Converts a boolean values to and from <see cref="Visibility"/> values.
+	/// Converts boolean values to and from <see cref="Visibility"/> values.
 	/// </summary>
 	public class BooleanToVisibility : MarkupExtension, IValueConverter
 	{
