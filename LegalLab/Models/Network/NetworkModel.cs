@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using Waher.Events;
 using Waher.Networking.DNS;
@@ -225,6 +226,10 @@ namespace LegalLab.Models.Network
 
 				MainWindow.currentInstance.XmppPassword.Password = this.Password;
 				MainWindow.currentInstance.ApiKeySecret.Password = this.ApiKeySecret;
+
+				MainWindow.currentInstance.XmppPassword.PasswordChanged += this.PasswordChanged;
+				MainWindow.currentInstance.XmppPassword2.PasswordChanged += this.Password2Changed;
+				MainWindow.currentInstance.ApiKeySecret.PasswordChanged += this.ApiKeySecretChanged;
 			});
 
 			if (this.ConnectOnStartup)
@@ -238,6 +243,10 @@ namespace LegalLab.Models.Network
 		/// </summary>
 		public override Task Stop()
 		{
+			MainWindow.currentInstance.XmppPassword.PasswordChanged -= this.PasswordChanged;
+			MainWindow.currentInstance.XmppPassword2.PasswordChanged -= this.Password2Changed;
+			MainWindow.currentInstance.ApiKeySecret.PasswordChanged -= this.ApiKeySecretChanged;
+
 			this.contracts?.Dispose();
 			this.contracts = null;
 
@@ -245,6 +254,21 @@ namespace LegalLab.Models.Network
 			this.client = null;
 
 			return base.Stop();
+		}
+
+		private void PasswordChanged(object sender, RoutedEventArgs e)
+		{
+			this.Password = MainWindow.currentInstance.XmppPassword.Password;
+		}
+
+		private void Password2Changed(object sender, RoutedEventArgs e)
+		{
+			this.Password2 = MainWindow.currentInstance.XmppPassword.Password;
+		}
+
+		private void ApiKeySecretChanged(object sender, RoutedEventArgs e)
+		{
+			this.ApiKeySecret = MainWindow.currentInstance.ApiKeySecret.Password;
 		}
 
 		public void ExecuteRandomizePassword()

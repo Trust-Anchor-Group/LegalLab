@@ -314,23 +314,5 @@ namespace LegalLab
 
 		#endregion
 
-		#region Network
-
-		private void XmppPassword_PasswordChanged(object sender, RoutedEventArgs e)
-		{
-			networkModel.Password = this.XmppPassword.Password;
-		}
-
-		private void XmppPassword2_PasswordChanged(object sender, RoutedEventArgs e)
-		{
-			networkModel.Password2 = this.XmppPassword.Password;
-		}
-
-		private void ApiKeySecret_PasswordChanged(object sender, RoutedEventArgs e)
-		{
-			networkModel.ApiKeySecret = this.ApiKeySecret.Password;
-		}
-
-		#endregion
 	}
 }

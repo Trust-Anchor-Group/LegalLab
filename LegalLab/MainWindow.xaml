@@ -16,14 +16,14 @@
                             <Label Padding="0,10,0,0">Account:</Label>
                             <TextBox Name="XmppAccount" Text="{Binding Account}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
                             <Label Padding="0,10,0,0">Password:</Label>
-                            <PasswordBox Name="XmppPassword" PasswordChanged="XmppPassword_PasswordChanged" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                            <PasswordBox Name="XmppPassword" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
                             <CheckBox Name="CreateAccount" Margin="0,10,0,0" Content="Create Account, if none exists." IsChecked="{Binding CreateAccount}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
                             <Label Padding="0,10,0,0" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}">Repeat Password:</Label>
-                            <PasswordBox Name="XmppPassword2" PasswordChanged="XmppPassword2_PasswordChanged" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                            <PasswordBox Name="XmppPassword2" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
                             <Label Padding="0,10,0,0" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}">API Key (for creating accounts):</Label>
                             <TextBox Name="ApiKey" Text="{Binding ApiKey}" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
                             <Label Padding="0,10,0,0" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}">API Key Secret (for creating accounts):</Label>
-                            <PasswordBox Name="ApiKeySecret" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}" PasswordChanged="ApiKeySecret_PasswordChanged" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                            <PasswordBox Name="ApiKeySecret" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
                             <CheckBox Name="TrustServer" Margin="0,10,0,0" Content="Trust server certificate." IsChecked="{Binding TrustServerCertificate}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
                             <CheckBox Name="AllowInsecureAuthentication" Margin="0,10,0,0" Content="Allow insecure authentication." IsChecked="{Binding AllowInsecureAlgorithms}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
                             <CheckBox Name="StorePassword" Margin="0,10,0,0" Content="Store password instead of digest." IsChecked="{Binding StorePasswordInsteadOfDigest}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
