@@ -14,9 +14,9 @@ namespace LegalLab.Models.Wallet
 	[Singleton]
 	public class WalletModel : PersistedModel, IDisposable
 	{
-		private Property<double> amount;
-		private Property<string> currency;
-		private Property<DateTime> timestamp;
+		private readonly Property<double> amount;
+		private readonly Property<string> currency;
+		private readonly Property<DateTime> timestamp;
 
 		private readonly List<AccountEvent> events = new List<AccountEvent>();
 

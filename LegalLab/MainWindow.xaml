@@ -108,9 +108,23 @@
                         </StackPanel>
                     </ScrollViewer>
                     <ListView HorizontalAlignment="Left" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding Identities}">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="ID" Width="400" DisplayMemberBinding="{Binding Id}"/>
+                                <GridViewColumn Header="ID" Width="400">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate DataType="LegalLab.Models.Legal.IdentityWrapper">
+                                            <StackPanel Orientation="Vertical">
+                                                <TextBlock Text="{Binding Id}"/>
+                                                <Image Source="{Binding QrCodeUrl}" Width="200" Height="200" Visibility="{Binding IsSelected, Converter={conv:BooleanToVisibility}}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
                                 <GridViewColumn Header="Created" Width="150" DisplayMemberBinding="{Binding Created, Converter={conv:DateTimeToString}}"/>
                                 <GridViewColumn Header="State" Width="100" DisplayMemberBinding="{Binding State, Converter={conv:ToString}}"/>
                             </GridView>

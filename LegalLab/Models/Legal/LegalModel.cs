@@ -26,7 +26,7 @@ namespace LegalLab.Models.Legal
 		private readonly PersistedProperty<string> region;
 		private readonly PersistedProperty<string> country;
 
-		private readonly Dictionary<string, LegalIdentity> identities = new Dictionary<string, LegalIdentity>();
+		private readonly Dictionary<string, IdentityWrapper> identities = new Dictionary<string, IdentityWrapper>();
 
 		private readonly Command apply;
 
@@ -85,7 +85,7 @@ namespace LegalLab.Models.Legal
 			lock (this.identities)
 			{
 				foreach (LegalIdentity Identity in Identities)
-					this.identities[Identity.Id] = Identity;
+					this.identities[Identity.Id] = new IdentityWrapper(this.contracts.Client.Domain, Identity);
 			}
 
 			this.RaisePropertyChanged(nameof(this.Identities));
@@ -203,13 +203,13 @@ namespace LegalLab.Models.Legal
 		/// <summary>
 		/// Legal Identities registered on the account.
 		/// </summary>
-		public LegalIdentity[] Identities
+		public IdentityWrapper[] Identities
 		{
 			get
 			{
 				lock (this.identities)
 				{
-					LegalIdentity[] Result = new LegalIdentity[this.identities.Count];
+					IdentityWrapper[] Result = new IdentityWrapper[this.identities.Count];
 					this.identities.Values.CopyTo(Result, 0);
 					return Result;
 				}
@@ -220,7 +220,7 @@ namespace LegalLab.Models.Legal
 		{
 			lock (this.identities)
 			{
-				this.identities[e.Identity.Id] = e.Identity;
+				this.identities[e.Identity.Id] = new IdentityWrapper(this.contracts.Client.Domain, e.Identity);
 			}
 
 			this.RaisePropertyChanged(nameof(this.Identities));
@@ -260,7 +260,7 @@ namespace LegalLab.Models.Legal
 
 				lock (this.identities)
 				{
-					this.identities[Identity.Id] = Identity;
+					this.identities[Identity.Id] = new IdentityWrapper(this.contracts.Client.Domain, Identity);
 				}
 
 				this.RaisePropertyChanged(nameof(this.Identities));
