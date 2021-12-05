@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LegalLab.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -24,6 +25,7 @@ namespace LegalLab.Models.Legal
 		private readonly Property<RoleInfo[]> roles;
 		private readonly Property<GenInfo[]> parts;
 		private readonly Property<ParameterInfo[]> parameters;
+		private readonly Property<ClientSignatureInfo[]> clientSignatures;
 		private readonly Property<bool> hasId;
 		private readonly Property<string> uri;
 		private readonly Property<string> qrCodeUri;
@@ -33,6 +35,7 @@ namespace LegalLab.Models.Legal
 
 		private readonly Dictionary<string, ParameterInfo> parametersByName = new Dictionary<string, ParameterInfo>();
 		private readonly Contract contract;
+		private readonly ContractsClient contracts;
 		private StackPanel humanReadableText = null;
 
 		/// <summary>
@@ -47,6 +50,7 @@ namespace LegalLab.Models.Legal
 			this.roles = new Property<RoleInfo[]>(nameof(this.Roles), new RoleInfo[0], this);
 			this.parts = new Property<GenInfo[]>(nameof(this.Parts), new GenInfo[0], this);
 			this.parameters = new Property<ParameterInfo[]>(nameof(this.Parameters), new ParameterInfo[0], this);
+			this.clientSignatures = new Property<ClientSignatureInfo[]>(nameof(this.ClientSignatures), new ClientSignatureInfo[0], this);
 			this.hasId = new Property<bool>(nameof(this.HasId), false, this);
 			this.uri = new Property<string>(nameof(this.Uri), string.Empty, this);
 			this.qrCodeUri = new Property<string>(nameof(this.QrCodeUri), string.Empty, this);
@@ -55,6 +59,7 @@ namespace LegalLab.Models.Legal
 			this.propose = new Command(this.CanExecutePropose, this.ExecutePropose);
 
 			this.contract = Contract;
+			this.contracts = Contracts;
 
 			this.HasId = !string.IsNullOrEmpty(Contract.ContractId);
 			this.Uri = ContractsClient.ContractIdUriString(Contract.ContractId);
@@ -330,6 +335,15 @@ namespace LegalLab.Models.Legal
 		}
 
 		/// <summary>
+		/// Client Signatures defined the contract.
+		/// </summary>
+		public ClientSignatureInfo[] ClientSignatures
+		{
+			get => this.clientSignatures.Value;
+			set => this.clientSignatures.Value = value;
+		}
+
+		/// <summary>
 		/// Displays the contents of the contract
 		/// </summary>
 		/// <param name="ContractLayout">Where to layout the contract</param>
@@ -353,7 +367,7 @@ namespace LegalLab.Models.Legal
 			Info.Add(new GenInfo("To:", this.contract.To.ToString(CultureInfo.CurrentUICulture)));
 			Info.Add(new GenInfo("Archiving Optional:", this.contract.ArchiveOptional.ToString()));
 			Info.Add(new GenInfo("Archiving Required:", this.contract.ArchiveRequired.ToString()));
-			Info.Add(new GenInfo("Can act as a template:", this.contract.CanActAsTemplate ? "Yes" : "No"));
+			Info.Add(new GenInfo("Can act as a template:", this.contract.CanActAsTemplate.ToYesNo()));
 
 			this.GeneralInformation = Info.ToArray();
 			Info.Clear();
@@ -388,6 +402,16 @@ namespace LegalLab.Models.Legal
 			}
 
 			this.Parameters = Parameters.ToArray();
+
+			List<ClientSignatureInfo> ClientSignatures = new List<ClientSignatureInfo>();
+
+			if (!(this.contract.ClientSignatures is null))
+			{
+				foreach (ClientSignature ClientSignature in this.contract.ClientSignatures)
+					ClientSignatures.Add(new ClientSignatureInfo(this.contracts, ClientSignature));
+			}
+
+			this.ClientSignatures = ClientSignatures.ToArray();
 
 			this.PopulateHumanReadableText();
 

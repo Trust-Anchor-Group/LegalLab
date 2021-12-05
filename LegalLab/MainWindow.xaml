@@ -191,12 +191,12 @@
                                 </DataGrid.Columns>
                             </DataGrid>
                             
-                            <Label FontSize="20">QR Code</Label>
+                            <Label FontSize="20" Margin="0,10,0,0">QR Code</Label>
                             <Label>Scan this code to access the contract from another device:</Label>
                             <Image Source="{Binding QrCodeUri}" Width="200" Height="200" Margin="20" HorizontalAlignment="Left"
                                    Visibility="{Binding HasId, Converter={conv:BooleanToVisibility}}"/>
 
-                            <Label FontSize="20">Roles</Label>
+                            <Label FontSize="20" Margin="0,10,0,0">Roles</Label>
                             <Label>Following are roles defined in the contract:</Label>
                             <DataGrid ItemsSource="{Binding Roles}" Width="Auto" HorizontalAlignment="Left" 
                                       AutoGenerateColumns="False" GridLinesVisibility="None">
@@ -205,11 +205,11 @@
                                     <DataGridTextColumn Binding="{Binding Description}" Header="Description"/>
                                     <DataGridTextColumn Binding="{Binding MinCount}" Header="Min"/>
                                     <DataGridTextColumn Binding="{Binding MaxCount}" Header="Max"/>
-                                    <DataGridTextColumn Binding="{Binding CanRevoke}" Header="Can Revoke"/>
+                                    <DataGridTextColumn Binding="{Binding CanRevoke, Converter={conv:BooleanToYesNo}}" Header="Can Revoke"/>
                                 </DataGrid.Columns>
                             </DataGrid>
 
-                            <Label FontSize="20">Parts</Label>
+                            <Label FontSize="20" Margin="0,10,0,0">Parts</Label>
                             <Label>Following are parts defined in the contract:</Label>
                             <DataGrid ItemsSource="{Binding Parts}" Width="Auto" HorizontalAlignment="Left" 
                                       AutoGenerateColumns="False" GridLinesVisibility="None">
@@ -219,7 +219,7 @@
                                 </DataGrid.Columns>
                             </DataGrid>
 
-                            <Label FontSize="20">Parameters</Label>
+                            <Label FontSize="20" Margin="0,10,0,0">Parameters</Label>
                             <Label>Following are parameters defined in the contract:</Label>
                             <DataGrid ItemsSource="{Binding Parameters}" Width="Auto" HorizontalAlignment="Left" 
                                       AutoGenerateColumns="False" GridLinesVisibility="None">
@@ -230,16 +230,30 @@
                                 </DataGrid.Columns>
                             </DataGrid>
 
-                            <Label FontSize="20">Machine-Readable Content</Label>
+                            <Label FontSize="20" Margin="0,10,0,0">Machine-Readable Content</Label>
                             <Label>Following is the embedded Machine-readable content of the contract:</Label>
                             <StackPanel Background="White">
                                 <TextBlock Text="{Binding MachineReadable}" Margin="10" FontFamily="Courier New"/>
                             </StackPanel>
 
-                            <Label FontSize="20">Human-Readable Content</Label>
+                            <Label FontSize="20" Margin="0,10,0,0">Human-Readable Content</Label>
                             <StackPanel Background="White">
                                 <StackPanel Name="ProposedContractHumanReadable" Margin="10"/>
                             </StackPanel>
+
+                            <Label FontSize="20" Margin="0,10,0,0">Client Signatures</Label>
+                            <Label>Following are client signatures available in the contract:</Label>
+                            <DataGrid ItemsSource="{Binding ClientSignatures}" Width="Auto" HorizontalAlignment="Left" 
+                                      AutoGenerateColumns="False" GridLinesVisibility="None">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding BareJid}" Header="Network JID"/>
+                                    <DataGridTextColumn Binding="{Binding LegalId}" Header="Legal ID"/>
+                                    <DataGridTextColumn Binding="{Binding Role}" Header="Role"/>
+                                    <DataGridTextColumn Binding="{Binding Timestamp, Converter={conv:DateTimeToString}}" Header="Timestamp"/>
+                                    <DataGridTextColumn Binding="{Binding Transferable, Converter={conv:BooleanToYesNo}}" Header="Transferable"/>
+                                    <DataGridTextColumn Binding="{Binding Signature, Converter={conv:ToBase64}}" Header="Signature"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
                         </StackPanel>
                     </ScrollViewer>
                 </DockPanel>
