@@ -43,7 +43,7 @@
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Time" Width="70" DisplayMemberBinding="{Binding Time}"/>
-                                <GridViewColumn Header="Content" Width="600">
+                                <GridViewColumn Header="Content" Width="830">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock TextWrapping="Wrap" Text="{Binding Message}"/>
@@ -142,13 +142,16 @@
                             <TextBox Text="{Binding Currency}" IsReadOnly="True"/>
                             <Label Padding="0,10,0,0">Timestamp:</Label>
                             <TextBox Text="{Binding Timestamp, Converter={conv:DateTimeToString}}" IsReadOnly="True"/>
+                            <Label Padding="0,30,0,0">e-Daler URI:</Label>
+                            <TextBox Text="{Binding Uri, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Height="100" VerticalScrollBarVisibility="Auto"/>
+                            <Button Margin="10,10,10,0" Command="{Binding Send}">Send</Button>
                         </StackPanel>
                     </ScrollViewer>
                     <ListView HorizontalAlignment="Left" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding Events}">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Transaction" Width="200" DisplayMemberBinding="{Binding TransactionId}"/>
-                                <GridViewColumn Header="Timestamp" Width="150" DisplayMemberBinding="{Binding Created, Converter={conv:DateTimeToString}}"/>
+                                <GridViewColumn Header="Transaction" Width="250" DisplayMemberBinding="{Binding TransactionId}"/>
+                                <GridViewColumn Header="Timestamp" Width="150" DisplayMemberBinding="{Binding Timestamp, Converter={conv:DateTimeToString}}"/>
                                 <GridViewColumn Header="Remote" Width="200" DisplayMemberBinding="{Binding Remote}"/>
                                 <GridViewColumn Header="Change" Width="100" DisplayMemberBinding="{Binding Change, Converter={conv:ToString}}"/>
                                 <GridViewColumn Header="Balance" Width="100" DisplayMemberBinding="{Binding Balance, Converter={conv:ToString}}"/>

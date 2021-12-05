@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
@@ -17,8 +18,11 @@ namespace LegalLab.Models.Wallet
 		private readonly Property<double> amount;
 		private readonly Property<string> currency;
 		private readonly Property<DateTime> timestamp;
+		private readonly Property<string> uri;
 
 		private readonly List<AccountEvent> events = new List<AccountEvent>();
+
+		private readonly Command send;
 
 		private readonly EDalerClient eDalerClient;
 		private Balance balance = null;
@@ -35,6 +39,9 @@ namespace LegalLab.Models.Wallet
 			this.amount = new Property<double>(nameof(this.Amount), 0, this);
 			this.currency = new Property<string>(nameof(this.Currency), string.Empty, this);
 			this.timestamp = new Property<DateTime>(nameof(this.Timestamp), DateTime.MinValue, this);
+			this.uri = new Property<string>(nameof(this.Uri), string.Empty, this);
+
+			this.send = new Command(this.CanExecuteSend, this.ExecuteSend);
 
 			this.eDalerClient = new EDalerClient(Client, Contracts, ComponentJid);
 			this.eDalerClient.BalanceUpdated += EDalerClient_BalanceUpdated;
@@ -89,6 +96,19 @@ namespace LegalLab.Models.Wallet
 		}
 
 		/// <summary>
+		/// e-Daler URI
+		/// </summary>
+		public string Uri
+		{
+			get => this.uri.Value;
+			set
+			{
+				this.uri.Value = value;
+				this.send.RaiseCanExecuteChanged();
+			}
+		}
+
+		/// <summary>
 		/// Latest balance
 		/// </summary>
 		public Balance Balance
@@ -115,6 +135,29 @@ namespace LegalLab.Models.Wallet
 				{
 					return this.events.ToArray();
 				}
+			}
+		}
+
+		/// <summary>
+		/// Apply command
+		/// </summary>
+		public ICommand Send => this.send;
+
+		private bool CanExecuteSend()
+		{
+			return this.eDalerClient.Client.State == XmppState.Connected && !string.IsNullOrEmpty(this.Uri);
+		}
+
+		private async void ExecuteSend()
+		{
+			try
+			{
+				await this.eDalerClient.SendEDalerUriAsync(this.Uri);
+				this.Uri = string.Empty;
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
 			}
 		}
 
