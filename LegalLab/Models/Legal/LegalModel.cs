@@ -26,6 +26,8 @@ namespace LegalLab.Models.Legal
 		private readonly PersistedProperty<string> region;
 		private readonly PersistedProperty<string> country;
 
+		private readonly Dictionary<string, LegalIdentity> identities = new Dictionary<string, LegalIdentity>();
+
 		private readonly Command apply;
 
 		private readonly ContractsClient contracts;
@@ -53,6 +55,7 @@ namespace LegalLab.Models.Legal
 			this.apply = new Command(this.CanExecuteApply, this.ExecuteApply);
 
 			this.contracts = new ContractsClient(Client, ComponentJid);
+			this.contracts.IdentityUpdated += Contracts_IdentityUpdated;
 		}
 
 		/// <inheritdoc/>
@@ -71,6 +74,16 @@ namespace LegalLab.Models.Legal
 			});
 
 			await this.contracts.LoadKeys(true);
+
+			LegalIdentity[] Identities = await this.contracts.GetLegalIdentitiesAsync();
+
+			lock (this.identities)
+			{
+				foreach (LegalIdentity Identity in Identities)
+					this.identities[Identity.Id] = Identity;
+			}
+
+			this.RaisePropertyChanged(nameof(this.Identities));
 
 			await base.Start();
 		}
@@ -189,6 +202,34 @@ namespace LegalLab.Models.Legal
 		}
 
 		/// <summary>
+		/// Legal Identities registered on the account.
+		/// </summary>
+		public LegalIdentity[] Identities
+		{
+			get
+			{
+				lock (this.identities)
+				{
+					LegalIdentity[] Result = new LegalIdentity[this.identities.Count];
+					this.identities.Values.CopyTo(Result, 0);
+					return Result;
+				}
+			}
+		}
+
+		private Task Contracts_IdentityUpdated(object Sender, LegalIdentityEventArgs e)
+		{
+			lock (this.identities)
+			{
+				this.identities[e.Identity.Id] = e.Identity;
+			}
+
+			this.RaisePropertyChanged(nameof(this.Identities));
+
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
 		/// Apply command
 		/// </summary>
 		public ICommand Apply => this.apply;
@@ -217,6 +258,13 @@ namespace LegalLab.Models.Legal
 				AddProperty(Properties, "COUNTRY", this.Country);
 
 				LegalIdentity Identity = await this.contracts.ApplyAsync(Properties.ToArray());
+
+				lock (this.identities)
+				{
+					this.identities[Identity.Id] = Identity;
+				}
+
+				this.RaisePropertyChanged(nameof(this.Identities));
 			}
 			catch (Exception ex)
 			{

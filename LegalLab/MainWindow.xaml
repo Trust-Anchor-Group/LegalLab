@@ -54,8 +54,8 @@
                         </ListView.View>
                         <ListView.ItemContainerStyle>
                             <Style TargetType="{x:Type ListViewItem}">
-                                <Setter Property="Foreground" Value="{Binding ForegroundColor, Converter={conv:ColorToString}}" />
-                                <Setter Property="Background" Value="{Binding BackgroundColor, Converter={conv:ColorToString}}" />
+                                <Setter Property="Foreground" Value="{Binding ForegroundColor, Converter={conv:ToString}}" />
+                                <Setter Property="Background" Value="{Binding BackgroundColor, Converter={conv:ToString}}" />
                                 <Setter Property="BorderThickness" Value="0"/>
                                 <Setter Property="Margin" Value="0"/>
                                 <Setter Property="Padding" Value="0"/>
@@ -64,13 +64,13 @@
                                 <Style.Triggers>
                                     <Trigger Property="IsSelected" Value="True">
                                         <Setter Property="Opacity" Value="0.75"/>
-                                        <Setter Property="Foreground" Value="{Binding ForegroundColor, Converter={conv:ColorToString}}" />
-                                        <Setter Property="Background" Value="{Binding BackgroundColor, Converter={conv:ColorToString}}" />
+                                        <Setter Property="Foreground" Value="{Binding ForegroundColor, Converter={conv:ToString}}" />
+                                        <Setter Property="Background" Value="{Binding BackgroundColor, Converter={conv:ToString}}" />
                                     </Trigger>
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter Property="Opacity" Value="0.5"/>
-                                        <Setter Property="Foreground" Value="{Binding ForegroundColor, Converter={conv:ColorToString}}" />
-                                        <Setter Property="Background" Value="{Binding BackgroundColor, Converter={conv:ColorToString}}" />
+                                        <Setter Property="Foreground" Value="{Binding ForegroundColor, Converter={conv:ToString}}" />
+                                        <Setter Property="Background" Value="{Binding BackgroundColor, Converter={conv:ToString}}" />
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
@@ -107,6 +107,15 @@
                             <Button Margin="10,10,10,0" Command="{Binding Apply}">Apply</Button>
                         </StackPanel>
                     </ScrollViewer>
+                    <ListView HorizontalAlignment="Left" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding Identities}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="ID" Width="400" DisplayMemberBinding="{Binding Id}"/>
+                                <GridViewColumn Header="Created" Width="150" DisplayMemberBinding="{Binding Created, Converter={conv:ToString}}"/>
+                                <GridViewColumn Header="State" Width="100" DisplayMemberBinding="{Binding State, Converter={conv:ToString}}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
                 </StackPanel>
             </TabItem>
             <TabItem Name="WalletTab" Header="Wallet">
