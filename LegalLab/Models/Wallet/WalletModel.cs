@@ -137,8 +137,6 @@ namespace LegalLab.Models.Wallet
 
 			this.RaisePropertyChanged(nameof(this.Events));
 
-			(decimal Amount, string Currency, PendingPayment[] Pending) = await this.eDalerClient.GetPendingPayments();
-
 			await base.Start();
 		}
 
