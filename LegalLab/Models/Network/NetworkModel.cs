@@ -350,6 +350,8 @@ namespace LegalLab.Models.Network
 				string Host;
 				int Port;
 
+				MainWindow.MouseHourglass();
+
 				try
 				{
 					SRV Record = await DnsResolver.LookupServiceEndpoint(this.XmppServer, "xmpp-client", "tcp");
@@ -407,6 +409,7 @@ namespace LegalLab.Models.Network
 			}
 			catch (Exception ex)
 			{
+				MainWindow.MouseDefault();
 				MainWindow.ErrorBox("Unable to connect to the XMPP network. Error reported: " + ex.Message);
 			}
 		}
@@ -424,6 +427,7 @@ namespace LegalLab.Models.Network
 			switch (NewState)
 			{
 				case XmppState.Connected:
+					MainWindow.MouseDefault();
 					this.client.OnConnectionError -= Client_OnConnectionError;
 
 					this.ConnectOnStartup = true;
