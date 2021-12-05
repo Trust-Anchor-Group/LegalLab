@@ -435,18 +435,6 @@ namespace LegalLab.Models.Legal
 
 			ContractModel.PopulateParameters(ParametersPanel);
 			ContractModel.PopulateContract(ContractPanel, HumanReadablePanel);
-
-			/*
-			Contract.Attachments;
-			Contract.ClientSignatures;
-			Contract.PartsMode;
-			Contract.Provider;
-			Contract.ServerSignature;
-			Contract.SignAfter;
-			Contract.SignBefore;
-			Contract.TemplateId;
-			Contract.TemplateIdUriString;
-			*/
 		}
 
 		#endregion

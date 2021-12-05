@@ -379,6 +379,17 @@ namespace LegalLab.Models.Legal
 			Info.Add(new GenInfo("Archiving Optional:", this.contract.ArchiveOptional.ToString()));
 			Info.Add(new GenInfo("Archiving Required:", this.contract.ArchiveRequired.ToString()));
 			Info.Add(new GenInfo("Can act as a template:", this.contract.CanActAsTemplate.ToYesNo()));
+			Info.Add(new GenInfo("Provider:", this.contract.Provider));
+			Info.Add(new GenInfo("Parts:", this.contract.PartsMode.ToString()));
+
+			if (this.contract.SignAfter.HasValue)
+				Info.Add(new GenInfo("Sign after:", this.contract.SignAfter.Value.ToStringTZ()));
+
+			if (this.contract.SignBefore.HasValue)
+				Info.Add(new GenInfo("Sign before:", this.contract.SignBefore.Value.ToStringTZ()));
+
+			if (!string.IsNullOrEmpty(this.contract.TemplateId))
+				Info.Add(new GenInfo("Template ID:", this.contract.TemplateId));
 
 			this.GeneralInformation = Info.ToArray();
 			Info.Clear();
@@ -433,6 +444,9 @@ namespace LegalLab.Models.Legal
 
 			ContractLayout.DataContext = this;
 			ContractLayout.Visibility = Visibility.Visible;
+
+			// TODO: Attachments
 		}
+
 	}
 }

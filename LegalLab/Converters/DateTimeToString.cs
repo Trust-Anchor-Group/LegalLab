@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LegalLab.Extensions;
+using System;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Markup;
@@ -13,20 +14,8 @@ namespace LegalLab.Converters
 		/// <inheritdoc/>
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (value is DateTime TP)
-			{
-				if (TP == DateTime.MinValue || TP == DateTime.MaxValue)
-					return string.Empty;
-				else
-				{
-					string s = TP.ToShortDateString() + ", " + TP.ToLongTimeString();
-
-					if (TP.Kind == DateTimeKind.Utc)
-						s += "Z";
-
-					return s;
-				}
-			}
+			if (value is DateTime Value)
+				return Value.ToStringTZ();
 			else
 				return value.ToString();
 		}
