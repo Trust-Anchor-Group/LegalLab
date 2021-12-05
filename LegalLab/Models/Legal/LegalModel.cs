@@ -392,7 +392,7 @@ namespace LegalLab.Models.Legal
 					CheckFileExists = true,
 					CheckPathExists = true,
 					DefaultExt = "xml",
-					Filter = "XML Files (*.xml)|*.xml",
+					Filter = "XML Files (*.xml)|*.xml|All Files (*.*)|*.*",
 					Multiselect = false,
 					ShowReadOnly = true,
 					Title = "Select Smart Contract to upload"
