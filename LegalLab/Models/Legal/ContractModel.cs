@@ -26,6 +26,7 @@ namespace LegalLab.Models.Legal
 		private readonly Property<GenInfo[]> parts;
 		private readonly Property<ParameterInfo[]> parameters;
 		private readonly Property<ClientSignatureInfo[]> clientSignatures;
+		private readonly Property<ServerSignatureInfo[]> serverSignatures;
 		private readonly Property<bool> hasId;
 		private readonly Property<string> uri;
 		private readonly Property<string> qrCodeUri;
@@ -51,6 +52,7 @@ namespace LegalLab.Models.Legal
 			this.parts = new Property<GenInfo[]>(nameof(this.Parts), new GenInfo[0], this);
 			this.parameters = new Property<ParameterInfo[]>(nameof(this.Parameters), new ParameterInfo[0], this);
 			this.clientSignatures = new Property<ClientSignatureInfo[]>(nameof(this.ClientSignatures), new ClientSignatureInfo[0], this);
+			this.serverSignatures = new Property<ServerSignatureInfo[]>(nameof(this.ServerSignatures), new ServerSignatureInfo[0], this);
 			this.hasId = new Property<bool>(nameof(this.HasId), false, this);
 			this.uri = new Property<string>(nameof(this.Uri), string.Empty, this);
 			this.qrCodeUri = new Property<string>(nameof(this.QrCodeUri), string.Empty, this);
@@ -344,6 +346,15 @@ namespace LegalLab.Models.Legal
 		}
 
 		/// <summary>
+		/// Server Signatures defined the contract.
+		/// </summary>
+		public ServerSignatureInfo[] ServerSignatures
+		{
+			get => this.serverSignatures.Value;
+			set => this.serverSignatures.Value = value;
+		}
+
+		/// <summary>
 		/// Displays the contents of the contract
 		/// </summary>
 		/// <param name="ContractLayout">Where to layout the contract</param>
@@ -412,6 +423,11 @@ namespace LegalLab.Models.Legal
 			}
 
 			this.ClientSignatures = ClientSignatures.ToArray();
+
+			if (this.contract.ServerSignature is null)
+				this.ServerSignatures = new ServerSignatureInfo[0];
+			else
+				this.ServerSignatures = new ServerSignatureInfo[] { new ServerSignatureInfo(this.contract.ServerSignature) };
 
 			this.PopulateHumanReadableText();
 

@@ -254,6 +254,16 @@
                                     <DataGridTextColumn Binding="{Binding Signature, Converter={conv:ToBase64}}" Header="Signature"/>
                                 </DataGrid.Columns>
                             </DataGrid>
+
+                            <Label FontSize="20" Margin="0,10,0,0">Server Signature</Label>
+                            <Label>Following is any server signature available in the contract:</Label>
+                            <DataGrid ItemsSource="{Binding ServerSignatures}" Width="Auto" HorizontalAlignment="Left" 
+                                      AutoGenerateColumns="False" GridLinesVisibility="None">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding Timestamp, Converter={conv:DateTimeToString}}" Header="Timestamp"/>
+                                    <DataGridTextColumn Binding="{Binding Signature, Converter={conv:ToBase64}}" Header="Signature"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
                         </StackPanel>
                     </ScrollViewer>
                 </DockPanel>
