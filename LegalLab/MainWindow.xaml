@@ -229,6 +229,10 @@
                                     <DataGridTextColumn Binding="{Binding Description}" Header="Description"/>
                                 </DataGrid.Columns>
                             </DataGrid>
+
+                            <Label FontSize="20">Machine-Readable Content</Label>
+                            <Label>Following is the embedded Machine-readable content of the contract:</Label>
+                            <TextBlock Text="{Binding MachineReadable}"/>
                         </StackPanel>
                     </ScrollViewer>
                 </DockPanel>

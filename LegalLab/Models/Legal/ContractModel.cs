@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
+using System.Xml;
+using Waher.Content.Xml;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Script;
 
@@ -24,6 +27,7 @@ namespace LegalLab.Models.Legal
 		private readonly Property<bool> hasId;
 		private readonly Property<string> uri;
 		private readonly Property<string> qrCodeUri;
+		private readonly Property<string> machineReadable;
 
 		private readonly Command propose;
 
@@ -45,6 +49,7 @@ namespace LegalLab.Models.Legal
 			this.hasId = new Property<bool>(nameof(this.HasId), false, this);
 			this.uri = new Property<string>(nameof(this.Uri), string.Empty, this);
 			this.qrCodeUri = new Property<string>(nameof(this.QrCodeUri), string.Empty, this);
+			this.machineReadable = new Property<string>(nameof(this.MachineReadable), string.Empty, this);
 
 			this.propose = new Command(this.CanExecutePropose, this.ExecutePropose);
 
@@ -53,6 +58,20 @@ namespace LegalLab.Models.Legal
 			this.HasId = !string.IsNullOrEmpty(Contract.ContractId);
 			this.Uri = ContractsClient.ContractIdUriString(Contract.ContractId);
 			this.QrCodeUri = "https://" + Contracts.Client.Domain + "/QR/" + this.Uri;
+
+			StringBuilder sb = new StringBuilder();
+			Contract.NormalizeXml(Contract.ForMachines, sb, ContractsClient.NamespaceSmartContracts);
+
+			XmlDocument Doc = new XmlDocument();
+			Doc.LoadXml(sb.ToString());
+			sb.Clear();
+
+			XmlWriterSettings Settings = XML.WriterSettings(true, true);
+			using XmlWriter w = XmlWriter.Create(sb, Settings);
+
+			this.contract.ForMachines.WriteTo(w);
+			w.Flush();
+			this.MachineReadable = sb.ToString().Replace("&#xD;\n", "\n").Replace("\n\t", "\n");
 		}
 
 		/// <summary>
@@ -93,6 +112,15 @@ namespace LegalLab.Models.Legal
 		{
 			get => this.qrCodeUri.Value;
 			set => this.qrCodeUri.Value = value;
+		}
+
+		/// <summary>
+		/// Machine-Readable XML in the contract
+		/// </summary>
+		public string MachineReadable
+		{
+			get => this.machineReadable.Value;
+			set => this.machineReadable.Value = value;
 		}
 
 		/// <summary>
@@ -316,8 +344,6 @@ namespace LegalLab.Models.Legal
 			{
 				foreach (Part Part in this.contract.Parts)
 					Info.Add(new GenInfo(Part.LegalId, Part.Role));
-
-				// TODO: MinCount, MaxCount, CanRevoke
 			}
 
 			this.Parts = Info.ToArray();
