@@ -111,7 +111,7 @@
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="ID" Width="400" DisplayMemberBinding="{Binding Id}"/>
-                                <GridViewColumn Header="Created" Width="150" DisplayMemberBinding="{Binding Created, Converter={conv:ToString}}"/>
+                                <GridViewColumn Header="Created" Width="150" DisplayMemberBinding="{Binding Created, Converter={conv:DateTimeToString}}"/>
                                 <GridViewColumn Header="State" Width="100" DisplayMemberBinding="{Binding State, Converter={conv:ToString}}"/>
                             </GridView>
                         </ListView.View>
@@ -119,7 +119,30 @@
                 </StackPanel>
             </TabItem>
             <TabItem Name="WalletTab" Header="Wallet">
-                <Grid Background="#FFE5E5E5"/>
+                <StackPanel Orientation="Horizontal" Background="#FFE5E5E5" Height="Auto">
+                    <ScrollViewer>
+                        <StackPanel Orientation="Vertical" Width="250" Margin="10">
+                            <Label Padding="0">Balance:</Label>
+                            <TextBox Text="{Binding Amount}" IsReadOnly="True"/>
+                            <Label Padding="0,10,0,0">Currency:</Label>
+                            <TextBox Text="{Binding Currency}" IsReadOnly="True"/>
+                            <Label Padding="0,10,0,0">Timestamp:</Label>
+                            <TextBox Text="{Binding Timestamp, Converter={conv:DateTimeToString}}" IsReadOnly="True"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                    <ListView HorizontalAlignment="Left" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding Events}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Transaction" Width="200" DisplayMemberBinding="{Binding TransactionId}"/>
+                                <GridViewColumn Header="Timestamp" Width="150" DisplayMemberBinding="{Binding Created, Converter={conv:DateTimeToString}}"/>
+                                <GridViewColumn Header="Remote" Width="200" DisplayMemberBinding="{Binding Remote}"/>
+                                <GridViewColumn Header="Change" Width="100" DisplayMemberBinding="{Binding Change, Converter={conv:ToString}}"/>
+                                <GridViewColumn Header="Balance" Width="100" DisplayMemberBinding="{Binding Balance, Converter={conv:ToString}}"/>
+                                <GridViewColumn Header="Message" Width="100" DisplayMemberBinding="{Binding Message}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
             </TabItem>
             <TabItem Name="ContractsTab" Header="Contracts">
                 <Grid Background="#FFE5E5E5"/>
