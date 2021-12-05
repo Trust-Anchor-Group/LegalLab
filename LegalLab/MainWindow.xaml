@@ -161,14 +161,30 @@
                     </ListView>
                 </StackPanel>
             </TabItem>
+            <TabItem Name="DesignTab" Header="Design">
+                <Grid Background="#FFE5E5E5">
+                    <Label HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40">TBD</Label>
+                </Grid>
+            </TabItem>
+            <TabItem Name="UploadTab" Header="Upload">
+                <Grid Background="#FFE5E5E5">
+                    <Label HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40">TBD</Label>
+                </Grid>
+            </TabItem>
             <TabItem Name="ContractsTab" Header="Contracts">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid Background="#FFE5E5E5">
+                    <Label HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40">TBD</Label>
+                </Grid>
             </TabItem>
             <TabItem Name="EventsTab" Header="Events">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid Background="#FFE5E5E5">
+                    <Label HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40">TBD</Label>
+                </Grid>
             </TabItem>
             <TabItem Name="ScriptTab" Header="Script">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid Background="#FFE5E5E5">
+                    <Label HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40">TBD</Label>
+                </Grid>
             </TabItem>
         </TabControl>
         <StatusBar Name="StatusBar" VerticalAlignment="Bottom">
