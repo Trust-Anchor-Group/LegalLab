@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -16,6 +17,13 @@ namespace LegalLab.Models.Legal
 	public class ContractModel : Model
 	{
 		private readonly Property<bool> parametersOk;
+		private readonly Property<GenInfo[]> generalInformation;
+		private readonly Property<RoleInfo[]> roles;
+		private readonly Property<GenInfo[]> parts;
+		private readonly Property<ParameterInfo[]> parameters;
+		private readonly Property<bool> hasId;
+		private readonly Property<string> uri;
+		private readonly Property<string> qrCodeUri;
 
 		private readonly Command propose;
 
@@ -25,14 +33,26 @@ namespace LegalLab.Models.Legal
 		/// <summary>
 		/// Contract model
 		/// </summary>
+		/// <param name="Contracts">Contracts Client</param>
 		/// <param name="Contract">Contract</param>
-		public ContractModel(Contract Contract)
+		public ContractModel(ContractsClient Contracts, Contract Contract)
 		{
 			this.parametersOk = new Property<bool>(nameof(this.ParametersOk), false, this);
+			this.generalInformation = new Property<GenInfo[]>(nameof(this.GeneralInformation), new GenInfo[0], this);
+			this.roles = new Property<RoleInfo[]>(nameof(this.Roles), new RoleInfo[0], this);
+			this.parts = new Property<GenInfo[]>(nameof(this.Parts), new GenInfo[0], this);
+			this.parameters = new Property<ParameterInfo[]>(nameof(this.Parameters), new ParameterInfo[0], this);
+			this.hasId = new Property<bool>(nameof(this.HasId), false, this);
+			this.uri = new Property<string>(nameof(this.Uri), string.Empty, this);
+			this.qrCodeUri = new Property<string>(nameof(this.QrCodeUri), string.Empty, this);
 
 			this.propose = new Command(this.CanExecutePropose, this.ExecutePropose);
 
 			this.contract = Contract;
+
+			this.HasId = !string.IsNullOrEmpty(Contract.ContractId);
+			this.Uri = ContractsClient.ContractIdUriString(Contract.ContractId);
+			this.QrCodeUri = "https://" + Contracts.Client.Domain + "/QR/" + this.Uri;
 		}
 
 		/// <summary>
@@ -46,6 +66,33 @@ namespace LegalLab.Models.Legal
 				this.parametersOk.Value = value;
 				this.propose.RaiseCanExecuteChanged();
 			}
+		}
+
+		/// <summary>
+		/// If contract has an ID
+		/// </summary>
+		public bool HasId
+		{
+			get => this.hasId.Value;
+			set => this.hasId.Value = value;
+		}
+
+		/// <summary>
+		/// URI to contract
+		/// </summary>
+		public string Uri
+		{
+			get => this.uri.Value;
+			set => this.uri.Value = value;
+		}
+
+		/// <summary>
+		/// URI to QR-Code of contract
+		/// </summary>
+		public string QrCodeUri
+		{
+			get => this.qrCodeUri.Value;
+			set => this.qrCodeUri.Value = value;
 		}
 
 		/// <summary>
@@ -98,7 +145,7 @@ namespace LegalLab.Models.Legal
 					CheckBox.Checked += Parameter_CheckedChanged;
 					CheckBox.Unchecked += Parameter_CheckedChanged;
 
-					this.parametersByName[Parameter.Name] = new ParameterInfo(Parameter, CheckBox);
+					this.parametersByName[Parameter.Name] = new ParameterInfo(this.contract, Parameter, CheckBox);
 
 					Parameters.Children.Add(CheckBox);
 				}
@@ -119,7 +166,7 @@ namespace LegalLab.Models.Legal
 
 					TextBox.TextChanged += Parameter_TextChanged;
 
-					this.parametersByName[Parameter.Name] = new ParameterInfo(Parameter, TextBox);
+					this.parametersByName[Parameter.Name] = new ParameterInfo(this.contract, Parameter, TextBox);
 
 					Parameters.Children.Add(Label);
 					Parameters.Children.Add(TextBox);
@@ -143,8 +190,7 @@ namespace LegalLab.Models.Legal
 			if (!(sender is CheckBox CheckBox) || !this.parametersByName.TryGetValue(CheckBox.Tag.ToString(), out ParameterInfo ParameterInfo))
 				return;
 
-			if (ParameterInfo.Parameter is BooleanParameter BP)
-				BP.Value = CheckBox.IsChecked;
+			ParameterInfo.Value = CheckBox.IsChecked;
 
 			this.ValidateParameters();
 			PopulateHumanReadableText();
@@ -155,36 +201,23 @@ namespace LegalLab.Models.Legal
 			if (!(sender is TextBox TextBox) || !this.parametersByName.TryGetValue(TextBox.Tag.ToString(), out ParameterInfo ParameterInfo))
 				return;
 
-			if (ParameterInfo.Parameter is StringParameter SP)
-				SP.Value = TextBox.Text;
-			else if (ParameterInfo.Parameter is NumericalParameter NP)
+			try
 			{
-				if (double.TryParse(TextBox.Text, out double d))
-				{
-					NP.Value = d;
-					TextBox.Background = null;
-				}
+				if (ParameterInfo.Parameter is NumericalParameter && double.TryParse(TextBox.Text, out double d))
+					ParameterInfo.Value = d;
+				else if (ParameterInfo.Parameter is BooleanParameter && bool.TryParse(TextBox.Text, out bool b))
+					ParameterInfo.Value = b;
 				else
-				{
-					TextBox.Background = Brushes.Salmon;
-					return;
-				}
+					ParameterInfo.Value = TextBox.Text;
+
+				TextBox.Background = null;
+				this.ValidateParameters();
 			}
-			else if (ParameterInfo.Parameter is BooleanParameter BP)
+			catch (Exception)
 			{
-				if (bool.TryParse(TextBox.Text, out bool b))
-				{
-					BP.Value = b;
-					TextBox.Background = null;
-				}
-				else
-				{
-					TextBox.Background = Brushes.Salmon;
-					return;
-				}
+				TextBox.Background = Brushes.Salmon;
 			}
 
-			this.ValidateParameters();
 			PopulateHumanReadableText();
 		}
 
@@ -213,6 +246,104 @@ namespace LegalLab.Models.Legal
 		private void PopulateHumanReadableText()
 		{
 			// TODO
+		}
+
+		/// <summary>
+		/// General information about the contract.
+		/// </summary>
+		public GenInfo[] GeneralInformation
+		{
+			get => this.generalInformation.Value;
+			set => this.generalInformation.Value = value;
+		}
+
+		/// <summary>
+		/// Roles defined the contract.
+		/// </summary>
+		public RoleInfo[] Roles
+		{
+			get => this.roles.Value;
+			set => this.roles.Value = value;
+		}
+
+		/// <summary>
+		/// Parts defined the contract.
+		/// </summary>
+		public GenInfo[] Parts
+		{
+			get => this.parts.Value;
+			set => this.parts.Value = value;
+		}
+
+		/// <summary>
+		/// Parameters defined the contract.
+		/// </summary>
+		public ParameterInfo[] Parameters
+		{
+			get => this.parameters.Value;
+			set => this.parameters.Value = value;
+		}
+
+		/// <summary>
+		/// Displays the contents of the contract
+		/// </summary>
+		/// <param name="ContractLayout">Where to layout the contract</param>
+		public void PopulateContract(StackPanel ContractLayout)
+		{
+			ContractLayout.DataContext = this;
+
+			List<GenInfo> Info = new List<GenInfo>()
+			{
+				new GenInfo("Created:", this.contract.Created.ToString(CultureInfo.CurrentUICulture))
+			};
+
+			if (this.contract.Updated > DateTime.MinValue)
+				Info.Add(new GenInfo("Updated:", this.contract.Updated.ToString(CultureInfo.CurrentUICulture)));
+
+			Info.Add(new GenInfo("State:", this.contract.State.ToString()));
+			Info.Add(new GenInfo("Visibility:", this.contract.Visibility.ToString()));
+			Info.Add(new GenInfo("Duration:", this.contract.Duration.ToString()));
+			Info.Add(new GenInfo("From:", this.contract.From.ToString(CultureInfo.CurrentUICulture)));
+			Info.Add(new GenInfo("To:", this.contract.To.ToString(CultureInfo.CurrentUICulture)));
+			Info.Add(new GenInfo("Archiving Optional:", this.contract.ArchiveOptional.ToString()));
+			Info.Add(new GenInfo("Archiving Required:", this.contract.ArchiveRequired.ToString()));
+			Info.Add(new GenInfo("Can act as a template:", this.contract.CanActAsTemplate ? "Yes" : "No"));
+
+			this.GeneralInformation = Info.ToArray();
+			Info.Clear();
+
+			if (!(this.contract.Parts is null))
+			{
+				foreach (Part Part in this.contract.Parts)
+					Info.Add(new GenInfo(Part.LegalId, Part.Role));
+
+				// TODO: MinCount, MaxCount, CanRevoke
+			}
+
+			this.Parts = Info.ToArray();
+
+			List<RoleInfo> Roles = new List<RoleInfo>();
+
+			if (!(this.contract.Roles is null))
+			{
+				foreach (Role Role in this.contract.Roles)
+					Roles.Add(new RoleInfo(this.contract, Role));
+			}
+
+			this.Roles = Roles.ToArray();
+
+			List<ParameterInfo> Parameters = new List<ParameterInfo>();
+
+			if (!(this.contract.Parameters is null))
+			{
+				foreach (Parameter Parameter in this.contract.Parameters)
+				{
+					if (this.parametersByName.TryGetValue(Parameter.Name, out ParameterInfo ParameterInfo))
+						Parameters.Add(ParameterInfo);
+				}
+			}
+
+			this.Parameters = Parameters.ToArray();
 		}
 	}
 }

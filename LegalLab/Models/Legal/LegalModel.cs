@@ -428,28 +428,24 @@ namespace LegalLab.Models.Legal
 
 		private void PopulateContract(Contract Contract, StackPanel ParametersPanel)
 		{
-			ContractModel ContractModel = new ContractModel(Contract);
+			ContractModel ContractModel = new ContractModel(this.contracts, Contract);
 
 			ContractModel.PopulateParameters(MainWindow.currentInstance.UploadParameters);
+			ContractModel.PopulateContract(MainWindow.currentInstance.ProposedContract);
 
 			/*
-			Contract.ArchiveOptional;
-			Contract.ArchiveRequired;
 			Contract.Attachments;
-			Contract.CanActAsTemplate;
 			Contract.ClientSignatures;
 			Contract.ContentSchemaDigest;
 			Contract.ContentSchemaHashFunction;
 			Contract.ContractId;
 			Contract.ContractIdUriString;
-			Contract.Created;
 			Contract.DefaultLanguage;
 			Contract.Duration;
 			Contract.ForHumans;
 			Contract.ForMachines;
 			Contract.ForMachinesLocalName;
 			Contract.ForMachinesNamespace;
-			Contract.From;
 			Contract.Parts;
 			Contract.PartsMode;
 			Contract.Provider;
@@ -457,12 +453,8 @@ namespace LegalLab.Models.Legal
 			Contract.ServerSignature;
 			Contract.SignAfter;
 			Contract.SignBefore;
-			Contract.State;
 			Contract.TemplateId;
 			Contract.TemplateIdUriString;
-			Contract.To;
-			Contract.Updated;
-			Contract.Visibility;
 			*/
 		}
 
