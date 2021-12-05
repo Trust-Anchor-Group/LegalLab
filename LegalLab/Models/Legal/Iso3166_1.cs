@@ -1,21 +1,66 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace LegalLab.Models.Legal
 {
+	/// <summary>
+	/// Static class containing ISO 3166-1 country codes
+	/// </summary>
 	public static class Iso3166_1
 	{
+		/// <summary>
+		/// Contains one record of the ISO 3166-1 data set.
+		/// </summary>
 		public class Record
 		{
+			/// <summary>
+			/// Contains one record of the ISO 3166-1 data set.
+			/// </summary>
+			/// <param name="Country">Country name</param>
+			/// <param name="Code">Country Code</param>
 			public Record(string Country, string Code)
 			{
 				this.Country = Country;
 				this.Code = Code;
 			}
 
+			/// <summary>
+			/// Country
+			/// </summary>
 			public string Country { get; set; }
+
+			/// <summary>
+			/// ISO 3166-1 country code
+			/// </summary>
 			public string Code { get; set; }
 		}
 
+		private static Dictionary<string, string> countryByCode = null;
+
+		/// <summary>
+		/// Tries to get the country name corresponding to an ISO 3166-1 country code.
+		/// </summary>
+		/// <param name="Code">Country code</param>
+		/// <param name="Country">Country, if found.</param>
+		/// <returns>If a corresponding country code was foudn.</returns>
+		public static bool CodeToCountry(string Code, out string Country)
+		{
+			if (countryByCode is null)
+			{
+				Dictionary<string, string> Temp = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
+
+				foreach (Record Rec in Data)
+					Temp[Rec.Code] = Rec.Country;
+
+				countryByCode = Temp;
+			}
+
+			return countryByCode.TryGetValue(Code, out Country);
+		}
+
+		/// <summary>
+		/// Available country codes
+		/// </summary>
 		public static readonly Record[] Data = new Record[]
 		{
 			new Record("AFGHANISTAN", "AF"),

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
@@ -56,6 +58,7 @@ namespace LegalLab.Models.Legal
 
 			this.contracts = new ContractsClient(Client, ComponentJid);
 			this.contracts.IdentityUpdated += Contracts_IdentityUpdated;
+			this.contracts.PetitionForIdentityReceived += Contracts_PetitionForIdentityReceived;
 		}
 
 		/// <inheritdoc/>
@@ -275,6 +278,68 @@ namespace LegalLab.Models.Legal
 		{
 			if (!string.IsNullOrEmpty(Value))
 				Properties.Add(new Property(Name, Value));
+		}
+
+		private Task Contracts_PetitionForIdentityReceived(object Sender, LegalIdentityPetitionEventArgs e)
+		{
+			StringBuilder Question = new StringBuilder();
+
+			Question.Append("A petition for your legal identity has been received for the following purpose: ");
+			Question.Append(e.Purpose);
+			Question.Append(" The petition was sent by");
+
+			Append(Question, e.RequestorIdentity["FIRST"], " ", string.Empty);
+			Append(Question, e.RequestorIdentity["MIDDLE"], " ", string.Empty);
+			Append(Question, e.RequestorIdentity["LAST"], " ", string.Empty);
+			Append(Question, e.RequestorIdentity["PNR"], " (", ")");
+
+			Question.Append(", at");
+
+			Append(Question, e.RequestorIdentity["ADDR"], " ", string.Empty);
+			Append(Question, e.RequestorIdentity["ADDR2"], " ", string.Empty);
+			Append(Question, e.RequestorIdentity["ZIP"], " ", string.Empty);
+			Append(Question, e.RequestorIdentity["AREA"], " ", string.Empty);
+			Append(Question, e.RequestorIdentity["CITY"], " ", string.Empty);
+			Append(Question, e.RequestorIdentity["REGION"], " ", string.Empty);
+
+			string s = e.RequestorIdentity["ADDR"];
+			if (!string.IsNullOrEmpty(s))
+			{
+				if (Iso3166_1.CodeToCountry(s, out string Country))
+					s = Country;
+
+				Append(Question, s, " ", string.Empty);
+			}
+
+			Append(Question, e.RequestorFullJid, ", from ", string.Empty);
+
+			Question.Append(". Do you want to return your identity information?");
+
+			MainWindow.UpdateGui(() =>
+			{
+				switch (MessageBox.Show(Question.ToString(), "Petition received", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No))
+				{
+					case MessageBoxResult.Yes:
+						Task.Run(() => this.contracts.PetitionIdentityResponseAsync(e.RequestedIdentityId, e.PetitionId, e.RequestorFullJid, true));
+						break;
+
+					case MessageBoxResult.No:
+						Task.Run(() => this.contracts.PetitionIdentityResponseAsync(e.RequestedIdentityId, e.PetitionId, e.RequestorFullJid, false));
+						break;
+				}
+			});
+
+			return Task.CompletedTask;
+		}
+
+		private static void Append(StringBuilder Question, string Value, string PrefixIfNotEmpty, string SuffixIfNotEmpty)
+		{
+			if (!string.IsNullOrEmpty(Value))
+			{
+				Question.Append(PrefixIfNotEmpty);
+				Question.Append(Value);
+				Question.Append(SuffixIfNotEmpty);
+			}
 		}
 	}
 }
