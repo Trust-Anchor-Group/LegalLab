@@ -5,11 +5,15 @@
         xmlns:conv="clr-namespace:LegalLab.Converters"
         mc:Ignorable="d"
         x:Class="LegalLab.MainWindow" Title="TAG Legal Lab" Height="450" Width="800" Background="#FFE5E5E5">
-    <Grid>
+    <DockPanel LastChildFill="True">
+        <StatusBar Name="StatusBar" DockPanel.Dock="Bottom">
+            <StatusBarItem Name="XmppState" Content="{Binding State}"/>
+            <StatusBarItem Name="Status"></StatusBarItem>
+        </StatusBar>
         <TabControl Name="TabControl">
             <TabItem Name="NetworkTab" Header="Network ID">
-                <StackPanel Orientation="Horizontal" Background="#FFE5E5E5" Height="Auto">
-                    <ScrollViewer>
+                <DockPanel LastChildFill="True" Background="#FFE5E5E5">
+                    <ScrollViewer DockPanel.Dock="Left">
                         <StackPanel Orientation="Vertical" Width="250" Margin="10">
                             <Label Padding="0">XMPP Server:</Label>
                             <TextBox Text="{Binding XmppServer}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
@@ -76,11 +80,11 @@
                             </Style>
                         </ListView.ItemContainerStyle>
                     </ListView>
-                </StackPanel>
+                </DockPanel>
             </TabItem>
             <TabItem Name="LegalIdTab" Header="Legal ID">
-                <StackPanel Orientation="Horizontal" Background="#FFE5E5E5" Height="Auto">
-                    <ScrollViewer>
+                <DockPanel LastChildFill="True" Background="#FFE5E5E5">
+                    <ScrollViewer DockPanel.Dock="Left">
                         <StackPanel Orientation="Vertical" Width="250" Margin="10">
                             <Label Padding="0">First Name:</Label>
                             <TextBox Text="{Binding FirstName}"/>
@@ -130,11 +134,11 @@
                             </GridView>
                         </ListView.View>
                     </ListView>
-                </StackPanel>
+                </DockPanel>
             </TabItem>
             <TabItem Name="WalletTab" Header="Wallet">
-                <StackPanel Orientation="Horizontal" Background="#FFE5E5E5" Height="Auto">
-                    <ScrollViewer>
+                <DockPanel LastChildFill="True" Background="#FFE5E5E5">
+                    <ScrollViewer DockPanel.Dock="Left">
                         <StackPanel Orientation="Vertical" Width="250" Margin="10">
                             <Label Padding="0">Balance:</Label>
                             <TextBox Text="{Binding Amount}" IsReadOnly="True"/>
@@ -159,7 +163,7 @@
                             </GridView>
                         </ListView.View>
                     </ListView>
-                </StackPanel>
+                </DockPanel>
             </TabItem>
             <TabItem Name="DesignTab" Header="Design" Visibility="Collapsed">
                 <Grid Background="#FFE5E5E5">
@@ -167,16 +171,18 @@
                 </Grid>
             </TabItem>
             <TabItem Name="UploadTab" Header="Upload">
-                <StackPanel Orientation="Horizontal" Background="#FFE5E5E5" Height="Auto">
-                    <ScrollViewer>
+                <DockPanel LastChildFill="True" Background="#FFE5E5E5">
+                    <ScrollViewer DockPanel.Dock="Left">
                         <StackPanel Orientation="Vertical" Width="250" Margin="10">
                             <Button Margin="10,0,10,0" Command="{Binding SelectFile}">Select File</Button>
+                            <StackPanel Name="UploadParameters">
+                            </StackPanel>
                         </StackPanel>
                     </ScrollViewer>
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel Name="ProposedContract" Orientation="Vertical"/>
                     </ScrollViewer>
-                </StackPanel>
+                </DockPanel>
             </TabItem>
             <TabItem Name="ContractsTab" Header="Contracts" Visibility="Collapsed">
                 <Grid Background="#FFE5E5E5">
@@ -194,9 +200,5 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <StatusBar Name="StatusBar" VerticalAlignment="Bottom">
-            <StatusBarItem Name="XmppState" Content="{Binding State}"/>
-            <StatusBarItem Name="Status"></StatusBarItem>
-        </StatusBar>
-    </Grid>
+    </DockPanel>
 </Window>

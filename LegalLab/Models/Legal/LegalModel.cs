@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
 using Waher.Networking.XMPP;
@@ -413,12 +414,56 @@ namespace LegalLab.Models.Legal
 				if (Contract is null)
 					throw new InvalidOperationException("Not a valid Smart Contract file.");
 
+				if(!Contract.CanActAsTemplate)
+					throw new InvalidOperationException("Contract is not a template.");
+
 				this.ProposedContract = Contract;
+				this.PopulateContract(Contract, MainWindow.currentInstance.UploadParameters);
 			}
 			catch (Exception ex)
 			{
 				MainWindow.ErrorBox(ex.Message);
 			}
+		}
+
+		private void PopulateContract(Contract Contract, StackPanel ParametersPanel)
+		{
+			ContractModel ContractModel = new ContractModel(Contract);
+
+			ContractModel.PopulateParameters(MainWindow.currentInstance.UploadParameters);
+
+			/*
+			Contract.ArchiveOptional;
+			Contract.ArchiveRequired;
+			Contract.Attachments;
+			Contract.CanActAsTemplate;
+			Contract.ClientSignatures;
+			Contract.ContentSchemaDigest;
+			Contract.ContentSchemaHashFunction;
+			Contract.ContractId;
+			Contract.ContractIdUriString;
+			Contract.Created;
+			Contract.DefaultLanguage;
+			Contract.Duration;
+			Contract.ForHumans;
+			Contract.ForMachines;
+			Contract.ForMachinesLocalName;
+			Contract.ForMachinesNamespace;
+			Contract.From;
+			Contract.Parts;
+			Contract.PartsMode;
+			Contract.Provider;
+			Contract.Roles;
+			Contract.ServerSignature;
+			Contract.SignAfter;
+			Contract.SignBefore;
+			Contract.State;
+			Contract.TemplateId;
+			Contract.TemplateIdUriString;
+			Contract.To;
+			Contract.Updated;
+			Contract.Visibility;
+			*/
 		}
 
 		#endregion
