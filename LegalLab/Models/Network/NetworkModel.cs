@@ -1,6 +1,7 @@
 ﻿using EDaler;
 using LegalLab.Models.Legal;
 using LegalLab.Models.Network.Sniffer;
+using LegalLab.Models.Wallet;
 using System;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
@@ -44,6 +45,7 @@ namespace LegalLab.Models.Network
 
 		private XmppClient client;
 		private LegalModel legalModel;
+		private WalletModel walletModel;
 
 		public NetworkModel()
 			: base()
@@ -247,6 +249,11 @@ namespace LegalLab.Models.Network
 		public LegalModel Legal => this.legalModel;
 
 		/// <summary>
+		/// Wallet model
+		/// </summary>
+		public WalletModel Wallet => this.Wallet;
+
+		/// <summary>
 		/// Starts the model.
 		/// </summary>
 		public override async Task Start()
@@ -282,7 +289,15 @@ namespace LegalLab.Models.Network
 			if (!(this.legalModel is null))
 			{
 				await this.legalModel.Stop();
+				this.legalModel.Dispose();
 				this.legalModel = null;
+			}
+
+			if (!(this.walletModel is null))
+			{
+				await this.walletModel.Stop();
+				this.walletModel.Dispose();
+				this.walletModel = null;
 			}
 
 			this.client?.Dispose();
@@ -353,7 +368,15 @@ namespace LegalLab.Models.Network
 				if (!(this.legalModel is null))
 				{
 					await this.legalModel.Stop();
+					this.legalModel.Dispose();
 					this.legalModel = null;
+				}
+
+				if (!(this.walletModel is null))
+				{
+					await this.walletModel.Stop();
+					this.walletModel.Dispose();
+					this.walletModel = null;
 				}
 
 				ListViewSniffer Sniffer = new ListViewSniffer(MainWindow.currentInstance.SnifferListView, 1000);
@@ -416,7 +439,7 @@ namespace LegalLab.Models.Network
 
 					await this.Save();
 
-					if (this.legalModel is null)
+					if (this.legalModel is null || this.walletModel is null)
 					{
 						if (string.IsNullOrEmpty(this.LegalComponentJid) || string.IsNullOrEmpty(this.EDalerComponentJid))
 						{
@@ -440,9 +463,19 @@ namespace LegalLab.Models.Network
 
 						if (!string.IsNullOrEmpty(this.LegalComponentJid))
 						{
-							this.legalModel = new LegalModel(this.client, this.LegalComponentJid);
-							await this.legalModel.Load();
-							await this.legalModel.Start();
+							if (this.legalModel is null)
+							{
+								this.legalModel = new LegalModel(this.client, this.LegalComponentJid);
+								await this.legalModel.Load();
+								await this.legalModel.Start();
+							}
+
+							if (!string.IsNullOrEmpty(this.EDalerComponentJid) && this.walletModel is null)
+							{
+								this.walletModel = new WalletModel(this.client, this.legalModel.Contracts, this.EDalerComponentJid);
+								await this.walletModel.Load();
+								await this.walletModel.Start();
+							}
 						}
 					}
 					break;

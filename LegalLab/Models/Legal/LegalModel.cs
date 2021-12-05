@@ -64,6 +64,11 @@ namespace LegalLab.Models.Legal
 			this.contracts.Dispose();
 		}
 
+		/// <summary>
+		/// Contracts client.
+		/// </summary>
+		public ContractsClient Contracts => this.contracts;
+
 		/// <inheritdoc/>
 		public override async Task Start()
 		{
@@ -86,12 +91,6 @@ namespace LegalLab.Models.Legal
 			this.RaisePropertyChanged(nameof(this.Identities));
 
 			await base.Start();
-		}
-
-		/// <inheritdoc/>
-		public override Task Stop()
-		{
-			return base.Stop();
 		}
 
 		/// <summary>
