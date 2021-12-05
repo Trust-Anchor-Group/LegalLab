@@ -33,6 +33,7 @@ namespace LegalLab.Models.Legal
 
 		private readonly Dictionary<string, ParameterInfo> parametersByName = new Dictionary<string, ParameterInfo>();
 		private readonly Contract contract;
+		private StackPanel humanReadableText = null;
 
 		/// <summary>
 		/// Contract model
@@ -71,7 +72,7 @@ namespace LegalLab.Models.Legal
 
 			this.contract.ForMachines.WriteTo(w);
 			w.Flush();
-			this.MachineReadable = sb.ToString().Replace("&#xD;\n", "\n").Replace("\n\t", "\n");
+			this.MachineReadable = sb.ToString().Replace("&#xD;\n", "\n").Replace("\n\t", "\n").Replace("\t", "    ");
 		}
 
 		/// <summary>
@@ -273,7 +274,23 @@ namespace LegalLab.Models.Legal
 
 		private void PopulateHumanReadableText()
 		{
-			// TODO
+			if (this.humanReadableText is null)
+				return;
+
+			this.humanReadableText.Children.Clear();
+
+			if (XamlReader.Parse(this.contract.ToXAML(this.contract.DefaultLanguage)) is StackPanel Panel)
+			{
+				LinkedList<UIElement> Elements = new LinkedList<UIElement>();
+
+				foreach (UIElement Item in Panel.Children)
+					Elements.AddLast(Item);
+
+				Panel.Children.Clear();
+
+				foreach (UIElement Item in Elements)
+					this.humanReadableText.Children.Add(Item);
+			}
 		}
 
 		/// <summary>
@@ -316,9 +333,10 @@ namespace LegalLab.Models.Legal
 		/// Displays the contents of the contract
 		/// </summary>
 		/// <param name="ContractLayout">Where to layout the contract</param>
-		public void PopulateContract(StackPanel ContractLayout)
+		/// <param name="HumanReadableText">Control where human-readable content is placed</param>
+		public void PopulateContract(StackPanel ContractLayout, StackPanel HumanReadableText)
 		{
-			ContractLayout.DataContext = this;
+			this.humanReadableText = HumanReadableText;
 
 			List<GenInfo> Info = new List<GenInfo>()
 			{
@@ -370,6 +388,11 @@ namespace LegalLab.Models.Legal
 			}
 
 			this.Parameters = Parameters.ToArray();
+
+			this.PopulateHumanReadableText();
+
+			ContractLayout.DataContext = this;
+			ContractLayout.Visibility = Visibility.Visible;
 		}
 	}
 }

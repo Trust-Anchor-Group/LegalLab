@@ -418,7 +418,10 @@ namespace LegalLab.Models.Legal
 					throw new InvalidOperationException("Contract is not a template.");
 
 				this.ProposedContract = Contract;
-				this.PopulateContract(Contract, MainWindow.currentInstance.UploadParameters);
+				this.PopulateContract(Contract, 
+					MainWindow.currentInstance.UploadParameters,
+					MainWindow.currentInstance.ProposedContract,
+					MainWindow.currentInstance.ProposedContractHumanReadable);
 			}
 			catch (Exception ex)
 			{
@@ -426,30 +429,18 @@ namespace LegalLab.Models.Legal
 			}
 		}
 
-		private void PopulateContract(Contract Contract, StackPanel ParametersPanel)
+		private void PopulateContract(Contract Contract, StackPanel ParametersPanel, StackPanel ContractPanel, StackPanel HumanReadablePanel)
 		{
 			ContractModel ContractModel = new ContractModel(this.contracts, Contract);
 
-			ContractModel.PopulateParameters(MainWindow.currentInstance.UploadParameters);
-			ContractModel.PopulateContract(MainWindow.currentInstance.ProposedContract);
+			ContractModel.PopulateParameters(ParametersPanel);
+			ContractModel.PopulateContract(ContractPanel, HumanReadablePanel);
 
 			/*
 			Contract.Attachments;
 			Contract.ClientSignatures;
-			Contract.ContentSchemaDigest;
-			Contract.ContentSchemaHashFunction;
-			Contract.ContractId;
-			Contract.ContractIdUriString;
-			Contract.DefaultLanguage;
-			Contract.Duration;
-			Contract.ForHumans;
-			Contract.ForMachines;
-			Contract.ForMachinesLocalName;
-			Contract.ForMachinesNamespace;
-			Contract.Parts;
 			Contract.PartsMode;
 			Contract.Provider;
-			Contract.Roles;
 			Contract.ServerSignature;
 			Contract.SignAfter;
 			Contract.SignBefore;

@@ -180,7 +180,7 @@
                         </StackPanel>
                     </ScrollViewer>
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel Name="ProposedContract" Orientation="Vertical" Margin="10">
+                        <StackPanel Name="ProposedContract" Orientation="Vertical" Margin="10" Visibility="Hidden">
                             <Label FontSize="20">General Information</Label>
                             <Label>Following is some general information about the loaded contract:</Label>
                             <DataGrid HeadersVisibility="None" ItemsSource="{Binding GeneralInformation}" Width="Auto" HorizontalAlignment="Left" 
@@ -232,7 +232,14 @@
 
                             <Label FontSize="20">Machine-Readable Content</Label>
                             <Label>Following is the embedded Machine-readable content of the contract:</Label>
-                            <TextBlock Text="{Binding MachineReadable}"/>
+                            <StackPanel Background="White">
+                                <TextBlock Text="{Binding MachineReadable}" Margin="10" FontFamily="Courier New"/>
+                            </StackPanel>
+
+                            <Label FontSize="20">Human-Readable Content</Label>
+                            <StackPanel Background="White">
+                                <StackPanel Name="ProposedContractHumanReadable" Margin="10"/>
+                            </StackPanel>
                         </StackPanel>
                     </ScrollViewer>
                 </DockPanel>
