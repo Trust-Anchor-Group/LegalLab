@@ -166,10 +166,17 @@
                     <Label HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40">TBD</Label>
                 </Grid>
             </TabItem>
-            <TabItem Name="UploadTab" Header="Upload" Visibility="Collapsed">
-                <Grid Background="#FFE5E5E5">
-                    <Label HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40">TBD</Label>
-                </Grid>
+            <TabItem Name="UploadTab" Header="Upload">
+                <StackPanel Orientation="Horizontal" Background="#FFE5E5E5" Height="Auto">
+                    <ScrollViewer>
+                        <StackPanel Orientation="Vertical" Width="250" Margin="10">
+                            <Button Margin="10,0,10,0" Command="{Binding SelectFile}">Select File</Button>
+                        </StackPanel>
+                    </ScrollViewer>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Name="ProposedContract" Orientation="Vertical"/>
+                    </ScrollViewer>
+                </StackPanel>
             </TabItem>
             <TabItem Name="ContractsTab" Header="Contracts" Visibility="Collapsed">
                 <Grid Background="#FFE5E5E5">

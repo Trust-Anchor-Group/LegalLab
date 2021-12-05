@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Xml;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
@@ -28,9 +30,12 @@ namespace LegalLab.Models.Legal
 		private readonly PersistedProperty<string> region;
 		private readonly PersistedProperty<string> country;
 
+		private readonly Property<Contract> proposedContract;
+
 		private readonly Dictionary<string, IdentityWrapper> identities = new Dictionary<string, IdentityWrapper>();
 
 		private readonly Command apply;
+		private readonly Command selectFile;
 
 		private readonly ContractsClient contracts;
 
@@ -54,7 +59,10 @@ namespace LegalLab.Models.Legal
 			this.Add(this.region = new PersistedProperty<string>("Legal", nameof(this.Region), true, string.Empty, this));
 			this.Add(this.country = new PersistedProperty<string>("Legal", nameof(this.Country), true, string.Empty, this));
 
+			this.proposedContract = new Property<Contract>(nameof(this.ProposedContract), null, this);
+
 			this.apply = new Command(this.CanExecuteApply, this.ExecuteApply);
+			this.selectFile = new Command(this.ExecuteSelectFile);
 
 			this.contracts = new ContractsClient(Client, ComponentJid);
 			this.contracts.IdentityUpdated += Contracts_IdentityUpdated;
@@ -78,6 +86,7 @@ namespace LegalLab.Models.Legal
 			MainWindow.UpdateGui(() =>
 			{
 				MainWindow.currentInstance.LegalIdTab.DataContext = this;
+				MainWindow.currentInstance.UploadTab.DataContext = this;
 				MainWindow.currentInstance.ContractsTab.DataContext = this;
 			});
 
@@ -95,6 +104,8 @@ namespace LegalLab.Models.Legal
 
 			await base.Start();
 		}
+
+		#region Legal Identity properties
 
 		/// <summary>
 		/// First name of person
@@ -203,6 +214,10 @@ namespace LegalLab.Models.Legal
 			get => Iso3166_1.Data;
 		}
 
+		#endregion
+
+		#region Legal Identities
+
 		/// <summary>
 		/// Legal Identities registered on the account.
 		/// </summary>
@@ -230,6 +245,10 @@ namespace LegalLab.Models.Legal
 
 			return Task.CompletedTask;
 		}
+
+		#endregion
+
+		#region Apply for new Legal Identity
 
 		/// <summary>
 		/// Apply command
@@ -279,6 +298,10 @@ namespace LegalLab.Models.Legal
 			if (!string.IsNullOrEmpty(Value))
 				Properties.Add(new Property(Name, Value));
 		}
+
+		#endregion
+
+		#region Legal Identity Petitions
 
 		private Task Contracts_PetitionForIdentityReceived(object Sender, LegalIdentityPetitionEventArgs e)
 		{
@@ -341,5 +364,64 @@ namespace LegalLab.Models.Legal
 				Question.Append(SuffixIfNotEmpty);
 			}
 		}
+
+		#endregion
+
+		#region Loading Contract File
+
+		/// <summary>
+		/// Apply command
+		/// </summary>
+		public ICommand SelectFile => this.selectFile;
+
+		/// <summary>
+		/// Currently selected contract being displayed for proposal.
+		/// </summary>
+		public Contract ProposedContract
+		{
+			get => this.proposedContract.Value;
+			set => this.proposedContract.Value = value;
+		}
+
+		private void ExecuteSelectFile()
+		{
+			try
+			{
+				OpenFileDialog Dialog = new OpenFileDialog()
+				{
+					CheckFileExists = true,
+					CheckPathExists = true,
+					DefaultExt = "xml",
+					Filter = "XML Files (*.xml)|*.xml",
+					Multiselect = false,
+					ShowReadOnly = true,
+					Title = "Select Smart Contract to upload"
+				};
+
+				bool? Result = Dialog.ShowDialog(MainWindow.currentInstance);
+				if (!Result.HasValue || !Result.Value)
+					return;
+
+				XmlDocument Doc = new XmlDocument()
+				{
+					PreserveWhitespace = true
+				};
+
+				Doc.Load(Dialog.FileName);
+
+				Contract Contract = Contract.Parse(Doc, out _, out _);
+				if (Contract is null)
+					throw new InvalidOperationException("Not a valid Smart Contract file.");
+
+				this.ProposedContract = Contract;
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
+		}
+
+		#endregion
+
 	}
 }
