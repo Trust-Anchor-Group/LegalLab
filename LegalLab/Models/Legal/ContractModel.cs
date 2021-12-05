@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Xml;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Runtime.Settings;
 using Waher.Script;
 
 namespace LegalLab.Models.Legal
@@ -31,12 +32,13 @@ namespace LegalLab.Models.Legal
 		private readonly Property<string> uri;
 		private readonly Property<string> qrCodeUri;
 		private readonly Property<string> machineReadable;
+		private readonly Property<string> templateName;
 
 		private readonly Command propose;
 
 		private readonly Dictionary<string, ParameterInfo> parametersByName = new Dictionary<string, ParameterInfo>();
-		private readonly Contract contract;
 		private readonly ContractsClient contracts;
+		private Contract contract;
 		private StackPanel humanReadableText = null;
 
 		/// <summary>
@@ -57,15 +59,14 @@ namespace LegalLab.Models.Legal
 			this.uri = new Property<string>(nameof(this.Uri), string.Empty, this);
 			this.qrCodeUri = new Property<string>(nameof(this.QrCodeUri), string.Empty, this);
 			this.machineReadable = new Property<string>(nameof(this.MachineReadable), string.Empty, this);
+			this.templateName = new Property<string>(nameof(this.TemplateName), string.Empty, this);
 
 			this.propose = new Command(this.CanExecutePropose, this.ExecutePropose);
 
-			this.contract = Contract;
 			this.contracts = Contracts;
+			this.SetContract(Contract);
 
-			this.HasId = !string.IsNullOrEmpty(Contract.ContractId);
-			this.Uri = ContractsClient.ContractIdUriString(Contract.ContractId);
-			this.QrCodeUri = "https://" + Contracts.Client.Domain + "/QR/" + this.Uri;
+			this.TemplateName = Contract.ContractId;
 
 			StringBuilder sb = new StringBuilder();
 			Contract.NormalizeXml(Contract.ForMachines, sb, ContractsClient.NamespaceSmartContracts);
@@ -80,6 +81,92 @@ namespace LegalLab.Models.Legal
 			this.contract.ForMachines.WriteTo(w);
 			w.Flush();
 			this.MachineReadable = sb.ToString().Replace("&#xD;\n", "\n").Replace("\n\t", "\n").Replace("\t", "    ");
+		}
+
+		private void SetContract(Contract Contract)
+		{
+			this.contract = Contract;
+
+			this.HasId = !string.IsNullOrEmpty(Contract.ContractId);
+			this.Uri = ContractsClient.ContractIdUriString(Contract.ContractId);
+			this.QrCodeUri = "https://" + this.contracts.Client.Domain + "/QR/" + this.Uri;
+
+			List<GenInfo> Info = new List<GenInfo>()
+			{
+				new GenInfo("Created:", this.contract.Created.ToString(CultureInfo.CurrentUICulture))
+			};
+
+			if (this.contract.Updated > DateTime.MinValue)
+				Info.Add(new GenInfo("Updated:", this.contract.Updated.ToString(CultureInfo.CurrentUICulture)));
+
+			Info.Add(new GenInfo("State:", this.contract.State.ToString()));
+			Info.Add(new GenInfo("Visibility:", this.contract.Visibility.ToString()));
+			Info.Add(new GenInfo("Duration:", this.contract.Duration.ToString()));
+			Info.Add(new GenInfo("From:", this.contract.From.ToString(CultureInfo.CurrentUICulture)));
+			Info.Add(new GenInfo("To:", this.contract.To.ToString(CultureInfo.CurrentUICulture)));
+			Info.Add(new GenInfo("Archiving Optional:", this.contract.ArchiveOptional.ToString()));
+			Info.Add(new GenInfo("Archiving Required:", this.contract.ArchiveRequired.ToString()));
+			Info.Add(new GenInfo("Can act as a template:", this.contract.CanActAsTemplate.ToYesNo()));
+			Info.Add(new GenInfo("Provider:", this.contract.Provider));
+			Info.Add(new GenInfo("Parts:", this.contract.PartsMode.ToString()));
+
+			if (this.contract.SignAfter.HasValue)
+				Info.Add(new GenInfo("Sign after:", this.contract.SignAfter.Value.ToStringTZ()));
+
+			if (this.contract.SignBefore.HasValue)
+				Info.Add(new GenInfo("Sign before:", this.contract.SignBefore.Value.ToStringTZ()));
+
+			if (!string.IsNullOrEmpty(this.contract.TemplateId))
+				Info.Add(new GenInfo("Template ID:", this.contract.TemplateId));
+
+			this.GeneralInformation = Info.ToArray();
+			Info.Clear();
+
+			if (!(this.contract.Parts is null))
+			{
+				foreach (Part Part in this.contract.Parts)
+					Info.Add(new GenInfo(Part.LegalId, Part.Role));
+			}
+
+			this.Parts = Info.ToArray();
+
+			List<RoleInfo> Roles = new List<RoleInfo>();
+
+			if (!(this.contract.Roles is null))
+			{
+				foreach (Role Role in this.contract.Roles)
+					Roles.Add(new RoleInfo(this.contract, Role));
+			}
+
+			this.Roles = Roles.ToArray();
+
+			List<ParameterInfo> Parameters = new List<ParameterInfo>();
+
+			if (!(this.contract.Parameters is null))
+			{
+				foreach (Parameter Parameter in this.contract.Parameters)
+				{
+					if (this.parametersByName.TryGetValue(Parameter.Name, out ParameterInfo ParameterInfo))
+						Parameters.Add(ParameterInfo);
+				}
+			}
+
+			this.Parameters = Parameters.ToArray();
+
+			List<ClientSignatureInfo> ClientSignatures = new List<ClientSignatureInfo>();
+
+			if (!(this.contract.ClientSignatures is null))
+			{
+				foreach (ClientSignature ClientSignature in this.contract.ClientSignatures)
+					ClientSignatures.Add(new ClientSignatureInfo(this.contracts, ClientSignature));
+			}
+
+			this.ClientSignatures = ClientSignatures.ToArray();
+
+			if (this.contract.ServerSignature is null)
+				this.ServerSignatures = new ServerSignatureInfo[0];
+			else
+				this.ServerSignatures = new ServerSignatureInfo[] { new ServerSignatureInfo(this.contract.ServerSignature) };
 		}
 
 		/// <summary>
@@ -132,6 +219,19 @@ namespace LegalLab.Models.Legal
 		}
 
 		/// <summary>
+		/// Template Name
+		/// </summary>
+		public string TemplateName
+		{
+			get => this.templateName.Value;
+			set
+			{
+				this.templateName.Value = value;
+				this.propose.RaiseCanExecuteChanged();
+			}
+		}
+
+		/// <summary>
 		/// Propose contract command
 		/// </summary>
 		public ICommand Propose => this.propose;
@@ -142,15 +242,38 @@ namespace LegalLab.Models.Legal
 		/// <returns></returns>
 		public bool CanExecutePropose()
 		{
-			return this.ParametersOk;
+			return (this.ParametersOk || this.contract.PartsMode == ContractParts.TemplateOnly) && !string.IsNullOrEmpty(this.TemplateName);
 		}
 
 		/// <summary>
 		/// Proposes the contract.
 		/// </summary>
-		public void ExecutePropose()
+		public async void ExecutePropose()
 		{
-			// TODO
+			try
+			{
+				if (MessageBox.Show("Are you sure you want to propose the loaded contract to " + this.contracts.ComponentAddress + "?", "Confirm",
+					MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
+				{
+					return;
+				}
+
+				MainWindow.MouseHourglass();
+
+				Contract Contract = await this.contracts.CreateContractAsync(this.contract.ForMachines, this.contract.ForHumans, this.contract.Roles,
+					this.contract.Parts, this.contract.Parameters, this.contract.Visibility, this.contract.PartsMode, this.contract.Duration,
+					this.contract.ArchiveRequired, this.contract.ArchiveOptional, this.contract.SignAfter, this.contract.SignBefore,
+					this.contract.CanActAsTemplate);
+
+				this.SetContract(Contract);
+				await RuntimeSettings.SetAsync("Contract.Template." + this.TemplateName, Contract.ToXml());
+
+				MainWindow.SuccessBox("Contract successfully proposed.");
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
 		}
 
 		/// <summary>
@@ -355,6 +478,11 @@ namespace LegalLab.Models.Legal
 		}
 
 		/// <summary>
+		/// If a contract is loaded.
+		/// </summary>
+		public bool ContractLoaded => !(this.contract is null);
+
+		/// <summary>
 		/// Displays the contents of the contract
 		/// </summary>
 		/// <param name="ContractLayout">Where to layout the contract</param>
@@ -362,84 +490,6 @@ namespace LegalLab.Models.Legal
 		public void PopulateContract(StackPanel ContractLayout, StackPanel HumanReadableText)
 		{
 			this.humanReadableText = HumanReadableText;
-
-			List<GenInfo> Info = new List<GenInfo>()
-			{
-				new GenInfo("Created:", this.contract.Created.ToString(CultureInfo.CurrentUICulture))
-			};
-
-			if (this.contract.Updated > DateTime.MinValue)
-				Info.Add(new GenInfo("Updated:", this.contract.Updated.ToString(CultureInfo.CurrentUICulture)));
-
-			Info.Add(new GenInfo("State:", this.contract.State.ToString()));
-			Info.Add(new GenInfo("Visibility:", this.contract.Visibility.ToString()));
-			Info.Add(new GenInfo("Duration:", this.contract.Duration.ToString()));
-			Info.Add(new GenInfo("From:", this.contract.From.ToString(CultureInfo.CurrentUICulture)));
-			Info.Add(new GenInfo("To:", this.contract.To.ToString(CultureInfo.CurrentUICulture)));
-			Info.Add(new GenInfo("Archiving Optional:", this.contract.ArchiveOptional.ToString()));
-			Info.Add(new GenInfo("Archiving Required:", this.contract.ArchiveRequired.ToString()));
-			Info.Add(new GenInfo("Can act as a template:", this.contract.CanActAsTemplate.ToYesNo()));
-			Info.Add(new GenInfo("Provider:", this.contract.Provider));
-			Info.Add(new GenInfo("Parts:", this.contract.PartsMode.ToString()));
-
-			if (this.contract.SignAfter.HasValue)
-				Info.Add(new GenInfo("Sign after:", this.contract.SignAfter.Value.ToStringTZ()));
-
-			if (this.contract.SignBefore.HasValue)
-				Info.Add(new GenInfo("Sign before:", this.contract.SignBefore.Value.ToStringTZ()));
-
-			if (!string.IsNullOrEmpty(this.contract.TemplateId))
-				Info.Add(new GenInfo("Template ID:", this.contract.TemplateId));
-
-			this.GeneralInformation = Info.ToArray();
-			Info.Clear();
-
-			if (!(this.contract.Parts is null))
-			{
-				foreach (Part Part in this.contract.Parts)
-					Info.Add(new GenInfo(Part.LegalId, Part.Role));
-			}
-
-			this.Parts = Info.ToArray();
-
-			List<RoleInfo> Roles = new List<RoleInfo>();
-
-			if (!(this.contract.Roles is null))
-			{
-				foreach (Role Role in this.contract.Roles)
-					Roles.Add(new RoleInfo(this.contract, Role));
-			}
-
-			this.Roles = Roles.ToArray();
-
-			List<ParameterInfo> Parameters = new List<ParameterInfo>();
-
-			if (!(this.contract.Parameters is null))
-			{
-				foreach (Parameter Parameter in this.contract.Parameters)
-				{
-					if (this.parametersByName.TryGetValue(Parameter.Name, out ParameterInfo ParameterInfo))
-						Parameters.Add(ParameterInfo);
-				}
-			}
-
-			this.Parameters = Parameters.ToArray();
-
-			List<ClientSignatureInfo> ClientSignatures = new List<ClientSignatureInfo>();
-
-			if (!(this.contract.ClientSignatures is null))
-			{
-				foreach (ClientSignature ClientSignature in this.contract.ClientSignatures)
-					ClientSignatures.Add(new ClientSignatureInfo(this.contracts, ClientSignature));
-			}
-
-			this.ClientSignatures = ClientSignatures.ToArray();
-
-			if (this.contract.ServerSignature is null)
-				this.ServerSignatures = new ServerSignatureInfo[0];
-			else
-				this.ServerSignatures = new ServerSignatureInfo[] { new ServerSignatureInfo(this.contract.ServerSignature) };
-
 			this.PopulateHumanReadableText();
 
 			ContractLayout.DataContext = this;

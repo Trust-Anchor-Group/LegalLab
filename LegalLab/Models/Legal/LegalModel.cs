@@ -89,6 +89,8 @@ namespace LegalLab.Models.Legal
 				MainWindow.currentInstance.LegalIdTab.DataContext = this;
 				MainWindow.currentInstance.UploadTab.DataContext = this;
 				MainWindow.currentInstance.ContractsTab.DataContext = this;
+
+				MainWindow.currentInstance.UploadCommands.Visibility = Visibility.Visible;
 			});
 
 			await this.contracts.LoadKeys(true);
@@ -414,27 +416,21 @@ namespace LegalLab.Models.Legal
 				if (Contract is null)
 					throw new InvalidOperationException("Not a valid Smart Contract file.");
 
-				if(!Contract.CanActAsTemplate)
+				if (!Contract.CanActAsTemplate)
 					throw new InvalidOperationException("Contract is not a template.");
 
 				this.ProposedContract = Contract;
-				this.PopulateContract(Contract, 
-					MainWindow.currentInstance.UploadParameters,
-					MainWindow.currentInstance.ProposedContract,
-					MainWindow.currentInstance.ProposedContractHumanReadable);
+
+				ContractModel ContractModel = new ContractModel(this.contracts, Contract);
+
+				MainWindow.currentInstance.TemplateParameters.DataContext = ContractModel;
+				ContractModel.PopulateParameters(MainWindow.currentInstance.UploadParameters);
+				ContractModel.PopulateContract(MainWindow.currentInstance.ProposedContract, MainWindow.currentInstance.ProposedContractHumanReadable);
 			}
 			catch (Exception ex)
 			{
 				MainWindow.ErrorBox(ex.Message);
 			}
-		}
-
-		private void PopulateContract(Contract Contract, StackPanel ParametersPanel, StackPanel ContractPanel, StackPanel HumanReadablePanel)
-		{
-			ContractModel ContractModel = new ContractModel(this.contracts, Contract);
-
-			ContractModel.PopulateParameters(ParametersPanel);
-			ContractModel.PopulateContract(ContractPanel, HumanReadablePanel);
 		}
 
 		#endregion
