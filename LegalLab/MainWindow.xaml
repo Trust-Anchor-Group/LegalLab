@@ -273,10 +273,19 @@
                     </ScrollViewer>
                 </DockPanel>
             </TabItem>
-            <TabItem Name="ContractsTab" Header="Contracts" Visibility="Collapsed">
-                <Grid Background="#FFE5E5E5">
-                    <Label HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40">TBD</Label>
-                </Grid>
+            <TabItem Name="ContractsTab" Header="Contracts">
+                <DockPanel LastChildFill="True" Background="#FFE5E5E5">
+                    <ScrollViewer DockPanel.Dock="Left">
+                        <StackPanel Name="ContractCommands" Orientation="Vertical" Width="250" Margin="10">
+                            <Label>Template:</Label>
+                            <ComboBox ItemsSource="{Binding Templates}" DisplayMemberPath="TemplateName" SelectedValuePath="TemplateName" SelectedValue="{Binding ContractTemplateName}"/>
+                            <StackPanel Name="CreateParameters">
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                    <ListView ItemsSource="{Binding MyContracts}">
+                    </ListView>
+                </DockPanel>
             </TabItem>
             <TabItem Name="EventsTab" Header="Events" Visibility="Collapsed">
                 <Grid Background="#FFE5E5E5">

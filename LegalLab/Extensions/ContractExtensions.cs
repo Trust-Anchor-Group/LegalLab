@@ -29,8 +29,13 @@ namespace LegalLab.Extensions
 		/// <returns>Contract</returns>
 		public static Contract ToContract(this string Xml)
 		{
-			XmlDocument Doc = new XmlDocument();
+			XmlDocument Doc = new XmlDocument()
+			{
+				PreserveWhitespace = true
+			};
+
 			Doc.LoadXml(Xml);
+
 			return Contract.Parse(Doc, out _, out _);
 		}
 	}

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace LegalLab.Extensions
 {
@@ -36,5 +37,34 @@ namespace LegalLab.Extensions
 				return s;
 			}
 		}
+
+		/// <summary>
+		/// Returns an array of values.
+		/// </summary>
+		/// <typeparam name="Key">Key type</typeparam>
+		/// <typeparam name="Value">Value type</typeparam>
+		/// <param name="Dictionary">Dictionary</param>
+		/// <returns>Value array</returns>
+		public static Value[] ToValueArray<Key, Value>(this IDictionary<Key, Value> Dictionary)
+		{
+			Value[] Result = new Value[Dictionary.Count];
+			Dictionary.Values.CopyTo(Result, 0);
+			return Result;
+		}
+
+		/// <summary>
+		/// Returns an array of keys.
+		/// </summary>
+		/// <typeparam name="Key">Key type</typeparam>
+		/// <typeparam name="Value">Value type</typeparam>
+		/// <param name="Dictionary">Dictionary</param>
+		/// <returns>Key array</returns>
+		public static Key[] ToKeyArray<Key, Value>(this IDictionary<Key, Value> Dictionary)
+		{
+			Key[] Result = new Key[Dictionary.Count];
+			Dictionary.Keys.CopyTo(Result, 0);
+			return Result;
+		}
+
 	}
 }

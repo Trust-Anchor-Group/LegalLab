@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using LegalLab.Extensions;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,9 +8,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
+using Waher.Events;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
+using Waher.Runtime.Settings;
 
 namespace LegalLab.Models.Legal
 {
@@ -32,6 +35,8 @@ namespace LegalLab.Models.Legal
 		private readonly PersistedProperty<string> country;
 
 		private readonly Property<Contract> proposedContract;
+		private readonly Property<TemplateReferenceModel[]> templates;
+		private readonly Property<string> contractTemplateName;
 
 		private readonly Dictionary<string, IdentityWrapper> identities = new Dictionary<string, IdentityWrapper>();
 
@@ -61,6 +66,8 @@ namespace LegalLab.Models.Legal
 			this.Add(this.country = new PersistedProperty<string>("Legal", nameof(this.Country), true, string.Empty, this));
 
 			this.proposedContract = new Property<Contract>(nameof(this.ProposedContract), null, this);
+			this.templates = new Property<TemplateReferenceModel[]>(nameof(this.Templates), new TemplateReferenceModel[0], this);
+			this.contractTemplateName = new Property<string>(nameof(ContractTemplateName), string.Empty, this);
 
 			this.apply = new Command(this.CanExecuteApply, this.ExecuteApply);
 			this.selectFile = new Command(this.ExecuteSelectFile);
@@ -89,6 +96,7 @@ namespace LegalLab.Models.Legal
 				MainWindow.currentInstance.LegalIdTab.DataContext = this;
 				MainWindow.currentInstance.UploadTab.DataContext = this;
 				MainWindow.currentInstance.ContractsTab.DataContext = this;
+				MainWindow.currentInstance.ContractCommands.DataContext = this;
 
 				MainWindow.currentInstance.UploadCommands.Visibility = Visibility.Visible;
 			});
@@ -104,6 +112,17 @@ namespace LegalLab.Models.Legal
 			}
 
 			this.RaisePropertyChanged(nameof(this.Identities));
+
+			Dictionary<string, object> Settings = await RuntimeSettings.GetWhereKeyLikeAsync("Contract.Template.*", "*");
+			List<TemplateReferenceModel> Templates = new List<TemplateReferenceModel>();
+
+			foreach (KeyValuePair<string, object> Setting in Settings)
+			{
+				if (Setting.Value is string ContractId)
+					Templates.Add(new TemplateReferenceModel(Setting.Key[18..], ContractId));
+			}
+
+			this.Templates = Templates.ToArray();
 
 			await base.Start();
 		}
@@ -370,7 +389,7 @@ namespace LegalLab.Models.Legal
 
 		#endregion
 
-		#region Loading Contract File
+		#region Loading Contract Template File
 
 		/// <summary>
 		/// Apply command
@@ -421,7 +440,7 @@ namespace LegalLab.Models.Legal
 
 				this.ProposedContract = Contract;
 
-				ContractModel ContractModel = new ContractModel(this.contracts, Contract);
+				ContractModel ContractModel = new ContractModel(this.contracts, Contract, this);
 
 				MainWindow.currentInstance.TemplateParameters.DataContext = ContractModel;
 				ContractModel.PopulateParameters(MainWindow.currentInstance.UploadParameters);
@@ -435,5 +454,43 @@ namespace LegalLab.Models.Legal
 
 		#endregion
 
+		#region Create Contracts
+
+		/// <summary>
+		/// Template References
+		/// </summary>
+		public TemplateReferenceModel[] Templates
+		{
+			get => this.templates.Value;
+			set => this.templates.Value = value;
+		}
+
+		/// <summary>
+		/// Contract Template Name
+		/// </summary>
+		public string ContractTemplateName
+		{
+			get => this.contractTemplateName.Value;
+			set => this.contractTemplateName.Value = value;
+		}
+
+		/// <summary>
+		/// A contract template has been added.
+		/// </summary>
+		/// <param name="TemplateName">Template name</param>
+		/// <param name="Contract">Contract</param>
+		public void ContractTemplateAdded(string TemplateName, Contract Contract)
+		{
+			SortedDictionary<string, TemplateReferenceModel> Templates = new SortedDictionary<string, TemplateReferenceModel>();
+
+			foreach (TemplateReferenceModel Ref in this.Templates)
+				Templates[Ref.TemplateName] = Ref;
+
+			Templates[TemplateName] = new TemplateReferenceModel(TemplateName, Contract.ContractId);
+
+			this.Templates = Templates.ToValueArray();
+		}
+
+		#endregion
 	}
 }

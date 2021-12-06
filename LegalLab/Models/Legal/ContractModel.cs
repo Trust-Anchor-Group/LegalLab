@@ -38,6 +38,7 @@ namespace LegalLab.Models.Legal
 
 		private readonly Dictionary<string, ParameterInfo> parametersByName = new Dictionary<string, ParameterInfo>();
 		private readonly ContractsClient contracts;
+		private readonly LegalModel legalModel;
 		private Contract contract;
 		private StackPanel humanReadableText = null;
 
@@ -46,7 +47,8 @@ namespace LegalLab.Models.Legal
 		/// </summary>
 		/// <param name="Contracts">Contracts Client</param>
 		/// <param name="Contract">Contract</param>
-		public ContractModel(ContractsClient Contracts, Contract Contract)
+		/// <param name="LegalModel">Legal Model</param>
+		public ContractModel(ContractsClient Contracts, Contract Contract, LegalModel LegalModel)
 		{
 			this.parametersOk = new Property<bool>(nameof(this.ParametersOk), false, this);
 			this.generalInformation = new Property<GenInfo[]>(nameof(this.GeneralInformation), new GenInfo[0], this);
@@ -63,6 +65,7 @@ namespace LegalLab.Models.Legal
 
 			this.propose = new Command(this.CanExecutePropose, this.ExecutePropose);
 
+			this.legalModel = LegalModel;
 			this.contracts = Contracts;
 			this.SetContract(Contract);
 
@@ -266,7 +269,9 @@ namespace LegalLab.Models.Legal
 					this.contract.CanActAsTemplate);
 
 				this.SetContract(Contract);
-				await RuntimeSettings.SetAsync("Contract.Template." + this.TemplateName, Contract.ToXml());
+
+				await RuntimeSettings.SetAsync("Contract.Template." + this.TemplateName, Contract.ContractId);
+				this.legalModel.ContractTemplateAdded(this.TemplateName, Contract);
 
 				MainWindow.SuccessBox("Contract successfully proposed.");
 			}
