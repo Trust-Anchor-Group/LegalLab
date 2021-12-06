@@ -185,6 +185,13 @@
                     </ScrollViewer>
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel Name="ProposedContract" Orientation="Vertical" Margin="10" Visibility="Hidden">
+                            <Label FontSize="20">Template ID</Label>
+                            <Label>ID of the template:</Label>
+                            <TextBox Text="{Binding ContractId}" IsReadOnly="True"/>
+                            <Label>Scan this code to access the template from another device:</Label>
+                            <Image Source="{Binding QrCodeUri}" Width="200" Height="200" Margin="20" HorizontalAlignment="Left"
+                                   Visibility="{Binding HasId, Converter={conv:BooleanToVisibility}}"/>
+
                             <Label FontSize="20">General Information</Label>
                             <Label>Following is some general information about the loaded contract:</Label>
                             <DataGrid HeadersVisibility="None" ItemsSource="{Binding GeneralInformation}" Width="Auto" HorizontalAlignment="Left" 
@@ -194,11 +201,6 @@
                                     <DataGridTextColumn Binding="{Binding Value}"/>
                                 </DataGrid.Columns>
                             </DataGrid>
-
-                            <Label FontSize="20" Margin="0,10,0,0">QR Code</Label>
-                            <Label>Scan this code to access the contract from another device:</Label>
-                            <Image Source="{Binding QrCodeUri}" Width="200" Height="200" Margin="20" HorizontalAlignment="Left"
-                                   Visibility="{Binding HasId, Converter={conv:BooleanToVisibility}}"/>
 
                             <Label FontSize="20" Margin="0,10,0,0">Roles</Label>
                             <Label>Following are roles defined in the contract:</Label>
@@ -286,6 +288,13 @@
                     </ScrollViewer>
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel Name="ContractToCreate" Orientation="Vertical" Margin="10" Visibility="Hidden">
+                            <Label FontSize="20">Contract ID</Label>
+                            <Label>ID of the contract:</Label>
+                            <TextBox Text="{Binding ContractId}" IsReadOnly="True"/>
+                            <Label>Scan this code to access the contract from another device:</Label>
+                            <Image Source="{Binding QrCodeUri}" Width="200" Height="200" Margin="20" HorizontalAlignment="Left"
+                                   Visibility="{Binding HasId, Converter={conv:BooleanToVisibility}}"/>
+
                             <Label FontSize="20">General Information</Label>
                             <Label>Following is some general information about the loaded contract:</Label>
                             <DataGrid HeadersVisibility="None" ItemsSource="{Binding GeneralInformation}" Width="Auto" HorizontalAlignment="Left" 
@@ -295,11 +304,6 @@
                                     <DataGridTextColumn Binding="{Binding Value}"/>
                                 </DataGrid.Columns>
                             </DataGrid>
-
-                            <Label FontSize="20" Margin="0,10,0,0">QR Code</Label>
-                            <Label>Scan this code to access the contract from another device:</Label>
-                            <Image Source="{Binding QrCodeUri}" Width="200" Height="200" Margin="20" HorizontalAlignment="Left"
-                                   Visibility="{Binding HasId, Converter={conv:BooleanToVisibility}}"/>
 
                             <Label FontSize="20" Margin="0,10,0,0">Roles</Label>
                             <Label>Following are roles defined in the contract:</Label>

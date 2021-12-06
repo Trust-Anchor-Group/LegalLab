@@ -33,6 +33,7 @@ namespace LegalLab.Models.Legal
 		private readonly Property<string> qrCodeUri;
 		private readonly Property<string> machineReadable;
 		private readonly Property<string> templateName;
+		private readonly Property<string> contractId;
 
 		private readonly Command proposeTemplate;
 		private readonly Command createContract;
@@ -63,6 +64,7 @@ namespace LegalLab.Models.Legal
 			this.qrCodeUri = new Property<string>(nameof(this.QrCodeUri), string.Empty, this);
 			this.machineReadable = new Property<string>(nameof(this.MachineReadable), string.Empty, this);
 			this.templateName = new Property<string>(nameof(this.TemplateName), string.Empty, this);
+			this.contractId = new Property<string>(nameof(this.ContractId), Contract.ContractId, this);
 
 			this.proposeTemplate = new Command(this.CanExecuteProposeTemplate, this.ExecuteProposeTemplate);
 			this.createContract = new Command(this.CanExecuteCreateContract, this.ExecuteCreateContract);
@@ -92,6 +94,7 @@ namespace LegalLab.Models.Legal
 		{
 			this.contract = Contract;
 
+			this.ContractId = Contract.ContractId;
 			this.HasId = !string.IsNullOrEmpty(Contract.ContractId);
 			this.Uri = ContractsClient.ContractIdUriString(Contract.ContractId);
 			this.QrCodeUri = "https://" + this.contracts.Client.Domain + "/QR/" + this.Uri;
@@ -235,6 +238,15 @@ namespace LegalLab.Models.Legal
 				this.templateName.Value = value;
 				this.proposeTemplate.RaiseCanExecuteChanged();
 			}
+		}
+
+		/// <summary>
+		/// ID of contract
+		/// </summary>
+		public string ContractId
+		{
+			get => this.contractId.Value;
+			set => this.contractId.Value = value;
 		}
 
 		/// <summary>
