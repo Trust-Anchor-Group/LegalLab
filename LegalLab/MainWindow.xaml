@@ -175,12 +175,11 @@
                     <ScrollViewer DockPanel.Dock="Left">
                         <StackPanel Name="UploadCommands" Orientation="Vertical" Width="250" Margin="10" Visibility="Hidden">
                             <Button Margin="10,0,10,0" Command="{Binding SelectFile}">Select File</Button>
-                            <StackPanel Name="TemplateParameters">
+                            <StackPanel Name="UploadParameters"/>
+                            <StackPanel Name="UoloadCommands">
                                 <Label Margin="10,10,10,0">Template Name:</Label>
                                 <TextBox Name="TemplateName" Margin="10,0,10,0" Text="{Binding TemplateName}"/>
                                 <Button Margin="10,10,10,0" Command="{Binding Propose}">Propose Contract</Button>
-                            </StackPanel>
-                            <StackPanel Name="UploadParameters">
                             </StackPanel>
                         </StackPanel>
                     </ScrollViewer>
@@ -279,7 +278,9 @@
                         <StackPanel Name="ContractCommands" Orientation="Vertical" Width="250" Margin="10">
                             <Label>Template:</Label>
                             <ComboBox ItemsSource="{Binding Templates}" DisplayMemberPath="TemplateName" SelectedValuePath="TemplateName" SelectedValue="{Binding ContractTemplateName}"/>
-                            <StackPanel Name="CreateParameters">
+                            <StackPanel Name="CreateParameters"/>
+                            <StackPanel Name="CreateCommands" Visibility="Hidden">
+                                <Button Margin="0,10,0,0" IsEnabled="{Binding ParametersOk}">Create Contract</Button>
                             </StackPanel>
                         </StackPanel>
                     </ScrollViewer>

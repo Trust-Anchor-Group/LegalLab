@@ -285,7 +285,7 @@ namespace LegalLab.Models.Legal
 		/// Populates a <see cref="StackPanel"/> with parameter controls.
 		/// </summary>
 		/// <param name="Parameters">StackPanel to populate</param>
-		public void PopulateParameters(StackPanel Parameters)
+		public void PopulateParameters(StackPanel Parameters, StackPanel AdditionalCommands)
 		{
 			List<ParameterInfo> ParameterList = new List<ParameterInfo>();
 			ParameterInfo ParameterInfo;
@@ -346,6 +346,10 @@ namespace LegalLab.Models.Legal
 
 			this.ValidateParameters();
 			PopulateHumanReadableText();
+
+			AdditionalCommands.DataContext = this;
+			AdditionalCommands.Visibility = Visibility.Visible;
+			AdditionalCommands.InvalidateVisual();
 		}
 
 		private static string GetLabel(Parameter P)

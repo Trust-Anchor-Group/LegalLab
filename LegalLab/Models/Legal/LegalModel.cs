@@ -444,8 +444,7 @@ namespace LegalLab.Models.Legal
 
 				ContractModel ContractModel = new ContractModel(this.contracts, Contract, this);
 
-				MainWindow.currentInstance.TemplateParameters.DataContext = ContractModel;
-				ContractModel.PopulateParameters(MainWindow.currentInstance.UploadParameters);
+				ContractModel.PopulateParameters(MainWindow.currentInstance.UploadParameters, MainWindow.currentInstance.UploadCommands);
 				ContractModel.PopulateContract(MainWindow.currentInstance.ProposedContract, MainWindow.currentInstance.ProposedContractHumanReadable);
 			}
 			catch (Exception ex)
@@ -520,7 +519,7 @@ namespace LegalLab.Models.Legal
 
 				ContractModel ContractModel = new ContractModel(this.contracts, this.Template, this);
 
-				ContractModel.PopulateParameters(MainWindow.currentInstance.CreateParameters);
+				ContractModel.PopulateParameters(MainWindow.currentInstance.CreateParameters, MainWindow.currentInstance.CreateCommands);
 				ContractModel.PopulateContract(MainWindow.currentInstance.ContractToCreate, MainWindow.currentInstance.ContractToCreateHumanReadable);
 			}
 			catch (Exception ex)
