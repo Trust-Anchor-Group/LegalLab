@@ -35,6 +35,7 @@ namespace LegalLab.Models.Legal
 		private readonly PersistedProperty<string> country;
 
 		private readonly Property<Contract> proposedContract;
+		private readonly Property<Contract> template;
 		private readonly Property<TemplateReferenceModel[]> templates;
 		private readonly Property<string> contractTemplateName;
 
@@ -66,6 +67,7 @@ namespace LegalLab.Models.Legal
 			this.Add(this.country = new PersistedProperty<string>("Legal", nameof(this.Country), true, string.Empty, this));
 
 			this.proposedContract = new Property<Contract>(nameof(this.ProposedContract), null, this);
+			this.template = new Property<Contract>(nameof(this.Template), null, this);
 			this.templates = new Property<TemplateReferenceModel[]>(nameof(this.Templates), new TemplateReferenceModel[0], this);
 			this.contractTemplateName = new Property<string>(nameof(ContractTemplateName), string.Empty, this);
 
@@ -471,7 +473,20 @@ namespace LegalLab.Models.Legal
 		public string ContractTemplateName
 		{
 			get => this.contractTemplateName.Value;
-			set => this.contractTemplateName.Value = value;
+			set
+			{
+				this.contractTemplateName.Value = value;
+				this.LoadTemplate(value);
+			}
+		}
+
+		/// <summary>
+		/// Template selected as basis for new contracts
+		/// </summary>
+		public Contract Template
+		{
+			get => this.template.Value;
+			set => this.template.Value = value;
 		}
 
 		/// <summary>
@@ -489,6 +504,29 @@ namespace LegalLab.Models.Legal
 			Templates[TemplateName] = new TemplateReferenceModel(TemplateName, Contract.ContractId);
 
 			this.Templates = Templates.ToValueArray();
+		}
+
+		private async void LoadTemplate(string TemplateName)
+		{
+			try
+			{
+				string ContractId= await RuntimeSettings.GetAsync("Contract.Template." + TemplateName, string.Empty);
+				if (string.IsNullOrEmpty(ContractId))
+					return;
+
+				MainWindow.MouseHourglass();
+				this.Template = await this.contracts.GetContractAsync(ContractId);
+				MainWindow.MouseDefault();
+
+				ContractModel ContractModel = new ContractModel(this.contracts, this.Template, this);
+
+				ContractModel.PopulateParameters(MainWindow.currentInstance.CreateParameters);
+				ContractModel.PopulateContract(MainWindow.currentInstance.ContractToCreate, MainWindow.currentInstance.ContractToCreateHumanReadable);
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
 		}
 
 		#endregion

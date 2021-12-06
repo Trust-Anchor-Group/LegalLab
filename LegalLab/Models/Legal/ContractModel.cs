@@ -287,6 +287,9 @@ namespace LegalLab.Models.Legal
 		/// <param name="Parameters">StackPanel to populate</param>
 		public void PopulateParameters(StackPanel Parameters)
 		{
+			List<ParameterInfo> ParameterList = new List<ParameterInfo>();
+			ParameterInfo ParameterInfo;
+
 			Parameters.Children.Clear();
 			this.parametersByName.Clear();
 
@@ -309,7 +312,7 @@ namespace LegalLab.Models.Legal
 					CheckBox.Checked += Parameter_CheckedChanged;
 					CheckBox.Unchecked += Parameter_CheckedChanged;
 
-					this.parametersByName[Parameter.Name] = new ParameterInfo(this.contract, Parameter, CheckBox);
+					this.parametersByName[Parameter.Name] = ParameterInfo = new ParameterInfo(this.contract, Parameter, CheckBox);
 
 					Parameters.Children.Add(CheckBox);
 				}
@@ -330,12 +333,16 @@ namespace LegalLab.Models.Legal
 
 					TextBox.TextChanged += Parameter_TextChanged;
 
-					this.parametersByName[Parameter.Name] = new ParameterInfo(this.contract, Parameter, TextBox);
+					this.parametersByName[Parameter.Name] = ParameterInfo = new ParameterInfo(this.contract, Parameter, TextBox);
 
 					Parameters.Children.Add(Label);
 					Parameters.Children.Add(TextBox);
 				}
+
+				ParameterList.Add(ParameterInfo);
 			}
+
+			this.Parameters = ParameterList.ToArray();
 
 			this.ValidateParameters();
 			PopulateHumanReadableText();

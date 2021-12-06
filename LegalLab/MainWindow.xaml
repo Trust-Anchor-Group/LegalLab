@@ -195,7 +195,7 @@
                                     <DataGridTextColumn Binding="{Binding Value}"/>
                                 </DataGrid.Columns>
                             </DataGrid>
-                            
+
                             <Label FontSize="20" Margin="0,10,0,0">QR Code</Label>
                             <Label>Scan this code to access the contract from another device:</Label>
                             <Image Source="{Binding QrCodeUri}" Width="200" Height="200" Margin="20" HorizontalAlignment="Left"
@@ -273,7 +273,7 @@
                     </ScrollViewer>
                 </DockPanel>
             </TabItem>
-            <TabItem Name="ContractsTab" Header="Contracts">
+            <TabItem Name="ContractsTab" Header="Create Contract">
                 <DockPanel LastChildFill="True" Background="#FFE5E5E5">
                     <ScrollViewer DockPanel.Dock="Left">
                         <StackPanel Name="ContractCommands" Orientation="Vertical" Width="250" Margin="10">
@@ -283,8 +283,69 @@
                             </StackPanel>
                         </StackPanel>
                     </ScrollViewer>
-                    <ListView ItemsSource="{Binding MyContracts}">
-                    </ListView>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Name="ContractToCreate" Orientation="Vertical" Margin="10" Visibility="Hidden">
+                            <Label FontSize="20">General Information</Label>
+                            <Label>Following is some general information about the loaded contract:</Label>
+                            <DataGrid HeadersVisibility="None" ItemsSource="{Binding GeneralInformation}" Width="Auto" HorizontalAlignment="Left" 
+                                      AutoGenerateColumns="False" GridLinesVisibility="None">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding Name}"/>
+                                    <DataGridTextColumn Binding="{Binding Value}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Label FontSize="20" Margin="0,10,0,0">QR Code</Label>
+                            <Label>Scan this code to access the contract from another device:</Label>
+                            <Image Source="{Binding QrCodeUri}" Width="200" Height="200" Margin="20" HorizontalAlignment="Left"
+                                   Visibility="{Binding HasId, Converter={conv:BooleanToVisibility}}"/>
+
+                            <Label FontSize="20" Margin="0,10,0,0">Roles</Label>
+                            <Label>Following are roles defined in the contract:</Label>
+                            <DataGrid ItemsSource="{Binding Roles}" Width="Auto" HorizontalAlignment="Left" 
+                                      AutoGenerateColumns="False" GridLinesVisibility="None">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding Name}" Header="Role"/>
+                                    <DataGridTextColumn Binding="{Binding Description}" Header="Description"/>
+                                    <DataGridTextColumn Binding="{Binding MinCount}" Header="Min"/>
+                                    <DataGridTextColumn Binding="{Binding MaxCount}" Header="Max"/>
+                                    <DataGridTextColumn Binding="{Binding CanRevoke, Converter={conv:BooleanToYesNo}}" Header="Can Revoke"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Label FontSize="20" Margin="0,10,0,0">Parts</Label>
+                            <Label>Following are parts defined in the contract:</Label>
+                            <DataGrid ItemsSource="{Binding Parts}" Width="Auto" HorizontalAlignment="Left" 
+                                      AutoGenerateColumns="False" GridLinesVisibility="None">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding Name}" Header="Legal ID"/>
+                                    <DataGridTextColumn Binding="{Binding Value}" Header="Role"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Label FontSize="20" Margin="0,10,0,0">Parameters</Label>
+                            <Label>Following are parameters defined in the contract:</Label>
+                            <DataGrid ItemsSource="{Binding Parameters}" Width="Auto" HorizontalAlignment="Left" 
+                                      AutoGenerateColumns="False" GridLinesVisibility="None">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding Name}" Header="Parameter"/>
+                                    <DataGridTextColumn Binding="{Binding Value}" Header="Value"/>
+                                    <DataGridTextColumn Binding="{Binding Description}" Header="Description"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Label FontSize="20" Margin="0,10,0,0">Machine-Readable Content</Label>
+                            <Label>Following is the embedded Machine-readable content of the contract:</Label>
+                            <StackPanel Background="White">
+                                <TextBlock Text="{Binding MachineReadable}" Margin="10" FontFamily="Courier New"/>
+                            </StackPanel>
+
+                            <Label FontSize="20" Margin="0,10,0,0">Human-Readable Content</Label>
+                            <StackPanel Background="White">
+                                <StackPanel Name="ContractToCreateHumanReadable" Margin="10"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
                 </DockPanel>
             </TabItem>
             <TabItem Name="EventsTab" Header="Events" Visibility="Collapsed">
