@@ -34,7 +34,8 @@ namespace LegalLab.Models.Legal
 		private readonly Property<string> machineReadable;
 		private readonly Property<string> templateName;
 
-		private readonly Command propose;
+		private readonly Command proposeTemplate;
+		private readonly Command createContract;
 
 		private readonly Dictionary<string, ParameterInfo> parametersByName = new Dictionary<string, ParameterInfo>();
 		private readonly ContractsClient contracts;
@@ -63,7 +64,8 @@ namespace LegalLab.Models.Legal
 			this.machineReadable = new Property<string>(nameof(this.MachineReadable), string.Empty, this);
 			this.templateName = new Property<string>(nameof(this.TemplateName), string.Empty, this);
 
-			this.propose = new Command(this.CanExecutePropose, this.ExecutePropose);
+			this.proposeTemplate = new Command(this.CanExecuteProposeTemplate, this.ExecuteProposeTemplate);
+			this.createContract = new Command(this.CanExecuteCreateContract, this.ExecuteCreateContract);
 
 			this.legalModel = LegalModel;
 			this.contracts = Contracts;
@@ -181,7 +183,8 @@ namespace LegalLab.Models.Legal
 			set
 			{
 				this.parametersOk.Value = value;
-				this.propose.RaiseCanExecuteChanged();
+				this.proposeTemplate.RaiseCanExecuteChanged();
+				this.createContract.RaiseCanExecuteChanged();
 			}
 		}
 
@@ -230,32 +233,32 @@ namespace LegalLab.Models.Legal
 			set
 			{
 				this.templateName.Value = value;
-				this.propose.RaiseCanExecuteChanged();
+				this.proposeTemplate.RaiseCanExecuteChanged();
 			}
 		}
 
 		/// <summary>
-		/// Propose contract command
+		/// Propose template command
 		/// </summary>
-		public ICommand Propose => this.propose;
+		public ICommand ProposeTemplate => this.proposeTemplate;
 
 		/// <summary>
-		/// If the propose command can be exeucted.
+		/// If the propose template command can be exeucted.
 		/// </summary>
 		/// <returns></returns>
-		public bool CanExecutePropose()
+		public bool CanExecuteProposeTemplate()
 		{
 			return (this.ParametersOk || this.contract.PartsMode == ContractParts.TemplateOnly) && !string.IsNullOrEmpty(this.TemplateName);
 		}
 
 		/// <summary>
-		/// Proposes the contract.
+		/// Proposes the temaplte.
 		/// </summary>
-		public async void ExecutePropose()
+		public async void ExecuteProposeTemplate()
 		{
 			try
 			{
-				if (MessageBox.Show("Are you sure you want to propose the loaded contract to " + this.contracts.ComponentAddress + "?", "Confirm",
+				if (MessageBox.Show("Are you sure you want to propose the loaded template to " + this.contracts.ComponentAddress + "?", "Confirm",
 					MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
 				{
 					return;
@@ -273,7 +276,7 @@ namespace LegalLab.Models.Legal
 				await RuntimeSettings.SetAsync("Contract.Template." + this.TemplateName, Contract.ContractId);
 				this.legalModel.ContractTemplateAdded(this.TemplateName, Contract);
 
-				MainWindow.SuccessBox("Contract successfully proposed.");
+				MainWindow.SuccessBox("Template successfully proposed.");
 			}
 			catch (Exception ex)
 			{
@@ -512,6 +515,51 @@ namespace LegalLab.Models.Legal
 			ContractLayout.Visibility = Visibility.Visible;
 
 			// TODO: Attachments
+		}
+
+		/// <summary>
+		/// Create contract command
+		/// </summary>
+		public ICommand CreateContract => this.createContract;
+
+		/// <summary>
+		/// If the create contract command can be exeucted.
+		/// </summary>
+		/// <returns></returns>
+		public bool CanExecuteCreateContract()
+		{
+			return this.ParametersOk;
+		}
+
+		/// <summary>
+		/// Proposes the contract.
+		/// </summary>
+		public async void ExecuteCreateContract()
+		{
+			try
+			{
+				if (MessageBox.Show("Are you sure you want to create the contract on " + this.contracts.ComponentAddress + "?", "Confirm",
+					MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
+				{
+					return;
+				}
+
+				MainWindow.MouseHourglass();
+
+				string TemplateId = this.legalModel.Template.ContractId;
+
+				Contract Contract = await this.contracts.CreateContractAsync(TemplateId, this.contract.Parts, this.contract.Parameters,
+					this.contract.Visibility, this.contract.PartsMode, this.contract.Duration, this.contract.ArchiveRequired,
+					this.contract.ArchiveOptional, this.contract.SignAfter, this.contract.SignBefore, false);
+
+				this.SetContract(Contract);
+
+				MainWindow.SuccessBox("Contract successfully created.");
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
 		}
 
 	}

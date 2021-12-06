@@ -509,7 +509,7 @@ namespace LegalLab.Models.Legal
 		{
 			try
 			{
-				string ContractId= await RuntimeSettings.GetAsync("Contract.Template." + TemplateName, string.Empty);
+				string ContractId = await RuntimeSettings.GetAsync("Contract.Template." + TemplateName, string.Empty);
 				if (string.IsNullOrEmpty(ContractId))
 					return;
 
