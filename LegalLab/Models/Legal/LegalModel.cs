@@ -451,7 +451,7 @@ namespace LegalLab.Models.Legal
 
 				await this.currentTemplate.Start();
 
-				this.currentTemplate.PopulateParameters(MainWindow.currentInstance.UploadParameters, MainWindow.currentInstance.UploadCommands);
+				this.currentTemplate.PopulateParameters(MainWindow.currentInstance.UploadParameters, MainWindow.currentInstance.TemplateCommands);
 				this.currentTemplate.PopulateContract(MainWindow.currentInstance.ProposedContract, MainWindow.currentInstance.ProposedContractHumanReadable);
 			}
 			catch (Exception ex)
