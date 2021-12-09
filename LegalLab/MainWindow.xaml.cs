@@ -1,4 +1,5 @@
-﻿using LegalLab.Models;
+﻿using LegalLab.Dialogs.Prompt;
+using LegalLab.Models;
 using LegalLab.Models.Network;
 using LegalLab.Models.Window;
 using System;
@@ -213,6 +214,58 @@ namespace LegalLab
 				Mouse.OverrideCursor = null;
 				System.Windows.MessageBox.Show(currentInstance, Text, Caption, Button, Icon);
 			});
+		}
+
+		/// <summary>
+		/// Prompts the user for input.
+		/// </summary>
+		/// <param name="Title">Dialog title.</param>
+		/// <param name="Label">Label to display to the user.</param>
+		/// <param name="Text">Pre-filled input value.</param>
+		/// <returns>Text input by the user, null if Cancel has been pressed.</returns>
+		public static string PromptUser(string Title, string Label)
+		{
+			return PromptUser(Title, Label, string.Empty);
+		}
+
+		/// <summary>
+		/// Prompts the user for input.
+		/// </summary>
+		/// <param name="Title">Dialog title.</param>
+		/// <param name="Label">Label to display to the user.</param>
+		/// <param name="Text">Pre-filled input value.</param>
+		/// <returns>Text input by the user, null if Cancel has been pressed.</returns>
+		public static string PromptUser(string Title, string Label, string Text)
+		{
+			return PromptUser(Title, Label, Text, "OK", "Cancel");
+		}
+
+		/// <summary>
+		/// Prompts the user for input.
+		/// </summary>
+		/// <param name="Title">Dialog title.</param>
+		/// <param name="Label">Label to display to the user.</param>
+		/// <param name="Text">Pre-filled input value.</param>
+		/// <param name="OkButton">Text of the OK button.</param>
+		/// <param name="CancelButton">Text of the Cancel button.</param>
+		/// <returns>Text input by the user, null if Cancel has been pressed.</returns>
+		public static string PromptUser(string Title, string Label, string Text, string OkButton, string CancelButton)
+		{
+			PromptDialog Dialog = new PromptDialog();
+			PromptModel Model = new PromptModel(Dialog)
+			{
+				Title = Title,
+				Label = Label,
+				Text = Text,
+				OkText = OkButton,
+				CancelText = CancelButton
+			};
+
+			bool? Result = Dialog.ShowDialog();
+			if (Result.HasValue && Result.Value)
+				return Model.Text;
+			else
+				return null;
 		}
 
 		/// <summary>

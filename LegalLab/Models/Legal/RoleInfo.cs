@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Input;
 using Waher.Networking.XMPP.Contracts;
 
@@ -108,14 +107,7 @@ namespace LegalLab.Models.Legal
 		/// </summary>
 		public async void ExecuteSignAsRole()
 		{
-			try
-			{
-				await this.contract.SignAsRole(this.Name);
-			}
-			catch (Exception ex)
-			{
-				MainWindow.ErrorBox(ex.Message);
-			}
+			await this.contract.SignAsRole(this.Name);
 		}
 
 
@@ -136,16 +128,9 @@ namespace LegalLab.Models.Legal
 		/// <summary>
 		/// Proposes the contract.
 		/// </summary>
-		public async void ExecuteProposeForRole()
+		public void ExecuteProposeForRole()
 		{
-			try
-			{
-				// TODO
-			}
-			catch (Exception ex)
-			{
-				MainWindow.ErrorBox(ex.Message);
-			}
+			this.contract.ProposeForRole(this.Name);
 		}
 	}
 }

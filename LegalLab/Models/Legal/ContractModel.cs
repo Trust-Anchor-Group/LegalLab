@@ -11,6 +11,7 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Xml;
 using Waher.Content.Xml;
+using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Settings;
 using Waher.Script;
@@ -638,6 +639,7 @@ namespace LegalLab.Models.Legal
 		/// <summary>
 		/// Signs the contract, as the given role
 		/// </summary>
+		/// <param name="Role">Role to sign the contract as.</param>
 		public async Task SignAsRole(string Role)
 		{
 			try
@@ -655,6 +657,38 @@ namespace LegalLab.Models.Legal
 				this.SetContract(Contract);
 
 				MainWindow.SuccessBox("Contract successfully signed.");
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
+		}
+
+		/// <summary>
+		/// Recommends the contract to someone else.
+		/// </summary>
+		/// <param name="Role">Role to propose the contract as.</param>
+		public void ProposeForRole(string Role)
+		{
+			try
+			{
+				string BareJid = string.Empty;
+
+				while (true)
+				{
+					BareJid = MainWindow.PromptUser("Recommend contract", "Recommend this contract to be signed by (Bare JID):", BareJid);
+					if (string.IsNullOrEmpty(BareJid))
+						return;
+
+					if (XmppClient.BareJidRegEx.IsMatch(BareJid))
+						break;
+					else
+						MainWindow.ErrorBox("Not a Bare JID.");
+				}
+
+				this.contracts.SendContractProposal(this.contract.ContractId, Role, BareJid);
+
+				MainWindow.SuccessBox("Proposal successfully sent.");
 			}
 			catch (Exception ex)
 			{
