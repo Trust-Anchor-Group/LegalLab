@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -29,6 +30,7 @@ namespace LegalLab.Models.Legal
 		private readonly Property<ClientSignatureInfo[]> clientSignatures;
 		private readonly Property<ServerSignatureInfo[]> serverSignatures;
 		private readonly Property<bool> hasId;
+		private readonly Property<bool> canBeSigned;
 		private readonly Property<string> uri;
 		private readonly Property<string> qrCodeUri;
 		private readonly Property<string> machineReadable;
@@ -60,6 +62,7 @@ namespace LegalLab.Models.Legal
 			this.clientSignatures = new Property<ClientSignatureInfo[]>(nameof(this.ClientSignatures), new ClientSignatureInfo[0], this);
 			this.serverSignatures = new Property<ServerSignatureInfo[]>(nameof(this.ServerSignatures), new ServerSignatureInfo[0], this);
 			this.hasId = new Property<bool>(nameof(this.HasId), false, this);
+			this.canBeSigned = new Property<bool>(nameof(this.CanBeSigned), false, this);
 			this.uri = new Property<string>(nameof(this.Uri), string.Empty, this);
 			this.qrCodeUri = new Property<string>(nameof(this.QrCodeUri), string.Empty, this);
 			this.machineReadable = new Property<string>(nameof(this.MachineReadable), string.Empty, this);
@@ -96,6 +99,7 @@ namespace LegalLab.Models.Legal
 
 			this.ContractId = Contract.ContractId;
 			this.HasId = !string.IsNullOrEmpty(Contract.ContractId);
+			this.CanBeSigned = Contract.State == ContractState.Approved || Contract.State == ContractState.BeingSigned;
 			this.Uri = ContractsClient.ContractIdUriString(Contract.ContractId);
 			this.QrCodeUri = "https://" + this.contracts.Client.Domain + "/QR/" + this.Uri;
 
@@ -143,7 +147,7 @@ namespace LegalLab.Models.Legal
 			if (!(this.contract.Roles is null))
 			{
 				foreach (Role Role in this.contract.Roles)
-					Roles.Add(new RoleInfo(this.contract, Role));
+					Roles.Add(new RoleInfo(this, Role));
 			}
 
 			this.Roles = Roles.ToArray();
@@ -178,6 +182,11 @@ namespace LegalLab.Models.Legal
 		}
 
 		/// <summary>
+		/// Referenced contract
+		/// </summary>
+		public Contract Contract => this.contract;
+
+		/// <summary>
 		/// If all parameters are OK or not
 		/// </summary>
 		public bool ParametersOk
@@ -198,6 +207,21 @@ namespace LegalLab.Models.Legal
 		{
 			get => this.hasId.Value;
 			set => this.hasId.Value = value;
+		}
+
+		/// <summary>
+		/// If contract can be signed
+		/// </summary>
+		public bool CanBeSigned
+		{
+			get => this.canBeSigned.Value;
+			set
+			{
+				this.canBeSigned.Value = value;
+
+				foreach (RoleInfo Role in this.Roles)
+					Role.CanBeSignedChanged();
+			}
 		}
 
 		/// <summary>
@@ -561,12 +585,39 @@ namespace LegalLab.Models.Legal
 				string TemplateId = this.legalModel.Template.ContractId;
 
 				Contract Contract = await this.contracts.CreateContractAsync(TemplateId, this.contract.Parts, this.contract.Parameters,
-					this.contract.Visibility, this.contract.PartsMode, this.contract.Duration, this.contract.ArchiveRequired,
+					this.contract.Visibility, ContractParts.Open, this.contract.Duration, this.contract.ArchiveRequired,
 					this.contract.ArchiveOptional, this.contract.SignAfter, this.contract.SignBefore, false);
 
 				this.SetContract(Contract);
 
 				MainWindow.SuccessBox("Contract successfully created.");
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
+		}
+
+		/// <summary>
+		/// Signs the contract, as the given role
+		/// </summary>
+		public async Task SignAsRole(string Role)
+		{
+			try
+			{
+				if (MessageBox.Show("Are you sure you want to sign the contract as " + Role + "?", "Confirm",
+					MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
+				{
+					return;
+				}
+
+				MainWindow.MouseHourglass();
+
+				Contract Contract = await this.contracts.SignContractAsync(this.contract, Role, false);
+
+				this.SetContract(Contract);
+
+				MainWindow.SuccessBox("Contract successfully signed.");
 			}
 			catch (Exception ex)
 			{

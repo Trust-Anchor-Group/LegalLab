@@ -247,20 +247,6 @@
                                 <StackPanel Name="ProposedContractHumanReadable" Margin="10"/>
                             </StackPanel>
 
-                            <Label FontSize="20" Margin="0,10,0,0">Client Signatures</Label>
-                            <Label>Following are client signatures available in the contract:</Label>
-                            <DataGrid ItemsSource="{Binding ClientSignatures}" Width="Auto" HorizontalAlignment="Left" 
-                                      AutoGenerateColumns="False" GridLinesVisibility="None">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Binding="{Binding BareJid}" Header="Network JID"/>
-                                    <DataGridTextColumn Binding="{Binding LegalId}" Header="Legal ID"/>
-                                    <DataGridTextColumn Binding="{Binding Role}" Header="Role"/>
-                                    <DataGridTextColumn Binding="{Binding Timestamp, Converter={conv:DateTimeToString}}" Header="Timestamp"/>
-                                    <DataGridTextColumn Binding="{Binding Transferable, Converter={conv:BooleanToYesNo}}" Header="Transferable"/>
-                                    <DataGridTextColumn Binding="{Binding Signature, Converter={conv:ToBase64}}" Header="Signature"/>
-                                </DataGrid.Columns>
-                            </DataGrid>
-
                             <Label FontSize="20" Margin="0,10,0,0">Server Signature</Label>
                             <Label>Following is any server signature available in the contract:</Label>
                             <DataGrid ItemsSource="{Binding ServerSignatures}" Width="Auto" HorizontalAlignment="Left" 
@@ -315,6 +301,20 @@
                                     <DataGridTextColumn Binding="{Binding MinCount}" Header="Min"/>
                                     <DataGridTextColumn Binding="{Binding MaxCount}" Header="Max"/>
                                     <DataGridTextColumn Binding="{Binding CanRevoke, Converter={conv:BooleanToYesNo}}" Header="Can Revoke"/>
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Command="{Binding SignAsRole}" IsEnabled="{Binding CanBeSigned}">Sign</Button>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Command="{Binding ProposeForRole}" IsEnabled="{Binding CanBeSigned}">Propose</Button>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
 
@@ -349,6 +349,30 @@
                             <StackPanel Background="White">
                                 <StackPanel Name="ContractToCreateHumanReadable" Margin="10"/>
                             </StackPanel>
+
+                            <Label FontSize="20" Margin="0,10,0,0">Client Signatures</Label>
+                            <Label>Following are client signatures available in the contract:</Label>
+                            <DataGrid ItemsSource="{Binding ClientSignatures}" Width="Auto" HorizontalAlignment="Left" 
+                                      AutoGenerateColumns="False" GridLinesVisibility="None">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding BareJid}" Header="Network JID"/>
+                                    <DataGridTextColumn Binding="{Binding LegalId}" Header="Legal ID"/>
+                                    <DataGridTextColumn Binding="{Binding Role}" Header="Role"/>
+                                    <DataGridTextColumn Binding="{Binding Timestamp, Converter={conv:DateTimeToString}}" Header="Timestamp"/>
+                                    <DataGridTextColumn Binding="{Binding Transferable, Converter={conv:BooleanToYesNo}}" Header="Transferable"/>
+                                    <DataGridTextColumn Binding="{Binding Signature, Converter={conv:ToBase64}}" Header="Signature"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Label FontSize="20" Margin="0,10,0,0">Server Signature</Label>
+                            <Label>Following is any server signature available in the contract:</Label>
+                            <DataGrid ItemsSource="{Binding ServerSignatures}" Width="Auto" HorizontalAlignment="Left" 
+                                      AutoGenerateColumns="False" GridLinesVisibility="None">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding Timestamp, Converter={conv:DateTimeToString}}" Header="Timestamp"/>
+                                    <DataGridTextColumn Binding="{Binding Signature, Converter={conv:ToBase64}}" Header="Signature"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
                         </StackPanel>
                     </ScrollViewer>
                 </DockPanel>
