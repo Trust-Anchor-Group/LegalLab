@@ -10,7 +10,7 @@
             <StatusBarItem Name="XmppState" Content="{Binding State}"/>
             <StatusBarItem Name="Status"></StatusBarItem>
         </StatusBar>
-        <TabControl Name="TabControl">
+        <TabControl Name="TabControl" DockPanel.Dock="Top">
             <TabItem Name="NetworkTab" Header="Network ID">
                 <DockPanel LastChildFill="True" Background="#FFE5E5E5">
                     <ScrollViewer DockPanel.Dock="Left">
@@ -37,7 +37,8 @@
                         </StackPanel>
                     </ScrollViewer>
                     <!-- Sniffer from IoTGateway project, with permission -->
-                    <ListView Name="SnifferListView" HorizontalAlignment="Left" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible">
+                    <ListView Name="SnifferListView" HorizontalAlignment="Left" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                              DockPanel.Dock="Right">
                         <ListView.Resources>
                             <Style TargetType="{x:Type GridViewColumnHeader}">
                                 <Setter Property="HorizontalContentAlignment" Value="Left" />
@@ -111,7 +112,8 @@
                             <Button Margin="10,10,10,0" Command="{Binding Apply}">Apply</Button>
                         </StackPanel>
                     </ScrollViewer>
-                    <ListView HorizontalAlignment="Left" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding Identities}">
+                    <ListView HorizontalAlignment="Left" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible" 
+                              ItemsSource="{Binding Identities}" DockPanel.Dock="Right">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="{x:Type ListViewItem}">
                                 <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
@@ -151,7 +153,8 @@
                             <Button Margin="10,10,10,0" Command="{Binding Send}">Send</Button>
                         </StackPanel>
                     </ScrollViewer>
-                    <ListView HorizontalAlignment="Left" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding Events}">
+                    <ListView HorizontalAlignment="Left" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding Events}"
+                              DockPanel.Dock="Right">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Transaction" Width="250" DisplayMemberBinding="{Binding TransactionId}"/>
@@ -183,7 +186,7 @@
                             </StackPanel>
                         </StackPanel>
                     </ScrollViewer>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" DockPanel.Dock="Right">
                         <StackPanel Name="ProposedContract" Orientation="Vertical" Margin="10" Visibility="Hidden">
                             <Label FontSize="20">Template ID</Label>
                             <Label>ID of the template:</Label>
@@ -272,7 +275,7 @@
                             </StackPanel>
                         </StackPanel>
                     </ScrollViewer>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" DockPanel.Dock="Right">
                         <StackPanel Name="ContractToCreate" Orientation="Vertical" Margin="10" Visibility="Hidden">
                             <Label FontSize="20">Contract ID</Label>
                             <Label>ID of the contract:</Label>
@@ -377,10 +380,55 @@
                     </ScrollViewer>
                 </DockPanel>
             </TabItem>
-            <TabItem Name="EventsTab" Header="Events" Visibility="Collapsed">
-                <Grid Background="#FFE5E5E5">
-                    <Label HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40">TBD</Label>
-                </Grid>
+            <TabItem Name="EventsTab" Header="Events">
+                <ListView Name="EventListView" HorizontalAlignment="Left" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible">
+                    <ListView.Resources>
+                        <Style TargetType="{x:Type GridViewColumnHeader}">
+                            <Setter Property="HorizontalContentAlignment" Value="Left" />
+                            <Setter Property="Padding" Value="5,0,0,0" />
+                        </Style>
+                    </ListView.Resources>
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Time" Width="70" DisplayMemberBinding="{Binding Time}"/>
+                            <GridViewColumn Header="Type" Width="70" DisplayMemberBinding="{Binding Type}"/>
+                            <GridViewColumn Header="Level" Width="70" DisplayMemberBinding="{Binding Level}"/>
+                            <GridViewColumn Header="Event ID" Width="125" DisplayMemberBinding="{Binding EventId}"/>
+                            <GridViewColumn Header="Object" Width="250" DisplayMemberBinding="{Binding Object}"/>
+                            <GridViewColumn Header="Actor" Width="250" DisplayMemberBinding="{Binding Actor}"/>
+                            <GridViewColumn Header="Message" Width="Auto">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock TextWrapping="Wrap" Text="{Binding Message}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="Foreground" Value="{Binding ForegroundColor, Converter={conv:ToString}}" />
+                            <Setter Property="Background" Value="{Binding BackgroundColor, Converter={conv:ToString}}" />
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Margin" Value="0"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="VerticalContentAlignment" Value="Top"/>
+                            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Opacity" Value="0.75"/>
+                                    <Setter Property="Foreground" Value="{Binding ForegroundColor, Converter={conv:ToString}}" />
+                                    <Setter Property="Background" Value="{Binding BackgroundColor, Converter={conv:ToString}}" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Opacity" Value="0.5"/>
+                                    <Setter Property="Foreground" Value="{Binding ForegroundColor, Converter={conv:ToString}}" />
+                                    <Setter Property="Background" Value="{Binding BackgroundColor, Converter={conv:ToString}}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
             </TabItem>
             <TabItem Name="ScriptTab" Header="Script" Visibility="Collapsed">
                 <Grid Background="#FFE5E5E5">
