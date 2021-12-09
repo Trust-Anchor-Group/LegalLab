@@ -17,6 +17,7 @@ namespace LegalLab.Models.Window
 		private readonly PersistedProperty<double> left;
 		private readonly PersistedProperty<double> top;
 		private readonly PersistedProperty<long> tabIndex;
+		private bool skipNextPosition = false;
 
 		/// <summary>
 		/// Main window size model
@@ -106,6 +107,8 @@ namespace LegalLab.Models.Window
 		{
 			MainWindow.UpdateGui(() =>
 			{
+				this.skipNextPosition = double.IsNaN(MainWindow.currentInstance.Left);
+
 				MainWindow.currentInstance.WindowState = this.State;
 				MainWindow.currentInstance.Left = this.Left;
 				MainWindow.currentInstance.Top = this.Top;
@@ -152,8 +155,21 @@ namespace LegalLab.Models.Window
 		{
 			if (MainWindow.currentInstance.WindowState == WindowState.Normal)
 			{
-				this.Left = this.Left;
-				this.Top = this.Top;
+				if (this.skipNextPosition)
+				{
+					if (MainWindow.currentInstance.Left != this.Left)
+						MainWindow.currentInstance.Left = this.Left;
+
+					if (MainWindow.currentInstance.Top != this.Top)
+						MainWindow.currentInstance.Top = this.Top;
+				
+					this.skipNextPosition = false;
+				}
+				else
+				{
+					this.Left = MainWindow.currentInstance.Left;
+					this.Top = MainWindow.currentInstance.Top;
+				}
 			}
 		}
 
