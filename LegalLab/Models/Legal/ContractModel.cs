@@ -181,6 +181,43 @@ namespace LegalLab.Models.Legal
 				this.ServerSignatures = new ServerSignatureInfo[] { new ServerSignatureInfo(this.contract.ServerSignature) };
 		}
 
+		/// <inheritdoc/>
+		public override Task Start()
+		{
+			this.contracts.ContractUpdated += Contracts_ContractUpdated;
+			this.contracts.ContractSigned += Contracts_ContractSigned;
+
+			return base.Start();
+		}
+
+		/// <inheritdoc/>
+		public override Task Stop()
+		{
+			this.contracts.ContractUpdated -= Contracts_ContractUpdated;
+			this.contracts.ContractSigned -= Contracts_ContractSigned;
+
+			return base.Stop();
+		}
+
+		private Task Contracts_ContractSigned(object Sender, ContractSignedEventArgs e)
+		{
+			return this.CheckReload(e);
+		}
+
+		private Task Contracts_ContractUpdated(object Sender, ContractReferenceEventArgs e)
+		{
+			return this.CheckReload(e);
+		}
+
+		private async Task CheckReload(ContractReferenceEventArgs e)
+		{
+			if (e.ContractId == this.ContractId)
+			{
+				Contract Contract = await this.contracts.GetContractAsync(this.ContractId);
+				this.SetContract(Contract);
+			}
+		}
+
 		/// <summary>
 		/// Referenced contract
 		/// </summary>

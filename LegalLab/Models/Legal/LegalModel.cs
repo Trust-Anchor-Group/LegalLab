@@ -45,6 +45,8 @@ namespace LegalLab.Models.Legal
 		private readonly Command selectFile;
 
 		private readonly ContractsClient contracts;
+		private ContractModel currentTemplate;
+		private ContractModel currentContract;
 
 		/// <summary>
 		/// Legal ID Model
@@ -407,7 +409,7 @@ namespace LegalLab.Models.Legal
 			set => this.proposedContract.Value = value;
 		}
 
-		private void ExecuteSelectFile()
+		private async void ExecuteSelectFile()
 		{
 			try
 			{
@@ -442,10 +444,15 @@ namespace LegalLab.Models.Legal
 
 				this.ProposedContract = Contract;
 
-				ContractModel ContractModel = new ContractModel(this.contracts, Contract, this);
+				if (!(this.currentContract is null))
+					await this.currentTemplate.Stop();
 
-				ContractModel.PopulateParameters(MainWindow.currentInstance.UploadParameters, MainWindow.currentInstance.UploadCommands);
-				ContractModel.PopulateContract(MainWindow.currentInstance.ProposedContract, MainWindow.currentInstance.ProposedContractHumanReadable);
+				this.currentTemplate = new ContractModel(this.contracts, Contract, this);
+
+				await this.currentTemplate.Start();
+
+				this.currentTemplate.PopulateParameters(MainWindow.currentInstance.UploadParameters, MainWindow.currentInstance.UploadCommands);
+				this.currentTemplate.PopulateContract(MainWindow.currentInstance.ProposedContract, MainWindow.currentInstance.ProposedContractHumanReadable);
 			}
 			catch (Exception ex)
 			{
@@ -517,10 +524,14 @@ namespace LegalLab.Models.Legal
 				this.Template = await this.contracts.GetContractAsync(ContractId);
 				MainWindow.MouseDefault();
 
-				ContractModel ContractModel = new ContractModel(this.contracts, this.Template, this);
+				if (!(this.currentContract is null))
+					await this.currentContract.Stop();
 
-				ContractModel.PopulateParameters(MainWindow.currentInstance.CreateParameters, MainWindow.currentInstance.CreateCommands);
-				ContractModel.PopulateContract(MainWindow.currentInstance.ContractToCreate, MainWindow.currentInstance.ContractToCreateHumanReadable);
+				this.currentContract = new ContractModel(this.contracts, this.Template, this);
+				await this.currentContract.Start();
+
+				this.currentContract.PopulateParameters(MainWindow.currentInstance.CreateParameters, MainWindow.currentInstance.CreateCommands);
+				this.currentContract.PopulateContract(MainWindow.currentInstance.ContractToCreate, MainWindow.currentInstance.ContractToCreateHumanReadable);
 			}
 			catch (Exception ex)
 			{
