@@ -416,6 +416,14 @@ namespace LegalLab.Models.Network
 
 		private Task Client_OnConnectionError(object Sender, Exception Exception)
 		{
+			if (this.CreateAccount || !this.ConnectOnStartup)
+			{
+				this.client.Dispose();
+				this.client = null;
+			}
+
+			this.connect.RaiseCanExecuteChanged();
+
 			MainWindow.ErrorBox(Exception.Message);
 			return Task.CompletedTask;
 		}
