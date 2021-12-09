@@ -33,7 +33,6 @@ namespace LegalLab.Models.Network.Sniffer
 				this.view.Items.RemoveAt(0);
 
 			this.view.Items.Add((SniffItem)P);
-			this.view.ScrollIntoView(P);
 		}
 
 		public override void ReceiveBinary(DateTime Timestamp, byte[] Data)
