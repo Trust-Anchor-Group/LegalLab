@@ -104,6 +104,7 @@ namespace LegalLab.Models
 				catch (Exception ex)
 				{
 					Log.Critical(ex);
+					MainWindow.ErrorBox(ex.Message);
 				}
 			}
 		}

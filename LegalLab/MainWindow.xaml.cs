@@ -2,6 +2,7 @@
 using LegalLab.Models;
 using LegalLab.Models.Network;
 using LegalLab.Models.Network.Events;
+using LegalLab.Models.Script;
 using LegalLab.Models.Window;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ namespace LegalLab
 		private static FilesProvider database;
 		private static WindowSizeModel windowSizeModel;
 		private static NetworkModel networkModel;
+		private static ScriptModel scriptModel;
 
 		public MainWindow()
 		{
@@ -90,6 +92,7 @@ namespace LegalLab
 
 				windowSizeModel = await InstantiateModel<WindowSizeModel>(this.WindowState, this.Left, this.Top, this.Width, this.Height, this.TabControl.SelectedIndex);
 				networkModel = await InstantiateModel<NetworkModel>();
+				scriptModel = await InstantiateModel<ScriptModel>(this.HistoryPanel);
 			}
 			catch (Exception ex)
 			{
@@ -167,6 +170,11 @@ namespace LegalLab
 		/// Network model
 		/// </summary>
 		public static NetworkModel NetworkModel => networkModel;
+
+		/// <summary>
+		/// Script model
+		/// </summary>
+		public static ScriptModel ScriptModel => scriptModel;
 
 		#endregion
 
@@ -375,6 +383,20 @@ namespace LegalLab
 			public DateTime Requested;
 			public DateTime Started;
 			public DateTime Ended;
+		}
+
+		#endregion
+
+		#region Events that need to be routed to the corresponding views
+
+		private void OpenScriptReference(object sender, RoutedEventArgs e)
+		{
+			scriptModel?.HyperLinkClicked();
+		}
+
+		private void InputPreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			scriptModel?.InputPreviewKeyDown(e);
 		}
 
 		#endregion

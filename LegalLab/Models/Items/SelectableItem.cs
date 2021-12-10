@@ -29,7 +29,7 @@ namespace LegalLab.Models.Items
 				}
 				catch (Exception ex)
 				{
-					MessageBox.Show(MainWindow.currentInstance, ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+					MainWindow.ErrorBox(ex.Message);
 				}
 			}
 		}
