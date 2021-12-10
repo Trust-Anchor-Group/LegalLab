@@ -99,7 +99,7 @@ namespace LegalLab.Models.Legal
 		/// <returns></returns>
 		public bool CanExecuteSignAsRole()
 		{
-			return this.contract.CanBeSigned;
+			return this.contract?.CanBeSigned ?? false;
 		}
 
 		/// <summary>
@@ -107,7 +107,7 @@ namespace LegalLab.Models.Legal
 		/// </summary>
 		public async void ExecuteSignAsRole()
 		{
-			await this.contract.SignAsRole(this.Name);
+			await this.contract?.SignAsRole(this.Name);
 		}
 
 
@@ -122,7 +122,7 @@ namespace LegalLab.Models.Legal
 		/// <returns></returns>
 		public bool CanExecuteProposeForRole()
 		{
-			return this.contract.CanBeSigned;
+			return this.contract?.CanBeSigned ?? false;
 		}
 
 		/// <summary>
@@ -130,7 +130,7 @@ namespace LegalLab.Models.Legal
 		/// </summary>
 		public void ExecuteProposeForRole()
 		{
-			this.contract.ProposeForRole(this.Name);
+			this.contract?.ProposeForRole(this.Name);
 		}
 	}
 }

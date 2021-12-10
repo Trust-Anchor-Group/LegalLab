@@ -1,5 +1,6 @@
 ﻿using LegalLab.Dialogs.Prompt;
 using LegalLab.Models;
+using LegalLab.Models.Design;
 using LegalLab.Models.Network;
 using LegalLab.Models.Network.Events;
 using LegalLab.Models.Script;
@@ -37,6 +38,7 @@ namespace LegalLab
 		private static WindowSizeModel windowSizeModel;
 		private static NetworkModel networkModel;
 		private static ScriptModel scriptModel;
+		private static DesignModel designModel;
 
 		public MainWindow()
 		{
@@ -92,6 +94,7 @@ namespace LegalLab
 
 				windowSizeModel = await InstantiateModel<WindowSizeModel>(this.WindowState, this.Left, this.Top, this.Width, this.Height, this.TabControl.SelectedIndex);
 				networkModel = await InstantiateModel<NetworkModel>();
+				designModel = await InstantiateModel<DesignModel>();
 				scriptModel = await InstantiateModel<ScriptModel>(this.HistoryPanel);
 			}
 			catch (Exception ex)
@@ -170,6 +173,11 @@ namespace LegalLab
 		/// Network model
 		/// </summary>
 		public static NetworkModel NetworkModel => networkModel;
+
+		/// <summary>
+		/// Design model
+		/// </summary>
+		public static DesignModel DesignModel => designModel;
 
 		/// <summary>
 		/// Script model

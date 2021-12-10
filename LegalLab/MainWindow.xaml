@@ -168,10 +168,89 @@
                     </ListView>
                 </DockPanel>
             </TabItem>
-            <TabItem Name="DesignTab" Header="Design" Visibility="Collapsed">
-                <Grid Background="#FFE5E5E5">
-                    <Label HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40">TBD</Label>
-                </Grid>
+            <TabItem Name="DesignTab" Header="Design">
+                <DockPanel LastChildFill="True" Background="#FFE5E5E5">
+                    <ScrollViewer DockPanel.Dock="Left">
+                        <StackPanel Name="DesignCommands" Orientation="Vertical" Width="250" Margin="10">
+                        </StackPanel>
+                    </ScrollViewer>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" DockPanel.Dock="Right">
+                        <StackPanel Name="DesignedContract" Orientation="Vertical" Margin="10" Visibility="Hidden">
+                            <Label FontSize="20">Contract ID</Label>
+                            <Label>ID of the contract:</Label>
+                            <TextBox Text="{Binding ContractId}" IsReadOnly="True"/>
+
+                            <Label FontSize="20">General Information</Label>
+                            <Label>General information about the contract being designed:</Label>
+                            <DataGrid HeadersVisibility="None" ItemsSource="{Binding GeneralInformation}" Width="Auto" HorizontalAlignment="Left" 
+                                      AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding Name}"/>
+                                    <DataGridTextColumn Binding="{Binding Value}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Label FontSize="20" Margin="0,10,0,0">Roles</Label>
+                            <Label>Following are roles defined in the contract:</Label>
+                            <DataGrid ItemsSource="{Binding Roles}" Width="Auto" HorizontalAlignment="Left" 
+                                      AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding Name}" Header="Role"/>
+                                    <DataGridTextColumn Binding="{Binding Description}" Header="Description"/>
+                                    <DataGridTextColumn Binding="{Binding MinCount}" Header="Min"/>
+                                    <DataGridTextColumn Binding="{Binding MaxCount}" Header="Max"/>
+                                    <DataGridTextColumn Binding="{Binding CanRevoke, Converter={conv:BooleanToYesNo}}" Header="Can Revoke"/>
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Command="{Binding SignAsRole}" IsEnabled="{Binding CanBeSigned}">Sign</Button>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Command="{Binding ProposeForRole}" IsEnabled="{Binding CanBeSigned}">Propose</Button>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Label FontSize="20" Margin="0,10,0,0">Parts</Label>
+                            <Label>Following are parts defined in the contract:</Label>
+                            <DataGrid ItemsSource="{Binding Parts}" Width="Auto" HorizontalAlignment="Left" 
+                                      AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding Name}" Header="Legal ID"/>
+                                    <DataGridTextColumn Binding="{Binding Value}" Header="Role"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Label FontSize="20" Margin="0,10,0,0">Parameters</Label>
+                            <Label>Following are parameters defined in the contract:</Label>
+                            <DataGrid ItemsSource="{Binding Parameters}" Width="Auto" HorizontalAlignment="Left" 
+                                      AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding Name}" Header="Parameter"/>
+                                    <DataGridTextColumn Binding="{Binding Value}" Header="Value"/>
+                                    <DataGridTextColumn Binding="{Binding Description}" Header="Description"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Label FontSize="20" Margin="0,10,0,0">Machine-Readable Content</Label>
+                            <Label>Following is the embedded Machine-readable content of the contract:</Label>
+                            <StackPanel Background="White">
+                                <TextBlock Text="{Binding MachineReadable}" Margin="10" FontFamily="Courier New"/>
+                            </StackPanel>
+
+                            <Label FontSize="20" Margin="0,10,0,0">Human-Readable Content</Label>
+                            <StackPanel Background="White">
+                                <StackPanel Name="DesignedContractHumanReadable" Margin="10"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </DockPanel>
             </TabItem>
             <TabItem Name="UploadTab" Header="Upload Template">
                 <DockPanel LastChildFill="True" Background="#FFE5E5E5">
