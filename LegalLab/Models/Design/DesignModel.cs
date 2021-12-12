@@ -25,12 +25,13 @@ namespace LegalLab.Models.Design
 		private readonly Property<Waher.Content.Duration> archiveOptional;
 		private readonly Property<Waher.Content.Duration> archiveRequired;
 		private readonly Property<Waher.Content.Duration> duration;
+		private readonly Property<ContractVisibility> visibility;
+		private readonly Property<ContractParts> partsMode;
 		private readonly Property<string> defaultLanguage;
 		private readonly Property<DateTime?> signBefore;
 		private readonly Property<DateTime?> signAfter;
 		private readonly Property<string> contractId;
 		private readonly Property<bool> parametersOk;
-		private readonly Property<GenInfo[]> generalInformation;
 		private readonly Property<RoleInfo[]> roles;
 		private readonly Property<GenInfo[]> parts;
 		private readonly Property<ParameterInfo[]> parameters;
@@ -48,6 +49,8 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public DesignModel()
 		{
+			this.visibility = new Property<ContractVisibility>(nameof(this.Visibility), ContractVisibility.Public, this);
+			this.partsMode = new Property<ContractParts>(nameof(this.PartsMode), ContractParts.TemplateOnly, this);
 			this.archiveOptional = new Property<Waher.Content.Duration>(nameof(this.ArchiveOptional), Waher.Content.Duration.Zero, this);
 			this.archiveRequired = new Property<Waher.Content.Duration>(nameof(this.ArchiveRequired), Waher.Content.Duration.Zero, this);
 			this.duration = new Property<Waher.Content.Duration>(nameof(this.Duration), Waher.Content.Duration.Zero, this);
@@ -55,7 +58,6 @@ namespace LegalLab.Models.Design
 			this.signBefore = new Property<DateTime?>(nameof(this.SignBefore), null, this);
 			this.signAfter = new Property<DateTime?>(nameof(this.SignAfter), null, this);
 			this.parametersOk = new Property<bool>(nameof(this.ParametersOk), false, this);
-			this.generalInformation = new Property<GenInfo[]>(nameof(this.GeneralInformation), new GenInfo[0], this);
 			this.roles = new Property<RoleInfo[]>(nameof(this.Roles), new RoleInfo[0], this);
 			this.parts = new Property<GenInfo[]>(nameof(this.Parts), new GenInfo[0], this);
 			this.parameters = new Property<ParameterInfo[]>(nameof(this.Parameters), new ParameterInfo[0], this);
@@ -104,36 +106,7 @@ namespace LegalLab.Models.Design
 			this.SignBefore = Contract.SignBefore;
 			this.SignAfter = Contract.SignAfter;
 
-			List<GenInfo> Info = new List<GenInfo>()
-			{
-				new GenInfo("Created:", Contract.Created.ToString(CultureInfo.CurrentUICulture))
-			};
-
-			if (Contract.Updated > DateTime.MinValue)
-				Info.Add(new GenInfo("Updated:", Contract.Updated.ToString(CultureInfo.CurrentUICulture)));
-
-			Info.Add(new GenInfo("State:", Contract.State.ToString()));
-			Info.Add(new GenInfo("Visibility:", Contract.Visibility.ToString()));
-			Info.Add(new GenInfo("Duration:", Contract.Duration.ToString()));
-			Info.Add(new GenInfo("From:", Contract.From.ToString(CultureInfo.CurrentUICulture)));
-			Info.Add(new GenInfo("To:", Contract.To.ToString(CultureInfo.CurrentUICulture)));
-			Info.Add(new GenInfo("Archiving Optional:", Contract.ArchiveOptional.ToString()));
-			Info.Add(new GenInfo("Archiving Required:", Contract.ArchiveRequired.ToString()));
-			Info.Add(new GenInfo("Can act as a template:", Contract.CanActAsTemplate.ToYesNo()));
-			Info.Add(new GenInfo("Provider:", Contract.Provider));
-			Info.Add(new GenInfo("Parts:", Contract.PartsMode.ToString()));
-
-			if (Contract.SignAfter.HasValue)
-				Info.Add(new GenInfo("Sign after:", Contract.SignAfter.Value.ToStringTZ()));
-
-			if (Contract.SignBefore.HasValue)
-				Info.Add(new GenInfo("Sign before:", Contract.SignBefore.Value.ToStringTZ()));
-
-			if (!string.IsNullOrEmpty(Contract.TemplateId))
-				Info.Add(new GenInfo("Template ID:", Contract.TemplateId));
-
-			this.GeneralInformation = Info.ToArray();
-			Info.Clear();
+			List<GenInfo> Info = new List<GenInfo>();
 
 			if (!(Contract.Parts is null))
 			{
@@ -197,6 +170,34 @@ namespace LegalLab.Models.Design
 
 			return base.Start();
 		}
+
+		/// <summary>
+		/// Contract visibility
+		/// </summary>
+		public ContractVisibility Visibility
+		{
+			get => this.visibility.Value;
+			set => this.visibility.Value = value;
+		}
+
+		/// <summary>
+		/// Contract visibilities.
+		/// </summary>
+		public string[] Visibilities => Enum.GetNames(typeof(ContractVisibility));
+
+		/// <summary>
+		/// Contract parts mode
+		/// </summary>
+		public ContractParts PartsMode
+		{
+			get => this.partsMode.Value;
+			set => this.partsMode.Value = value;
+		}
+
+		/// <summary>
+		/// Contract parts modes
+		/// </summary>
+		public string[] PartsModes => Enum.GetNames(typeof(ContractParts));
 
 		/// <summary>
 		/// Optional archiving time
@@ -376,7 +377,7 @@ namespace LegalLab.Models.Design
 			PopulateHumanReadableText();
 
 			AdditionalCommands.DataContext = this;
-			AdditionalCommands.Visibility = Visibility.Visible;
+			AdditionalCommands.Visibility = System.Windows.Visibility.Visible;
 			AdditionalCommands.InvalidateVisual();
 		}
 
@@ -468,15 +469,6 @@ namespace LegalLab.Models.Design
 		}
 
 		/// <summary>
-		/// General information about the contract.
-		/// </summary>
-		public GenInfo[] GeneralInformation
-		{
-			get => this.generalInformation.Value;
-			set => this.generalInformation.Value = value;
-		}
-
-		/// <summary>
 		/// Roles defined the contract.
 		/// </summary>
 		public RoleInfo[] Roles
@@ -514,7 +506,7 @@ namespace LegalLab.Models.Design
 			this.PopulateHumanReadableText();
 
 			ContractLayout.DataContext = this;
-			ContractLayout.Visibility = Visibility.Visible;
+			ContractLayout.Visibility = System.Windows.Visibility.Visible;
 		}
 
 	}
