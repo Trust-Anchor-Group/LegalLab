@@ -189,15 +189,15 @@
                                 </StackPanel>
                                 <StackPanel Orientation="Vertical" Width="100" Margin="0,0,10,10">
                                     <Label>Duration:</Label>
-                                    <TextBox Text="{Binding Duration}"/>
+                                    <TextBox Text="{Binding Duration, Converter={conv:DurationToString}}"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Vertical" Width="100" Margin="0,0,10,10">
                                     <Label>Archiving (Req.):</Label>
-                                    <TextBox Text="{Binding ArchiveRequired}"/>
+                                    <TextBox Text="{Binding ArchiveRequired, Converter={conv:DurationToString}}"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Vertical" Width="100" Margin="0,0,10,10">
                                     <Label>Archiving (Opt.):</Label>
-                                    <TextBox Text="{Binding ArchiveOptional}"/>
+                                    <TextBox Text="{Binding ArchiveOptional, Converter={conv:DurationToString}}"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Vertical" Width="100" Margin="0,0,10,10">
                                     <Label>Parts:</Label>
@@ -205,11 +205,11 @@
                                 </StackPanel>
                                 <StackPanel Orientation="Vertical" Width="100" Margin="0,0,10,10">
                                     <Label>Sign After:</Label>
-                                    <TextBox Text="{Binding SignAfter}"/>
+                                    <TextBox Text="{Binding SignAfter, Converter={conv:DateTimeToString}}"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Vertical" Width="100" Margin="0,0,10,10">
                                     <Label>Sign Before:</Label>
-                                    <TextBox Text="{Binding SignBefore}"/>
+                                    <TextBox Text="{Binding SignBefore, Converter={conv:DateTimeToString}}"/>
                                 </StackPanel>
                             </WrapPanel>
                             <DataGrid HeadersVisibility="None" ItemsSource="{Binding GeneralInformation}" Width="Auto" HorizontalAlignment="Left" 
