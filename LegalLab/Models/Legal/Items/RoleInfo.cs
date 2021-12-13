@@ -9,7 +9,7 @@ namespace LegalLab.Models.Legal.Items
 	/// <summary>
 	/// Contains information about a role
 	/// </summary>
-	public class RoleInfo : Model
+	public class RoleInfo : Model, INamedItem
 	{
 		private readonly ContractModel contractModel;
 		private readonly DesignModel designModel;

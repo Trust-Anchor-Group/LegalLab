@@ -543,7 +543,7 @@ namespace LegalLab.Models.Design
 			Array.Resize<RoleInfo>(ref Roles, c + 1);
 			Roles[c] = new RoleInfo(this, new Role()
 			{
-				Name = "New Role",
+				Name = this.FindNewName("Role", this.Roles),
 				Descriptions = new HumanReadableText[] { "Enter role description as **Markdown**".ToHumanReadableText() },
 				MinCount = 1,
 				MaxCount = 1,
@@ -551,6 +551,34 @@ namespace LegalLab.Models.Design
 			});
 
 			this.Roles = Roles;
+		}
+
+		private string FindNewName(string ProposedName, INamedItem[] NamedItems)
+		{
+			int i = 1;
+			string Result;
+
+			while (true)
+			{
+				string Suffix = i.ToString();
+				bool Found = false;
+
+				Result = ProposedName + Suffix;
+
+				foreach (INamedItem Item in NamedItems)
+				{
+					if (Item.Name == ProposedName)
+					{
+						Found = true;
+						break;
+					}
+				}
+
+				if (Found)
+					i++;
+				else
+					return Result;
+			}
 		}
 
 		/// <summary>
@@ -633,7 +661,7 @@ namespace LegalLab.Models.Design
 				MaxIncluded = false,
 				Min = null,
 				MinIncluded = false,
-				Name = string.Empty,
+				Name = this.FindNewName("Numeric", this.Parameters),
 				Value = null
 			});
 
@@ -659,7 +687,7 @@ namespace LegalLab.Models.Design
 				MaxIncluded = false,
 				Min = null,
 				MinIncluded = false,
-				Name = string.Empty,
+				Name = this.FindNewName("String", this.Parameters),
 				Value = null,
 				MinLength = null,
 				MaxLength = null,
@@ -684,7 +712,7 @@ namespace LegalLab.Models.Design
 				Descriptions = new HumanReadableText[] { "Enter parameter description as **Markdown**".ToHumanReadableText() },
 				Expression = string.Empty,
 				Guide = string.Empty,
-				Name = string.Empty,
+				Name = this.FindNewName("Boolean", this.Parameters),
 				Value = null
 			});
 

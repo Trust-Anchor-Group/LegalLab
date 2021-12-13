@@ -10,7 +10,7 @@ namespace LegalLab.Models.Legal.Items
 	/// <summary>
 	/// Contains information about a parameter
 	/// </summary>
-	public class ParameterInfo : Model
+	public class ParameterInfo : Model, INamedItem
 	{
 		private readonly Property<string> name;
 		private readonly Property<object> description;
