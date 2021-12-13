@@ -18,6 +18,9 @@ namespace LegalLab.Extensions
 		/// <returns>Parsed XAML</returns>
 		public static object ParseSimple(this string Xaml)
 		{
+			if (string.IsNullOrEmpty(Xaml))
+				return null;
+
 			object Result = XamlReader.Parse(Xaml);
 
 			if (Result is StackPanel Panel && Panel.Children.Count == 1)
