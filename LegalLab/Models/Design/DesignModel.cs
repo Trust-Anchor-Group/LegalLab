@@ -2,7 +2,6 @@
 using LegalLab.Models.Legal;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -126,7 +125,7 @@ namespace LegalLab.Models.Design
 			if (!(Contract.Roles is null))
 			{
 				foreach (Role Role in Contract.Roles)
-					Roles.Add(new RoleInfo(this.contract, Role));
+					Roles.Add(new RoleInfo(this, Role));
 			}
 
 			this.Roles = Roles.ToArray();
@@ -167,6 +166,11 @@ namespace LegalLab.Models.Design
 				this.ForMachines = Doc.DocumentElement;
 			}
 		}
+
+		/// <summary>
+		/// Current contract
+		/// </summary>
+		public Contract Contract => this.contract;
 
 		/// <inheritdoc/>
 		public override Task Start()
@@ -526,8 +530,38 @@ namespace LegalLab.Models.Design
 		{
 			RoleInfo[] Roles = this.Roles;
 			int c = Roles.Length;
+
 			Array.Resize<RoleInfo>(ref Roles, c + 1);
-			Roles[c] = new RoleInfo(this.contract, new Role());
+			Roles[c] = new RoleInfo(this, new Role()
+			{
+				Name = "New Role",
+				Descriptions = new HumanReadableText[] { "Enter role description as [Markdown](https://lab.tagroot.io/Markdown.md)".ToHumanReadableText() },
+				MinCount = 1,
+				MaxCount = 1,
+				CanRevoke = false
+			});
+
+			this.Roles = Roles;
+		}
+
+		/// <summary>
+		/// Removes a role from the design
+		/// </summary>
+		/// <param name="Role"></param>
+		public void RemoveRole(RoleInfo Role)
+		{
+			RoleInfo[] Roles = this.Roles;
+			int i = Array.IndexOf<RoleInfo>(Roles, Role);
+			if (i < 0)
+				return;
+
+			int c = Roles.Length;
+
+			if (i < c - 1)
+				Array.Copy(Roles, i + 1, Roles, i, c - i - 1);
+
+			Array.Resize<RoleInfo>(ref Roles, c - 1);
+
 			this.Roles = Roles;
 		}
 

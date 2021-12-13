@@ -1,4 +1,5 @@
 ﻿using LegalLab.Extensions;
+using LegalLab.Models.Design;
 using System;
 using System.Windows.Input;
 using Waher.Networking.XMPP.Contracts;
@@ -11,6 +12,7 @@ namespace LegalLab.Models.Legal
 	public class RoleInfo : Model
 	{
 		private readonly ContractModel contractModel;
+		private readonly DesignModel designModel;
 		private readonly Contract contract;
 		private readonly Property<string> name;
 		private readonly Property<object> description;
@@ -20,6 +22,7 @@ namespace LegalLab.Models.Legal
 
 		private readonly Command signAsRole;
 		private readonly Command proposeForRole;
+		private readonly Command removeRole;
 
 		/// <summary>
 		/// Contains information about a role
@@ -30,6 +33,17 @@ namespace LegalLab.Models.Legal
 			: this(ContractModel.Contract, Role)
 		{
 			this.contractModel = ContractModel;
+		}
+
+		/// <summary>
+		/// Contains information about a role
+		/// </summary>
+		/// <param name="DesignModel">Design Model hosting the parameter</param>
+		/// <param name="Role">Role</param>
+		public RoleInfo(DesignModel DesignModel, Role Role)
+			: this(DesignModel.Contract, Role)
+		{
+			this.designModel = DesignModel;
 		}
 
 		/// <summary>
@@ -49,6 +63,7 @@ namespace LegalLab.Models.Legal
 
 			this.signAsRole = new Command(this.CanExecuteSignAsRole, this.ExecuteSignAsRole);
 			this.proposeForRole = new Command(this.CanExecuteProposeForRole, this.ExecuteProposeForRole);
+			this.removeRole = new Command(this.CanExecuteRemoveRole, this.ExecuteRemoveRole);
 		}
 
 		/// <summary>
@@ -124,7 +139,6 @@ namespace LegalLab.Models.Legal
 			await this.contractModel?.SignAsRole(this.Name);
 		}
 
-
 		/// <summary>
 		/// Propose for role command
 		/// </summary>
@@ -140,11 +154,34 @@ namespace LegalLab.Models.Legal
 		}
 
 		/// <summary>
-		/// Proposes the contract.
+		/// Proposes the contract for a given role.
 		/// </summary>
 		public void ExecuteProposeForRole()
 		{
 			this.contractModel?.ProposeForRole(this.Name);
 		}
+
+		/// <summary>
+		/// Remove role command
+		/// </summary>
+		public ICommand RemoveRole => this.removeRole;
+
+		/// <summary>
+		/// If the remove role command can be exeucted.
+		/// </summary>
+		/// <returns></returns>
+		public bool CanExecuteRemoveRole()
+		{
+			return !(this.designModel is null);
+		}
+
+		/// <summary>
+		/// Removes the role.
+		/// </summary>
+		public void ExecuteRemoveRole()
+		{
+			this.designModel?.RemoveRole(this);
+		}
+
 	}
 }

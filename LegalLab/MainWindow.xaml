@@ -223,7 +223,7 @@
                             <Label FontSize="20" Margin="0,10,0,0">Roles</Label>
                             <Label>Following are roles defined in the contract:</Label>
                             <DataGrid ItemsSource="{Binding Roles}" Width="Auto" HorizontalAlignment="Left" 
-                                      AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
+                                      AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="False">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Binding="{Binding Name}" Header="Role"/>
                                     <DataGridTemplateColumn Header="Description">
@@ -239,14 +239,7 @@
                                     <DataGridTemplateColumn>
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <Button Command="{Binding SignAsRole}" IsEnabled="{Binding CanBeSigned}">Sign</Button>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
-                                    <DataGridTemplateColumn>
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <Button Command="{Binding ProposeForRole}" IsEnabled="{Binding CanBeSigned}">Propose</Button>
+                                                <Button Command="{Binding RemoveRole}">Remove</Button>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
