@@ -26,7 +26,7 @@ namespace LegalLab.Models.Legal
 		private readonly Property<bool> parametersOk;
 		private readonly Property<GenInfo[]> generalInformation;
 		private readonly Property<RoleInfo[]> roles;
-		private readonly Property<GenInfo[]> parts;
+		private readonly Property<PartInfo[]> parts;
 		private readonly Property<ParameterInfo[]> parameters;
 		private readonly Property<ClientSignatureInfo[]> clientSignatures;
 		private readonly Property<ServerSignatureInfo[]> serverSignatures;
@@ -58,7 +58,7 @@ namespace LegalLab.Models.Legal
 			this.parametersOk = new Property<bool>(nameof(this.ParametersOk), false, this);
 			this.generalInformation = new Property<GenInfo[]>(nameof(this.GeneralInformation), new GenInfo[0], this);
 			this.roles = new Property<RoleInfo[]>(nameof(this.Roles), new RoleInfo[0], this);
-			this.parts = new Property<GenInfo[]>(nameof(this.Parts), new GenInfo[0], this);
+			this.parts = new Property<PartInfo[]>(nameof(this.Parts), new PartInfo[0], this);
 			this.parameters = new Property<ParameterInfo[]>(nameof(this.Parameters), new ParameterInfo[0], this);
 			this.clientSignatures = new Property<ClientSignatureInfo[]>(nameof(this.ClientSignatures), new ClientSignatureInfo[0], this);
 			this.serverSignatures = new Property<ServerSignatureInfo[]>(nameof(this.ServerSignatures), new ServerSignatureInfo[0], this);
@@ -104,44 +104,45 @@ namespace LegalLab.Models.Legal
 			this.Uri = ContractsClient.ContractIdUriString(Contract.ContractId);
 			this.QrCodeUri = "https://" + this.contracts.Client.Domain + "/QR/" + this.Uri;
 
-			List<GenInfo> Info = new List<GenInfo>()
+			List<GenInfo> GenInfo = new List<GenInfo>()
 			{
 				new GenInfo("Created:", this.contract.Created.ToString(CultureInfo.CurrentUICulture))
 			};
 
 			if (this.contract.Updated > DateTime.MinValue)
-				Info.Add(new GenInfo("Updated:", this.contract.Updated.ToString(CultureInfo.CurrentUICulture)));
+				GenInfo.Add(new GenInfo("Updated:", this.contract.Updated.ToString(CultureInfo.CurrentUICulture)));
 
-			Info.Add(new GenInfo("State:", this.contract.State.ToString()));
-			Info.Add(new GenInfo("Visibility:", this.contract.Visibility.ToString()));
-			Info.Add(new GenInfo("Duration:", this.contract.Duration.ToString()));
-			Info.Add(new GenInfo("From:", this.contract.From.ToString(CultureInfo.CurrentUICulture)));
-			Info.Add(new GenInfo("To:", this.contract.To.ToString(CultureInfo.CurrentUICulture)));
-			Info.Add(new GenInfo("Archiving Optional:", this.contract.ArchiveOptional.ToString()));
-			Info.Add(new GenInfo("Archiving Required:", this.contract.ArchiveRequired.ToString()));
-			Info.Add(new GenInfo("Can act as a template:", this.contract.CanActAsTemplate.ToYesNo()));
-			Info.Add(new GenInfo("Provider:", this.contract.Provider));
-			Info.Add(new GenInfo("Parts:", this.contract.PartsMode.ToString()));
+			GenInfo.Add(new GenInfo("State:", this.contract.State.ToString()));
+			GenInfo.Add(new GenInfo("Visibility:", this.contract.Visibility.ToString()));
+			GenInfo.Add(new GenInfo("Duration:", this.contract.Duration.ToString()));
+			GenInfo.Add(new GenInfo("From:", this.contract.From.ToString(CultureInfo.CurrentUICulture)));
+			GenInfo.Add(new GenInfo("To:", this.contract.To.ToString(CultureInfo.CurrentUICulture)));
+			GenInfo.Add(new GenInfo("Archiving Optional:", this.contract.ArchiveOptional.ToString()));
+			GenInfo.Add(new GenInfo("Archiving Required:", this.contract.ArchiveRequired.ToString()));
+			GenInfo.Add(new GenInfo("Can act as a template:", this.contract.CanActAsTemplate.ToYesNo()));
+			GenInfo.Add(new GenInfo("Provider:", this.contract.Provider));
+			GenInfo.Add(new GenInfo("Parts:", this.contract.PartsMode.ToString()));
 
 			if (this.contract.SignAfter.HasValue)
-				Info.Add(new GenInfo("Sign after:", this.contract.SignAfter.Value.ToStringTZ()));
+				GenInfo.Add(new GenInfo("Sign after:", this.contract.SignAfter.Value.ToStringTZ()));
 
 			if (this.contract.SignBefore.HasValue)
-				Info.Add(new GenInfo("Sign before:", this.contract.SignBefore.Value.ToStringTZ()));
+				GenInfo.Add(new GenInfo("Sign before:", this.contract.SignBefore.Value.ToStringTZ()));
 
 			if (!string.IsNullOrEmpty(this.contract.TemplateId))
-				Info.Add(new GenInfo("Template ID:", this.contract.TemplateId));
+				GenInfo.Add(new GenInfo("Template ID:", this.contract.TemplateId));
 
-			this.GeneralInformation = Info.ToArray();
-			Info.Clear();
+			this.GeneralInformation = GenInfo.ToArray();
+
+			List<PartInfo> Parts = new List<PartInfo>();
 
 			if (!(this.contract.Parts is null))
 			{
 				foreach (Part Part in this.contract.Parts)
-					Info.Add(new GenInfo(Part.LegalId, Part.Role));
+					Parts.Add(new PartInfo(Part.LegalId, Part.Role, null));
 			}
 
-			this.Parts = Info.ToArray();
+			this.Parts = Parts.ToArray();
 
 			List<RoleInfo> Roles = new List<RoleInfo>();
 
@@ -537,7 +538,7 @@ namespace LegalLab.Models.Legal
 		/// <summary>
 		/// Parts defined the contract.
 		/// </summary>
-		public GenInfo[] Parts
+		public PartInfo[] Parts
 		{
 			get => this.parts.Value;
 			set => this.parts.Value = value;

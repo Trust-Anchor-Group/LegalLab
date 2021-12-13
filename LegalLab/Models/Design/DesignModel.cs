@@ -33,7 +33,7 @@ namespace LegalLab.Models.Design
 		private readonly Property<string> contractId;
 		private readonly Property<bool> parametersOk;
 		private readonly Property<RoleInfo[]> roles;
-		private readonly Property<GenInfo[]> parts;
+		private readonly Property<PartInfo[]> parts;
 		private readonly Property<ParameterInfo[]> parameters;
 		private readonly Property<string> machineReadable;
 		private readonly Property<string> forMachinesLocalName;
@@ -41,6 +41,7 @@ namespace LegalLab.Models.Design
 		private readonly Property<XmlElement> forMachines;
 
 		private readonly Command addRole;
+		private readonly Command addPart;
 
 		private readonly Dictionary<string, ParameterInfo> parametersByName = new Dictionary<string, ParameterInfo>();
 		private StackPanel humanReadableText = null;
@@ -61,7 +62,7 @@ namespace LegalLab.Models.Design
 			this.signAfter = new Property<DateTime?>(nameof(this.SignAfter), null, this);
 			this.parametersOk = new Property<bool>(nameof(this.ParametersOk), false, this);
 			this.roles = new Property<RoleInfo[]>(nameof(this.Roles), new RoleInfo[0], this);
-			this.parts = new Property<GenInfo[]>(nameof(this.Parts), new GenInfo[0], this);
+			this.parts = new Property<PartInfo[]>(nameof(this.Parts), new PartInfo[0], this);
 			this.parameters = new Property<ParameterInfo[]>(nameof(this.Parameters), new ParameterInfo[0], this);
 			this.machineReadable = new Property<string>(nameof(this.MachineReadable), string.Empty, this);
 			this.forMachines = new Property<XmlElement>(nameof(this.ForMachines), null, this);
@@ -70,6 +71,7 @@ namespace LegalLab.Models.Design
 			this.contractId = new Property<string>(nameof(this.ContractId), string.Empty, this);
 
 			this.addRole = new Command(this.ExecuteAddRole);
+			this.addPart = new Command(this.ExecuteAddPart);
 
 			this.GenerateContract();
 		}
@@ -110,15 +112,15 @@ namespace LegalLab.Models.Design
 			this.SignBefore = Contract.SignBefore;
 			this.SignAfter = Contract.SignAfter;
 
-			List<GenInfo> Info = new List<GenInfo>();
+			List<PartInfo> Parts = new List<PartInfo>();
 
 			if (!(Contract.Parts is null))
 			{
 				foreach (Part Part in Contract.Parts)
-					Info.Add(new GenInfo(Part.LegalId, Part.Role));
+					Parts.Add(new PartInfo(Part.LegalId, Part.Role, this));
 			}
 
-			this.Parts = Info.ToArray();
+			this.Parts = Parts.ToArray();
 
 			List<RoleInfo> Roles = new List<RoleInfo>();
 
@@ -489,7 +491,7 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Parts defined the contract.
 		/// </summary>
-		public GenInfo[] Parts
+		public PartInfo[] Parts
 		{
 			get => this.parts.Value;
 			set => this.parts.Value = value;
@@ -563,6 +565,46 @@ namespace LegalLab.Models.Design
 			Array.Resize<RoleInfo>(ref Roles, c - 1);
 
 			this.Roles = Roles;
+		}
+
+		/// <summary>
+		/// Command for adding a part to the design.
+		/// </summary>
+		public ICommand AddPart => this.addPart;
+
+		/// <summary>
+		/// Adds a part to the design.
+		/// </summary>
+		public void ExecuteAddPart()
+		{
+			PartInfo[] Parts = this.Parts;
+			int c = Parts.Length;
+
+			Array.Resize<PartInfo>(ref Parts, c + 1);
+			Parts[c] = new PartInfo(string.Empty, string.Empty, this);
+
+			this.Parts = Parts;
+		}
+
+		/// <summary>
+		/// Removes a part from the design
+		/// </summary>
+		/// <param name="Part"></param>
+		public void RemovePart(PartInfo Part)
+		{
+			PartInfo[] Parts = this.Parts;
+			int i = Array.IndexOf<PartInfo>(Parts, Part);
+			if (i < 0)
+				return;
+
+			int c = Parts.Length;
+
+			if (i < c - 1)
+				Array.Copy(Parts, i + 1, Parts, i, c - i - 1);
+
+			Array.Resize<PartInfo>(ref Parts, c - 1);
+
+			this.Parts = Parts;
 		}
 
 	}
