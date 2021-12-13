@@ -16,6 +16,7 @@ namespace LegalLab.Models.Legal
 		private readonly Contract contract;
 		private readonly Property<string> name;
 		private readonly Property<object> description;
+		private readonly Property<string> descriptionAsMarkdown;
 		private readonly Property<int> minCount;
 		private readonly Property<int> maxCount;
 		private readonly Property<bool> canRevoke;
@@ -57,6 +58,7 @@ namespace LegalLab.Models.Legal
 
 			this.name = new Property<string>(nameof(this.Name), Role.Name, this);
 			this.description = new Property<object>(nameof(this.Description), Role.ToSimpleXAML(this.contract?.DefaultLanguage, this.contract), this);
+			this.descriptionAsMarkdown = new Property<string>(nameof(this.DescriptionAsMarkdown), Role.ToMarkdown(this.contract?.DefaultLanguage, this.contract).Trim(), this);
 			this.minCount = new Property<int>(nameof(this.MaxCount), Role.MinCount, this);
 			this.maxCount = new Property<int>(nameof(this.MinCount), Role.MaxCount, this);
 			this.canRevoke = new Property<bool>(nameof(this.CanRevoke), Role.CanRevoke, this);
@@ -81,7 +83,19 @@ namespace LegalLab.Models.Legal
 		public object Description
 		{
 			get => this.description.Value;
-			set => this.description.Value = value;
+		}
+
+		/// <summary>
+		/// Description, as Markdown
+		/// </summary>
+		public string DescriptionAsMarkdown
+		{
+			get => this.descriptionAsMarkdown.Value;
+			set
+			{
+				this.descriptionAsMarkdown.Value = value;
+				this.description.Value = value.ToSimpleXAML();
+			}
 		}
 
 		/// <summary>
@@ -111,7 +125,7 @@ namespace LegalLab.Models.Legal
 			set => this.canRevoke.Value = value;
 		}
 
-		public void CanBeSignedChanged()
+		internal void CanBeSignedChanged()
 		{
 			this.signAsRole.RaiseCanExecuteChanged();
 			this.proposeForRole.RaiseCanExecuteChanged();

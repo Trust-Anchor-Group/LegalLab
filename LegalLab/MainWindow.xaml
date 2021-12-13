@@ -232,10 +232,15 @@
                                                 <ContentControl Content="{Binding Description}"/>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
+                                        <DataGridTemplateColumn.CellEditingTemplate>
+                                            <DataTemplate>
+                                                <TextBox Text="{Binding DescriptionAsMarkdown}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellEditingTemplate>
                                     </DataGridTemplateColumn>
                                     <DataGridTextColumn Binding="{Binding MinCount}" Header="Min"/>
                                     <DataGridTextColumn Binding="{Binding MaxCount}" Header="Max"/>
-                                    <DataGridTextColumn Binding="{Binding CanRevoke, Converter={conv:BooleanToYesNo}}" Header="Can Revoke"/>
+                                    <DataGridCheckBoxColumn Binding="{Binding CanRevoke}" Header="Can Revoke"/>
                                     <DataGridTemplateColumn>
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>

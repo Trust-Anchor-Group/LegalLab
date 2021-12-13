@@ -535,7 +535,7 @@ namespace LegalLab.Models.Design
 			Roles[c] = new RoleInfo(this, new Role()
 			{
 				Name = "New Role",
-				Descriptions = new HumanReadableText[] { "Enter role description as [Markdown](https://lab.tagroot.io/Markdown.md)".ToHumanReadableText() },
+				Descriptions = new HumanReadableText[] { "Enter role description as *Markdown*".ToHumanReadableText() },
 				MinCount = 1,
 				MaxCount = 1,
 				CanRevoke = false

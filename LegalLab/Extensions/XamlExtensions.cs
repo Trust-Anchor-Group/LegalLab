@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
+using Waher.Content.Markdown;
 using Waher.Networking.XMPP.Contracts;
 
 namespace LegalLab.Extensions
@@ -52,13 +53,26 @@ namespace LegalLab.Extensions
 		/// <summary>
 		/// Converts the human-readable description of a parameter to simple XAML.
 		/// </summary>
-		/// <param name="Role">Role</param>
+		/// <param name="Parameter">Parameter</param>
 		/// <param name="Language">Language</param>
 		/// <param name="Contract">Contract</param>
 		/// <returns>Simple XAML</returns>
 		public static object ToSimpleXAML(this Parameter Parameter, string Language, Contract Contract)
 		{
 			return Parameter.ToXAML(Language, Contract).ParseSimple();
+		}
+
+		/// <summary>
+		/// Converts the human-readable description of a parameter to simple XAML.
+		/// </summary>
+		/// <param name="Language">Language</param>
+		/// <param name="Contract">Contract</param>
+		/// <returns>Simple XAML</returns>
+		public static object ToSimpleXAML(this string Markdown)
+		{
+			MarkdownDocument Doc = new MarkdownDocument(Markdown);
+			string Xaml = Doc.GenerateXAML();
+			return Xaml.ParseSimple();
 		}
 	}
 }
