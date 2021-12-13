@@ -3,7 +3,6 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Markup;
-using Waher.Content;
 
 namespace LegalLab.Converters
 {
@@ -30,7 +29,7 @@ namespace LegalLab.Converters
 
 				if (s.EndsWith("z", StringComparison.CurrentCultureIgnoreCase))
 				{
-					s = s.Substring(0, s.Length - 1);
+					s = s[0..(s.Length - 1)];
 					Kind = DateTimeKind.Utc;
 				}
 				else
@@ -45,7 +44,7 @@ namespace LegalLab.Converters
 				else
 				{
 					if (DateTime.TryParse(s.Substring(0, i).Trim(), out DateTime TP) &&
-						TimeSpan.TryParse(s.Substring(i + 1).Trim(), out TimeSpan TS))
+						TimeSpan.TryParse(s[(i + 1)..].Trim(), out TimeSpan TS))
 						return new DateTime((TP + TS).Ticks, Kind);
 					else if (DateTime.TryParse(s, out TP))
 						return new DateTime(TP.Ticks, Kind);
