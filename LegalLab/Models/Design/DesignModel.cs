@@ -567,7 +567,7 @@ namespace LegalLab.Models.Design
 
 				foreach (INamedItem Item in NamedItems)
 				{
-					if (Item.Name == ProposedName)
+					if (Item.Name == Result)
 					{
 						Found = true;
 						break;
