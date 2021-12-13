@@ -19,7 +19,7 @@ namespace LegalLab.Models
 		/// Raises the <see cref="PropertyChanged"/> event.
 		/// </summary>
 		/// <param name="PropertyName">Name of property that has changed.</param>
-		public void RaisePropertyChanged(string PropertyName)
+		public virtual void RaisePropertyChanged(string PropertyName)
 		{
 			try
 			{

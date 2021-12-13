@@ -125,6 +125,15 @@ namespace LegalLab.Models.Legal
 			set => this.canRevoke.Value = value;
 		}
 
+		/// <inheritdoc/>
+		public override void RaisePropertyChanged(string PropertyName)
+		{
+			base.RaisePropertyChanged(PropertyName);
+
+			if (!(this.designModel is null))
+				this.designModel.RaisePropertyChanged(nameof(this.designModel.Roles));
+		}
+
 		internal void CanBeSignedChanged()
 		{
 			this.signAsRole.RaiseCanExecuteChanged();

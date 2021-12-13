@@ -29,6 +29,9 @@ namespace LegalLab.Models.Legal
 			this.designModel = DesignModel;
 
 			this.removePart = new Command(this.CanExecuteRemovePart, this.ExecuteRemovePart);
+
+			if (!(this.designModel is null))
+				this.designModel.PropertyChanged += DesignModel_PropertyChanged;
 		}
 
 		/// <summary>
@@ -71,6 +74,12 @@ namespace LegalLab.Models.Legal
 			}
 		}
 
+		private void DesignModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof(Roles))
+				this.RaisePropertyChanged(nameof(Roles));
+		}
+
 		/// <summary>
 		/// Remove part command
 		/// </summary>
@@ -90,7 +99,11 @@ namespace LegalLab.Models.Legal
 		/// </summary>
 		public void ExecuteRemovePart()
 		{
-			this.designModel?.RemovePart(this);
+			if (!(this.designModel is null))
+			{
+				this.designModel.PropertyChanged -= DesignModel_PropertyChanged;
+				this.designModel.RemovePart(this);
+			}
 		}
 	}
 }
