@@ -1,6 +1,7 @@
 ﻿using LegalLab.Extensions;
 using LegalLab.Models.Legal;
 using LegalLab.Models.Legal.Items;
+using LegalLab.Models.Legal.Items.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -359,7 +360,7 @@ namespace LegalLab.Models.Design
 					CheckBox.Checked += Parameter_CheckedChanged;
 					CheckBox.Unchecked += Parameter_CheckedChanged;
 
-					this.parametersByName[Parameter.Name] = ParameterInfo = new ParameterInfo(this.contract, Parameter, CheckBox, this);
+					this.parametersByName[Parameter.Name] = ParameterInfo = new BooleanParameterInfo(this.contract, BP, CheckBox, this);
 
 					Parameters.Children.Add(CheckBox);
 				}
@@ -380,7 +381,12 @@ namespace LegalLab.Models.Design
 
 					TextBox.TextChanged += Parameter_TextChanged;
 
-					this.parametersByName[Parameter.Name] = ParameterInfo = new ParameterInfo(this.contract, Parameter, TextBox, this);
+					if (Parameter is NumericalParameter NP)
+						this.parametersByName[Parameter.Name] = ParameterInfo = new NumericalParameterInfo(this.contract, NP, TextBox, this);
+					else if (Parameter is StringParameter SP)
+						this.parametersByName[Parameter.Name] = ParameterInfo = new StringParameterInfo(this.contract, SP, TextBox, this);
+					else
+						continue;
 
 					Parameters.Children.Add(Label);
 					Parameters.Children.Add(TextBox);
@@ -652,8 +658,9 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public void ExecuteAddNumericParameter()
 		{
-			this.AddParameter(new NumericalParameter()
+			this.AddParameter(new NumericalParameterInfo(this.contract, new NumericalParameter()
 			{
+				Name = this.FindNewName("Numeric", this.Parameters),
 				Descriptions = new HumanReadableText[] { "Enter parameter description as **Markdown**".ToHumanReadableText() },
 				Expression = string.Empty,
 				Guide = string.Empty,
@@ -661,9 +668,8 @@ namespace LegalLab.Models.Design
 				MaxIncluded = false,
 				Min = null,
 				MinIncluded = false,
-				Name = this.FindNewName("Numeric", this.Parameters),
 				Value = null
-			});
+			}, null, this));  // TODO: Control;
 
 			this.Parameters = Parameters;
 		}
@@ -678,8 +684,9 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public void ExecuteAddStringParameter()
 		{
-			this.AddParameter(new StringParameter()
+			this.AddParameter(new StringParameterInfo(this.contract, new StringParameter()
 			{
+				Name = this.FindNewName("String", this.Parameters),
 				Descriptions = new HumanReadableText[] { "Enter parameter description as **Markdown**".ToHumanReadableText() },
 				Expression = string.Empty,
 				Guide = string.Empty,
@@ -687,12 +694,11 @@ namespace LegalLab.Models.Design
 				MaxIncluded = false,
 				Min = null,
 				MinIncluded = false,
-				Name = this.FindNewName("String", this.Parameters),
 				Value = null,
 				MinLength = null,
 				MaxLength = null,
 				RegEx = null
-			});
+			}, null, this));  // TODO: Control;
 
 			this.Parameters = Parameters;
 		}
@@ -707,25 +713,25 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public void ExecuteAddBooleanParameter()
 		{
-			this.AddParameter(new BooleanParameter()
+			this.AddParameter(new BooleanParameterInfo(this.contract, new BooleanParameter()
 			{
+				Name = this.FindNewName("Boolean", this.Parameters),
 				Descriptions = new HumanReadableText[] { "Enter parameter description as **Markdown**".ToHumanReadableText() },
 				Expression = string.Empty,
 				Guide = string.Empty,
-				Name = this.FindNewName("Boolean", this.Parameters),
 				Value = null
-			});
+			}, null, this));  // TODO: Control;
 
 			this.Parameters = Parameters;
 		}
 
-		private void AddParameter(Parameter Parameter)
+		private void AddParameter(ParameterInfo Parameter)
 		{
 			ParameterInfo[] Parameters = this.Parameters;
 			int c = Parameters.Length;
 
 			Array.Resize<ParameterInfo>(ref Parameters, c + 1);
-			Parameters[c] = new ParameterInfo(this.contract, Parameter, null, this);  // TODO: Control
+			Parameters[c] = Parameter;
 
 			this.Parameters = Parameters;
 		}

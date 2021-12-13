@@ -1,5 +1,6 @@
 ﻿using LegalLab.Extensions;
 using LegalLab.Models.Legal.Items;
+using LegalLab.Models.Legal.Items.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -391,7 +392,7 @@ namespace LegalLab.Models.Legal
 					CheckBox.Checked += Parameter_CheckedChanged;
 					CheckBox.Unchecked += Parameter_CheckedChanged;
 
-					this.parametersByName[Parameter.Name] = ParameterInfo = new ParameterInfo(this.contract, Parameter, CheckBox, null);
+					this.parametersByName[Parameter.Name] = ParameterInfo = new BooleanParameterInfo(this.contract, BP, CheckBox, null);
 
 					Parameters.Children.Add(CheckBox);
 				}
@@ -412,7 +413,12 @@ namespace LegalLab.Models.Legal
 
 					TextBox.TextChanged += Parameter_TextChanged;
 
-					this.parametersByName[Parameter.Name] = ParameterInfo = new ParameterInfo(this.contract, Parameter, TextBox, null);
+					if (Parameter is NumericalParameter NP)
+						this.parametersByName[Parameter.Name] = ParameterInfo = new NumericalParameterInfo(this.contract, NP, TextBox, null);
+					else if (Parameter is StringParameter SP)
+						this.parametersByName[Parameter.Name] = ParameterInfo = new StringParameterInfo(this.contract, SP, TextBox, null);
+					else
+						continue;
 
 					Parameters.Children.Add(Label);
 					Parameters.Children.Add(TextBox);

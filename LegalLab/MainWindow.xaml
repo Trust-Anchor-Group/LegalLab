@@ -295,6 +295,8 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellEditingTemplate>
                                     </DataGridTemplateColumn>
+                                    <DataGridTextColumn Binding="{Binding Guide}" Header="Guide"/>
+                                    <DataGridTextColumn Binding="{Binding Expression}" Header="Expression"/>
                                     <DataGridTemplateColumn>
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>

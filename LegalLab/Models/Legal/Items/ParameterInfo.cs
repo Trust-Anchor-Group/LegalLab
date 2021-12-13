@@ -4,18 +4,21 @@ using System;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Script;
 
 namespace LegalLab.Models.Legal.Items
 {
 	/// <summary>
 	/// Contains information about a parameter
 	/// </summary>
-	public class ParameterInfo : Model, INamedItem
+	public abstract class ParameterInfo : Model, INamedItem
 	{
 		private readonly Property<string> name;
 		private readonly Property<object> description;
 		private readonly Property<string> descriptionAsMarkdown;
 		private readonly Property<object> value;
+		private readonly Property<string> expression;
+		private readonly Property<string> guide;
 
 		private readonly Command removeParameter;
 		private readonly DesignModel designModel;
@@ -33,6 +36,8 @@ namespace LegalLab.Models.Legal.Items
 			this.description = new Property<object>(nameof(this.Description), Parameter.ToSimpleXAML(Contract.DefaultLanguage, Contract), this);
 			this.descriptionAsMarkdown = new Property<string>(nameof(this.DescriptionAsMarkdown), Parameter.ToMarkdown(Contract.DefaultLanguage, Contract).Trim(), this);
 			this.value = new Property<object>(nameof(this.Value), Parameter.ObjectValue, this);
+			this.expression = new Property<string>(nameof(this.Expression), Parameter.Expression, this);
+			this.guide = new Property<string>(nameof(this.Guide), Parameter.Guide, this);
 
 			this.Parameter = Parameter;
 			this.Control = Control;
@@ -99,6 +104,30 @@ namespace LegalLab.Models.Legal.Items
 				this.Parameter.SetValue(value);
 				this.value.Value = value;
 			}
+		}
+
+		/// <summary>
+		/// Optional Validation expression
+		/// </summary>
+		public string Expression
+		{
+			get => this.expression.Value;
+			set
+			{
+				if (!string.IsNullOrEmpty(value))
+					new Expression(value);
+				
+				this.expression.Value = value;
+			}
+		}
+
+		/// <summary>
+		/// Guiding text.
+		/// </summary>
+		public string Guide
+		{
+			get => this.guide.Value;
+			set => this.guide.Value = value;
 		}
 
 		/// <summary>
