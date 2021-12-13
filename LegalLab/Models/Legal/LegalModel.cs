@@ -444,7 +444,7 @@ namespace LegalLab.Models.Legal
 
 				this.ProposedContract = Contract;
 
-				if (!(this.currentContract is null))
+				if (!(this.currentTemplate is null))
 					await this.currentTemplate.Stop();
 
 				this.currentTemplate = new ContractModel(this.contracts, Contract, this);
