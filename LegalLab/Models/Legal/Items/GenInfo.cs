@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LegalLab.Models.Legal
+namespace LegalLab.Models.Legal.Items
 {
     /// <summary>
     /// Contains some general information

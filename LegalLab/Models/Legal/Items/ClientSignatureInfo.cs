@@ -1,7 +1,7 @@
 ﻿using System;
 using Waher.Networking.XMPP.Contracts;
 
-namespace LegalLab.Models.Legal
+namespace LegalLab.Models.Legal.Items
 {
     /// <summary>
     /// Contains information about a client signature

@@ -4,7 +4,7 @@ using System;
 using System.Windows.Input;
 using Waher.Networking.XMPP.Contracts;
 
-namespace LegalLab.Models.Legal
+namespace LegalLab.Models.Legal.Items
 {
 	/// <summary>
 	/// Contains information about a role

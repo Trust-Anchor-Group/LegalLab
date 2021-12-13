@@ -3,7 +3,7 @@ using System;
 using System.Windows.Controls;
 using Waher.Networking.XMPP.Contracts;
 
-namespace LegalLab.Models.Legal
+namespace LegalLab.Models.Legal.Items
 {
 	/// <summary>
 	/// Contains information about a parameter

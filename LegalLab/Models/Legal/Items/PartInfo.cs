@@ -2,7 +2,7 @@
 using System;
 using System.Windows.Input;
 
-namespace LegalLab.Models.Legal
+namespace LegalLab.Models.Legal.Items
 {
 	/// <summary>
 	/// Contains information about a part in the contract

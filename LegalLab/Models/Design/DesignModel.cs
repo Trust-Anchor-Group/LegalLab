@@ -1,5 +1,6 @@
 ﻿using LegalLab.Extensions;
 using LegalLab.Models.Legal;
+using LegalLab.Models.Legal.Items;
 using System;
 using System.Collections.Generic;
 using System.Text;
