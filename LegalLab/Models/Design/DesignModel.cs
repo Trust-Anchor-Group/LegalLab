@@ -48,7 +48,6 @@ namespace LegalLab.Models.Design
 		private readonly Command addStringParameter;
 		private readonly Command addBooleanParameter;
 
-		private readonly Dictionary<string, ParameterInfo> parametersByName = new Dictionary<string, ParameterInfo>();
 		private StackPanel humanReadableText = null;
 		private Contract contract;
 
@@ -140,18 +139,56 @@ namespace LegalLab.Models.Design
 
 			this.Roles = Roles.ToArray();
 
-			List<ParameterInfo> Parameters = new List<ParameterInfo>();
+			List<ParameterInfo> ParameterList = new List<ParameterInfo>();
+			ParameterInfo ParameterInfo;
 
-			if (!(Contract.Parameters is null))
+			foreach (Parameter Parameter in this.contract.Parameters)
 			{
-				foreach (Parameter Parameter in Contract.Parameters)
+				if (Parameter is NumericalParameter NP)
 				{
-					if (this.parametersByName.TryGetValue(Parameter.Name, out ParameterInfo ParameterInfo))
-						Parameters.Add(ParameterInfo);
+					TextBox TextBox = new TextBox();
+					
+					TextBox.SetBinding(TextBox.TextProperty, "Value");
+					TextBox.TextChanged += Parameter_TextChanged;
+
+					ParameterInfo = new NumericalParameterInfo(this.contract, NP, TextBox, this);
+					TextBox.Tag = ParameterInfo;
 				}
+				else if (Parameter is StringParameter SP)
+				{
+					TextBox TextBox = new TextBox();
+
+					TextBox.SetBinding(TextBox.TextProperty, "Value");
+					TextBox.TextChanged += Parameter_TextChanged;
+
+					ParameterInfo = new StringParameterInfo(this.contract, SP, TextBox, this);
+					TextBox.Tag = ParameterInfo;
+				}
+				else if (Parameter is BooleanParameter BP)
+				{
+					CheckBox CheckBox = new CheckBox()
+					{
+						VerticalAlignment = VerticalAlignment.Center,
+						HorizontalAlignment = HorizontalAlignment.Center
+					};
+
+					CheckBox.SetBinding(CheckBox.IsCheckedProperty, "Value");
+					CheckBox.Checked += Parameter_CheckedChanged;
+					CheckBox.Unchecked += Parameter_CheckedChanged;
+
+					ParameterInfo = new BooleanParameterInfo(this.contract, BP, CheckBox, this);
+					CheckBox.Tag = ParameterInfo;
+				}
+				else
+					continue;
+
+				ParameterList.Add(ParameterInfo);
 			}
 
-			this.Parameters = Parameters.ToArray();
+			this.Parameters = ParameterList.ToArray();
+
+			this.ValidateParameters();
+			PopulateHumanReadableText();
 
 			if (Contract.ForMachines is null)
 			{
@@ -329,135 +366,15 @@ namespace LegalLab.Models.Design
 			set => this.contractId.Value = value;
 		}
 
-		/// <summary>
-		/// Populates a <see cref="StackPanel"/> with parameter controls.
-		/// </summary>
-		/// <param name="Parameters">StackPanel to populate</param>
-		public void PopulateParameters(StackPanel Parameters, StackPanel AdditionalCommands)
-		{
-			List<ParameterInfo> ParameterList = new List<ParameterInfo>();
-			ParameterInfo ParameterInfo;
-
-			Parameters.Children.Clear();
-			this.parametersByName.Clear();
-
-			Parameters.DataContext = this;
-
-			foreach (Parameter Parameter in this.contract.Parameters)
-			{
-				if (Parameter is BooleanParameter BP)
-				{
-					CheckBox CheckBox = new CheckBox()
-					{
-						Tag = Parameter.Name,
-						IsChecked = BP.Value.HasValue && BP.Value.Value,
-						VerticalContentAlignment = VerticalAlignment.Center,
-						Content = GetLabel(Parameter),
-						ToolTip = Parameter.ToSimpleXAML(this.DefaultLanguage, this.contract),
-						Margin = new Thickness(0, 10, 0, 0)
-					};
-
-					CheckBox.Checked += Parameter_CheckedChanged;
-					CheckBox.Unchecked += Parameter_CheckedChanged;
-
-					this.parametersByName[Parameter.Name] = ParameterInfo = new BooleanParameterInfo(this.contract, BP, CheckBox, this);
-
-					Parameters.Children.Add(CheckBox);
-				}
-				else
-				{
-					Label Label = new Label()
-					{
-						Content = GetLabel(Parameter),
-						Margin = new Thickness(0, 10, 0, 0)
-					};
-
-					TextBox TextBox = new TextBox()
-					{
-						Tag = Parameter.Name,
-						Text = Parameter.ObjectValue?.ToString(),
-						ToolTip = Parameter.ToSimpleXAML(this.DefaultLanguage, this.contract)
-					};
-
-					TextBox.TextChanged += Parameter_TextChanged;
-
-					if (Parameter is NumericalParameter NP)
-						this.parametersByName[Parameter.Name] = ParameterInfo = new NumericalParameterInfo(this.contract, NP, TextBox, this);
-					else if (Parameter is StringParameter SP)
-						this.parametersByName[Parameter.Name] = ParameterInfo = new StringParameterInfo(this.contract, SP, TextBox, this);
-					else
-						continue;
-
-					Parameters.Children.Add(Label);
-					Parameters.Children.Add(TextBox);
-				}
-
-				ParameterList.Add(ParameterInfo);
-			}
-
-			this.Parameters = ParameterList.ToArray();
-
-			this.ValidateParameters();
-			PopulateHumanReadableText();
-
-			AdditionalCommands.DataContext = this;
-			AdditionalCommands.Visibility = System.Windows.Visibility.Visible;
-			AdditionalCommands.InvalidateVisual();
-		}
-
-		private static string GetLabel(Parameter P)
-		{
-			if (string.IsNullOrEmpty(P.Guide))
-				return P.Name + ":";
-			else
-				return P.Name + " (" + P.Guide + "):";
-		}
-
-		private void Parameter_CheckedChanged(object sender, RoutedEventArgs e)
-		{
-			if (!(sender is CheckBox CheckBox) || !this.parametersByName.TryGetValue(CheckBox.Tag.ToString(), out ParameterInfo ParameterInfo))
-				return;
-
-			ParameterInfo.Value = CheckBox.IsChecked;
-
-			this.ValidateParameters();
-			PopulateHumanReadableText();
-		}
-
-		private void Parameter_TextChanged(object sender, RoutedEventArgs e)
-		{
-			if (!(sender is TextBox TextBox) || !this.parametersByName.TryGetValue(TextBox.Tag.ToString(), out ParameterInfo ParameterInfo))
-				return;
-
-			try
-			{
-				if (ParameterInfo.Parameter is NumericalParameter && double.TryParse(TextBox.Text, out double d))
-					ParameterInfo.Value = d;
-				else if (ParameterInfo.Parameter is BooleanParameter && bool.TryParse(TextBox.Text, out bool b))
-					ParameterInfo.Value = b;
-				else
-					ParameterInfo.Value = TextBox.Text;
-
-				TextBox.Background = null;
-				this.ValidateParameters();
-			}
-			catch (Exception)
-			{
-				TextBox.Background = Brushes.Salmon;
-			}
-
-			PopulateHumanReadableText();
-		}
-
 		private void ValidateParameters()
 		{
 			Variables Variables = new Variables();
 			bool Ok = true;
 
-			foreach (ParameterInfo P in this.parametersByName.Values)
+			foreach (ParameterInfo P in this.Parameters)
 				P.Parameter.Populate(Variables);
 
-			foreach (ParameterInfo P in this.parametersByName.Values)
+			foreach (ParameterInfo P in this.Parameters)
 			{
 				if (P.Parameter.IsParameterValid(Variables))
 					P.Control.Background = null;
@@ -517,20 +434,6 @@ namespace LegalLab.Models.Design
 		{
 			get => this.parameters.Value;
 			set => this.parameters.Value = value;
-		}
-
-		/// <summary>
-		/// Displays the contents of the contract
-		/// </summary>
-		/// <param name="ContractLayout">Where to layout the contract</param>
-		/// <param name="HumanReadableText">Control where human-readable content is placed</param>
-		public void PopulateContract(StackPanel ContractLayout, StackPanel HumanReadableText)
-		{
-			this.humanReadableText = HumanReadableText;
-			this.PopulateHumanReadableText();
-
-			ContractLayout.DataContext = this;
-			ContractLayout.Visibility = System.Windows.Visibility.Visible;
 		}
 
 		/// <summary>
@@ -658,7 +561,7 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public void ExecuteAddNumericParameter()
 		{
-			this.AddParameter(new NumericalParameterInfo(this.contract, new NumericalParameter()
+			NumericalParameter NP = new NumericalParameter()
 			{
 				Name = this.FindNewName("Numeric", this.Parameters),
 				Descriptions = new HumanReadableText[] { "Enter parameter description as **Markdown**".ToHumanReadableText() },
@@ -669,9 +572,17 @@ namespace LegalLab.Models.Design
 				Min = null,
 				MinIncluded = false,
 				Value = null
-			}, null, this));  // TODO: Control;
+			};
 
-			this.Parameters = Parameters;
+			TextBox TextBox = new TextBox();
+
+			TextBox.SetBinding(TextBox.TextProperty, "Value");
+			TextBox.TextChanged += Parameter_TextChanged;
+
+			ParameterInfo ParameterInfo = new NumericalParameterInfo(this.contract, NP, TextBox, this);
+			TextBox.Tag = ParameterInfo;
+
+			this.AddParameter(ParameterInfo);
 		}
 
 		/// <summary>
@@ -684,7 +595,7 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public void ExecuteAddStringParameter()
 		{
-			this.AddParameter(new StringParameterInfo(this.contract, new StringParameter()
+			StringParameter SP = new StringParameter()
 			{
 				Name = this.FindNewName("String", this.Parameters),
 				Descriptions = new HumanReadableText[] { "Enter parameter description as **Markdown**".ToHumanReadableText() },
@@ -698,9 +609,37 @@ namespace LegalLab.Models.Design
 				MinLength = null,
 				MaxLength = null,
 				RegEx = null
-			}, null, this));  // TODO: Control;
+			};
 
-			this.Parameters = Parameters;
+			TextBox TextBox = new TextBox();
+
+			TextBox.SetBinding(TextBox.TextProperty, "Value");
+			TextBox.TextChanged += Parameter_TextChanged;
+
+			ParameterInfo ParameterInfo = new StringParameterInfo(this.contract, SP, TextBox, this);
+			TextBox.Tag = ParameterInfo;
+
+			this.AddParameter(ParameterInfo);
+		}
+
+		private void Parameter_TextChanged(object sender, RoutedEventArgs e)
+		{
+			if (!(sender is TextBox TextBox) || !(TextBox.Tag is ParameterInfo ParameterInfo))
+				return;
+
+			try
+			{
+				ParameterInfo.Value = TextBox.Text;
+
+				TextBox.Background = null;
+				this.ValidateParameters();
+			}
+			catch (Exception)
+			{
+				TextBox.Background = Brushes.Salmon;
+			}
+
+			PopulateHumanReadableText();
 		}
 
 		/// <summary>
@@ -713,16 +652,40 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public void ExecuteAddBooleanParameter()
 		{
-			this.AddParameter(new BooleanParameterInfo(this.contract, new BooleanParameter()
+			BooleanParameter BP = new BooleanParameter()
 			{
 				Name = this.FindNewName("Boolean", this.Parameters),
 				Descriptions = new HumanReadableText[] { "Enter parameter description as **Markdown**".ToHumanReadableText() },
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Value = null
-			}, null, this));  // TODO: Control;
+			};
 
-			this.Parameters = Parameters;
+			CheckBox CheckBox = new CheckBox()
+			{
+				VerticalContentAlignment = VerticalAlignment.Center,
+				HorizontalContentAlignment = HorizontalAlignment.Center
+			};
+
+			CheckBox.SetBinding(CheckBox.IsEnabledProperty, "Value");
+			CheckBox.Checked += Parameter_CheckedChanged;
+			CheckBox.Unchecked += Parameter_CheckedChanged;
+
+			ParameterInfo ParameterInfo = new BooleanParameterInfo(this.contract, BP, CheckBox, this);
+			CheckBox.Tag = ParameterInfo;
+
+			this.AddParameter(ParameterInfo);
+		}
+
+		private void Parameter_CheckedChanged(object sender, RoutedEventArgs e)
+		{
+			if (!(sender is CheckBox CheckBox) || !(CheckBox.Tag is ParameterInfo ParameterInfo))
+				return;
+
+			ParameterInfo.Value = CheckBox.IsChecked;
+
+			this.ValidateParameters();
+			PopulateHumanReadableText();
 		}
 
 		private void AddParameter(ParameterInfo Parameter)

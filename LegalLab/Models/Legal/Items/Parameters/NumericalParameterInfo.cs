@@ -10,6 +10,8 @@ namespace LegalLab.Models.Legal.Items.Parameters
 	/// </summary>
 	public class NumericalParameterInfo : ParameterInfo
 	{
+		private readonly NumericalParameter numericalParameter;
+
 		/// <summary>
 		/// Contains information about a numerical parameter
 		/// </summary>
@@ -20,6 +22,13 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		public NumericalParameterInfo(Contract Contract, NumericalParameter Parameter, Control Control, DesignModel DesignModel) 
 			: base(Contract, Parameter, Control, DesignModel)
 		{
+			this.numericalParameter = Parameter;
+		}
+
+		/// <inheritdoc/>
+		public override void Revalidate()
+		{
+			this.numericalParameter.Value = this.numericalParameter.Value;
 		}
 	}
 }

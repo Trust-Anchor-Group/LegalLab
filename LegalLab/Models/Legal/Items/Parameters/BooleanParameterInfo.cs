@@ -10,6 +10,8 @@ namespace LegalLab.Models.Legal.Items.Parameters
 	/// </summary>
 	public class BooleanParameterInfo : ParameterInfo
 	{
+		private readonly BooleanParameter booleanParameter;
+
 		/// <summary>
 		/// Contains information about a boolean parameter
 		/// </summary>
@@ -20,6 +22,13 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		public BooleanParameterInfo(Contract Contract, BooleanParameter Parameter, Control Control, DesignModel DesignModel) 
 			: base(Contract, Parameter, Control, DesignModel)
 		{
+			this.booleanParameter = Parameter;
+		}
+
+		/// <inheritdoc/>
+		public override void Revalidate()
+		{
+			this.booleanParameter.SetValue(this.booleanParameter.Value);
 		}
 	}
 }

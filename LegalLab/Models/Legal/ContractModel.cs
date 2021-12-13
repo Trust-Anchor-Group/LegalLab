@@ -384,7 +384,7 @@ namespace LegalLab.Models.Legal
 						Tag = Parameter.Name,
 						IsChecked = BP.Value.HasValue && BP.Value.Value,
 						VerticalContentAlignment = VerticalAlignment.Center,
-						Content = GetLabel(Parameter),
+						Content = Parameter.GetLabel(),
 						ToolTip = Parameter.ToSimpleXAML(this.contract.DefaultLanguage, this.contract),
 						Margin = new Thickness(0, 10, 0, 0)
 					};
@@ -400,7 +400,7 @@ namespace LegalLab.Models.Legal
 				{
 					Label Label = new Label()
 					{
-						Content = GetLabel(Parameter),
+						Content = Parameter.GetLabel(),
 						Margin = new Thickness(0, 10, 0, 0)
 					};
 
@@ -435,14 +435,6 @@ namespace LegalLab.Models.Legal
 			AdditionalCommands.DataContext = this;
 			AdditionalCommands.Visibility = Visibility.Visible;
 			AdditionalCommands.InvalidateVisual();
-		}
-
-		private static string GetLabel(Parameter P)
-		{
-			if (string.IsNullOrEmpty(P.Guide))
-				return P.Name + ":";
-			else
-				return P.Name + " (" + P.Guide + "):";
 		}
 
 		private void Parameter_CheckedChanged(object sender, RoutedEventArgs e)

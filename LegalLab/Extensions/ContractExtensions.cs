@@ -66,5 +66,13 @@ namespace LegalLab.Extensions
 			return Result;
 		}
 
+		public static string GetLabel(this Parameter P)
+		{
+			if (string.IsNullOrEmpty(P.Guide))
+				return P.Name + ":";
+			else
+				return P.Name + " (" + P.Guide + "):";
+		}
+
 	}
 }

@@ -4,6 +4,7 @@ using System;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Contracts.HumanReadable;
 using Waher.Script;
 
 namespace LegalLab.Models.Legal.Items
@@ -68,7 +69,11 @@ namespace LegalLab.Models.Legal.Items
 		public string Name
 		{
 			get => this.name.Value;
-			set => this.name.Value = value;
+			set
+			{
+				this.Parameter.Name = value;
+				this.name.Value = value;
+			}
 		}
 
 		/// <summary>
@@ -88,6 +93,7 @@ namespace LegalLab.Models.Legal.Items
 			get => this.descriptionAsMarkdown.Value;
 			set
 			{
+				this.Parameter.Descriptions = new HumanReadableText[] { value.ToHumanReadableText() };
 				this.descriptionAsMarkdown.Value = value;
 				this.description.Value = value.ToSimpleXAML();
 			}
@@ -116,10 +122,18 @@ namespace LegalLab.Models.Legal.Items
 			{
 				if (!string.IsNullOrEmpty(value))
 					new Expression(value);
-				
+
+				this.Parameter.Expression = value;
 				this.expression.Value = value;
+				
+				this.Revalidate();
 			}
 		}
+
+		/// <summary>
+		/// Revalidates the parameter value.
+		/// </summary>
+		public abstract void Revalidate();
 
 		/// <summary>
 		/// Guiding text.
@@ -127,7 +141,11 @@ namespace LegalLab.Models.Legal.Items
 		public string Guide
 		{
 			get => this.guide.Value;
-			set => this.guide.Value = value;
+			set
+			{
+				this.Parameter.Guide = value;
+				this.guide.Value = value;
+			}
 		}
 
 		/// <summary>
@@ -151,5 +169,6 @@ namespace LegalLab.Models.Legal.Items
 		{
 			this.designModel?.RemoveParameter(this);
 		}
+
 	}
 }

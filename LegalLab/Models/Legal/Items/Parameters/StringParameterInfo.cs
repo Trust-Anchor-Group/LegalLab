@@ -10,6 +10,8 @@ namespace LegalLab.Models.Legal.Items.Parameters
 	/// </summary>
 	public class StringParameterInfo : ParameterInfo
 	{
+		private readonly StringParameter stringParameter;
+
 		/// <summary>
 		/// Contains information about a string parameter
 		/// </summary>
@@ -20,6 +22,13 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		public StringParameterInfo(Contract Contract, StringParameter Parameter, Control Control, DesignModel DesignModel) 
 			: base(Contract, Parameter, Control, DesignModel)
 		{
+			this.stringParameter = Parameter;
+		}
+
+		/// <inheritdoc/>
+		public override void Revalidate()
+		{
+			this.stringParameter.SetValue(this.stringParameter.Value);
 		}
 	}
 }
