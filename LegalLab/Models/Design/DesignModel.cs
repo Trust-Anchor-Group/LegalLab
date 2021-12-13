@@ -334,7 +334,7 @@ namespace LegalLab.Models.Design
 						IsChecked = BP.Value.HasValue && BP.Value.Value,
 						VerticalContentAlignment = VerticalAlignment.Center,
 						Content = GetLabel(Parameter),
-						ToolTip = XamlReader.Parse(Parameter.ToXAML(this.DefaultLanguage, this.contract)),
+						ToolTip = Parameter.ToSimpleXAML(this.DefaultLanguage, this.contract),
 						Margin = new Thickness(0, 10, 0, 0)
 					};
 
@@ -357,7 +357,7 @@ namespace LegalLab.Models.Design
 					{
 						Tag = Parameter.Name,
 						Text = Parameter.ObjectValue?.ToString(),
-						ToolTip = XamlReader.Parse(Parameter.ToXAML(this.DefaultLanguage, this.contract))
+						ToolTip = Parameter.ToSimpleXAML(this.DefaultLanguage, this.contract)
 					};
 
 					TextBox.TextChanged += Parameter_TextChanged;

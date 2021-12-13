@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LegalLab.Extensions;
+using System;
 using System.Windows.Input;
 using Waher.Networking.XMPP.Contracts;
 
@@ -11,7 +12,7 @@ namespace LegalLab.Models.Legal
 	{
 		private readonly ContractModel contract;
 		private readonly Property<string> name;
-		private readonly Property<string> description;
+		private readonly Property<object> description;
 		private readonly Property<int> minCount;
 		private readonly Property<int> maxCount;
 		private readonly Property<bool> canRevoke;
@@ -28,7 +29,7 @@ namespace LegalLab.Models.Legal
 		{
 			this.contract = Contract;
 			this.name = new Property<string>(nameof(this.Name), Role.Name, this);
-			this.description = new Property<string>(nameof(this.Description), Role.ToPlainText(Contract.Contract.DefaultLanguage, Contract.Contract).Trim(), this);
+			this.description = new Property<object>(nameof(this.Description), Role.ToSimpleXAML(Contract.Contract.DefaultLanguage, Contract.Contract), this);
 			this.minCount = new Property<int>(nameof(this.MaxCount), Role.MinCount, this);
 			this.maxCount = new Property<int>(nameof(this.MinCount), Role.MaxCount, this);
 			this.canRevoke = new Property<bool>(nameof(this.CanRevoke), Role.CanRevoke, this);
@@ -47,9 +48,9 @@ namespace LegalLab.Models.Legal
 		}
 
 		/// <summary>
-		/// Description of the role.
+		/// Description (formatted) of the role.
 		/// </summary>
-		public string Description
+		public object Description
 		{
 			get => this.description.Value;
 			set => this.description.Value = value;

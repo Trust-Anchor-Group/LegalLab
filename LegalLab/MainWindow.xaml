@@ -226,7 +226,13 @@
                                       AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Binding="{Binding Name}" Header="Role"/>
-                                    <DataGridTextColumn Binding="{Binding Description}" Header="Description"/>
+                                    <DataGridTemplateColumn Header="Description">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ContentControl Content="{Binding Description}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                     <DataGridTextColumn Binding="{Binding MinCount}" Header="Min"/>
                                     <DataGridTextColumn Binding="{Binding MaxCount}" Header="Max"/>
                                     <DataGridTextColumn Binding="{Binding CanRevoke, Converter={conv:BooleanToYesNo}}" Header="Can Revoke"/>
@@ -264,7 +270,13 @@
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Binding="{Binding Name}" Header="Parameter"/>
                                     <DataGridTextColumn Binding="{Binding Value}" Header="Value"/>
-                                    <DataGridTextColumn Binding="{Binding Description}" Header="Description"/>
+                                    <DataGridTemplateColumn Header="Description">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ContentControl Content="{Binding Description}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
 
@@ -320,7 +332,13 @@
                                       AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Binding="{Binding Name}" Header="Role"/>
-                                    <DataGridTextColumn Binding="{Binding Description}" Header="Description"/>
+                                    <DataGridTemplateColumn Header="Description">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ContentControl Content="{Binding Description}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                     <DataGridTextColumn Binding="{Binding MinCount}" Header="Min"/>
                                     <DataGridTextColumn Binding="{Binding MaxCount}" Header="Max"/>
                                     <DataGridTextColumn Binding="{Binding CanRevoke, Converter={conv:BooleanToYesNo}}" Header="Can Revoke"/>
@@ -344,7 +362,13 @@
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Binding="{Binding Name}" Header="Parameter"/>
                                     <DataGridTextColumn Binding="{Binding Value}" Header="Value"/>
-                                    <DataGridTextColumn Binding="{Binding Description}" Header="Description"/>
+                                    <DataGridTemplateColumn Header="Description">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ContentControl Content="{Binding Description}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
 
@@ -409,7 +433,13 @@
                                       AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Binding="{Binding Name}" Header="Role"/>
-                                    <DataGridTextColumn Binding="{Binding Description}" Header="Description"/>
+                                    <DataGridTemplateColumn Header="Description">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ContentControl Content="{Binding Description}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                     <DataGridTextColumn Binding="{Binding MinCount}" Header="Min"/>
                                     <DataGridTextColumn Binding="{Binding MaxCount}" Header="Max"/>
                                     <DataGridTextColumn Binding="{Binding CanRevoke, Converter={conv:BooleanToYesNo}}" Header="Can Revoke"/>
@@ -447,7 +477,13 @@
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Binding="{Binding Name}" Header="Parameter"/>
                                     <DataGridTextColumn Binding="{Binding Value}" Header="Value"/>
-                                    <DataGridTextColumn Binding="{Binding Description}" Header="Description"/>
+                                    <DataGridTemplateColumn Header="Description">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ContentControl Content="{Binding Description}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
 

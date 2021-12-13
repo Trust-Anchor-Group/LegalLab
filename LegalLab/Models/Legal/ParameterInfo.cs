@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LegalLab.Extensions;
+using System;
 using System.Windows.Controls;
 using Waher.Networking.XMPP.Contracts;
 
@@ -10,7 +11,7 @@ namespace LegalLab.Models.Legal
 	public class ParameterInfo : Model
 	{
 		private readonly Property<string> name;
-		private readonly Property<string> description;
+		private readonly Property<object> description;
 		private readonly Property<object> value;
 
 		/// <summary>
@@ -21,7 +22,7 @@ namespace LegalLab.Models.Legal
 		public ParameterInfo(Contract Contract, Parameter Parameter, Control Control)
 		{
 			this.name = new Property<string>(nameof(this.Name), Parameter.Name, this);
-			this.description = new Property<string>(nameof(this.Description), Parameter.ToPlainText(Contract.DefaultLanguage, Contract).Trim(), this);
+			this.description = new Property<object>(nameof(this.Description), Parameter.ToSimpleXAML(Contract.DefaultLanguage, Contract), this);
 			this.value = new Property<object>(nameof(this.Value), Parameter.ObjectValue, this);
 
 			this.Parameter = Parameter;
@@ -48,9 +49,9 @@ namespace LegalLab.Models.Legal
 		}
 
 		/// <summary>
-		/// Description of the parameter.
+		/// Description (formatted) of the parameter.
 		/// </summary>
-		public string Description
+		public object Description
 		{
 			get => this.description.Value;
 			set => this.description.Value = value;
