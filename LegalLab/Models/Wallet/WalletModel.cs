@@ -53,7 +53,7 @@ namespace LegalLab.Models.Wallet
 
 			lock (this.events)
 			{
-				this.events.Add(e.Balance.Event);
+				this.events.Insert(0, e.Balance.Event);
 
 			}
 
