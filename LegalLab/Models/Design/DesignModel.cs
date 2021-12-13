@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Xml;
@@ -40,6 +41,8 @@ namespace LegalLab.Models.Design
 		private readonly Property<string> forMachinesNamespace;
 		private readonly Property<XmlElement> forMachines;
 
+		private readonly Command addRole;
+
 		private readonly Dictionary<string, ParameterInfo> parametersByName = new Dictionary<string, ParameterInfo>();
 		private StackPanel humanReadableText = null;
 		private Contract contract;
@@ -66,6 +69,8 @@ namespace LegalLab.Models.Design
 			this.forMachinesLocalName = new Property<string>(nameof(this.ForMachinesLocalName), string.Empty, this);
 			this.forMachinesNamespace = new Property<string>(nameof(this.ForMachinesNamespace), string.Empty, this);
 			this.contractId = new Property<string>(nameof(this.ContractId), string.Empty, this);
+
+			this.addRole = new Command(this.ExecuteAddRole);
 
 			this.GenerateContract();
 		}
@@ -121,7 +126,7 @@ namespace LegalLab.Models.Design
 			if (!(Contract.Roles is null))
 			{
 				foreach (Role Role in Contract.Roles)
-					Roles.Add(new RoleInfo(null, Role));
+					Roles.Add(new RoleInfo(this.contract, Role));
 			}
 
 			this.Roles = Roles.ToArray();
@@ -507,6 +512,23 @@ namespace LegalLab.Models.Design
 
 			ContractLayout.DataContext = this;
 			ContractLayout.Visibility = System.Windows.Visibility.Visible;
+		}
+
+		/// <summary>
+		/// Command for adding a role to the design.
+		/// </summary>
+		public ICommand AddRole => this.addRole;
+
+		/// <summary>
+		/// Adds a role to the design.
+		/// </summary>
+		public void ExecuteAddRole()
+		{
+			RoleInfo[] Roles = this.Roles;
+			int c = Roles.Length;
+			Array.Resize<RoleInfo>(ref Roles, c + 1);
+			Roles[c] = new RoleInfo(this.contract, new Role());
+			this.Roles = Roles;
 		}
 
 	}

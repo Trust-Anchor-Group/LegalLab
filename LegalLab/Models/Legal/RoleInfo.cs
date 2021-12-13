@@ -10,7 +10,8 @@ namespace LegalLab.Models.Legal
 	/// </summary>
 	public class RoleInfo : Model
 	{
-		private readonly ContractModel contract;
+		private readonly ContractModel contractModel;
+		private readonly Contract contract;
 		private readonly Property<string> name;
 		private readonly Property<object> description;
 		private readonly Property<int> minCount;
@@ -23,13 +24,25 @@ namespace LegalLab.Models.Legal
 		/// <summary>
 		/// Contains information about a role
 		/// </summary>
+		/// <param name="ContractModel">Contract Model hosting the parameter</param>
+		/// <param name="Role">Role</param>
+		public RoleInfo(ContractModel ContractModel, Role Role)
+			: this(ContractModel.Contract, Role)
+		{
+			this.contractModel = ContractModel;
+		}
+
+		/// <summary>
+		/// Contains information about a role
+		/// </summary>
 		/// <param name="Contract">Contract hosting the parameter</param>
 		/// <param name="Role">Role</param>
-		public RoleInfo(ContractModel Contract, Role Role)
+		public RoleInfo(Contract Contract, Role Role)
 		{
 			this.contract = Contract;
+
 			this.name = new Property<string>(nameof(this.Name), Role.Name, this);
-			this.description = new Property<object>(nameof(this.Description), Role.ToSimpleXAML(Contract.Contract.DefaultLanguage, Contract.Contract), this);
+			this.description = new Property<object>(nameof(this.Description), Role.ToSimpleXAML(this.contract?.DefaultLanguage, this.contract), this);
 			this.minCount = new Property<int>(nameof(this.MaxCount), Role.MinCount, this);
 			this.maxCount = new Property<int>(nameof(this.MinCount), Role.MaxCount, this);
 			this.canRevoke = new Property<bool>(nameof(this.CanRevoke), Role.CanRevoke, this);
@@ -100,7 +113,7 @@ namespace LegalLab.Models.Legal
 		/// <returns></returns>
 		public bool CanExecuteSignAsRole()
 		{
-			return this.contract?.CanBeSigned ?? false;
+			return this.contractModel?.CanBeSigned ?? false;
 		}
 
 		/// <summary>
@@ -108,7 +121,7 @@ namespace LegalLab.Models.Legal
 		/// </summary>
 		public async void ExecuteSignAsRole()
 		{
-			await this.contract?.SignAsRole(this.Name);
+			await this.contractModel?.SignAsRole(this.Name);
 		}
 
 
@@ -123,7 +136,7 @@ namespace LegalLab.Models.Legal
 		/// <returns></returns>
 		public bool CanExecuteProposeForRole()
 		{
-			return this.contract?.CanBeSigned ?? false;
+			return this.contractModel?.CanBeSigned ?? false;
 		}
 
 		/// <summary>
@@ -131,7 +144,7 @@ namespace LegalLab.Models.Legal
 		/// </summary>
 		public void ExecuteProposeForRole()
 		{
-			this.contract?.ProposeForRole(this.Name);
+			this.contractModel?.ProposeForRole(this.Name);
 		}
 	}
 }
