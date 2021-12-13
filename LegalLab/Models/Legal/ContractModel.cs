@@ -391,7 +391,7 @@ namespace LegalLab.Models.Legal
 					CheckBox.Checked += Parameter_CheckedChanged;
 					CheckBox.Unchecked += Parameter_CheckedChanged;
 
-					this.parametersByName[Parameter.Name] = ParameterInfo = new ParameterInfo(this.contract, Parameter, CheckBox);
+					this.parametersByName[Parameter.Name] = ParameterInfo = new ParameterInfo(this.contract, Parameter, CheckBox, null);
 
 					Parameters.Children.Add(CheckBox);
 				}
@@ -412,7 +412,7 @@ namespace LegalLab.Models.Legal
 
 					TextBox.TextChanged += Parameter_TextChanged;
 
-					this.parametersByName[Parameter.Name] = ParameterInfo = new ParameterInfo(this.contract, Parameter, TextBox);
+					this.parametersByName[Parameter.Name] = ParameterInfo = new ParameterInfo(this.contract, Parameter, TextBox, null);
 
 					Parameters.Children.Add(Label);
 					Parameters.Children.Add(TextBox);

@@ -279,7 +279,7 @@
                             <Label FontSize="20" Margin="0,10,0,0">Parameters</Label>
                             <Label>Following are parameters defined in the contract:</Label>
                             <DataGrid ItemsSource="{Binding Parameters}" Width="Auto" HorizontalAlignment="Left" 
-                                      AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
+                                      AutoGenerateColumns="False" GridLinesVisibility="None">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Binding="{Binding Name}" Header="Parameter"/>
                                     <DataGridTextColumn Binding="{Binding Value}" Header="Value"/>
@@ -287,6 +287,18 @@
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <ContentControl Content="{Binding Description}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                        <DataGridTemplateColumn.CellEditingTemplate>
+                                            <DataTemplate>
+                                                <TextBox Text="{Binding DescriptionAsMarkdown}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellEditingTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Command="{Binding RemoveParameter}">Remove</Button>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>

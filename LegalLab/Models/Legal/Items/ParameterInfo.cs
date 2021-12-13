@@ -1,6 +1,8 @@
 ﻿using LegalLab.Extensions;
+using LegalLab.Models.Design;
 using System;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Waher.Networking.XMPP.Contracts;
 
 namespace LegalLab.Models.Legal.Items
@@ -12,32 +14,48 @@ namespace LegalLab.Models.Legal.Items
 	{
 		private readonly Property<string> name;
 		private readonly Property<object> description;
+		private readonly Property<string> descriptionAsMarkdown;
 		private readonly Property<object> value;
+
+		private readonly Command removeParameter;
+		private readonly DesignModel designModel;
 
 		/// <summary>
 		/// Contains information about a parameter
 		/// </summary>
 		/// <param name="Contract">Contract hosting the parameter</param>
 		/// <param name="Parameter">Parameter</param>
-		public ParameterInfo(Contract Contract, Parameter Parameter, Control Control)
+		/// <param name="Control">Edit control</param>
+		/// <param name="DesignModel">Design model</param>
+		public ParameterInfo(Contract Contract, Parameter Parameter, Control Control, DesignModel DesignModel)
 		{
 			this.name = new Property<string>(nameof(this.Name), Parameter.Name, this);
 			this.description = new Property<object>(nameof(this.Description), Parameter.ToSimpleXAML(Contract.DefaultLanguage, Contract), this);
+			this.descriptionAsMarkdown = new Property<string>(nameof(this.DescriptionAsMarkdown), Parameter.ToMarkdown(Contract.DefaultLanguage, Contract).Trim(), this);
 			this.value = new Property<object>(nameof(this.Value), Parameter.ObjectValue, this);
 
 			this.Parameter = Parameter;
 			this.Control = Control;
+			this.Contract = Contract;
+			this.designModel = DesignModel;
+
+			this.removeParameter = new Command(this.CanExecuteRemoveParameter, this.ExecuteRemoveParameter);
 		}
 
 		/// <summary>
 		/// Original parameter object in contract
 		/// </summary>
-		public Parameter Parameter { get; internal set; }
+		public Contract Contract { get; }
+
+		/// <summary>
+		/// Original parameter object in contract
+		/// </summary>
+		public Parameter Parameter { get; }
 
 		/// <summary>
 		/// Generated control.
 		/// </summary>
-		public Control Control { get; internal set; }
+		public Control Control { get; }
 
 		/// <summary>
 		/// Name
@@ -58,6 +76,19 @@ namespace LegalLab.Models.Legal.Items
 		}
 
 		/// <summary>
+		/// Description, as Markdown
+		/// </summary>
+		public string DescriptionAsMarkdown
+		{
+			get => this.descriptionAsMarkdown.Value;
+			set
+			{
+				this.descriptionAsMarkdown.Value = value;
+				this.description.Value = value.ToSimpleXAML();
+			}
+		}
+
+		/// <summary>
 		/// Parameter value
 		/// </summary>
 		public object Value
@@ -68,6 +99,28 @@ namespace LegalLab.Models.Legal.Items
 				this.Parameter.SetValue(value);
 				this.value.Value = value;
 			}
+		}
+
+		/// <summary>
+		/// Remove parameter command
+		/// </summary>
+		public ICommand RemoveParameter => this.removeParameter;
+
+		/// <summary>
+		/// If the remove parameter command can be exeucted.
+		/// </summary>
+		/// <returns></returns>
+		public bool CanExecuteRemoveParameter()
+		{
+			return !(this.designModel is null);
+		}
+
+		/// <summary>
+		/// Removes the parameter.
+		/// </summary>
+		public void ExecuteRemoveParameter()
+		{
+			this.designModel?.RemoveParameter(this);
 		}
 	}
 }

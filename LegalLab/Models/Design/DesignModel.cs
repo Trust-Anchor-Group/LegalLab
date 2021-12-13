@@ -359,7 +359,7 @@ namespace LegalLab.Models.Design
 					CheckBox.Checked += Parameter_CheckedChanged;
 					CheckBox.Unchecked += Parameter_CheckedChanged;
 
-					this.parametersByName[Parameter.Name] = ParameterInfo = new ParameterInfo(this.contract, Parameter, CheckBox);
+					this.parametersByName[Parameter.Name] = ParameterInfo = new ParameterInfo(this.contract, Parameter, CheckBox, this);
 
 					Parameters.Children.Add(CheckBox);
 				}
@@ -380,7 +380,7 @@ namespace LegalLab.Models.Design
 
 					TextBox.TextChanged += Parameter_TextChanged;
 
-					this.parametersByName[Parameter.Name] = ParameterInfo = new ParameterInfo(this.contract, Parameter, TextBox);
+					this.parametersByName[Parameter.Name] = ParameterInfo = new ParameterInfo(this.contract, Parameter, TextBox, this);
 
 					Parameters.Children.Add(Label);
 					Parameters.Children.Add(TextBox);
@@ -544,7 +544,7 @@ namespace LegalLab.Models.Design
 			Roles[c] = new RoleInfo(this, new Role()
 			{
 				Name = "New Role",
-				Descriptions = new HumanReadableText[] { "Enter role description as *Markdown*".ToHumanReadableText() },
+				Descriptions = new HumanReadableText[] { "Enter role description as **Markdown**".ToHumanReadableText() },
 				MinCount = 1,
 				MaxCount = 1,
 				CanRevoke = false
@@ -556,7 +556,7 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Removes a role from the design
 		/// </summary>
-		/// <param name="Role"></param>
+		/// <param name="Role">Role to remove</param>
 		public void RemoveRole(RoleInfo Role)
 		{
 			RoleInfo[] Roles = this.Roles;
@@ -596,7 +596,7 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Removes a part from the design
 		/// </summary>
-		/// <param name="Part"></param>
+		/// <param name="Part">Part to remove</param>
 		public void RemovePart(PartInfo Part)
 		{
 			PartInfo[] Parts = this.Parts;
@@ -626,7 +626,7 @@ namespace LegalLab.Models.Design
 		{
 			this.AddParameter(new NumericalParameter()
 			{
-				Descriptions = new HumanReadableText[] { "Enter parameter description as *Markdown*".ToHumanReadableText() },
+				Descriptions = new HumanReadableText[] { "Enter parameter description as **Markdown**".ToHumanReadableText() },
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Max = null,
@@ -652,7 +652,7 @@ namespace LegalLab.Models.Design
 		{
 			this.AddParameter(new StringParameter()
 			{
-				Descriptions = new HumanReadableText[] { "Enter parameter description as *Markdown*".ToHumanReadableText() },
+				Descriptions = new HumanReadableText[] { "Enter parameter description as **Markdown**".ToHumanReadableText() },
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Max = null,
@@ -681,7 +681,7 @@ namespace LegalLab.Models.Design
 		{
 			this.AddParameter(new BooleanParameter()
 			{
-				Descriptions = new HumanReadableText[] { "Enter parameter description as *Markdown*".ToHumanReadableText() },
+				Descriptions = new HumanReadableText[] { "Enter parameter description as **Markdown**".ToHumanReadableText() },
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Name = string.Empty,
@@ -697,7 +697,28 @@ namespace LegalLab.Models.Design
 			int c = Parameters.Length;
 
 			Array.Resize<ParameterInfo>(ref Parameters, c + 1);
-			Parameters[c] = new ParameterInfo(this.contract, Parameter, null);  // TODO: Control
+			Parameters[c] = new ParameterInfo(this.contract, Parameter, null, this);  // TODO: Control
+
+			this.Parameters = Parameters;
+		}
+
+		/// <summary>
+		/// Removes a parameter from the design
+		/// </summary>
+		/// <param name="Parameter">Parameter to remove</param>
+		public void RemoveParameter(ParameterInfo Parameter)
+		{
+			ParameterInfo[] Parameters = this.Parameters;
+			int i = Array.IndexOf<ParameterInfo>(Parameters, Parameter);
+			if (i < 0)
+				return;
+
+			int c = Parameters.Length;
+
+			if (i < c - 1)
+				Array.Copy(Parameters, i + 1, Parameters, i, c - i - 1);
+
+			Array.Resize<ParameterInfo>(ref Parameters, c - 1);
 
 			this.Parameters = Parameters;
 		}
