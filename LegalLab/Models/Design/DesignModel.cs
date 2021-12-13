@@ -42,6 +42,9 @@ namespace LegalLab.Models.Design
 
 		private readonly Command addRole;
 		private readonly Command addPart;
+		private readonly Command addNumericParameter;
+		private readonly Command addStringParameter;
+		private readonly Command addBooleanParameter;
 
 		private readonly Dictionary<string, ParameterInfo> parametersByName = new Dictionary<string, ParameterInfo>();
 		private StackPanel humanReadableText = null;
@@ -72,6 +75,9 @@ namespace LegalLab.Models.Design
 
 			this.addRole = new Command(this.ExecuteAddRole);
 			this.addPart = new Command(this.ExecuteAddPart);
+			this.addNumericParameter = new Command(this.ExecuteAddNumericParameter);
+			this.addStringParameter = new Command(this.ExecuteAddStringParameter);
+			this.addBooleanParameter = new Command(this.ExecuteAddBooleanParameter);
 
 			this.GenerateContract();
 		}
@@ -605,6 +611,94 @@ namespace LegalLab.Models.Design
 			Array.Resize<PartInfo>(ref Parts, c - 1);
 
 			this.Parts = Parts;
+		}
+
+		/// <summary>
+		/// Command for adding a numeric parameter
+		/// </summary>
+		public ICommand AddNumericParameter => this.addNumericParameter;
+
+		/// <summary>
+		/// Adds a numeric parameter to the design.
+		/// </summary>
+		public void ExecuteAddNumericParameter()
+		{
+			this.AddParameter(new NumericalParameter()
+			{
+				Descriptions = new HumanReadableText[] { "Enter parameter description as *Markdown*".ToHumanReadableText() },
+				Expression = string.Empty,
+				Guide = string.Empty,
+				Max = null,
+				MaxIncluded = false,
+				Min = null,
+				MinIncluded = false,
+				Name = string.Empty,
+				Value = null
+			});
+
+			this.Parameters = Parameters;
+		}
+
+		/// <summary>
+		/// Command for adding a string parameter
+		/// </summary>
+		public ICommand AddStringParameter => this.addStringParameter;
+
+		/// <summary>
+		/// Adds a string parameter to the design.
+		/// </summary>
+		public void ExecuteAddStringParameter()
+		{
+			this.AddParameter(new StringParameter()
+			{
+				Descriptions = new HumanReadableText[] { "Enter parameter description as *Markdown*".ToHumanReadableText() },
+				Expression = string.Empty,
+				Guide = string.Empty,
+				Max = null,
+				MaxIncluded = false,
+				Min = null,
+				MinIncluded = false,
+				Name = string.Empty,
+				Value = null,
+				MinLength = null,
+				MaxLength = null,
+				RegEx = null
+			});
+
+			this.Parameters = Parameters;
+		}
+
+		/// <summary>
+		/// Command for adding a boolean parameter
+		/// </summary>
+		public ICommand AddBooleanParameter => this.addBooleanParameter;
+
+		/// <summary>
+		/// Adds a boolean parameter to the design.
+		/// </summary>
+		public void ExecuteAddBooleanParameter()
+		{
+			this.AddParameter(new BooleanParameter()
+			{
+				Descriptions = new HumanReadableText[] { "Enter parameter description as *Markdown*".ToHumanReadableText() },
+				Expression = string.Empty,
+				Guide = string.Empty,
+				Name = string.Empty,
+				Value = null
+			});
+
+			this.Parameters = Parameters;
+		}
+
+		private void AddParameter(Parameter Parameter)
+		{
+			ParameterInfo[] Parameters = this.Parameters;
+			int c = Parameters.Length;
+
+			Array.Resize<ParameterInfo>(ref Parameters, c + 1);
+			Parameters[c] = new ParameterInfo(this.contract, Parameter, null);  // TODO: Control
+
+			this.Parameters = Parameters;
 		}
 
 	}

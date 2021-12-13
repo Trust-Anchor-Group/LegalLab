@@ -292,6 +292,11 @@
                                     </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
+                            <WrapPanel Orientation="Horizontal">
+                                <Button Width="100" HorizontalAlignment="Left" Margin="0,5,5,0" Command="{Binding AddNumericParameter}">Add Numeric</Button>
+                                <Button Width="100" HorizontalAlignment="Left" Margin="0,5,5,0" Command="{Binding AddStringParameter}">Add String</Button>
+                                <Button Width="100" HorizontalAlignment="Left" Margin="0,5,5,0" Command="{Binding AddBooleanParameter}">Add Boolean</Button>
+                            </WrapPanel>
 
                             <Label FontSize="20" Margin="0,10,0,0">Machine-Readable Content</Label>
                             <Label>Following is the embedded Machine-readable content of the contract:</Label>
