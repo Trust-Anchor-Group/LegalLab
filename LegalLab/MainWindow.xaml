@@ -303,6 +303,34 @@
                                     </DataGridTemplateColumn>
                                     <DataGridTextColumn Binding="{Binding Guide}" Header="Guide"/>
                                     <DataGridTextColumn Binding="{Binding Expression}" Header="Expression"/>
+                                    <DataGridTemplateColumn Header="Min">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ContentControl Content="{Binding MinControl}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="(incl)">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ContentControl Content="{Binding MinIncludedControl}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Max">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ContentControl Content="{Binding MaxControl}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="(incl)">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ContentControl Content="{Binding MaxIncludedControl}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                     <DataGridTemplateColumn>
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>

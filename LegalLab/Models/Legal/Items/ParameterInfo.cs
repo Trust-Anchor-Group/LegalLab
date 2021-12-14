@@ -133,7 +133,10 @@ namespace LegalLab.Models.Legal.Items
 		/// <summary>
 		/// Revalidates the parameter value.
 		/// </summary>
-		public abstract void Revalidate();
+		public void Revalidate()
+		{
+			this.designModel.ValidateParameters();
+		}
 
 		/// <summary>
 		/// Guiding text.
@@ -147,6 +150,26 @@ namespace LegalLab.Models.Legal.Items
 				this.guide.Value = value;
 			}
 		}
+
+		/// <summary>
+		/// Control for editing Minimum value
+		/// </summary>
+		public virtual object MinControl => null;
+
+		/// <summary>
+		/// Control for defining if Minimum value is included or not
+		/// </summary>
+		public virtual object MinIncludedControl => null;
+
+		/// <summary>
+		/// Control for editing Maximum value
+		/// </summary>
+		public virtual object MaxControl => null;
+
+		/// <summary>
+		/// Control for defining if Maximum value is included or not
+		/// </summary>
+		public virtual object MaxIncludedControl => null;
 
 		/// <summary>
 		/// Remove parameter command
@@ -169,6 +192,12 @@ namespace LegalLab.Models.Legal.Items
 		{
 			this.designModel?.RemoveParameter(this);
 		}
+
+		/// <summary>
+		/// Sets the value.
+		/// </summary>
+		/// <param name="Value">Text representation of value.</param>
+		public abstract void SetValue(string Value);
 
 	}
 }

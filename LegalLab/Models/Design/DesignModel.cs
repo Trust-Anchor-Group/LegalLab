@@ -144,41 +144,12 @@ namespace LegalLab.Models.Design
 
 			foreach (Parameter Parameter in this.contract.Parameters)
 			{
-				if (Parameter is NumericalParameter NP)
-				{
-					TextBox TextBox = new TextBox();
-					
-					TextBox.SetBinding(TextBox.TextProperty, "Value");
-					TextBox.TextChanged += Parameter_TextChanged;
-
-					ParameterInfo = new NumericalParameterInfo(this.contract, NP, TextBox, this);
-					TextBox.Tag = ParameterInfo;
-				}
+				if (Parameter is BooleanParameter BP)
+					ParameterInfo = this.GetParameterInfo(BP);
+				else if (Parameter is NumericalParameter NP)
+					ParameterInfo = this.GetParameterInfo(NP);
 				else if (Parameter is StringParameter SP)
-				{
-					TextBox TextBox = new TextBox();
-
-					TextBox.SetBinding(TextBox.TextProperty, "Value");
-					TextBox.TextChanged += Parameter_TextChanged;
-
-					ParameterInfo = new StringParameterInfo(this.contract, SP, TextBox, this);
-					TextBox.Tag = ParameterInfo;
-				}
-				else if (Parameter is BooleanParameter BP)
-				{
-					CheckBox CheckBox = new CheckBox()
-					{
-						VerticalAlignment = VerticalAlignment.Center,
-						HorizontalAlignment = HorizontalAlignment.Center
-					};
-
-					CheckBox.SetBinding(CheckBox.IsCheckedProperty, "Value");
-					CheckBox.Checked += Parameter_CheckedChanged;
-					CheckBox.Unchecked += Parameter_CheckedChanged;
-
-					ParameterInfo = new BooleanParameterInfo(this.contract, BP, CheckBox, this);
-					CheckBox.Tag = ParameterInfo;
-				}
+					ParameterInfo = this.GetParameterInfo(SP);
 				else
 					continue;
 
@@ -366,7 +337,10 @@ namespace LegalLab.Models.Design
 			set => this.contractId.Value = value;
 		}
 
-		private void ValidateParameters()
+		/// <summary>
+		/// Validates parameters.
+		/// </summary>
+		public void ValidateParameters()
 		{
 			Variables Variables = new Variables();
 			bool Ok = true;
@@ -574,15 +548,41 @@ namespace LegalLab.Models.Design
 				Value = null
 			};
 
-			TextBox TextBox = new TextBox();
+			this.AddParameter(this.GetParameterInfo(NP));
+		}
 
-			TextBox.SetBinding(TextBox.TextProperty, "Value");
-			TextBox.TextChanged += Parameter_TextChanged;
+		private ParameterInfo GetParameterInfo(NumericalParameter NP)
+		{
+			TextBox ValueControl = new TextBox();
+			ValueControl.SetBinding(TextBox.TextProperty, "Value");
+			ValueControl.TextChanged += Parameter_TextChanged;
 
-			ParameterInfo ParameterInfo = new NumericalParameterInfo(this.contract, NP, TextBox, this);
-			TextBox.Tag = ParameterInfo;
+			TextBox MinControl = new TextBox();
+			MinControl.SetBinding(TextBox.TextProperty, "Min");
+			MinControl.TextChanged += Parameter_MinTextChanged;
 
-			this.AddParameter(ParameterInfo);
+			TextBox MaxControl = new TextBox();
+			MaxControl.SetBinding(TextBox.TextProperty, "Max");
+			MaxControl.TextChanged += Parameter_MaxTextChanged;
+
+			CheckBox MinIncludedControl = new CheckBox();
+			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
+			MinIncludedControl.Checked += Parameter_MinIncludedCheckedChanged;
+			MinIncludedControl.Unchecked += Parameter_MinIncludedCheckedChanged;
+
+			CheckBox MaxIncludedControl = new CheckBox();
+			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
+			MaxIncludedControl.Checked += Parameter_MaxIncludedCheckedChanged;
+			MaxIncludedControl.Unchecked += Parameter_MaxIncludedCheckedChanged;
+
+			ParameterInfo ParameterInfo = new NumericalParameterInfo(this.contract, NP, ValueControl, MinControl, MinIncludedControl, MaxControl, MaxIncludedControl, this);
+			ValueControl.Tag = ParameterInfo;
+			MinControl.Tag = ParameterInfo;
+			MaxControl.Tag = ParameterInfo;
+			MinIncludedControl.Tag = ParameterInfo;
+			MaxIncludedControl.Tag = ParameterInfo;
+
+			return ParameterInfo;
 		}
 
 		/// <summary>
@@ -611,15 +611,41 @@ namespace LegalLab.Models.Design
 				RegEx = null
 			};
 
-			TextBox TextBox = new TextBox();
+			this.AddParameter(this.GetParameterInfo(SP));
+		}
 
-			TextBox.SetBinding(TextBox.TextProperty, "Value");
-			TextBox.TextChanged += Parameter_TextChanged;
+		private ParameterInfo GetParameterInfo(StringParameter SP)
+		{
+			TextBox ValueControl = new TextBox();
+			ValueControl.SetBinding(TextBox.TextProperty, "Value");
+			ValueControl.TextChanged += Parameter_TextChanged;
 
-			ParameterInfo ParameterInfo = new StringParameterInfo(this.contract, SP, TextBox, this);
-			TextBox.Tag = ParameterInfo;
+			TextBox MinControl = new TextBox();
+			MinControl.SetBinding(TextBox.TextProperty, "Min");
+			MinControl.TextChanged += Parameter_MinTextChanged;
 
-			this.AddParameter(ParameterInfo);
+			TextBox MaxControl = new TextBox();
+			MaxControl.SetBinding(TextBox.TextProperty, "Max");
+			MaxControl.TextChanged += Parameter_MaxTextChanged;
+
+			CheckBox MinIncludedControl = new CheckBox();
+			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
+			MinIncludedControl.Checked += Parameter_MinIncludedCheckedChanged;
+			MinIncludedControl.Unchecked += Parameter_MinIncludedCheckedChanged;
+
+			CheckBox MaxIncludedControl = new CheckBox();
+			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
+			MaxIncludedControl.Checked += Parameter_MaxIncludedCheckedChanged;
+			MaxIncludedControl.Unchecked += Parameter_MaxIncludedCheckedChanged;
+
+			ParameterInfo ParameterInfo = new StringParameterInfo(this.contract, SP, ValueControl, MinControl, MinIncludedControl, MaxControl, MaxIncludedControl, this);
+			ValueControl.Tag = ParameterInfo;
+			MinControl.Tag = ParameterInfo;
+			MaxControl.Tag = ParameterInfo;
+			MinIncludedControl.Tag = ParameterInfo;
+			MaxIncludedControl.Tag = ParameterInfo;
+
+			return ParameterInfo;
 		}
 
 		private void Parameter_TextChanged(object sender, RoutedEventArgs e)
@@ -629,7 +655,7 @@ namespace LegalLab.Models.Design
 
 			try
 			{
-				ParameterInfo.Value = TextBox.Text;
+				ParameterInfo.SetValue(TextBox.Text);
 
 				TextBox.Background = null;
 				this.ValidateParameters();
@@ -640,6 +666,42 @@ namespace LegalLab.Models.Design
 			}
 
 			PopulateHumanReadableText();
+		}
+
+		private void Parameter_MinTextChanged(object sender, RoutedEventArgs e)
+		{
+			if (!(sender is TextBox TextBox) || !(TextBox.Tag is RangedParameterInfo ParameterInfo))
+				return;
+
+			try
+			{
+				ParameterInfo.SetMin(TextBox.Text);
+
+				TextBox.Background = null;
+				this.ValidateParameters();
+			}
+			catch (Exception)
+			{
+				TextBox.Background = Brushes.Salmon;
+			}
+		}
+
+		private void Parameter_MaxTextChanged(object sender, RoutedEventArgs e)
+		{
+			if (!(sender is TextBox TextBox) || !(TextBox.Tag is RangedParameterInfo ParameterInfo))
+				return;
+
+			try
+			{
+				ParameterInfo.SetMax(TextBox.Text);
+
+				TextBox.Background = null;
+				this.ValidateParameters();
+			}
+			catch (Exception)
+			{
+				TextBox.Background = Brushes.Salmon;
+			}
 		}
 
 		/// <summary>
@@ -661,20 +723,26 @@ namespace LegalLab.Models.Design
 				Value = null
 			};
 
+
+			this.AddParameter(this.GetParameterInfo(BP));
+		}
+
+		private ParameterInfo GetParameterInfo(BooleanParameter BP)
+		{
 			CheckBox CheckBox = new CheckBox()
 			{
 				VerticalContentAlignment = VerticalAlignment.Center,
 				HorizontalContentAlignment = HorizontalAlignment.Center
 			};
 
-			CheckBox.SetBinding(CheckBox.IsEnabledProperty, "Value");
+			CheckBox.SetBinding(CheckBox.IsCheckedProperty, "Value");
 			CheckBox.Checked += Parameter_CheckedChanged;
 			CheckBox.Unchecked += Parameter_CheckedChanged;
 
 			ParameterInfo ParameterInfo = new BooleanParameterInfo(this.contract, BP, CheckBox, this);
 			CheckBox.Tag = ParameterInfo;
 
-			this.AddParameter(ParameterInfo);
+			return ParameterInfo;
 		}
 
 		private void Parameter_CheckedChanged(object sender, RoutedEventArgs e)
@@ -686,6 +754,26 @@ namespace LegalLab.Models.Design
 
 			this.ValidateParameters();
 			PopulateHumanReadableText();
+		}
+
+		private void Parameter_MinIncludedCheckedChanged(object sender, RoutedEventArgs e)
+		{
+			if (!(sender is CheckBox CheckBox) || !(CheckBox.Tag is RangedParameterInfo ParameterInfo))
+				return;
+
+			ParameterInfo.MinIncluded = CheckBox.IsChecked ?? false;
+
+			this.ValidateParameters();
+		}
+
+		private void Parameter_MaxIncludedCheckedChanged(object sender, RoutedEventArgs e)
+		{
+			if (!(sender is CheckBox CheckBox) || !(CheckBox.Tag is RangedParameterInfo ParameterInfo))
+				return;
+
+			ParameterInfo.MaxIncluded = CheckBox.IsChecked ?? false;
+
+			this.ValidateParameters();
 		}
 
 		private void AddParameter(ParameterInfo Parameter)
