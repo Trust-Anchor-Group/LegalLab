@@ -1,0 +1,62 @@
+﻿<UserControl x:Class="LegalLab.Tabs.LegalIdTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:conv="clr-namespace:LegalLab.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="550" d:DesignWidth="800">
+    <DockPanel LastChildFill="True" Background="#FFE5E5E5">
+        <ScrollViewer DockPanel.Dock="Left">
+            <StackPanel Orientation="Vertical" Width="250" Margin="10">
+                <Label Padding="0">First Name:</Label>
+                <TextBox Text="{Binding FirstName}"/>
+                <Label Padding="0,10,0,0">Middle Name:</Label>
+                <TextBox Text="{Binding MiddleName}"/>
+                <Label Padding="0,10,0,0">Last Name:</Label>
+                <TextBox Text="{Binding LastName}"/>
+                <Label Padding="0,10,0,0">Personal Number:</Label>
+                <TextBox Text="{Binding PersonalNumber}"/>
+                <Label Padding="0,10,0,0">Address:</Label>
+                <TextBox Text="{Binding Address}"/>
+                <Label Padding="0,10,0,0">Address, row 2:</Label>
+                <TextBox Text="{Binding Address2}"/>
+                <Label Padding="0,10,0,0">Postal Code (or ZIP):</Label>
+                <TextBox Text="{Binding Zip}"/>
+                <Label Padding="0,10,0,0">Area:</Label>
+                <TextBox Text="{Binding Area}"/>
+                <Label Padding="0,10,0,0">City:</Label>
+                <TextBox Text="{Binding City}"/>
+                <Label Padding="0,10,0,0">Region:</Label>
+                <TextBox Text="{Binding Region}"/>
+                <Label Padding="0,10,0,0">Country:</Label>
+                <ComboBox ItemsSource="{Binding CountryCodes}" DisplayMemberPath="Country" SelectedValuePath="Code" SelectedValue="{Binding Country}"/>
+                <Button Margin="10,10,10,0" Command="{Binding Apply}">Apply</Button>
+            </StackPanel>
+        </ScrollViewer>
+        <ListView HorizontalAlignment="Stretch" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible" 
+                  ItemsSource="{Binding Identities}" DockPanel.Dock="Right">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="ID" Width="400">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="LegalLab.Models.Legal.IdentityWrapper">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="{Binding Id}"/>
+                                    <Image Source="{Binding QrCodeUrl}" Width="200" Height="200" Visibility="{Binding IsSelected, Converter={conv:BooleanToVisibility}}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Created" Width="150" DisplayMemberBinding="{Binding Created, Converter={conv:DateTimeToString}}"/>
+                    <GridViewColumn Header="State" Width="100" DisplayMemberBinding="{Binding State, Converter={conv:ToString}}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </DockPanel>
+</UserControl>
