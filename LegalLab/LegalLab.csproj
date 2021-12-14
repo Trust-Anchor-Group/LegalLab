@@ -7,12 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AvalonEdit" Version="6.1.2.30" />
     <PackageReference Include="EDaler" Version="1.0.12" />
     <PackageReference Include="SkiaSharp" Version="2.80.3" />
     <PackageReference Include="Waher.Content" Version="1.1.5" />
     <PackageReference Include="Waher.Content.Emoji" Version="1.0.4" />
     <PackageReference Include="Waher.Content.Html" Version="1.1.1" />
-    <PackageReference Include="Waher.Content.Markdown" Version="1.2.6" />
+    <PackageReference Include="Waher.Content.Markdown" Version="1.2.7" />
     <PackageReference Include="Waher.Content.Xml" Version="1.1.2" />
     <PackageReference Include="Waher.Content.Xsl" Version="1.1.1" />
     <PackageReference Include="Waher.Events" Version="1.0.15" />

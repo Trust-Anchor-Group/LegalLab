@@ -804,7 +804,6 @@ namespace LegalLab.Models.Design
 				Value = null
 			};
 
-
 			this.AddParameter(this.GetParameterInfo(BP));
 		}
 

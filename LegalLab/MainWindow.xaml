@@ -274,7 +274,7 @@
                             <DataGrid ItemsSource="{Binding Parameters}" Width="Auto" HorizontalAlignment="Left" 
                                       AutoGenerateColumns="False" GridLinesVisibility="None">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Binding="{Binding Name}" Header="Parameter"/>
+                                    <DataGridTextColumn Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Header="Parameter"/>
                                     <DataGridTemplateColumn Header="Value">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
@@ -295,7 +295,7 @@
                                         </DataGridTemplateColumn.CellEditingTemplate>
                                     </DataGridTemplateColumn>
                                     <DataGridTextColumn Binding="{Binding Guide}" Header="Guide"/>
-                                    <DataGridTextColumn Binding="{Binding Expression}" Header="Expression"/>
+                                    <DataGridTextColumn Binding="{Binding Expression, UpdateSourceTrigger=PropertyChanged}" Header="Expression"/>
                                     <DataGridTemplateColumn Header="Min">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
