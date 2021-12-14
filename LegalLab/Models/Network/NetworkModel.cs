@@ -263,12 +263,12 @@ namespace LegalLab.Models.Network
 				MainWindow.currentInstance.NetworkTab.DataContext = this;
 				MainWindow.currentInstance.XmppState.DataContext = this;
 
-				MainWindow.currentInstance.XmppPassword.Password = this.Password;
-				MainWindow.currentInstance.ApiKeySecret.Password = this.ApiKeySecret;
+				MainWindow.currentInstance.NetworkTab.XmppPassword.Password = this.Password;
+				MainWindow.currentInstance.NetworkTab.ApiKeySecret.Password = this.ApiKeySecret;
 
-				MainWindow.currentInstance.XmppPassword.PasswordChanged += this.PasswordChanged;
-				MainWindow.currentInstance.XmppPassword2.PasswordChanged += this.Password2Changed;
-				MainWindow.currentInstance.ApiKeySecret.PasswordChanged += this.ApiKeySecretChanged;
+				MainWindow.currentInstance.NetworkTab.XmppPassword.PasswordChanged += this.PasswordChanged;
+				MainWindow.currentInstance.NetworkTab.XmppPassword2.PasswordChanged += this.Password2Changed;
+				MainWindow.currentInstance.NetworkTab.ApiKeySecret.PasswordChanged += this.ApiKeySecretChanged;
 			});
 
 			if (this.ConnectOnStartup)
@@ -282,9 +282,9 @@ namespace LegalLab.Models.Network
 		/// </summary>
 		public override async Task Stop()
 		{
-			MainWindow.currentInstance.XmppPassword.PasswordChanged -= this.PasswordChanged;
-			MainWindow.currentInstance.XmppPassword2.PasswordChanged -= this.Password2Changed;
-			MainWindow.currentInstance.ApiKeySecret.PasswordChanged -= this.ApiKeySecretChanged;
+			MainWindow.currentInstance.NetworkTab.XmppPassword.PasswordChanged -= this.PasswordChanged;
+			MainWindow.currentInstance.NetworkTab.XmppPassword2.PasswordChanged -= this.Password2Changed;
+			MainWindow.currentInstance.NetworkTab.ApiKeySecret.PasswordChanged -= this.ApiKeySecretChanged;
 
 			if (!(this.legalModel is null))
 			{
@@ -308,17 +308,17 @@ namespace LegalLab.Models.Network
 
 		private void PasswordChanged(object sender, RoutedEventArgs e)
 		{
-			this.Password = MainWindow.currentInstance.XmppPassword.Password;
+			this.Password = MainWindow.currentInstance.NetworkTab.XmppPassword.Password;
 		}
 
 		private void Password2Changed(object sender, RoutedEventArgs e)
 		{
-			this.Password2 = MainWindow.currentInstance.XmppPassword.Password;
+			this.Password2 = MainWindow.currentInstance.NetworkTab.XmppPassword.Password;
 		}
 
 		private void ApiKeySecretChanged(object sender, RoutedEventArgs e)
 		{
-			this.ApiKeySecret = MainWindow.currentInstance.ApiKeySecret.Password;
+			this.ApiKeySecret = MainWindow.currentInstance.NetworkTab.ApiKeySecret.Password;
 		}
 
 		public void ExecuteRandomizePassword()
@@ -330,8 +330,8 @@ namespace LegalLab.Models.Network
 
 			MainWindow.UpdateGui(() =>
 			{
-				MainWindow.currentInstance.XmppPassword.Password = Password;
-				MainWindow.currentInstance.XmppPassword2.Password = Password;
+				MainWindow.currentInstance.NetworkTab.XmppPassword.Password = Password;
+				MainWindow.currentInstance.NetworkTab.XmppPassword2.Password = Password;
 			});
 		}
 
@@ -381,7 +381,7 @@ namespace LegalLab.Models.Network
 					this.walletModel = null;
 				}
 
-				ListViewSniffer Sniffer = new ListViewSniffer(MainWindow.currentInstance.SnifferListView, 1000);
+				ListViewSniffer Sniffer = new ListViewSniffer(MainWindow.currentInstance.NetworkTab.SnifferListView, 1000);
 
 				if (string.IsNullOrEmpty(this.PasswordMethod))
 					this.client = new XmppClient(Host, Port, this.Account, this.Password, "en", typeof(MainWindow).Assembly, Sniffer);

@@ -1,0 +1,80 @@
+﻿<UserControl x:Class="LegalLab.Tabs.NetworkTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:conv="clr-namespace:LegalLab.Converters"
+             xmlns:local="clr-namespace:LegalLab.Tabs"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="800">
+    <DockPanel LastChildFill="True" Background="#FFE5E5E5">
+        <ScrollViewer DockPanel.Dock="Left">
+            <StackPanel Orientation="Vertical" Width="250" Margin="10">
+                <Label Padding="0">XMPP Server:</Label>
+                <TextBox Text="{Binding XmppServer}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                <Label Padding="0,10,0,0">Account:</Label>
+                <TextBox Text="{Binding Account}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                <Label Padding="0,10,0,0">Password:</Label>
+                <PasswordBox Name="XmppPassword" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                <CheckBox Margin="0,10,0,0" Content="Create Account, if none exists." IsChecked="{Binding CreateAccount}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                <Label Padding="0,10,0,0" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}">Repeat Password:</Label>
+                <PasswordBox Name="XmppPassword2" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                <Label Padding="0,10,0,0" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}">API Key (for creating accounts):</Label>
+                <TextBox Text="{Binding ApiKey}" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                <Label Padding="0,10,0,0" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}">API Key Secret (for creating accounts):</Label>
+                <PasswordBox Name="ApiKeySecret" Visibility="{Binding CreateAccount, Converter={conv:BooleanToVisibility}}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                <CheckBox Margin="0,10,0,0" Content="Trust server certificate." IsChecked="{Binding TrustServerCertificate}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                <CheckBox Margin="0,10,0,0" Content="Allow insecure authentication." IsChecked="{Binding AllowInsecureAlgorithms}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                <CheckBox Margin="0,10,0,0" Content="Store password instead of digest." IsChecked="{Binding StorePasswordInsteadOfDigest}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                <Button Margin="10,10,10,0" Command="{Binding Connect}" Visibility="{Binding ConnectOnStartup, Converter={conv:NotBooleanToVisibility}}">Connect</Button>
+                <Button Margin="10,10,10,0" Command="{Binding Disconnect}" Visibility="{Binding ConnectOnStartup, Converter={conv:BooleanToVisibility}}">Disconnect</Button>
+                <Button Margin="10,10,10,0" Command="{Binding RandomizePassword}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}">Randomize Password</Button>
+            </StackPanel>
+        </ScrollViewer>
+        <!-- Sniffer from IoTGateway project, with permission -->
+        <ListView Name="SnifferListView" HorizontalAlignment="Stretch" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                              DockPanel.Dock="Right">
+            <ListView.Resources>
+                <Style TargetType="{x:Type GridViewColumnHeader}">
+                    <Setter Property="HorizontalContentAlignment" Value="Left" />
+                    <Setter Property="Padding" Value="5,0,0,0" />
+                </Style>
+            </ListView.Resources>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Time" Width="70" DisplayMemberBinding="{Binding Time}"/>
+                    <GridViewColumn Header="Content" Width="830">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock TextWrapping="Wrap" Text="{Binding Message}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="Foreground" Value="{Binding ForegroundColor, Converter={conv:ToString}}" />
+                    <Setter Property="Background" Value="{Binding BackgroundColor, Converter={conv:ToString}}" />
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Margin" Value="0"/>
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="VerticalContentAlignment" Value="Top"/>
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Opacity" Value="0.75"/>
+                            <Setter Property="Foreground" Value="{Binding ForegroundColor, Converter={conv:ToString}}" />
+                            <Setter Property="Background" Value="{Binding BackgroundColor, Converter={conv:ToString}}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" Value="0.5"/>
+                            <Setter Property="Foreground" Value="{Binding ForegroundColor, Converter={conv:ToString}}" />
+                            <Setter Property="Background" Value="{Binding BackgroundColor, Converter={conv:ToString}}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+    </DockPanel>
+</UserControl>
