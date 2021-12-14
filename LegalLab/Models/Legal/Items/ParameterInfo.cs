@@ -172,6 +172,21 @@ namespace LegalLab.Models.Legal.Items
 		public virtual object MaxIncludedControl => null;
 
 		/// <summary>
+		/// Control for editing the Minimum length of the parameter
+		/// </summary>
+		public virtual Control MinLengthControl => null;
+
+		/// <summary>
+		/// Control for editing the Maximum length of the parameter
+		/// </summary>
+		public virtual Control MaxLengthControl => null;
+
+		/// <summary>
+		/// Control for editing a regular expression for validating parameter values.
+		/// </summary>
+		public virtual Control RegExControl => null;
+
+		/// <summary>
 		/// Remove parameter command
 		/// </summary>
 		public ICommand RemoveParameter => this.removeParameter;

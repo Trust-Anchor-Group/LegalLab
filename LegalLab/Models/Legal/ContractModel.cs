@@ -416,7 +416,7 @@ namespace LegalLab.Models.Legal
 					if (Parameter is NumericalParameter NP)
 						this.parametersByName[Parameter.Name] = ParameterInfo = new NumericalParameterInfo(this.contract, NP, TextBox, null, null, null, null, null);
 					else if (Parameter is StringParameter SP)
-						this.parametersByName[Parameter.Name] = ParameterInfo = new StringParameterInfo(this.contract, SP, TextBox, null, null, null, null, null);
+						this.parametersByName[Parameter.Name] = ParameterInfo = new StringParameterInfo(this.contract, SP, TextBox, null, null, null, null, null, null, null, null);
 					else
 						continue;
 

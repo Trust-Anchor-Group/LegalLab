@@ -12,8 +12,15 @@ namespace LegalLab.Models.Legal.Items.Parameters
 	{
 		private readonly Property<string> min;
 		private readonly Property<string> max;
+		private readonly Property<int?> maxLength;
+		private readonly Property<int?> minLength;
+		private readonly Property<string> regEx;
 
 		private readonly StringParameter stringParameter;
+
+		private readonly Control minLengthControl;
+		private readonly Control maxLengthControl;
+		private readonly Control regExControl;
 
 		/// <summary>
 		/// Contains information about a string parameter
@@ -25,15 +32,25 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		/// <param name="MinIncludedControl">Control for defining if minimum value is included or not.</param>
 		/// <param name="MaxControl">Control for editing maximum value.</param>
 		/// <param name="MaxIncludedControl">Control for defining if maximum value is included or not.</param>
+		/// <param name="MinLengthControl">Control for editing the minimum length of the parameter.</param>
+		/// <param name="MaxLengthControl">Control for editing the maximum length of the parameter.</param>
+		/// <param name="RegExControl">Control for editing a regular expression for validating the parameter.</param>
 		/// <param name="DesignModel">Design model</param>
 		public StringParameterInfo(Contract Contract, StringParameter Parameter, Control Control, Control MinControl, Control MinIncludedControl, 
-			Control MaxControl, Control MaxIncludedControl, DesignModel DesignModel) 
+			Control MaxControl, Control MaxIncludedControl, Control MinLengthControl, Control MaxLengthControl, Control RegExControl, DesignModel DesignModel) 
 			: base(Contract, Parameter, Control, MinControl, MinIncludedControl, MaxControl, MaxIncludedControl, DesignModel)
 		{
 			this.stringParameter = Parameter;
 		
 			this.min = new Property<string>(nameof(this.Min), Parameter.Min, this);
 			this.max = new Property<string>(nameof(this.Max), Parameter.Max, this);
+			this.minLength = new Property<int?>(nameof(this.MinLength), Parameter.MinLength, this);
+			this.maxLength = new Property<int?>(nameof(this.MaxLength), Parameter.MaxLength, this);
+			this.regEx = new Property<string>(nameof(this.RegEx), Parameter.RegEx, this);
+
+			this.minLengthControl = MinLengthControl;
+			this.maxLengthControl = MaxLengthControl;
+			this.regExControl = RegExControl;
 
 			this.MinIncluded = Parameter.MinIncluded;
 			this.MaxIncluded = Parameter.MaxIncluded;
@@ -89,6 +106,48 @@ namespace LegalLab.Models.Legal.Items.Parameters
 			}
 		}
 
+		/// <summary>
+		/// Minimum length of parameter
+		/// </summary>
+		public int? MinLength
+		{
+			get => this.minLength.Value;
+			set
+			{
+				this.stringParameter.MinLength = value;
+				this.minLength.Value = value;
+				this.Revalidate();
+			}
+		}
+
+		/// <summary>
+		/// Maximum length of parameter
+		/// </summary>
+		public int? MaxLength
+		{
+			get => this.maxLength.Value;
+			set
+			{
+				this.stringParameter.MaxLength = value;
+				this.maxLength.Value = value;
+				this.Revalidate();
+			}
+		}
+
+		/// <summary>
+		/// Regular expression validating parameter input
+		/// </summary>
+		public string RegEx
+		{
+			get => this.regEx.Value;
+			set
+			{
+				this.stringParameter.RegEx = value;
+				this.regEx.Value = value;
+				this.Revalidate();
+			}
+		}
+
 		/// <inheritdoc/>
 		public override void SetMax(string Value)
 		{
@@ -106,5 +165,21 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		{
 			this.Value = Value;
 		}
+
+		/// <summary>
+		/// Control for editing the Minimum length of the parameter
+		/// </summary>
+		public override Control MinLengthControl => this.minLengthControl;
+
+		/// <summary>
+		/// Control for editing the Maximum length of the parameter
+		/// </summary>
+		public override Control MaxLengthControl => this.maxLengthControl;
+
+		/// <summary>
+		/// Control for editing a regular expression for validating parameter values.
+		/// </summary>
+		public override Control RegExControl => this.regExControl;
+
 	}
 }

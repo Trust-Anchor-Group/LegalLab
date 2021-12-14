@@ -638,7 +638,21 @@ namespace LegalLab.Models.Design
 			MaxIncludedControl.Checked += Parameter_MaxIncludedCheckedChanged;
 			MaxIncludedControl.Unchecked += Parameter_MaxIncludedCheckedChanged;
 
-			ParameterInfo ParameterInfo = new StringParameterInfo(this.contract, SP, ValueControl, MinControl, MinIncludedControl, MaxControl, MaxIncludedControl, this);
+			TextBox MinLengthControl = new TextBox();
+			MinLengthControl.SetBinding(TextBox.TextProperty, "MinLength");
+			MinLengthControl.TextChanged += Parameter_MinLengthTextChanged;
+
+			TextBox MaxLengthControl = new TextBox();
+			MaxLengthControl.SetBinding(TextBox.TextProperty, "MaxLength");
+			MaxLengthControl.TextChanged += Parameter_MaxLengthTextChanged;
+
+			TextBox RegExControl = new TextBox();
+			RegExControl.SetBinding(TextBox.TextProperty, "RegEx");
+			RegExControl.TextChanged += Parameter_RegExTextChanged;
+
+			ParameterInfo ParameterInfo = new StringParameterInfo(this.contract, SP, ValueControl, MinControl, MinIncludedControl,
+				MaxControl, MaxIncludedControl, MinLengthControl, MaxLengthControl, RegExControl, this);
+
 			ValueControl.Tag = ParameterInfo;
 			MinControl.Tag = ParameterInfo;
 			MaxControl.Tag = ParameterInfo;
@@ -694,6 +708,70 @@ namespace LegalLab.Models.Design
 			try
 			{
 				ParameterInfo.SetMax(TextBox.Text);
+
+				TextBox.Background = null;
+				this.ValidateParameters();
+			}
+			catch (Exception)
+			{
+				TextBox.Background = Brushes.Salmon;
+			}
+		}
+
+		private void Parameter_MinLengthTextChanged(object sender, RoutedEventArgs e)
+		{
+			if (!(sender is TextBox TextBox) || !(TextBox.Tag is StringParameterInfo ParameterInfo))
+				return;
+
+			try
+			{
+				string Value = TextBox.Text;
+
+				if (string.IsNullOrEmpty(Value))
+					ParameterInfo.MinLength = null;
+				else
+					ParameterInfo.MinLength = int.Parse(Value);
+
+				TextBox.Background = null;
+				this.ValidateParameters();
+			}
+			catch (Exception)
+			{
+				TextBox.Background = Brushes.Salmon;
+			}
+		}
+
+		private void Parameter_MaxLengthTextChanged(object sender, RoutedEventArgs e)
+		{
+			if (!(sender is TextBox TextBox) || !(TextBox.Tag is StringParameterInfo ParameterInfo))
+				return;
+
+			try
+			{
+				string Value = TextBox.Text;
+
+				if (string.IsNullOrEmpty(Value))
+					ParameterInfo.MinLength = null;
+				else
+					ParameterInfo.MinLength = int.Parse(Value);
+
+				TextBox.Background = null;
+				this.ValidateParameters();
+			}
+			catch (Exception)
+			{
+				TextBox.Background = Brushes.Salmon;
+			}
+		}
+
+		private void Parameter_RegExTextChanged(object sender, RoutedEventArgs e)
+		{
+			if (!(sender is TextBox TextBox) || !(TextBox.Tag is StringParameterInfo ParameterInfo))
+				return;
+
+			try
+			{
+				ParameterInfo.RegEx = TextBox.Text;
 
 				TextBox.Background = null;
 				this.ValidateParameters();
