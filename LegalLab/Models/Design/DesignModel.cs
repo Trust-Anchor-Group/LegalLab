@@ -41,6 +41,8 @@ namespace LegalLab.Models.Design
 		private readonly Property<string> forMachinesLocalName;
 		private readonly Property<string> forMachinesNamespace;
 		private readonly Property<XmlElement> forMachines;
+		private readonly DelayedActionProperty<string> humanReadableMarkdown;
+		private readonly Property<object> humanReadable;
 
 		private readonly Command addRole;
 		private readonly Command addPart;
@@ -48,7 +50,6 @@ namespace LegalLab.Models.Design
 		private readonly Command addStringParameter;
 		private readonly Command addBooleanParameter;
 
-		private StackPanel humanReadableText = null;
 		private Contract contract;
 
 		/// <summary>
@@ -73,6 +74,10 @@ namespace LegalLab.Models.Design
 			this.forMachinesLocalName = new Property<string>(nameof(this.ForMachinesLocalName), string.Empty, this);
 			this.forMachinesNamespace = new Property<string>(nameof(this.ForMachinesNamespace), string.Empty, this);
 			this.contractId = new Property<string>(nameof(this.ContractId), string.Empty, this);
+			this.humanReadableMarkdown = new DelayedActionProperty<string>(nameof(this.HumanReadableMarkdown), TimeSpan.FromSeconds(1), true, string.Empty, this);
+			this.humanReadable = new Property<object>(nameof(this.HumanReadable), null, this);
+
+			this.humanReadableMarkdown.OnAction += RenderHumanReadableMarkdown;
 
 			this.addRole = new Command(this.ExecuteAddRole);
 			this.addPart = new Command(this.ExecuteAddPart);
@@ -159,7 +164,6 @@ namespace LegalLab.Models.Design
 			this.Parameters = ParameterList.ToArray();
 
 			this.ValidateParameters();
-			PopulateHumanReadableText();
 
 			if (Contract.ForMachines is null)
 			{
@@ -183,6 +187,8 @@ namespace LegalLab.Models.Design
 				this.MachineReadable = sb.ToString().Replace("&#xD;\n", "\n").Replace("\n\t", "\n").Replace("\t", "    ");
 				this.ForMachines = Doc.DocumentElement;
 			}
+
+			this.HumanReadableMarkdown = Contract.ToMarkdown(Contract.DefaultLanguage);
 		}
 
 		/// <summary>
@@ -338,6 +344,24 @@ namespace LegalLab.Models.Design
 		}
 
 		/// <summary>
+		/// Human-readable markdown
+		/// </summary>
+		public string HumanReadableMarkdown
+		{
+			get => this.humanReadableMarkdown.Value;
+			set => this.humanReadableMarkdown.Value = value;
+		}
+
+		/// <summary>
+		/// Human-readable markdown
+		/// </summary>
+		public object HumanReadable
+		{
+			get => this.humanReadable.Value;
+			set => this.humanReadable.Value = value;
+		}
+
+		/// <summary>
 		/// Validates parameters.
 		/// </summary>
 		public void ValidateParameters()
@@ -360,27 +384,6 @@ namespace LegalLab.Models.Design
 			}
 
 			this.ParametersOk = Ok;
-		}
-
-		private void PopulateHumanReadableText()
-		{
-			if (this.humanReadableText is null)
-				return;
-
-			this.humanReadableText.Children.Clear();
-
-			if (XamlReader.Parse(this.contract.ToXAML(this.DefaultLanguage)) is StackPanel Panel)
-			{
-				LinkedList<UIElement> Elements = new LinkedList<UIElement>();
-
-				foreach (UIElement Item in Panel.Children)
-					Elements.AddLast(Item);
-
-				Panel.Children.Clear();
-
-				foreach (UIElement Item in Elements)
-					this.humanReadableText.Children.Add(Item);
-			}
 		}
 
 		/// <summary>
@@ -679,7 +682,7 @@ namespace LegalLab.Models.Design
 				TextBox.Background = Brushes.Salmon;
 			}
 
-			PopulateHumanReadableText();
+			this.RenderHumanReadableMarkdown(this, EventArgs.Empty);
 		}
 
 		private void Parameter_MinTextChanged(object sender, RoutedEventArgs e)
@@ -831,7 +834,7 @@ namespace LegalLab.Models.Design
 			ParameterInfo.Value = CheckBox.IsChecked;
 
 			this.ValidateParameters();
-			PopulateHumanReadableText();
+			this.RenderHumanReadableMarkdown(this, EventArgs.Empty);
 		}
 
 		private void Parameter_MinIncludedCheckedChanged(object sender, RoutedEventArgs e)
@@ -884,6 +887,16 @@ namespace LegalLab.Models.Design
 			Array.Resize<ParameterInfo>(ref Parameters, c - 1);
 
 			this.Parameters = Parameters;
+		}
+
+		private void RenderHumanReadableMarkdown(object sender, EventArgs e)
+		{
+			Variables Variables = new Variables();
+
+			foreach (ParameterInfo Parameter in this.Parameters)
+				Parameter.Parameter.Populate(Variables);
+
+			MainWindow.UpdateGui(() => this.HumanReadable = this.HumanReadableMarkdown.ToXAML(Variables));
 		}
 
 	}

@@ -212,13 +212,6 @@
                                     <TextBox Text="{Binding SignBefore, Converter={conv:DateTimeToString}}"/>
                                 </StackPanel>
                             </WrapPanel>
-                            <DataGrid HeadersVisibility="None" ItemsSource="{Binding GeneralInformation}" Width="Auto" HorizontalAlignment="Left" 
-                                      AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Binding="{Binding Name}"/>
-                                    <DataGridTextColumn Binding="{Binding Value}"/>
-                                </DataGrid.Columns>
-                            </DataGrid>
 
                             <Label FontSize="20" Margin="0,10,0,0">Roles</Label>
                             <Label>Following are roles defined in the contract:</Label>
@@ -369,13 +362,14 @@
 
                             <Label FontSize="20" Margin="0,10,0,0">Machine-Readable Content</Label>
                             <Label>Following is the embedded Machine-readable content of the contract:</Label>
-                            <StackPanel Background="White">
-                                <TextBlock Text="{Binding MachineReadable}" Margin="10" FontFamily="Courier New"/>
-                            </StackPanel>
+                            <TextBox Text="{Binding MachineReadable}" FontFamily="Courier New" MinHeight="500" AcceptsReturn="True" AcceptsTab="True"/>
 
                             <Label FontSize="20" Margin="0,10,0,0">Human-Readable Content</Label>
+                            <Label>Following is the human-readable text of the contract, as Markdown:</Label>
+                            <TextBox Text="{Binding HumanReadableMarkdown, UpdateSourceTrigger=PropertyChanged}" FontFamily="Courier New" MinHeight="500" AcceptsReturn="True" AcceptsTab="True"/>
+                            <Label>The human-readable text will be rendered as follows:</Label>
                             <StackPanel Background="White">
-                                <StackPanel Name="DesignedContractHumanReadable" Margin="10"/>
+                                <ContentControl Content="{Binding HumanReadable, UpdateSourceTrigger=PropertyChanged}" Margin="10"/>
                             </StackPanel>
                         </StackPanel>
                     </ScrollViewer>

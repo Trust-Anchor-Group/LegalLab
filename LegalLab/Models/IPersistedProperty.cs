@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 namespace LegalLab.Models
 {
 	/// <summary>
-	/// Generic class for persistant properties
+	/// Interface for persistant properties
 	/// </summary>
-	public interface IPersistedProperty
+	public interface IPersistedProperty : IDelayedAction
 	{
 		/// <summary>
 		/// Loads the property from persisted storage.

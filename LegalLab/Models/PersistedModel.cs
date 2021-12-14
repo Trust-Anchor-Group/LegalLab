@@ -10,40 +10,6 @@ namespace LegalLab.Models
 	/// </summary>
 	public abstract class PersistedModel : Model
 	{
-		private static readonly Scheduler scheduler = new Scheduler();
-
-		/// <summary>
-		/// Queues a property for delayed persistence.
-		/// </summary>
-		/// <param name="Property">Property to be persisted</param>
-		/// <param name="ScheduledFor">Schedule for when the property is to be persisted.</param>
-		public static void DelayedSave(IPersistedProperty Property, ref DateTime ScheduledFor)
-		{
-			if (ScheduledFor != DateTime.MinValue)
-				scheduler.Remove(ScheduledFor);
-
-			ScheduledFor = scheduler.Add(DateTime.Now.AddSeconds(1), SaveProperty, Property);
-		}
-
-		/// <summary>
-		/// Removes a delayed save
-		/// </summary>
-		/// <param name="ScheduledFor">Schedule for when the property is to be persisted.</param>
-		public static void RemoveDelayedSave(ref DateTime ScheduledFor)
-		{
-			if (ScheduledFor != DateTime.MinValue)
-			{
-				scheduler.Remove(ScheduledFor);
-				ScheduledFor = DateTime.MinValue;
-			}
-		}
-
-		private static async Task SaveProperty(object P)
-		{
-			IPersistedProperty Property = (IPersistedProperty)P;
-			await Property.Save();
-		}
-
 		private readonly LinkedList<IPersistedProperty> properties = new LinkedList<IPersistedProperty>();
 
 		/// <summary>

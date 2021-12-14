@@ -7,11 +7,8 @@ namespace LegalLab.Models
 	/// <summary>
 	/// Generic class for persistant properties
 	/// </summary>
-	public class PersistedProperty<T> : Property<T>, IPersistedProperty
+	public class PersistedProperty<T> : DelayedActionProperty<T>, IPersistedProperty
 	{
-		private DateTime scheduledSave = DateTime.MinValue;
-		private bool changed = false;
-		private readonly bool liveUpdates = false;
 		private readonly string category;
 
 		/// <summary>
@@ -23,10 +20,9 @@ namespace LegalLab.Models
 		/// <param name="DefaultValue">Default value of property</param>
 		/// <param name="Model">Model hosting the property</param>
 		public PersistedProperty(string Category, string Name, bool LiveUpdates, T DefaultValue, IModel Model)
-			: base(Name, DefaultValue, Model)
+			: base(Name, TimeSpan.FromSeconds(1), LiveUpdates, DefaultValue, Model)
 		{
 			this.category = Category;
-			this.liveUpdates = LiveUpdates;
 		}
 
 		/// <summary>
@@ -35,38 +31,13 @@ namespace LegalLab.Models
 		public string Category => this.category;
 
 		/// <summary>
-		/// If updates to the parameter should be persisted live.
+		/// Method called when it is time to execute action.
 		/// </summary>
-		public bool LiveUpdates => this.liveUpdates;
-
-		/// <summary>
-		/// Current value of the property
-		/// </summary>
-		public override T Value
+		public override async Task Action()
 		{
-			get => this.value;
-			set
-			{
-				if (this.value is null && value is null)
-					return;
-
-				if (this.value?.Equals(value) ?? false)
-					return;
-
-				this.value = value;
-				this.changed = true;
-
-				if (this.liveUpdates)
-					PersistedModel.DelayedSave(this, ref scheduledSave);
-
-				this.Model.RaisePropertyChanged(this.Name);
-			}
+			await this.Save();
+			await base.Action();
 		}
-
-		/// <summary>
-		/// If the property value has changed and needs to be persisted.
-		/// </summary>
-		public bool Changed => this.changed;
 
 		/// <summary>
 		/// Loads the property from persisted storage.
@@ -81,12 +52,12 @@ namespace LegalLab.Models
 		/// </summary>
 		public async Task Save()
 		{
-			if (this.changed)
+			if (this.Changed)
 			{
 				await RuntimeSettings.SetAsync(this.category + "." + this.Name, this.value);
 
-				this.changed = false;
-				PersistedModel.RemoveDelayedSave(ref this.scheduledSave);
+				this.Changed = false;
+				DelayedActions.Remove(this);	// In case saved manually
 			}
 		}
 	}
