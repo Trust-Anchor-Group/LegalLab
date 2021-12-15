@@ -18,35 +18,8 @@
             <TabItem Header="Legal ID">
                 <tabs:LegalIdTab x:Name="LegalIdTab"/>
             </TabItem>
-            <TabItem Name="WalletTab" Header="Wallet">
-                <DockPanel LastChildFill="True" Background="#FFE5E5E5">
-                    <ScrollViewer DockPanel.Dock="Left">
-                        <StackPanel Orientation="Vertical" Width="250" Margin="10">
-                            <Label Padding="0">Balance:</Label>
-                            <TextBox Text="{Binding Amount}" IsReadOnly="True"/>
-                            <Label Padding="0,10,0,0">Currency:</Label>
-                            <TextBox Text="{Binding Currency}" IsReadOnly="True"/>
-                            <Label Padding="0,10,0,0">Timestamp:</Label>
-                            <TextBox Text="{Binding Timestamp, Converter={conv:DateTimeToString}}" IsReadOnly="True"/>
-                            <Label Padding="0,30,0,0">e-Daler URI:</Label>
-                            <TextBox Text="{Binding Uri, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Height="100" VerticalScrollBarVisibility="Auto"/>
-                            <Button Margin="10,10,10,0" Command="{Binding Send}">Send</Button>
-                        </StackPanel>
-                    </ScrollViewer>
-                    <ListView HorizontalAlignment="Left" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding Events}"
-                              DockPanel.Dock="Right">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="Transaction" Width="250" DisplayMemberBinding="{Binding TransactionId}"/>
-                                <GridViewColumn Header="Timestamp" Width="150" DisplayMemberBinding="{Binding Timestamp, Converter={conv:DateTimeToString}}"/>
-                                <GridViewColumn Header="Remote" Width="200" DisplayMemberBinding="{Binding Remote}"/>
-                                <GridViewColumn Header="Change" Width="100" DisplayMemberBinding="{Binding Change, Converter={conv:ToString}}"/>
-                                <GridViewColumn Header="Balance" Width="100" DisplayMemberBinding="{Binding Balance, Converter={conv:ToString}}"/>
-                                <GridViewColumn Header="Message" Width="100" DisplayMemberBinding="{Binding Message}"/>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                </DockPanel>
+            <TabItem Header="Wallet">
+                <tabs:WalletTab x:Name="WalletTab"/>
             </TabItem>
             <TabItem Name="DesignTab" Header="Design" Height="20" VerticalAlignment="Top">
                 <DockPanel LastChildFill="True" Background="#FFE5E5E5">
