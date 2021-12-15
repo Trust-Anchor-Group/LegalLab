@@ -100,7 +100,7 @@ namespace LegalLab.Models.Legal
 				MainWindow.currentInstance.LegalIdTab.DataContext = this;
 				MainWindow.currentInstance.UploadTab.DataContext = this;
 				MainWindow.currentInstance.ContractsTab.DataContext = this;
-				MainWindow.currentInstance.ContractCommands.DataContext = this;
+				MainWindow.currentInstance.ContractsTab.ContractCommands.DataContext = this;
 
 				MainWindow.currentInstance.UploadTab.UploadCommands.Visibility = Visibility.Visible;
 			});
@@ -530,8 +530,8 @@ namespace LegalLab.Models.Legal
 				this.currentContract = new ContractModel(this.contracts, this.Template, this);
 				await this.currentContract.Start();
 
-				this.currentContract.PopulateParameters(MainWindow.currentInstance.CreateParameters, MainWindow.currentInstance.CreateCommands);
-				this.currentContract.PopulateContract(MainWindow.currentInstance.ContractToCreate, MainWindow.currentInstance.ContractToCreateHumanReadable);
+				this.currentContract.PopulateParameters(MainWindow.currentInstance.ContractsTab.CreateParameters, MainWindow.currentInstance.ContractsTab.CreateCommands);
+				this.currentContract.PopulateContract(MainWindow.currentInstance.ContractsTab.ContractToCreate, MainWindow.currentInstance.ContractsTab.ContractToCreateHumanReadable);
 			}
 			catch (Exception ex)
 			{
