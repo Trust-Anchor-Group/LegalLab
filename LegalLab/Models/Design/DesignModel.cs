@@ -2,6 +2,7 @@
 using LegalLab.Items;
 using LegalLab.Models.Legal.Items;
 using LegalLab.Models.Legal.Items.Parameters;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,7 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
-using Waher.Content.Xml;
+using Waher.Events;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
 using Waher.Script;
@@ -36,7 +37,7 @@ namespace LegalLab.Models.Design
 		private readonly Property<RoleInfo[]> roles;
 		private readonly Property<PartInfo[]> parts;
 		private readonly Property<ParameterInfo[]> parameters;
-		private readonly Property<string> machineReadable;
+		private readonly DelayedActionProperty<string> machineReadable;
 		private readonly Property<string> forMachinesLocalName;
 		private readonly Property<string> forMachinesNamespace;
 		private readonly Property<XmlElement> forMachines;
@@ -48,6 +49,9 @@ namespace LegalLab.Models.Design
 		private readonly Command addNumericParameter;
 		private readonly Command addStringParameter;
 		private readonly Command addBooleanParameter;
+		private readonly Command load;
+		private readonly Command save;
+		private readonly Command propose;
 
 		private Contract contract;
 
@@ -68,7 +72,7 @@ namespace LegalLab.Models.Design
 			this.roles = new Property<RoleInfo[]>(nameof(this.Roles), new RoleInfo[0], this);
 			this.parts = new Property<PartInfo[]>(nameof(this.Parts), new PartInfo[0], this);
 			this.parameters = new Property<ParameterInfo[]>(nameof(this.Parameters), new ParameterInfo[0], this);
-			this.machineReadable = new Property<string>(nameof(this.MachineReadable), string.Empty, this);
+			this.machineReadable = new DelayedActionProperty<string>(nameof(this.MachineReadable), TimeSpan.FromSeconds(1), string.Empty, this);
 			this.forMachines = new Property<XmlElement>(nameof(this.ForMachines), null, this);
 			this.forMachinesLocalName = new Property<string>(nameof(this.ForMachinesLocalName), string.Empty, this);
 			this.forMachinesNamespace = new Property<string>(nameof(this.ForMachinesNamespace), string.Empty, this);
@@ -76,6 +80,7 @@ namespace LegalLab.Models.Design
 			this.humanReadableMarkdown = new DelayedActionProperty<string>(nameof(this.HumanReadableMarkdown), TimeSpan.FromSeconds(1), true, string.Empty, this);
 			this.humanReadable = new Property<object>(nameof(this.HumanReadable), null, this);
 
+			this.machineReadable.OnAction += NormalizeMachineReadableXml;
 			this.humanReadableMarkdown.OnAction += RenderHumanReadableMarkdown;
 
 			this.addRole = new Command(this.ExecuteAddRole);
@@ -83,6 +88,9 @@ namespace LegalLab.Models.Design
 			this.addNumericParameter = new Command(this.ExecuteAddNumericParameter);
 			this.addStringParameter = new Command(this.ExecuteAddStringParameter);
 			this.addBooleanParameter = new Command(this.ExecuteAddBooleanParameter);
+			this.load = new Command(this.ExecuteLoadContract);
+			this.save = new Command(this.CanExecuteSaveContract, this.ExecuteSaveContract);
+			this.propose = new Command(this.CanExecuteProposeContract, this.ExecuteProposeContract);
 
 			this.GenerateContract();
 		}
@@ -164,28 +172,7 @@ namespace LegalLab.Models.Design
 
 			this.ValidateParameters();
 
-			if (Contract.ForMachines is null)
-			{
-				this.MachineReadable = string.Empty;
-				this.ForMachines = null;
-			}
-			else
-			{
-				StringBuilder sb = new StringBuilder();
-				Contract.NormalizeXml(Contract.ForMachines, sb, ContractsClient.NamespaceSmartContracts);
-
-				XmlDocument Doc = new XmlDocument();
-				Doc.LoadXml(sb.ToString());
-				sb.Clear();
-
-				XmlWriterSettings Settings = XML.WriterSettings(true, true);
-				using XmlWriter w = XmlWriter.Create(sb, Settings);
-
-				Contract.ForMachines.WriteTo(w);
-				w.Flush();
-				this.MachineReadable = sb.ToString().Replace("&#xD;\n", "\n").Replace("\n\t", "\n").Replace("\t", "    ");
-				this.ForMachines = Doc.DocumentElement;
-			}
+			(this.MachineReadable, this.ForMachines) = Contract.ForMachines.ToPrettyXml();
 
 			this.HumanReadableMarkdown = Contract.ToMarkdown(Contract.DefaultLanguage);
 		}
@@ -237,7 +224,11 @@ namespace LegalLab.Models.Design
 		public Waher.Content.Duration ArchiveOptional
 		{
 			get => this.archiveOptional.Value;
-			set => this.archiveOptional.Value = value;
+			set
+			{
+				this.archiveOptional.Value = value;
+				this.contract.ArchiveOptional = value;
+			}
 		}
 
 		/// <summary>
@@ -246,7 +237,11 @@ namespace LegalLab.Models.Design
 		public Waher.Content.Duration ArchiveRequired
 		{
 			get => this.archiveRequired.Value;
-			set => this.archiveRequired.Value = value;
+			set
+			{
+				this.archiveRequired.Value = value;
+				this.contract.ArchiveRequired = value;
+			}
 		}
 
 		/// <summary>
@@ -255,7 +250,11 @@ namespace LegalLab.Models.Design
 		public Waher.Content.Duration Duration
 		{
 			get => this.duration.Value;
-			set => this.duration.Value = value;
+			set
+			{
+				this.duration.Value = value;
+				this.contract.Duration = value;
+			}
 		}
 
 		/// <summary>
@@ -273,7 +272,11 @@ namespace LegalLab.Models.Design
 		public DateTime? SignBefore
 		{
 			get => this.signBefore.Value;
-			set => this.signBefore.Value = value;
+			set
+			{
+				this.signBefore.Value = value;
+				this.contract.SignBefore = value;
+			}
 		}
 
 		/// <summary>
@@ -282,7 +285,11 @@ namespace LegalLab.Models.Design
 		public DateTime? SignAfter
 		{
 			get => this.signAfter.Value;
-			set => this.signAfter.Value = value;
+			set
+			{
+				this.signAfter.Value = value;
+				this.contract.SignAfter = value;
+			}
 		}
 
 		/// <summary>
@@ -301,6 +308,19 @@ namespace LegalLab.Models.Design
 		{
 			get => this.machineReadable.Value;
 			set => this.machineReadable.Value = value;
+		}
+
+		private void NormalizeMachineReadableXml(object sender, EventArgs e)
+		{
+			try
+			{
+				this.contract.ForMachines = this.machineReadable.Value.NormalizeXml();
+				this.ForMachines = this.contract.ForMachines;
+			}
+			catch (Exception ex)
+			{
+				Log.Critical(ex);
+			}
 		}
 
 		/// <summary>
@@ -339,7 +359,11 @@ namespace LegalLab.Models.Design
 		public string ContractId
 		{
 			get => this.contractId.Value;
-			set => this.contractId.Value = value;
+			set
+			{
+				this.contractId.Value = value;
+				this.contract.ContractId = value;
+			}
 		}
 
 		/// <summary>
@@ -391,7 +415,11 @@ namespace LegalLab.Models.Design
 		public RoleInfo[] Roles
 		{
 			get => this.roles.Value;
-			set => this.roles.Value = value;
+			set
+			{
+				this.roles.Value = value;
+				this.contract.Roles = value.ToRoles();
+			}
 		}
 
 		/// <summary>
@@ -400,7 +428,11 @@ namespace LegalLab.Models.Design
 		public PartInfo[] Parts
 		{
 			get => this.parts.Value;
-			set => this.parts.Value = value;
+			set
+			{
+				this.parts.Value = value;
+				this.contract.Parts = value.ToParts();
+			}
 		}
 
 		/// <summary>
@@ -409,7 +441,11 @@ namespace LegalLab.Models.Design
 		public ParameterInfo[] Parameters
 		{
 			get => this.parameters.Value;
-			set => this.parameters.Value = value;
+			set
+			{
+				this.parameters.Value = value;
+				this.contract.Parameters = value.ToParameters();
+			}
 		}
 
 		/// <summary>
@@ -890,13 +926,83 @@ namespace LegalLab.Models.Design
 
 		private void RenderHumanReadableMarkdown(object sender, EventArgs e)
 		{
-			Variables Variables = new Variables();
-
-			foreach (ParameterInfo Parameter in this.Parameters)
-				Parameter.Parameter.Populate(Variables);
-
 			MainWindow.UpdateGui(() => this.HumanReadable = this.HumanReadableMarkdown.ToXAML(this.Contract));
 		}
 
+		/// <summary>
+		/// Load command
+		/// </summary>
+		public ICommand Load => this.load;
+
+		private void ExecuteLoadContract()
+		{
+			try
+			{
+				OpenFileDialog Dialog = new OpenFileDialog()
+				{
+					CheckFileExists = true,
+					CheckPathExists = true,
+					DefaultExt = "xml",
+					Filter = "XML Files (*.xml)|*.xml|All Files (*.*)|*.*",
+					Multiselect = false,
+					ShowReadOnly = true,
+					Title = "Select Smart Contract to load"
+				};
+
+				bool? Result = Dialog.ShowDialog(MainWindow.currentInstance);
+				if (!Result.HasValue || !Result.Value)
+					return;
+
+				XmlDocument Doc = new XmlDocument()
+				{
+					PreserveWhitespace = true
+				};
+
+				Doc.Load(Dialog.FileName);
+
+				Contract Contract = Contract.Parse(Doc, out _, out _);
+				if (Contract is null)
+					throw new InvalidOperationException("Not a valid Smart Contract file.");
+
+				if (!Contract.CanActAsTemplate)
+					throw new InvalidOperationException("Contract is not a template.");
+
+				this.SetContract(Contract);
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
+		}
+
+		/// <summary>
+		/// Save command
+		/// </summary>
+		public ICommand Save => this.save;
+
+		private bool CanExecuteSaveContract()
+		{
+			return false;	// TODO
+		}
+
+		private void ExecuteSaveContract()
+		{
+			// TODO
+		}
+
+		/// <summary>
+		/// Propose command
+		/// </summary>
+		public ICommand Propose => this.propose;
+
+		private bool CanExecuteProposeContract()
+		{
+			return false;   // TODO
+		}
+
+		private void ExecuteProposeContract()
+		{
+			// TODO
+		}
 	}
 }
