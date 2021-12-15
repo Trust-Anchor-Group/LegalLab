@@ -84,7 +84,7 @@ namespace LegalLab
 
 				Log.Register(new PersistedEventLog(90));
 				Log.Register(new XmlFileEventSink("XML File Event Log", Path.Combine(eventsFolder, "Event Log %YEAR%-%MONTH%-%DAY%T%HOUR%.xml"), 7));
-				Log.Register(new ListViewEventSink(this.EventListView, 1000));
+				Log.Register(new ListViewEventSink(this.EventsTab.EventListView, 1000));
 
 				// Modules
 

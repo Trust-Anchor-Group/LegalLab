@@ -2,7 +2,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:conv="clr-namespace:LegalLab.Converters"
         xmlns:tabs="clr-namespace:LegalLab.Tabs"
         mc:Ignorable="d" WindowStartupLocation="CenterScreen"
         x:Class="LegalLab.MainWindow" Title="TAG Legal Lab" Height="450" Width="800" Background="#FFE5E5E5">
@@ -30,55 +29,8 @@
             <TabItem Header="Create Contract">
                 <tabs:ContractsTab x:Name="ContractsTab"/>
             </TabItem>
-            <TabItem Name="EventsTab" Header="Events">
-                <ListView Name="EventListView" HorizontalAlignment="Left" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible">
-                    <ListView.Resources>
-                        <Style TargetType="{x:Type GridViewColumnHeader}">
-                            <Setter Property="HorizontalContentAlignment" Value="Left" />
-                            <Setter Property="Padding" Value="5,0,0,0" />
-                        </Style>
-                    </ListView.Resources>
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Time" Width="70" DisplayMemberBinding="{Binding Time}"/>
-                            <GridViewColumn Header="Type" Width="70" DisplayMemberBinding="{Binding Type}"/>
-                            <GridViewColumn Header="Level" Width="70" DisplayMemberBinding="{Binding Level}"/>
-                            <GridViewColumn Header="Event ID" Width="125" DisplayMemberBinding="{Binding EventId}"/>
-                            <GridViewColumn Header="Object" Width="250" DisplayMemberBinding="{Binding Object}"/>
-                            <GridViewColumn Header="Actor" Width="250" DisplayMemberBinding="{Binding Actor}"/>
-                            <GridViewColumn Header="Message" Width="Auto">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock TextWrapping="Wrap" Text="{Binding Message}"/>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                        </GridView>
-                    </ListView.View>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListViewItem}">
-                            <Setter Property="Foreground" Value="{Binding ForegroundColor, Converter={conv:ToString}}" />
-                            <Setter Property="Background" Value="{Binding BackgroundColor, Converter={conv:ToString}}" />
-                            <Setter Property="BorderThickness" Value="0"/>
-                            <Setter Property="Margin" Value="0"/>
-                            <Setter Property="Padding" Value="0"/>
-                            <Setter Property="VerticalContentAlignment" Value="Top"/>
-                            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                            <Style.Triggers>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Opacity" Value="0.75"/>
-                                    <Setter Property="Foreground" Value="{Binding ForegroundColor, Converter={conv:ToString}}" />
-                                    <Setter Property="Background" Value="{Binding BackgroundColor, Converter={conv:ToString}}" />
-                                </Trigger>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Opacity" Value="0.5"/>
-                                    <Setter Property="Foreground" Value="{Binding ForegroundColor, Converter={conv:ToString}}" />
-                                    <Setter Property="Background" Value="{Binding BackgroundColor, Converter={conv:ToString}}" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                </ListView>
+            <TabItem Header="Events">
+                <tabs:EventsTab x:Name="EventsTab"/>
             </TabItem>
             <TabItem Name="ScriptTab" Header="Script">
                 <DockPanel LastChildFill="True">
