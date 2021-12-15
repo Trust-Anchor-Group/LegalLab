@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<contract xmlns="urn:ieee:iot:leg:sc:1.0"
+          id="BuyServiceExampleTemplate"
+          archiveOpt="P3M"
+          archiveReq="P1M"
+          canActAsTemplate="true"
+          duration="P1M"
+          visibility="PublicSearchable">
+	<ToBuy xmlns="https://paiwise.tagroot.io/Schema/Marketplace.xsd">
+		<Description>
+			<Type>
+				<Uri>https://example.com/PackageDelivery</Uri>
+			</Type>
+			<Class>
+				<Uri>https://example.com/TransportService</Uri>
+			</Class>
+			<Node>
+				<String>Demo</String>
+			</Node>
+			<Tag name="ProductNumber">
+				<ParameterReference parameter="ProductNumber"/>
+			</Tag>
+			<Tag name="Quantity">
+				<ParameterReference parameter="Quantity"/>
+			</Tag>
+			<Tag name="Description">
+				<ParameterReference parameter="Description"/>
+			</Tag>
+		</Description>
+		<Price>
+			<AskingPrice>
+				<ParameterReference parameter="AskingPrice"/>
+			</AskingPrice>
+			<RejectPrice>
+				<ParameterReference parameter="RejectPrice"/>
+			</RejectPrice>
+			<AcceptPrice>
+				<ParameterReference parameter="AcceptPrice"/>
+			</AcceptPrice>
+			<CommissionPercent>
+				<ParameterReference parameter="CommissionPercent"/>
+			</CommissionPercent>
+			<Currency>
+				<ParameterReference parameter="Currency"/>
+			</Currency>
+		</Price>
+		<Score>
+			<ScoreFunction>Price</ScoreFunction>
+		</Score>
+		<AvailableDays>
+			<ParameterReference parameter="AvailableDays"/>
+		</AvailableDays>
+	</ToBuy>
+	<role name="Buyer" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This role represents the buyer of the transport service being requested.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="Auctioneer" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This role represents the auctioneer that brokers the sale of the service.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<templateOnly/>
+	</parts>
+	<parameters>
+		<stringParameter name="ProductNumber" guide="Product Number" minLength="1">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Reference to the product number in the sellers database.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<numericalParameter name="Quantity" guide="Quantity" min="1">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Number of items of the product being sold.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<stringParameter name="Description" guide="Description" minLength="1">
+			<description xml:lang="en">
+				<paragraph>
+					<text>A description of the product being sold.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<numericalParameter name="AskingPrice" guide="Asking Price" min="0">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The asking price of the sale, as requested by the seller.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<numericalParameter name="RejectPrice" guide="Rejection Price" min="0" exp="RejectPrice&gt;=AskingPrice">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Bids will automatically be rejected above this limit.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<numericalParameter name="AcceptPrice" guide="Accept Price" min="0" exp="AcceptPrice&lt;=AskingPrice">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Bids will automatically be accepted if at or below this limit.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<numericalParameter name="CommissionPercent" guide="Commission (%)" min="0" max="100">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Commission, in percent, of the selling price, that is paid to the auctioneer.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="\w{3}">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Currency of instant payments.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<numericalParameter name="AvailableDays" guide="Offer availability (days)" min="0" minIncluded="false">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Number of days offer is available in the marketplace.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<stringParameter name="FromAddress1" guide="Address" minLength="1">
+			<description xml:lang="en">
+				<paragraph>
+					<text>First row of address of pickup point.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="FromAddress2" value="">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Optional second row of address of pickup point.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="FromAddress3" value="">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Optional third row of address of pickup point.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="FromPostalCode" guide="Postal Code" minLength="1">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Postal code of pickup point.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="FromCity" guide="City" minLength="1">
+			<description xml:lang="en">
+				<paragraph>
+					<text>City of pickup point.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="FromCountry" guide="Country" minLength="1">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Country of pickup point.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="ToAddress1" guide="Address" minLength="1">
+			<description xml:lang="en">
+				<paragraph>
+					<text>First row of address of delivery point.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="ToAddress2" value="">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Optional second row of address of delivery point.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="ToAddress3" value="">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Optional third row of address of delivery point.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="ToPostalCode" guide="Postal Code" minLength="1">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Postal code of delivery point.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="ToCity" guide="City" minLength="1">
+			<description xml:lang="en">
+				<paragraph>
+					<text>City of delivery point.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="ToCountry" guide="Country" minLength="1">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Country of delivery point.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Request for Tenders - Transport Service (Demo)</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This contract defines an auction consignment of the service of buying a transport service. The assignment of a seller to this consignment is negotiated by an online auction managed by TAG Marketplace. The document defines the rules for the automatic processing and matching of  prospective sellers to this request for tenders.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Introduction</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>This contract defines the request to buy the service of transportation of item(s) using the TAG Marketplace auctioning service. The </text>
+							<bold>
+								<text>Buyer</text>
+							</bold>
+							<text> have asked the </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text> to find the best match among offers from prospective </text>
+							<italic>
+								<text>Sellers</text>
+							</italic>
+							<text> to this Request for Tenders. The </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text> matches incoming bids from potential </text>
+							<italic>
+								<text>Sellers</text>
+							</italic>
+							<text>, until the best candidate is found, the first acceptable bid has been received, or the auction  expires due to lack of sufficient interest.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Manifest</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>The </text>
+							<bold>
+								<text>Buyer</text>
+							</bold>
+							<text> requests transport of </text>
+							<bold>
+								<parameter name="Quantity" />
+							</bold>
+							<text> item(s) of </text>
+							<bold>
+								<parameter name="ProductNumber" />
+							</bold>
+							<text> (</text>
+							<parameter name="Description" />
+							<text>).</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Pickup Point</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>The carrier will pick up the delivery at </text>
+							<bold>
+								<parameter name="FromAddress1" />
+								<text> </text>
+								<parameter name="FromAddress2" />
+								<text> </text>
+								<parameter name="FromAddress3" />
+							</bold>
+							<text>, </text>
+							<bold>
+								<parameter name="FromPostalCode" />
+								<text> </text>
+								<parameter name="FromCity" />
+							</bold>
+							<text>,  </text>
+							<bold>
+								<parameter name="FromCountry" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Delivery Point</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>The carrier will transport the delivery to </text>
+							<bold>
+								<parameter name="ToAddress1" />
+								<text> </text>
+								<parameter name="ToAddress2" />
+								<text> </text>
+								<parameter name="ToAddress3" />
+							</bold>
+							<text>, </text>
+							<bold>
+								<parameter name="ToPostalCode" />
+								<text> </text>
+								<parameter name="ToCity" />
+							</bold>
+							<text>,  </text>
+							<bold>
+								<parameter name="ToCountry" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Auction Consignment</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Upon the signature of this contract, the </text>
+							<bold>
+								<text>Buyer</text>
+							</bold>
+							<text> consigns to the </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text> the task of finding a service provider that sells the requested service of transporting the item(s) specified in the </text>
+							<italic>
+								<text>Manifest</text>
+							</italic>
+							<text> above, with an initial </text>
+							<italic>
+								<text>asking price</text>
+							</italic>
+							<text> of  </text>
+							<bold>
+								<parameter name="AskingPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. The </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text> publishes information about the </text>
+							<italic>
+								<text>Request for Tenders</text>
+							</italic>
+							<text> to prospective </text>
+							<italic>
+								<text>Sellers</text>
+							</italic>
+							<text> who can make </text>
+							<italic>
+								<text>Offers</text>
+							</italic>
+							<text> for the duration of </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> days from the signature of the agreement, or until the first </text>
+							<italic>
+								<text>acceptable</text>
+							</italic>
+							<text> bid of </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> is received. Any bid above </text>
+							<bold>
+								<parameter name="RejectPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> will be automatically rejected.  Information of the best bid will also be presented.</text>
+						</paragraph>
+						<paragraph>
+							<text>The consignment concludes at the end of </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> days from the signature of the agreement, or when the first </text>
+							<italic>
+								<text>acceptable</text>
+							</italic>
+							<text> bid of </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> is received if no bids are available, the consignment concludes without any payments being processed.  Otherwise, two payments will be made:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>An instant payment representing the agreed upon price for the best or first accepted bid will be made from the </text>
+								<bold>
+									<text>Buyer</text>
+								</bold>
+								<text> to the </text>
+								<italic>
+									<text>Seller</text>
+								</italic>
+								<text> who won the auction.</text>
+							</item>
+							<item>
+								<text>An instant payment representing the agreed upon commission, as a percentage of the price (</text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text>) for the best or first  accepted bid, will be made from the </text>
+								<bold>
+									<text>Buyer</text>
+								</bold>
+								<text> to the </text>
+								<bold>
+									<text>Auctioneer</text>
+								</bold>
+								<text>. The </text>
+								<bold>
+									<text>Auctioneer</text>
+								</bold>
+								<text> keeps its </text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text> as payment for  its services.</text>
+							</item>
+						</bulletItems>
+						<paragraph>
+							<text>All payments will be made using </text>
+							<italic>
+								<text>e-Daler</text>
+							</italic>
+							<text>. A buyer without funds in their </text>
+							<italic>
+								<text>wallet</text>
+							</italic>
+							<text> will have their request for tender invalidated, and the  sale assignment cancelled.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>

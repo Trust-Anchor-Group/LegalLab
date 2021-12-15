@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<contract xmlns="urn:ieee:iot:leg:sc:1.0"
+          id="OfferServiceExampleTemplate"
+          archiveOpt="P3M"
+          archiveReq="P1M"
+          canActAsTemplate="true"
+          duration="P1M"
+          visibility="PublicSearchable">
+	<Offer xmlns="https://paiwise.tagroot.io/Schema/Marketplace.xsd">
+		<ItemReference>
+			<ParameterReference parameter="RequestForTendersId"/>
+		</ItemReference>
+		<Price>
+			<ParameterReference parameter="Price"/>
+		</Price>
+		<Currency>
+			<ParameterReference parameter="Currency"/>
+		</Currency>
+	</Offer>
+	<role name="Seller" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This role represents the prospective seller of the transport service, making the offer.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="Auctioneer" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This role represents the auctioneer or broker that negotiates the sales of the requested service.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<templateOnly/>
+	</parts>
+	<parameters>
+		<stringParameter name="RequestForTendersId" guide="Request for Tenders Contract ID" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The offer references the Request for Tenders detailed by the smart contract referenced to by this parameter.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<numericalParameter name="Price" guide="Bid Price" min="0">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The offer price.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="\w{3}">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Currency of the bid.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Service Offer - Transport Service (Auction Offer Agreement)</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This contract represents an offer to transport goods in accordance with a request for tenders, negotiated by an online auction  managed by TAG Marketplace.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Introduction</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>A </text>
+							<italic>
+								<text>Buyer</text>
+							</italic>
+							<text> has published item(s) to be transported in an online request for tenders defined in the smart contract </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>.  This document defines an offer created by </text>
+							<bold>
+								<text>Seller</text>
+							</bold>
+							<text> to transport these item(s) in accordance with the aforementioned Request for Tenders for the price of </text>
+							<bold>
+								<parameter name="Price" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Auction</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>The </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text> has been consigned by the </text>
+							<italic>
+								<text>Buyer</text>
+							</italic>
+							<text> to negotiate the right to transport the item(s) defined in the smart contract  </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>. The </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text> receives bids in the form of offer contracts; this contract being such an offer contract.  The </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text>, as part of the consignment, will choose the best bid, or the first acceptable bid, by signing the corresponding offer contract. As soon as the contract has been signed, The </text>
+							<italic>
+								<text>Buyer</text>
+							</italic>
+							<text> will pay the amount of </text>
+							<bold>
+								<parameter name="Price" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> plus </text>
+							<italic>
+								<text>commission</text>
+							</italic>
+							<text> to the </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text>, who in turn, pays the amount (minus a </text>
+							<italic>
+								<text>commission fee</text>
+							</italic>
+							<text>) to the </text>
+							<bold>
+								<text>Seller</text>
+							</bold>
+							<text>. The </text>
+							<italic>
+								<text>commission</text>
+							</italic>
+							<text> is negotiated by the </text>
+							<italic>
+								<text>Buyer</text>
+							</italic>
+							<text> and the </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text> as part of the consignment agreement </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>
