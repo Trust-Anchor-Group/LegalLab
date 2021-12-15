@@ -36,9 +36,11 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		/// <param name="MaxLengthControl">Control for editing the maximum length of the parameter.</param>
 		/// <param name="RegExControl">Control for editing a regular expression for validating the parameter.</param>
 		/// <param name="DesignModel">Design model</param>
+		/// <param name="Parameters">Collection of parameters.</param>
 		public StringParameterInfo(Contract Contract, StringParameter Parameter, Control Control, Control MinControl, Control MinIncludedControl, 
-			Control MaxControl, Control MaxIncludedControl, Control MinLengthControl, Control MaxLengthControl, Control RegExControl, DesignModel DesignModel) 
-			: base(Contract, Parameter, Control, MinControl, MinIncludedControl, MaxControl, MaxIncludedControl, DesignModel)
+			Control MaxControl, Control MaxIncludedControl, Control MinLengthControl, Control MaxLengthControl, Control RegExControl, 
+			DesignModel DesignModel, Property<ParameterInfo[]> Parameters) 
+			: base(Contract, Parameter, Control, MinControl, MinIncludedControl, MaxControl, MaxIncludedControl, DesignModel, Parameters)
 		{
 			this.stringParameter = Parameter;
 		

@@ -27,9 +27,10 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		/// <param name="MaxControl">Control for editing maximum value.</param>
 		/// <param name="MaxIncludedControl">Control for defining if maximum value is included or not.</param>
 		/// <param name="DesignModel">Design model</param>
+		/// <param name="Parameters">Collection of parameters.</param>
 		public NumericalParameterInfo(Contract Contract, NumericalParameter Parameter, Control Control, Control MinControl, Control MinIncludedControl,
-			Control MaxControl, Control MaxIncludedControl, DesignModel DesignModel)
-			: base(Contract, Parameter, Control, MinControl, MinIncludedControl, MaxControl, MaxIncludedControl, DesignModel)
+			Control MaxControl, Control MaxIncludedControl, DesignModel DesignModel, Property<ParameterInfo[]> Parameters)
+			: base(Contract, Parameter, Control, MinControl, MinIncludedControl, MaxControl, MaxIncludedControl, DesignModel, Parameters)
 		{
 			this.numericalParameter = Parameter;
 		

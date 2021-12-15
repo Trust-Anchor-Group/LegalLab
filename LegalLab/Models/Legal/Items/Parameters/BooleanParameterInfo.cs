@@ -18,8 +18,9 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		/// <param name="Parameter">Parameter</param>
 		/// <param name="Control">Edit control</param>
 		/// <param name="DesignModel">Design model</param>
-		public BooleanParameterInfo(Contract Contract, BooleanParameter Parameter, Control Control, DesignModel DesignModel)
-			: base(Contract, Parameter, Control, DesignModel)
+		/// <param name="Parameters">Collection of parameters.</param>
+		public BooleanParameterInfo(Contract Contract, BooleanParameter Parameter, Control Control, DesignModel DesignModel, Property<ParameterInfo[]> Parameters)
+			: base(Contract, Parameter, Control, DesignModel, Parameters)
 		{
 		}
 

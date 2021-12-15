@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LegalLab.Models.Legal.Items
+namespace LegalLab.Items
 {
 	/// <summary>
 	/// Interface for named items

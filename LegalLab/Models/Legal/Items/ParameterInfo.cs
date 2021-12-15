@@ -1,5 +1,7 @@
 ﻿using LegalLab.Extensions;
+using LegalLab.Items;
 using LegalLab.Models.Design;
+using LegalLab.Models.Items;
 using System;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,7 +14,7 @@ namespace LegalLab.Models.Legal.Items
 	/// <summary>
 	/// Contains information about a parameter
 	/// </summary>
-	public abstract class ParameterInfo : Model, INamedItem
+	public abstract class ParameterInfo : OrderedItem<ParameterInfo>, INamedItem
 	{
 		private readonly Property<string> name;
 		private readonly Property<object> description;
@@ -31,7 +33,9 @@ namespace LegalLab.Models.Legal.Items
 		/// <param name="Parameter">Parameter</param>
 		/// <param name="Control">Edit control</param>
 		/// <param name="DesignModel">Design model</param>
-		public ParameterInfo(Contract Contract, Parameter Parameter, Control Control, DesignModel DesignModel)
+		/// <param name="Parameters">Collection of parameters.</param>
+		public ParameterInfo(Contract Contract, Parameter Parameter, Control Control, DesignModel DesignModel, Property<ParameterInfo[]> Parameters)
+			: base(Parameters)
 		{
 			this.name = new Property<string>(nameof(this.Name), Parameter.Name, this);
 			this.description = new Property<object>(nameof(this.Description), Parameter.ToSimpleXAML(Contract.DefaultLanguage, Contract), this);

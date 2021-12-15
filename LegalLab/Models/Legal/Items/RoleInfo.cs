@@ -1,5 +1,7 @@
 ﻿using LegalLab.Extensions;
+using LegalLab.Items;
 using LegalLab.Models.Design;
+using LegalLab.Models.Items;
 using System;
 using System.Windows.Input;
 using Waher.Networking.XMPP.Contracts;
@@ -9,7 +11,7 @@ namespace LegalLab.Models.Legal.Items
 	/// <summary>
 	/// Contains information about a role
 	/// </summary>
-	public class RoleInfo : Model, INamedItem
+	public class RoleInfo : OrderedItem<RoleInfo>, INamedItem
 	{
 		private readonly ContractModel contractModel;
 		private readonly DesignModel designModel;
@@ -30,8 +32,9 @@ namespace LegalLab.Models.Legal.Items
 		/// </summary>
 		/// <param name="ContractModel">Contract Model hosting the parameter</param>
 		/// <param name="Role">Role</param>
-		public RoleInfo(ContractModel ContractModel, Role Role)
-			: this(ContractModel.Contract, Role)
+		/// <param name="Roles">Collection of roles.</param>
+		public RoleInfo(ContractModel ContractModel, Role Role, Property<RoleInfo[]> Roles)
+			: this(ContractModel.Contract, Role, Roles)
 		{
 			this.contractModel = ContractModel;
 		}
@@ -41,8 +44,9 @@ namespace LegalLab.Models.Legal.Items
 		/// </summary>
 		/// <param name="DesignModel">Design Model hosting the parameter</param>
 		/// <param name="Role">Role</param>
-		public RoleInfo(DesignModel DesignModel, Role Role)
-			: this(DesignModel.Contract, Role)
+		/// <param name="Roles">Collection of roles.</param>
+		public RoleInfo(DesignModel DesignModel, Role Role, Property<RoleInfo[]> Roles)
+			: this(DesignModel.Contract, Role, Roles)
 		{
 			this.designModel = DesignModel;
 		}
@@ -52,7 +56,9 @@ namespace LegalLab.Models.Legal.Items
 		/// </summary>
 		/// <param name="Contract">Contract hosting the parameter</param>
 		/// <param name="Role">Role</param>
-		public RoleInfo(Contract Contract, Role Role)
+		/// <param name="Roles">Collection of roles.</param>
+		public RoleInfo(Contract Contract, Role Role, Property<RoleInfo[]> Roles)
+			: base(Roles)
 		{
 			this.contract = Contract;
 

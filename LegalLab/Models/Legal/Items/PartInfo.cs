@@ -1,4 +1,5 @@
 ﻿using LegalLab.Models.Design;
+using LegalLab.Models.Items;
 using System;
 using System.Windows.Input;
 
@@ -7,7 +8,7 @@ namespace LegalLab.Models.Legal.Items
 	/// <summary>
 	/// Contains information about a part in the contract
 	/// </summary>
-	public class PartInfo : Model
+	public class PartInfo : OrderedItem<PartInfo>
 	{
 		private readonly Property<string> legalId;
 		private readonly Property<string> role;
@@ -20,8 +21,10 @@ namespace LegalLab.Models.Legal.Items
 		/// </summary>
 		/// <param name="LegalId">Legal ID</param>
 		/// <param name="Role">Role</param>
-		/// <param name="Roles">Currently available roles</param>
-		public PartInfo(string LegalId, string Role, DesignModel DesignModel)
+		/// <param name="DesignModel">Design model</param>
+		/// <param name="Parts">Collection of parts.</param>
+		public PartInfo(string LegalId, string Role, DesignModel DesignModel, Property<PartInfo[]> Parts)
+			: base(Parts)
 		{
 			this.legalId = new Property<string>(nameof(this.LegalId), LegalId, this);
 			this.role = new Property<string>(nameof(this.Role), Role, this);

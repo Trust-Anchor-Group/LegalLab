@@ -141,7 +141,7 @@ namespace LegalLab.Models.Legal
 			if (!(this.contract.Parts is null))
 			{
 				foreach (Part Part in this.contract.Parts)
-					Parts.Add(new PartInfo(Part.LegalId, Part.Role, null));
+					Parts.Add(new PartInfo(Part.LegalId, Part.Role, null, this.parts));
 			}
 
 			this.Parts = Parts.ToArray();
@@ -151,7 +151,7 @@ namespace LegalLab.Models.Legal
 			if (!(this.contract.Roles is null))
 			{
 				foreach (Role Role in this.contract.Roles)
-					Roles.Add(new RoleInfo(this, Role));
+					Roles.Add(new RoleInfo(this, Role, this.roles));
 			}
 
 			this.Roles = Roles.ToArray();
@@ -392,7 +392,7 @@ namespace LegalLab.Models.Legal
 					CheckBox.Checked += Parameter_CheckedChanged;
 					CheckBox.Unchecked += Parameter_CheckedChanged;
 
-					this.parametersByName[Parameter.Name] = ParameterInfo = new BooleanParameterInfo(this.contract, BP, CheckBox, null);
+					this.parametersByName[Parameter.Name] = ParameterInfo = new BooleanParameterInfo(this.contract, BP, CheckBox, null, this.parameters);
 
 					Parameters.Children.Add(CheckBox);
 				}
@@ -414,9 +414,15 @@ namespace LegalLab.Models.Legal
 					TextBox.TextChanged += Parameter_TextChanged;
 
 					if (Parameter is NumericalParameter NP)
-						this.parametersByName[Parameter.Name] = ParameterInfo = new NumericalParameterInfo(this.contract, NP, TextBox, null, null, null, null, null);
+					{
+						this.parametersByName[Parameter.Name] = ParameterInfo = new NumericalParameterInfo(this.contract, NP, TextBox,
+							null, null, null, null, null, this.parameters);
+					}
 					else if (Parameter is StringParameter SP)
-						this.parametersByName[Parameter.Name] = ParameterInfo = new StringParameterInfo(this.contract, SP, TextBox, null, null, null, null, null, null, null, null);
+					{
+						this.parametersByName[Parameter.Name] = ParameterInfo = new StringParameterInfo(this.contract, SP, TextBox,
+							null, null, null, null, null, null, null, null, this.parameters);
+					}
 					else
 						continue;
 

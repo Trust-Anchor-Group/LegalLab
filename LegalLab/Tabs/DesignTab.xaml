@@ -18,7 +18,7 @@
                 <WrapPanel Orientation="Horizontal">
                     <StackPanel Orientation="Vertical" Width="100" Margin="0,0,10,10">
                         <Label>ID:</Label>
-                        <TextBox Text="{Binding ContractId}"/>
+                        <TextBox Name="ContractId" Text="{Binding ContractId}"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Width="100" Margin="0,0,10,10">
                         <Label>Visibility:</Label>
@@ -53,7 +53,7 @@
                 <Label FontSize="20" Margin="0,10,0,0">Roles</Label>
                 <Label>Following are roles defined in the contract:</Label>
                 <DataGrid ItemsSource="{Binding Roles}" Width="Auto" HorizontalAlignment="Left" 
-                                      AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="False">
+                          AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="Role"/>
                         <DataGridTemplateColumn Header="Description">
@@ -72,6 +72,35 @@
                         <DataGridTextColumn Binding="{Binding MaxCount}" Header="Max"/>
                         <DataGridCheckBoxColumn Binding="{Binding CanRevoke}" Header="Can Revoke"/>
                         <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="{Binding Path=Background, ElementName=ContractId}"/>
+                                </Style>
+                            </DataGridTemplateColumn.HeaderStyle>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding MoveUp}" Padding="5,0,5,0">Up</Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="{Binding Path=Background, ElementName=ContractId}"/>
+                                </Style>
+                            </DataGridTemplateColumn.HeaderStyle>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding MoveDown}" Padding="5,0,5,0">Down</Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="{Binding Path=Background, ElementName=ContractId}"/>
+                                </Style>
+                            </DataGridTemplateColumn.HeaderStyle>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button Command="{Binding RemoveRole}" Padding="5,0,5,0">Remove</Button>
@@ -96,6 +125,35 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="{Binding Path=Background, ElementName=ContractId}"/>
+                                </Style>
+                            </DataGridTemplateColumn.HeaderStyle>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding MoveUp}" Padding="5,0,5,0">Up</Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="{Binding Path=Background, ElementName=ContractId}"/>
+                                </Style>
+                            </DataGridTemplateColumn.HeaderStyle>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding MoveDown}" Padding="5,0,5,0">Down</Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="{Binding Path=Background, ElementName=ContractId}"/>
+                                </Style>
+                            </DataGridTemplateColumn.HeaderStyle>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button Command="{Binding RemovePart}" Padding="5,0,5,0">Remove</Button>
@@ -183,6 +241,35 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="{Binding Path=Background, ElementName=ContractId}"/>
+                                </Style>
+                            </DataGridTemplateColumn.HeaderStyle>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding MoveUp}" Padding="5,0,5,0">Up</Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="{Binding Path=Background, ElementName=ContractId}"/>
+                                </Style>
+                            </DataGridTemplateColumn.HeaderStyle>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding MoveDown}" Padding="5,0,5,0">Down</Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="{Binding Path=Background, ElementName=ContractId}"/>
+                                </Style>
+                            </DataGridTemplateColumn.HeaderStyle>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button Command="{Binding RemoveParameter}" Padding="5,0,5,0">Remove</Button>

@@ -1,4 +1,5 @@
 ﻿using LegalLab.Extensions;
+using LegalLab.Items;
 using LegalLab.Models.Legal;
 using LegalLab.Models.Legal.Items;
 using LegalLab.Models.Legal.Items.Parameters;
@@ -129,7 +130,7 @@ namespace LegalLab.Models.Design
 			if (!(Contract.Parts is null))
 			{
 				foreach (Part Part in Contract.Parts)
-					Parts.Add(new PartInfo(Part.LegalId, Part.Role, this));
+					Parts.Add(new PartInfo(Part.LegalId, Part.Role, this, this.parts));
 			}
 
 			this.Parts = Parts.ToArray();
@@ -139,7 +140,7 @@ namespace LegalLab.Models.Design
 			if (!(Contract.Roles is null))
 			{
 				foreach (Role Role in Contract.Roles)
-					Roles.Add(new RoleInfo(this, Role));
+					Roles.Add(new RoleInfo(this, Role, this.roles));
 			}
 
 			this.Roles = Roles.ToArray();
@@ -434,7 +435,7 @@ namespace LegalLab.Models.Design
 				MinCount = 1,
 				MaxCount = 1,
 				CanRevoke = false
-			});
+			}, this.roles);
 
 			this.Roles = Roles;
 		}
@@ -502,7 +503,7 @@ namespace LegalLab.Models.Design
 			int c = Parts.Length;
 
 			Array.Resize<PartInfo>(ref Parts, c + 1);
-			Parts[c] = new PartInfo(string.Empty, string.Empty, this);
+			Parts[c] = new PartInfo(string.Empty, string.Empty, this, this.parts);
 
 			this.Parts = Parts;
 		}
@@ -578,7 +579,8 @@ namespace LegalLab.Models.Design
 			MaxIncludedControl.Checked += Parameter_MaxIncludedCheckedChanged;
 			MaxIncludedControl.Unchecked += Parameter_MaxIncludedCheckedChanged;
 
-			ParameterInfo ParameterInfo = new NumericalParameterInfo(this.contract, NP, ValueControl, MinControl, MinIncludedControl, MaxControl, MaxIncludedControl, this);
+			ParameterInfo ParameterInfo = new NumericalParameterInfo(this.contract, NP, ValueControl, MinControl, MinIncludedControl,
+				MaxControl, MaxIncludedControl, this, this.parameters);
 			ValueControl.Tag = ParameterInfo;
 			MinControl.Tag = ParameterInfo;
 			MaxControl.Tag = ParameterInfo;
@@ -654,7 +656,7 @@ namespace LegalLab.Models.Design
 			RegExControl.TextChanged += Parameter_RegExTextChanged;
 
 			ParameterInfo ParameterInfo = new StringParameterInfo(this.contract, SP, ValueControl, MinControl, MinIncludedControl,
-				MaxControl, MaxIncludedControl, MinLengthControl, MaxLengthControl, RegExControl, this);
+				MaxControl, MaxIncludedControl, MinLengthControl, MaxLengthControl, RegExControl, this, this.parameters);
 
 			ValueControl.Tag = ParameterInfo;
 			MinControl.Tag = ParameterInfo;
@@ -819,7 +821,7 @@ namespace LegalLab.Models.Design
 			CheckBox.Checked += Parameter_CheckedChanged;
 			CheckBox.Unchecked += Parameter_CheckedChanged;
 
-			ParameterInfo ParameterInfo = new BooleanParameterInfo(this.contract, BP, CheckBox, this);
+			ParameterInfo ParameterInfo = new BooleanParameterInfo(this.contract, BP, CheckBox, this, this.parameters);
 			CheckBox.Tag = ParameterInfo;
 
 			return ParameterInfo;
