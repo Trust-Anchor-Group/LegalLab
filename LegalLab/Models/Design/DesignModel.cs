@@ -1,6 +1,5 @@
 ﻿using LegalLab.Extensions;
 using LegalLab.Items;
-using LegalLab.Models.Legal;
 using LegalLab.Models.Legal.Items;
 using LegalLab.Models.Legal.Items.Parameters;
 using System;
@@ -10,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Markup;
 using System.Windows.Media;
 using System.Xml;
 using Waher.Content.Xml;

@@ -2,10 +2,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
-using Waher.Content.Markdown;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
-using Waher.Script;
 
 namespace LegalLab.Extensions
 {

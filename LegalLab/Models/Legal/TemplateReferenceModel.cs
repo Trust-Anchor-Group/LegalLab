@@ -1,6 +1,4 @@
-﻿using LegalLab.Extensions;
-using System;
-using Waher.Networking.XMPP.Contracts;
+﻿using System;
 
 namespace LegalLab.Models.Legal
 {

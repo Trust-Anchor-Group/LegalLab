@@ -3,7 +3,6 @@ using LegalLab.Models;
 using LegalLab.Models.Design;
 using LegalLab.Models.Network;
 using LegalLab.Models.Network.Events;
-using LegalLab.Models.Script;
 using LegalLab.Models.Window;
 using System;
 using System.Collections.Generic;
