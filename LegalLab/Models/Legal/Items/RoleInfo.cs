@@ -100,7 +100,7 @@ namespace LegalLab.Models.Legal.Items
 			set
 			{
 				this.descriptionAsMarkdown.Value = value;
-				this.description.Value = value.ToSimpleXAML();
+				this.description.Value = value.ToSimpleXAML(this.contract);
 			}
 		}
 

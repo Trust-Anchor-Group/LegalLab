@@ -897,7 +897,7 @@ namespace LegalLab.Models.Design
 			foreach (ParameterInfo Parameter in this.Parameters)
 				Parameter.Parameter.Populate(Variables);
 
-			MainWindow.UpdateGui(() => this.HumanReadable = this.HumanReadableMarkdown.ToXAML(Variables));
+			MainWindow.UpdateGui(() => this.HumanReadable = this.HumanReadableMarkdown.ToXAML(this.Contract));
 		}
 
 	}

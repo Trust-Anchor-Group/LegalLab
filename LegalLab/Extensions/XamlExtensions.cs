@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Markup;
 using Waher.Content.Markdown;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Contracts.HumanReadable;
 using Waher.Script;
 
 namespace LegalLab.Extensions
@@ -66,39 +67,32 @@ namespace LegalLab.Extensions
 		/// <summary>
 		/// Converts the human-readable description of a parameter to simple XAML.
 		/// </summary>
+		/// <param name="Markdown">Markdown text</param>
+		/// <param name="Contract">Contract</param>
 		/// <returns>Simple XAML</returns>
-		public static object ToSimpleXAML(this string Markdown)
+		public static object ToSimpleXAML(this string Markdown, Contract Contract)
 		{
 			if (string.IsNullOrEmpty(Markdown))
 				return null;
 
-			MarkdownDocument Doc = new MarkdownDocument(Markdown);
-			string Xaml = Doc.GenerateXAML();
+			HumanReadableText Text = Markdown.ToHumanReadableText();
+			string Xaml = Text.GenerateXAML(Contract);
 			return Xaml.ParseSimple();
 		}
 
 		/// <summary>
 		/// Converts the human-readable description of a parameter to XAML.
 		/// </summary>
-		/// <returns>XAML</returns>
-		public static object ToXAML(this string Markdown)
-		{
-			return ToXAML(Markdown, new Variables());
-		}
-
-		/// <summary>
-		/// Converts the human-readable description of a parameter to XAML.
-		/// </summary>
 		/// <param name="Markdown">Current set of variables.</param>
+		/// <param name="Contract">Contract</param>
 		/// <returns>XAML</returns>
-		public static object ToXAML(this string Markdown, Variables Variables)
+		public static object ToXAML(this string Markdown, Contract Contract)
 		{
 			if (string.IsNullOrEmpty(Markdown))
 				return null;
 
-			MarkdownSettings Settings = new MarkdownSettings(null, false, Variables);
-			MarkdownDocument Doc = new MarkdownDocument(Markdown, Settings);
-			string Xaml = Doc.GenerateXAML();
+			HumanReadableText Text = Markdown.ToHumanReadableText();
+			string Xaml = Text.GenerateXAML(Contract);
 			return XamlReader.Parse(Xaml);
 		}
 	}

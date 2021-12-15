@@ -99,7 +99,7 @@ namespace LegalLab.Models.Legal.Items
 			{
 				this.Parameter.Descriptions = new HumanReadableText[] { value.ToHumanReadableText() };
 				this.descriptionAsMarkdown.Value = value;
-				this.description.Value = value.ToSimpleXAML();
+				this.description.Value = value.ToSimpleXAML(this.Contract);
 			}
 		}
 
