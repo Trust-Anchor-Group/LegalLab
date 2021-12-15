@@ -102,7 +102,7 @@ namespace LegalLab.Models.Legal
 				MainWindow.currentInstance.ContractsTab.DataContext = this;
 				MainWindow.currentInstance.ContractCommands.DataContext = this;
 
-				MainWindow.currentInstance.UploadCommands.Visibility = Visibility.Visible;
+				MainWindow.currentInstance.UploadTab.UploadCommands.Visibility = Visibility.Visible;
 			});
 
 			await this.contracts.LoadKeys(true);
@@ -451,8 +451,8 @@ namespace LegalLab.Models.Legal
 
 				await this.currentTemplate.Start();
 
-				this.currentTemplate.PopulateParameters(MainWindow.currentInstance.UploadParameters, MainWindow.currentInstance.TemplateCommands);
-				this.currentTemplate.PopulateContract(MainWindow.currentInstance.ProposedContract, MainWindow.currentInstance.ProposedContractHumanReadable);
+				this.currentTemplate.PopulateParameters(MainWindow.currentInstance.UploadTab.UploadParameters, MainWindow.currentInstance.UploadTab.TemplateCommands);
+				this.currentTemplate.PopulateContract(MainWindow.currentInstance.UploadTab.ProposedContract, MainWindow.currentInstance.UploadTab.ProposedContractHumanReadable);
 			}
 			catch (Exception ex)
 			{

@@ -135,7 +135,7 @@ namespace LegalLab.Models.Legal.Items
 		/// </summary>
 		public void Revalidate()
 		{
-			this.designModel.ValidateParameters();
+			this.designModel?.ValidateParameters();
 		}
 
 		/// <summary>
