@@ -1,5 +1,6 @@
 ﻿using SkiaSharp;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -395,7 +396,11 @@ namespace LegalLab.Models.Script
 		{
 			try
 			{
-				System.Diagnostics.Process.Start(this.ReferenceUri);
+				Process.Start(new ProcessStartInfo()
+				{
+					FileName = this.ReferenceUri,
+					UseShellExecute = true
+				});
 			}
 			catch (Exception ex)
 			{
