@@ -32,24 +32,8 @@
             <TabItem Header="Events">
                 <tabs:EventsTab x:Name="EventsTab"/>
             </TabItem>
-            <TabItem Name="ScriptTab" Header="Script">
-                <DockPanel LastChildFill="True">
-                    <StackPanel DockPanel.Dock="Bottom" Margin="5,5,5,5">
-                        <TextBlock>Enter script to execute below. Execute by pressing ENTER. Script reference: 
-                            <Hyperlink NavigateUri="{Binding ReferenceUri}" Click="OpenScriptReference">
-                                <Run Text="{Binding ReferenceUri}" d:Text="https://lab.tagroot.io/Script.md"/>
-                            </Hyperlink>
-                        </TextBlock>
-                        <TextBox Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" HorizontalAlignment="Stretch"
-                                 VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" ToolTip="Enter script to execute here." AcceptsTab="True"
-                                 Margin="0,0,0,0" Height="60" AcceptsReturn="True" PreviewKeyDown="InputPreviewKeyDown">
-                        </TextBox>
-                    </StackPanel>
-                    <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" DockPanel.Dock="Top">
-                        <StackPanel Name="HistoryPanel">
-                        </StackPanel>
-                    </ScrollViewer>
-                </DockPanel>
+            <TabItem Header="Script">
+                <tabs:ScriptTab x:Name="ScriptTab"/>
             </TabItem>
         </TabControl>
     </DockPanel>

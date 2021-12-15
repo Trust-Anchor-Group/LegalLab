@@ -37,7 +37,6 @@ namespace LegalLab
 		private static FilesProvider database;
 		private static WindowSizeModel windowSizeModel;
 		private static NetworkModel networkModel;
-		private static ScriptModel scriptModel;
 		private static DesignModel designModel;
 
 		public MainWindow()
@@ -53,8 +52,17 @@ namespace LegalLab
 		{
 			try
 			{
-				if (currentInstance is null)
-					currentInstance = this;
+				bool StartGuiTask = false;
+
+				lock (guiUpdateQueue)
+				{
+					if (currentInstance is null)
+					{
+						currentInstance = this;
+						StartGuiTask = true;
+					}
+				}
+
 
 				appDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LegalLab");
 
@@ -95,7 +103,9 @@ namespace LegalLab
 				windowSizeModel = await InstantiateModel<WindowSizeModel>(this.WindowState, this.Left, this.Top, this.Width, this.Height, this.TabControl.SelectedIndex);
 				networkModel = await InstantiateModel<NetworkModel>();
 				designModel = await InstantiateModel<DesignModel>();
-				scriptModel = await InstantiateModel<ScriptModel>(this.HistoryPanel);
+
+				if (StartGuiTask)
+					await this.Dispatcher.BeginInvoke(new ThreadStart(DoUpdates));
 			}
 			catch (Exception ex)
 			{
@@ -109,7 +119,7 @@ namespace LegalLab
 		/// <typeparam name="T">Type of view model</typeparam>
 		/// <param name="Arguments">Optional list of arguments.</param>
 		/// <returns>Instantiated view model.</returns>
-		private static async Task<T> InstantiateModel<T>(params object[] Arguments)
+		public static async Task<T> InstantiateModel<T>(params object[] Arguments)
 			where T : Model
 		{
 			T Result = Types.InstantiateDefault<T>(false, Arguments);
@@ -178,11 +188,6 @@ namespace LegalLab
 		/// Design model
 		/// </summary>
 		public static DesignModel DesignModel => designModel;
-
-		/// <summary>
-		/// Script model
-		/// </summary>
-		public static ScriptModel ScriptModel => scriptModel;
 
 		#endregion
 
@@ -334,7 +339,7 @@ namespace LegalLab
 
 			lock (guiUpdateQueue)
 			{
-				Start = guiUpdateQueue.First is null;
+				Start = (guiUpdateQueue.First is null) && !(currentInstance is null);
 				guiUpdateQueue.AddLast(Rec);
 			}
 
@@ -391,20 +396,6 @@ namespace LegalLab
 			public DateTime Requested;
 			public DateTime Started;
 			public DateTime Ended;
-		}
-
-		#endregion
-
-		#region Events that need to be routed to the corresponding views
-
-		private void OpenScriptReference(object sender, RoutedEventArgs e)
-		{
-			scriptModel?.HyperLinkClicked();
-		}
-
-		private void InputPreviewKeyDown(object sender, KeyEventArgs e)
-		{
-			scriptModel?.InputPreviewKeyDown(e);
 		}
 
 		#endregion

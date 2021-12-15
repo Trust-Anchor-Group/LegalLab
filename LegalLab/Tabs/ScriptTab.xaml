@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="LegalLab.Tabs.ScriptTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <DockPanel LastChildFill="True">
+        <StackPanel DockPanel.Dock="Bottom" Margin="5,5,5,5">
+            <TextBlock>Enter script to execute below. Execute by pressing ENTER. Script reference: 
+                <Hyperlink NavigateUri="{Binding ReferenceUri}" Click="OpenScriptReference">
+                    <Run Text="{Binding ReferenceUri}" d:Text="https://lab.tagroot.io/Script.md"/>
+                </Hyperlink>
+            </TextBlock>
+            <TextBox Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" HorizontalAlignment="Stretch"
+                     VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" ToolTip="Enter script to execute here." AcceptsTab="True"
+                     Margin="0,0,0,0" Height="60" AcceptsReturn="True" PreviewKeyDown="InputPreviewKeyDown">
+            </TextBox>
+        </StackPanel>
+        <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" DockPanel.Dock="Top">
+            <StackPanel Name="HistoryPanel">
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>
