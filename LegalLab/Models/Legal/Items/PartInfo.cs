@@ -2,6 +2,7 @@
 using LegalLab.Models.Items;
 using System;
 using System.Windows.Input;
+using Waher.Networking.XMPP.Contracts;
 
 namespace LegalLab.Models.Legal.Items
 {
@@ -16,20 +17,22 @@ namespace LegalLab.Models.Legal.Items
 
 		private readonly Command removePart;
 
+		private readonly Part part;
+
 		/// <summary>
 		/// Contains information about a part in the contract
 		/// </summary>
-		/// <param name="LegalId">Legal ID</param>
-		/// <param name="Role">Role</param>
+		/// <param name="Part">Part</param>
 		/// <param name="DesignModel">Design model</param>
 		/// <param name="Parts">Collection of parts.</param>
-		public PartInfo(string LegalId, string Role, DesignModel DesignModel, Property<PartInfo[]> Parts)
+		public PartInfo(Part Part, DesignModel DesignModel, Property<PartInfo[]> Parts)
 			: base(Parts)
 		{
-			this.legalId = new Property<string>(nameof(this.LegalId), LegalId, this);
-			this.role = new Property<string>(nameof(this.Role), Role, this);
+			this.legalId = new Property<string>(nameof(this.LegalId), Part.LegalId, this);
+			this.role = new Property<string>(nameof(this.Role), Part.Role, this);
 
 			this.designModel = DesignModel;
+			this.part = Part;
 
 			this.removePart = new Command(this.CanExecuteRemovePart, this.ExecuteRemovePart);
 
@@ -43,7 +46,11 @@ namespace LegalLab.Models.Legal.Items
 		public string LegalId
 		{
 			get => this.legalId.Value;
-			set => this.legalId.Value = value;
+			set
+			{
+				this.part.LegalId = value;
+				this.legalId.Value = value;
+			}
 		}
 
 		/// <summary>
@@ -52,7 +59,11 @@ namespace LegalLab.Models.Legal.Items
 		public string Role
 		{
 			get => this.role.Value;
-			set => this.role.Value = value;
+			set
+			{
+				this.part.Role = value;
+				this.role.Value = value;
+			}
 		}
 
 		/// <summary>

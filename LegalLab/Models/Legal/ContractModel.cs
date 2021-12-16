@@ -144,7 +144,7 @@ namespace LegalLab.Models.Legal
 			if (!(this.contract.Parts is null))
 			{
 				foreach (Part Part in this.contract.Parts)
-					Parts.Add(new PartInfo(Part.LegalId, Part.Role, null, this.parts));
+					Parts.Add(new PartInfo(Part, null, this.parts));
 			}
 
 			this.Parts = Parts.ToArray();

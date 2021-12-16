@@ -50,6 +50,9 @@ namespace LegalLab.Extensions
 		/// <returns>Human-readable text.</returns>
 		public static HumanReadableText ToHumanReadableText(this string Markdown)
 		{
+			if (string.IsNullOrEmpty(Markdown))
+				return null;
+
 			MarkdownDocument ParsedMarkdown = new MarkdownDocument(Markdown);
 			StringBuilder sb = new StringBuilder();
 			using XmlWriter w = XmlWriter.Create(sb);

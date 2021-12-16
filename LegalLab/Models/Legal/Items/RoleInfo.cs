@@ -28,6 +28,8 @@ namespace LegalLab.Models.Legal.Items
 		private readonly Command proposeForRole;
 		private readonly Command removeRole;
 
+		private readonly Role role;
+
 		/// <summary>
 		/// Contains information about a role
 		/// </summary>
@@ -62,6 +64,7 @@ namespace LegalLab.Models.Legal.Items
 			: base(Roles)
 		{
 			this.contract = Contract;
+			this.role = Role;
 
 			this.name = new Property<string>(nameof(this.Name), Role.Name, this);
 			this.description = new Property<object>(nameof(this.Description), Role.ToSimpleXAML(this.contract?.DefaultLanguage, this.contract), this);
@@ -100,6 +103,7 @@ namespace LegalLab.Models.Legal.Items
 			get => this.descriptionAsMarkdown.Value;
 			set
 			{
+				this.role.Descriptions = new HumanReadableText[] { value.ToHumanReadableText() };
 				this.descriptionAsMarkdown.Value = value;
 				this.description.Value = value.ToSimpleXAML(this.contract);
 			}
@@ -111,7 +115,11 @@ namespace LegalLab.Models.Legal.Items
 		public int MinCount
 		{
 			get => this.minCount.Value;
-			set => this.minCount.Value = value;
+			set
+			{
+				this.role.MinCount = value;
+				this.minCount.Value = value;
+			}
 		}
 
 		/// <summary>
@@ -120,7 +128,11 @@ namespace LegalLab.Models.Legal.Items
 		public int MaxCount
 		{
 			get => this.maxCount.Value;
-			set => this.maxCount.Value = value;
+			set
+			{
+				this.role.MaxCount = value;
+				this.maxCount.Value = value;
+			}
 		}
 
 		/// <summary>
@@ -129,7 +141,11 @@ namespace LegalLab.Models.Legal.Items
 		public bool CanRevoke
 		{
 			get => this.canRevoke.Value;
-			set => this.canRevoke.Value = value;
+			set
+			{
+				this.role.CanRevoke = value;
+				this.canRevoke.Value = value;
+			}
 		}
 
 		/// <inheritdoc/>

@@ -6,10 +6,12 @@ using LegalLab.Models.Network;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Xml;
 using Waher.Events;
@@ -90,7 +92,7 @@ namespace LegalLab.Models.Design
 			this.addStringParameter = new Command(this.ExecuteAddStringParameter);
 			this.addBooleanParameter = new Command(this.ExecuteAddBooleanParameter);
 			this.load = new Command(this.ExecuteLoadContract);
-			this.save = new Command(this.CanExecuteSaveContract, this.ExecuteSaveContract);
+			this.save = new Command(this.ExecuteSaveContract);
 			this.propose = new Command(this.CanExecuteProposeContract, this.ExecuteProposeContract);
 
 			this.GenerateContract();
@@ -137,7 +139,7 @@ namespace LegalLab.Models.Design
 			if (!(Contract.Parts is null))
 			{
 				foreach (Part Part in Contract.Parts)
-					Parts.Add(new PartInfo(Part.LegalId, Part.Role, this, this.parts));
+					Parts.Add(new PartInfo(Part, this, this.parts));
 			}
 
 			this.Parts = Parts.ToArray();
@@ -312,15 +314,18 @@ namespace LegalLab.Models.Design
 
 		private void NormalizeMachineReadableXml(object sender, EventArgs e)
 		{
-			try
+			MainWindow.UpdateGui(() =>
 			{
-				this.contract.ForMachines = this.machineReadable.Value.NormalizeXml();
-				this.ForMachines = this.contract.ForMachines;
-			}
-			catch (Exception ex)
-			{
-				Log.Critical(ex);
-			}
+				try
+				{
+					this.contract.ForMachines = this.machineReadable.Value.NormalizeXml();
+					this.ForMachines = this.contract.ForMachines;
+				}
+				catch (Exception ex)
+				{
+					Log.Critical(ex);
+				}
+			});
 		}
 
 		/// <summary>
@@ -537,7 +542,11 @@ namespace LegalLab.Models.Design
 			int c = Parts.Length;
 
 			Array.Resize<PartInfo>(ref Parts, c + 1);
-			Parts[c] = new PartInfo(string.Empty, string.Empty, this, this.parts);
+			Parts[c] = new PartInfo(new Part()
+			{
+				LegalId = string.Empty,
+				Role = string.Empty
+			}, this, this.parts);
 
 			this.Parts = Parts;
 		}
@@ -926,7 +935,27 @@ namespace LegalLab.Models.Design
 
 		private void RenderHumanReadableMarkdown(object sender, EventArgs e)
 		{
-			MainWindow.UpdateGui(() => this.HumanReadable = this.HumanReadableMarkdown.ToXAML(this.Contract));
+			MainWindow.UpdateGui(() =>
+			{
+				try
+				{
+					HumanReadableText Text = this.HumanReadableMarkdown.ToHumanReadableText();
+					if (Text is null)
+					{
+						this.contract.ForHumans = new HumanReadableText[0];
+						this.HumanReadable = null;
+					}
+					else
+					{
+						this.contract.ForHumans = new HumanReadableText[] { Text };
+						this.HumanReadable = XamlReader.Parse(Text.GenerateXAML(this.Contract));
+					}
+				}
+				catch (Exception ex)
+				{
+					Log.Critical(ex);
+				}
+			});
 		}
 
 		/// <summary>
@@ -946,7 +975,7 @@ namespace LegalLab.Models.Design
 					Filter = "XML Files (*.xml)|*.xml|All Files (*.*)|*.*",
 					Multiselect = false,
 					ShowReadOnly = true,
-					Title = "Select Smart Contract to load"
+					Title = "Load Smart Contract"
 				};
 
 				bool? Result = Dialog.ShowDialog(MainWindow.currentInstance);
@@ -980,14 +1009,33 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public ICommand Save => this.save;
 
-		private bool CanExecuteSaveContract()
-		{
-			return false;	// TODO
-		}
-
 		private void ExecuteSaveContract()
 		{
-			// TODO
+			try
+			{
+				SaveFileDialog Dialog = new SaveFileDialog()
+				{
+					AddExtension = true,
+					CheckFileExists = false,
+					CheckPathExists = true,
+					CreatePrompt = false,
+					DefaultExt = "xml",
+					Filter = "XML Files (*.xml)|*.xml|All Files (*.*)|*.*",
+					OverwritePrompt = true,
+					Title = "Save Smart Contract"
+				};
+
+				bool? Result = Dialog.ShowDialog(MainWindow.currentInstance);
+				if (!Result.HasValue || !Result.Value)
+					return;
+
+				string Xml = this.contract.ToXml();
+				File.WriteAllText(Dialog.FileName, Xml);
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
 		}
 
 		/// <summary>
