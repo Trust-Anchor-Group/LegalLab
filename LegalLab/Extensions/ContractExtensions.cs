@@ -161,6 +161,22 @@ namespace LegalLab.Extensions
 		/// </summary>
 		/// <param name="Xml">XML</param>
 		/// <returns>String representation of pretty XML, as well as parsed version.</returns>
+		public static (string, XmlElement) ToPrettyXml(this string Xml)
+		{
+			XmlDocument Doc = new XmlDocument()
+			{
+				PreserveWhitespace = true
+			};
+			Doc.LoadXml(Xml);
+
+			return Doc.DocumentElement.ToPrettyXml();
+		}
+
+		/// <summary>
+		/// Makes XML pretty and readable.
+		/// </summary>
+		/// <param name="Xml">XML</param>
+		/// <returns>String representation of pretty XML, as well as parsed version.</returns>
 		public static (string, XmlElement) ToPrettyXml(this XmlElement Xml)
 		{
 			if (Xml is null)

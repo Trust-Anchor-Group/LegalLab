@@ -1030,7 +1030,9 @@ namespace LegalLab.Models.Design
 					return;
 
 				string Xml = this.contract.ToXml();
-				File.WriteAllText(Dialog.FileName, Xml);
+				(string Pretty, XmlElement Parsed) = Xml.ToPrettyXml();
+
+				File.WriteAllText(Dialog.FileName, Pretty);
 			}
 			catch (Exception ex)
 			{
