@@ -2,10 +2,10 @@
 using LegalLab.Items;
 using LegalLab.Models.Legal.Items;
 using LegalLab.Models.Legal.Items.Parameters;
+using LegalLab.Models.Network;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
 using Waher.Events;
+using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
 using Waher.Script;
@@ -22,7 +23,7 @@ namespace LegalLab.Models.Design
 	/// <summary>
 	/// Contract model
 	/// </summary>
-	public class DesignModel : Model
+	public class DesignModel : ConnectionSensitiveModel
 	{
 		private readonly Property<Waher.Content.Duration> archiveOptional;
 		private readonly Property<Waher.Content.Duration> archiveRequired;
@@ -183,11 +184,10 @@ namespace LegalLab.Models.Design
 		public Contract Contract => this.contract;
 
 		/// <inheritdoc/>
-		public override Task Start()
+		public override async Task Start()
 		{
 			MainWindow.currentInstance.DesignTab.DataContext = this;
-
-			return base.Start();
+			await base.Start();
 		}
 
 		/// <summary>
@@ -997,7 +997,14 @@ namespace LegalLab.Models.Design
 
 		private bool CanExecuteProposeContract()
 		{
-			return false;   // TODO
+			return this.Connected;
+		}
+
+		/// <inheritdoc/>
+		protected override Task StateChanged(XmppState NewState)
+		{
+			this.propose.RaiseCanExecuteChanged();
+			return base.StateChanged(NewState);
 		}
 
 		private void ExecuteProposeContract()

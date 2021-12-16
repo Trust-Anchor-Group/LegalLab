@@ -430,73 +430,89 @@ namespace LegalLab.Models.Network
 
 		private async Task Client_OnStateChanged(object Sender, XmppState NewState)
 		{
-			this.State = NewState;
-
-			switch (NewState)
+			try
 			{
-				case XmppState.Connected:
-					MainWindow.MouseDefault();
-					this.client.OnConnectionError -= Client_OnConnectionError;
+				this.State = NewState;
 
-					this.ConnectOnStartup = true;
-					this.CreateAccount = false;
-					this.ApiKey = string.Empty;
-					this.ApiKeySecret = string.Empty;
+				switch (NewState)
+				{
+					case XmppState.Connected:
+						MainWindow.MouseDefault();
+						this.client.OnConnectionError -= Client_OnConnectionError;
 
-					if (string.IsNullOrEmpty(PasswordMethod) && !this.StorePasswordInsteadOfDigest)
-					{
-						this.Password = this.client.PasswordHash;
-						this.PasswordMethod = this.client.PasswordHashMethod;
-					}
+						this.ConnectOnStartup = true;
+						this.CreateAccount = false;
+						this.ApiKey = string.Empty;
+						this.ApiKeySecret = string.Empty;
 
-					await this.Save();
-
-					if (this.legalModel is null || this.walletModel is null)
-					{
-						if (string.IsNullOrEmpty(this.LegalComponentJid) || string.IsNullOrEmpty(this.EDalerComponentJid))
+						if (string.IsNullOrEmpty(PasswordMethod) && !this.StorePasswordInsteadOfDigest)
 						{
-							ServiceItemsDiscoveryEventArgs e = await this.client.ServiceItemsDiscoveryAsync(string.Empty);
-							if (e.Ok)
-							{
-								foreach (Item Component in e.Items)
-								{
-									ServiceDiscoveryEventArgs e2 = await this.client.ServiceDiscoveryAsync(Component.JID);
+							this.Password = this.client.PasswordHash;
+							this.PasswordMethod = this.client.PasswordHashMethod;
+						}
 
-									if (e2.HasFeature(ContractsClient.NamespaceLegalIdentities) &&
-										e2.HasFeature(ContractsClient.NamespaceSmartContracts))
+						await this.Save();
+
+						if (this.legalModel is null || this.walletModel is null)
+						{
+							if (string.IsNullOrEmpty(this.LegalComponentJid) || string.IsNullOrEmpty(this.EDalerComponentJid))
+							{
+								ServiceItemsDiscoveryEventArgs e = await this.client.ServiceItemsDiscoveryAsync(string.Empty);
+								if (e.Ok)
+								{
+									foreach (Item Component in e.Items)
 									{
-										this.LegalComponentJid = Component.JID;
+										ServiceDiscoveryEventArgs e2 = await this.client.ServiceDiscoveryAsync(Component.JID);
+
+										if (e2.HasFeature(ContractsClient.NamespaceLegalIdentities) &&
+											e2.HasFeature(ContractsClient.NamespaceSmartContracts))
+										{
+											this.LegalComponentJid = Component.JID;
+										}
+										else if (e2.HasFeature(EDalerClient.NamespaceEDaler))
+											this.EDalerComponentJid = Component.JID;
 									}
-									else if (e2.HasFeature(EDalerClient.NamespaceEDaler))
-										this.EDalerComponentJid = Component.JID;
+								}
+							}
+
+							if (!string.IsNullOrEmpty(this.LegalComponentJid))
+							{
+								if (this.legalModel is null)
+								{
+									this.legalModel = new LegalModel(this.client, this.LegalComponentJid);
+									await this.legalModel.Load();
+									await this.legalModel.Start();
+								}
+
+								if (!string.IsNullOrEmpty(this.EDalerComponentJid) && this.walletModel is null)
+								{
+									this.walletModel = new WalletModel(this.client, this.legalModel.Contracts, this.EDalerComponentJid);
+									await this.walletModel.Load();
+									await this.walletModel.Start();
 								}
 							}
 						}
+						break;
 
-						if (!string.IsNullOrEmpty(this.LegalComponentJid))
-						{
-							if (this.legalModel is null)
-							{
-								this.legalModel = new LegalModel(this.client, this.LegalComponentJid);
-								await this.legalModel.Load();
-								await this.legalModel.Start();
-							}
+					case XmppState.Error:
+					case XmppState.Offline:
+						break;
+				}
 
-							if (!string.IsNullOrEmpty(this.EDalerComponentJid) && this.walletModel is null)
-							{
-								this.walletModel = new WalletModel(this.client, this.legalModel.Contracts, this.EDalerComponentJid);
-								await this.walletModel.Load();
-								await this.walletModel.Start();
-							}
-						}
-					}
-					break;
-
-				case XmppState.Error:
-				case XmppState.Offline:
-					break;
+				StateChangedEventHandler h = this.OnStateChanged;
+				if (!(h is null))
+					await h(this, NewState);
+			}
+			catch (Exception ex)
+			{
+				Log.Critical(ex);
 			}
 		}
+
+		/// <summary>
+		/// Event raised when connection state changes.
+		/// </summary>
+		public event StateChangedEventHandler OnStateChanged;
 
 		private bool CanExecuteDisconnect()
 		{
