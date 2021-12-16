@@ -69,34 +69,34 @@ namespace LegalLab.Models.Network.Events
 
 		private static Color CalcForegroundColor(Event Event)
 		{
-			switch (Event.Type)
+			return Event.Type switch
 			{
-				case EventType.Debug: return Colors.White;
-				case EventType.Informational: return Colors.Black;
-				case EventType.Notice: return Colors.Black;
-				case EventType.Warning: return Colors.Black;
-				case EventType.Error: return Colors.Yellow;
-				case EventType.Critical: return Colors.White;
-				case EventType.Alert: return Colors.White;
-				case EventType.Emergency: return Colors.White;
-				default: return Colors.Black;
-			}
+				EventType.Debug => Colors.White,
+				EventType.Informational => Colors.Black,
+				EventType.Notice => Colors.Black,
+				EventType.Warning => Colors.Black,
+				EventType.Error => Colors.Yellow,
+				EventType.Critical => Colors.White,
+				EventType.Alert => Colors.White,
+				EventType.Emergency => Colors.White,
+				_ => Colors.Black,
+			};
 		}
 
 		private static Color CalcBackgroundColor(Event Event)
 		{
-			switch (Event.Type)
+			return Event.Type switch
 			{
-				case EventType.Debug: return Colors.DarkBlue;
-				case EventType.Informational: return Colors.White;
-				case EventType.Notice: return Colors.LightYellow;
-				case EventType.Warning: return Colors.Yellow;
-				case EventType.Error: return Colors.Red;
-				case EventType.Critical: return Colors.DarkRed;
-				case EventType.Alert: return Colors.Purple;
-				case EventType.Emergency: return Colors.Black;
-				default: return Colors.White;
-			}
+				EventType.Debug => Colors.DarkBlue,
+				EventType.Informational => Colors.White,
+				EventType.Notice => Colors.LightYellow,
+				EventType.Warning => Colors.Yellow,
+				EventType.Error => Colors.Red,
+				EventType.Critical => Colors.DarkRed,
+				EventType.Alert => Colors.Purple,
+				EventType.Emergency => Colors.Black,
+				_ => Colors.White,
+			};
 		}
 	}
 }
