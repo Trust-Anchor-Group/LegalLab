@@ -1,5 +1,6 @@
 ﻿using LegalLab.Models.Legal.Items;
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using Waher.Content.Markdown;
@@ -22,7 +23,7 @@ namespace LegalLab.Extensions
 		public static string ToXml(this Contract Contract)
 		{
 			StringBuilder Result = new StringBuilder();
-			Contract.Serialize(Result, true, true, true, true, true, true, true);
+			Contract.Serialize(Result, true, true, false, false, false, false, false);
 			return Result.ToString();
 		}
 
@@ -47,8 +48,9 @@ namespace LegalLab.Extensions
 		/// Converts Markdown to Human-readable text for use in smart contracts.
 		/// </summary>
 		/// <param name="Markdown">Markdown text</param>
+		/// <param name="Language">Language code</param>
 		/// <returns>Human-readable text.</returns>
-		public static HumanReadableText ToHumanReadableText(this string Markdown)
+		public static HumanReadableText ToHumanReadableText(this string Markdown, string Language)
 		{
 			if (string.IsNullOrEmpty(Markdown))
 				return null;
@@ -70,6 +72,7 @@ namespace LegalLab.Extensions
 			ParsedXml.LoadXml(Xml);
 
 			HumanReadableText Result = HumanReadableText.Parse(ParsedXml.DocumentElement);
+			Result.Language = Language;
 
 			return Result;
 		}
@@ -96,21 +99,9 @@ namespace LegalLab.Extensions
 		{
 			int i, c = Roles.Length;
 			Role[] Result = new Role[c];
-			RoleInfo Info;
 
 			for (i = 0; i < c; i++)
-			{
-				Info = Roles[i];
-
-				Result[i] = new Role()
-				{
-					Name = Info.Name,
-					MinCount = Info.MinCount,
-					MaxCount = Info.MaxCount,
-					Descriptions = new HumanReadableText[] { Info.DescriptionAsMarkdown.ToHumanReadableText() },
-					CanRevoke = Info.CanRevoke
-				};
-			}
+				Result[i] = Roles[i].Role;
 
 			return Result;
 		}
@@ -198,7 +189,7 @@ namespace LegalLab.Extensions
 			Xml.WriteTo(w);
 			w.Flush();
 
-			string s = sb.ToString().Replace("&#xD;\n", "\n").Replace("\n\t", "\n").Replace("\t", "    ");
+			string s = sb.ToString().Replace("&#xD;\n", "\n");
 			Xml = Doc.DocumentElement;
 
 			return (s, Xml);
@@ -235,5 +226,52 @@ namespace LegalLab.Extensions
 			return Doc.DocumentElement;
 		}
 
+		/// <summary>
+		/// Appends a localization to a set of localized texts.
+		/// </summary>
+		/// <param name="Texts">Set of localized texts</param>
+		/// <param name="Text">New addition</param>
+		/// <returns>Sorted array of updated texts.</returns>
+		public static HumanReadableText[] Append(this HumanReadableText[] Texts, HumanReadableText Text)
+		{
+			SortedDictionary<string, HumanReadableText> Sorted = new SortedDictionary<string, HumanReadableText>();
+
+			if (!(Texts is null))
+			{
+				foreach (HumanReadableText Old in Texts)
+					Sorted[Old.Language] = Old;
+			}
+
+			Sorted[Text.Language] = Text;
+
+			int c = Sorted.Count;
+			HumanReadableText[] Result = new HumanReadableText[c];
+
+			Sorted.Values.CopyTo(Result, 0);
+
+			return Result;
+		}
+
+		/// <summary>
+		/// Removes a language from an array of localized texts.
+		/// </summary>
+		/// <param name="Texts">Set of localized texts.</param>
+		/// <param name="Language">Language to remove</param>
+		/// <returns>Updated array</returns>
+		public static HumanReadableText[] Remove(this HumanReadableText[] Texts, string Language)
+		{
+			List<HumanReadableText> Result = new List<HumanReadableText>();
+
+			if (!(Texts is null))
+			{
+				foreach (HumanReadableText Old in Texts)
+				{
+					if (Old.Language != Language)
+						Result.Add(Old);
+				}
+			}
+
+			return Result.ToArray();
+		}
 	}
 }

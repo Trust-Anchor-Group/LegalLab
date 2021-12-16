@@ -79,6 +79,11 @@ namespace LegalLab.Models.Legal.Items
 		}
 
 		/// <summary>
+		/// Role reference object.
+		/// </summary>
+		public Role Role => this.role;
+
+		/// <summary>
 		/// Name
 		/// </summary>
 		public string Name
@@ -103,9 +108,15 @@ namespace LegalLab.Models.Legal.Items
 			get => this.descriptionAsMarkdown.Value;
 			set
 			{
-				this.role.Descriptions = new HumanReadableText[] { value.ToHumanReadableText() };
+				HumanReadableText Text = value.ToHumanReadableText(this.designModel.Language);
+
+				if (Text is null)
+					this.role.Descriptions = this.role.Descriptions.Remove(this.designModel.Language);
+				else
+					this.role.Descriptions = this.role.Descriptions.Append(Text);
+
 				this.descriptionAsMarkdown.Value = value;
-				this.description.Value = value.ToSimpleXAML(this.contract);
+				this.description.Value = value.ToSimpleXAML(this.contract, this.designModel.Language);
 			}
 		}
 

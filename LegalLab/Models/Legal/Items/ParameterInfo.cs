@@ -97,9 +97,15 @@ namespace LegalLab.Models.Legal.Items
 			get => this.descriptionAsMarkdown.Value;
 			set
 			{
-				this.Parameter.Descriptions = new HumanReadableText[] { value.ToHumanReadableText() };
+				HumanReadableText Text = value.ToHumanReadableText(this.designModel.Language);
+
+				if (Text is null)
+					this.Parameter.Descriptions = this.Parameter.Descriptions.Remove(this.designModel.Language);
+				else
+					this.Parameter.Descriptions = this.Parameter.Descriptions.Append(Text);
+
 				this.descriptionAsMarkdown.Value = value;
-				this.description.Value = value.ToSimpleXAML(this.Contract);
+				this.description.Value = value.ToSimpleXAML(this.Contract, this.designModel.Language);
 			}
 		}
 

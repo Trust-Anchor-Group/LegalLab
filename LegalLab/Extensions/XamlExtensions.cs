@@ -67,13 +67,14 @@ namespace LegalLab.Extensions
 		/// </summary>
 		/// <param name="Markdown">Markdown text</param>
 		/// <param name="Contract">Contract</param>
+		/// <param name="Language">Language code</param>
 		/// <returns>Simple XAML</returns>
-		public static object ToSimpleXAML(this string Markdown, Contract Contract)
+		public static object ToSimpleXAML(this string Markdown, Contract Contract, string Language)
 		{
 			if (string.IsNullOrEmpty(Markdown))
 				return null;
 
-			HumanReadableText Text = Markdown.ToHumanReadableText();
+			HumanReadableText Text = Markdown.ToHumanReadableText(Language);
 			string Xaml = Text.GenerateXAML(Contract);
 			return Xaml.ParseSimple();
 		}
@@ -83,13 +84,14 @@ namespace LegalLab.Extensions
 		/// </summary>
 		/// <param name="Markdown">Current set of variables.</param>
 		/// <param name="Contract">Contract</param>
+		/// <param name="Language">Language code</param>
 		/// <returns>XAML</returns>
-		public static object ToXAML(this string Markdown, Contract Contract)
+		public static object ToXAML(this string Markdown, Contract Contract, string Language)
 		{
 			if (string.IsNullOrEmpty(Markdown))
 				return null;
 
-			HumanReadableText Text = Markdown.ToHumanReadableText();
+			HumanReadableText Text = Markdown.ToHumanReadableText(Language);
 			string Xaml = Text.GenerateXAML(Contract);
 			return XamlReader.Parse(Xaml);
 		}

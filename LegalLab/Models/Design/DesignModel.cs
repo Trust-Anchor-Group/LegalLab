@@ -32,7 +32,8 @@ namespace LegalLab.Models.Design
 		private readonly Property<Waher.Content.Duration> duration;
 		private readonly Property<ContractVisibility> visibility;
 		private readonly Property<ContractParts> partsMode;
-		private readonly Property<string> defaultLanguage;
+		private readonly Property<string> language;
+		private readonly Property<string[]> languages;
 		private readonly Property<DateTime?> signBefore;
 		private readonly Property<DateTime?> signAfter;
 		private readonly Property<string> contractId;
@@ -68,7 +69,8 @@ namespace LegalLab.Models.Design
 			this.archiveOptional = new Property<Waher.Content.Duration>(nameof(this.ArchiveOptional), Waher.Content.Duration.Zero, this);
 			this.archiveRequired = new Property<Waher.Content.Duration>(nameof(this.ArchiveRequired), Waher.Content.Duration.Zero, this);
 			this.duration = new Property<Waher.Content.Duration>(nameof(this.Duration), Waher.Content.Duration.Zero, this);
-			this.defaultLanguage = new Property<string>(nameof(this.DefaultLanguage), "en", this);
+			this.language = new Property<string>(nameof(this.Language), "en", this);
+			this.languages = new Property<string[]>(nameof(this.Languages), new string[0], this);
 			this.signBefore = new Property<DateTime?>(nameof(this.SignBefore), null, this);
 			this.signAfter = new Property<DateTime?>(nameof(this.SignAfter), null, this);
 			this.parametersOk = new Property<bool>(nameof(this.ParametersOk), false, this);
@@ -130,7 +132,8 @@ namespace LegalLab.Models.Design
 			this.ArchiveOptional = Contract.ArchiveOptional;
 			this.ArchiveRequired = Contract.ArchiveRequired;
 			this.Duration = Contract.Duration;
-			this.DefaultLanguage = Contract.DefaultLanguage;
+			this.Language = Contract.DefaultLanguage;
+			this.Languages = Contract.GetLanguages();
 			this.SignBefore = Contract.SignBefore;
 			this.SignAfter = Contract.SignAfter;
 
@@ -175,7 +178,10 @@ namespace LegalLab.Models.Design
 
 			this.ValidateParameters();
 
-			(this.MachineReadable, this.ForMachines) = Contract.ForMachines.ToPrettyXml();
+			(string s, XmlElement E) = Contract.ForMachines.ToPrettyXml();
+			
+			this.MachineReadable = s.Replace("\n\t", "\n").Replace("\t", "    ");
+			this.ForMachines = E;
 
 			this.HumanReadableMarkdown = Contract.ToMarkdown(Contract.DefaultLanguage, MarkdownType.ForEditing);
 		}
@@ -260,12 +266,21 @@ namespace LegalLab.Models.Design
 		}
 
 		/// <summary>
-		/// Default language of contract
+		/// Currently selected language.
 		/// </summary>
-		public string DefaultLanguage
+		public string Language
 		{
-			get => this.defaultLanguage.Value;
-			set => this.defaultLanguage.Value = value;
+			get => this.language.Value;
+			set => this.language.Value = value;
+		}
+
+		/// <summary>
+		/// Available languages.
+		/// </summary>
+		public string[] Languages
+		{
+			get => this.languages.Value;
+			set => this.languages.Value = value;
 		}
 
 		/// <summary>
@@ -470,7 +485,7 @@ namespace LegalLab.Models.Design
 			Roles[c] = new RoleInfo(this, new Role()
 			{
 				Name = this.FindNewName("Role", this.Roles),
-				Descriptions = new HumanReadableText[] { "Enter role description as **Markdown**".ToHumanReadableText() },
+				Descriptions = new HumanReadableText[] { "Enter role description as **Markdown**".ToHumanReadableText("en") },
 				MinCount = 1,
 				MaxCount = 1,
 				CanRevoke = false
@@ -585,7 +600,7 @@ namespace LegalLab.Models.Design
 			NumericalParameter NP = new NumericalParameter()
 			{
 				Name = this.FindNewName("Numeric", this.Parameters),
-				Descriptions = new HumanReadableText[] { "Enter parameter description as **Markdown**".ToHumanReadableText() },
+				Descriptions = new HumanReadableText[] { "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Max = null,
@@ -646,7 +661,7 @@ namespace LegalLab.Models.Design
 			StringParameter SP = new StringParameter()
 			{
 				Name = this.FindNewName("String", this.Parameters),
-				Descriptions = new HumanReadableText[] { "Enter parameter description as **Markdown**".ToHumanReadableText() },
+				Descriptions = new HumanReadableText[] { "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Max = null,
@@ -843,7 +858,7 @@ namespace LegalLab.Models.Design
 			BooleanParameter BP = new BooleanParameter()
 			{
 				Name = this.FindNewName("Boolean", this.Parameters),
-				Descriptions = new HumanReadableText[] { "Enter parameter description as **Markdown**".ToHumanReadableText() },
+				Descriptions = new HumanReadableText[] { "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Value = null
@@ -939,15 +954,15 @@ namespace LegalLab.Models.Design
 			{
 				try
 				{
-					HumanReadableText Text = this.HumanReadableMarkdown.ToHumanReadableText();
+					HumanReadableText Text = this.HumanReadableMarkdown.ToHumanReadableText(this.Language);
 					if (Text is null)
 					{
-						this.contract.ForHumans = new HumanReadableText[0];
+						this.contract.ForHumans = this.contract.ForHumans.Remove(this.Language);
 						this.HumanReadable = null;
 					}
 					else
 					{
-						this.contract.ForHumans = new HumanReadableText[] { Text };
+						this.contract.ForHumans = this.contract.ForHumans.Append(Text);
 						this.HumanReadable = XamlReader.Parse(Text.GenerateXAML(this.Contract));
 					}
 				}
