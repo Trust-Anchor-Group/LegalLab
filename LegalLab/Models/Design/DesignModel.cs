@@ -57,6 +57,8 @@ namespace LegalLab.Models.Design
 		private readonly Command load;
 		private readonly Command save;
 		private readonly Command propose;
+		private readonly Command addLanguage;
+		private readonly Command removeLanguage;
 
 		private Contract contract;
 
@@ -98,6 +100,8 @@ namespace LegalLab.Models.Design
 			this.load = new Command(this.ExecuteLoadContract);
 			this.save = new Command(this.ExecuteSaveContract);
 			this.propose = new Command(this.CanExecuteProposeContract, this.ExecuteProposeContract);
+			this.addLanguage = new Command(this.ExecuteAddLanguage);
+			this.removeLanguage = new Command(this.CanExecuteRemoveLanguage, this.ExecuteRemoveLanguage);
 
 			this.GenerateContract();
 		}
@@ -273,7 +277,11 @@ namespace LegalLab.Models.Design
 		public string Language
 		{
 			get => this.language.Value;
-			set => this.language.Value = value;
+			set
+			{
+				this.language.Value = value;
+				this.removeLanguage.RaiseCanExecuteChanged();
+			}
 		}
 
 		/// <summary>
@@ -1089,6 +1097,31 @@ namespace LegalLab.Models.Design
 			{
 				MainWindow.ErrorBox(ex.Message);
 			}
+		}
+
+		/// <summary>
+		/// Command for adding languages
+		/// </summary>
+		public ICommand AddLanguage => this.addLanguage;
+
+		private void ExecuteAddLanguage()
+		{
+			// TODO
+		}
+
+		/// <summary>
+		/// Command for removing languages
+		/// </summary>
+		public ICommand RemoveLanguage => this.removeLanguage;
+
+		private bool CanExecuteRemoveLanguage()
+		{
+			return !string.IsNullOrEmpty(this.Language);
+		}
+
+		private void ExecuteRemoveLanguage()
+		{
+			// TODO
 		}
 
 		/// <summary>
