@@ -117,7 +117,7 @@
                 <Label FontSize="20" Margin="0,10,0,0">Parts</Label>
                 <Label>Following are parts defined in the contract:</Label>
                 <DataGrid ItemsSource="{Binding Parts}" Width="Auto" HorizontalAlignment="Left" 
-                                      AutoGenerateColumns="False" GridLinesVisibility="None">
+                          AutoGenerateColumns="False" GridLinesVisibility="None">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding LegalId}" Header="Legal ID"/>
                         <DataGridTemplateColumn Header="Role">
@@ -170,7 +170,7 @@
                 <Label FontSize="20" Margin="0,10,0,0">Parameters</Label>
                 <Label>Following are parameters defined in the contract:</Label>
                 <DataGrid ItemsSource="{Binding Parameters}" Width="Auto" HorizontalAlignment="Left" 
-                                      AutoGenerateColumns="False" GridLinesVisibility="None">
+                          AutoGenerateColumns="False" GridLinesVisibility="None">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Header="Parameter"/>
                         <DataGridTemplateColumn Header="Value">

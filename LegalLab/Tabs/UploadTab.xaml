@@ -30,7 +30,7 @@
                 <Label FontSize="20">General Information</Label>
                 <Label>Following is some general information about the loaded contract:</Label>
                 <DataGrid HeadersVisibility="None" ItemsSource="{Binding GeneralInformation}" Width="Auto" HorizontalAlignment="Left" 
-                                      AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
+                          AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}"/>
                         <DataGridTextColumn Binding="{Binding Value}"/>
@@ -40,7 +40,7 @@
                 <Label FontSize="20" Margin="0,10,0,0">Roles</Label>
                 <Label>Following are roles defined in the contract:</Label>
                 <DataGrid ItemsSource="{Binding Roles}" Width="Auto" HorizontalAlignment="Left" 
-                                      AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
+                          AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="Role"/>
                         <DataGridTemplateColumn Header="Description">
@@ -59,7 +59,7 @@
                 <Label FontSize="20" Margin="0,10,0,0">Parts</Label>
                 <Label>Following are parts defined in the contract:</Label>
                 <DataGrid ItemsSource="{Binding Parts}" Width="Auto" HorizontalAlignment="Left" 
-                                      AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
+                          AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding LegalId}" Header="Legal ID"/>
                         <DataGridTextColumn Binding="{Binding Role}" Header="Role"/>
@@ -69,7 +69,7 @@
                 <Label FontSize="20" Margin="0,10,0,0">Parameters</Label>
                 <Label>Following are parameters defined in the contract:</Label>
                 <DataGrid ItemsSource="{Binding Parameters}" Width="Auto" HorizontalAlignment="Left" 
-                                      AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
+                          AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="Parameter"/>
                         <DataGridTextColumn Binding="{Binding Value}" Header="Value"/>
@@ -97,7 +97,7 @@
                 <Label FontSize="20" Margin="0,10,0,0">Server Signature</Label>
                 <Label>Following is any server signature available in the contract:</Label>
                 <DataGrid ItemsSource="{Binding ServerSignatures}" Width="Auto" HorizontalAlignment="Left" 
-                                      AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
+                          AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Timestamp, Converter={conv:DateTimeToString}}" Header="Timestamp"/>
                         <DataGridTextColumn Binding="{Binding Signature, Converter={conv:ToBase64}}" Header="Signature"/>
