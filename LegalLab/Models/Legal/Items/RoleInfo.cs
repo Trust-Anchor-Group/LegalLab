@@ -63,12 +63,14 @@ namespace LegalLab.Models.Legal.Items
 		public RoleInfo(Contract Contract, Role Role, Property<RoleInfo[]> Roles)
 			: base(Roles)
 		{
+			string Language = this.designModel?.Language ?? Contract.DefaultLanguage;
+
 			this.contract = Contract;
 			this.role = Role;
 
 			this.name = new Property<string>(nameof(this.Name), Role.Name, this);
-			this.description = new Property<object>(nameof(this.Description), Role.ToSimpleXAML(this.contract?.DefaultLanguage, this.contract), this);
-			this.descriptionAsMarkdown = new Property<string>(nameof(this.DescriptionAsMarkdown), Role.ToMarkdown(this.contract?.DefaultLanguage, this.contract, MarkdownType.ForEditing).Trim(), this);
+			this.description = new Property<object>(nameof(this.Description), Role.ToSimpleXAML(Language, this.contract), this);
+			this.descriptionAsMarkdown = new Property<string>(nameof(this.DescriptionAsMarkdown), Role.ToMarkdown(Language, this.contract, MarkdownType.ForEditing).Trim(), this);
 			this.minCount = new Property<int>(nameof(this.MaxCount), Role.MinCount, this);
 			this.maxCount = new Property<int>(nameof(this.MinCount), Role.MaxCount, this);
 			this.canRevoke = new Property<bool>(nameof(this.CanRevoke), Role.CanRevoke, this);

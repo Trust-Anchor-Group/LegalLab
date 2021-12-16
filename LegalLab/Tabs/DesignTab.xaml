@@ -294,11 +294,11 @@
 
                 <Label FontSize="20" Margin="0,10,0,0">Machine-Readable Content</Label>
                 <Label>Following is the embedded Machine-readable content of the contract (as XML):</Label>
-                <TextBox Text="{Binding MachineReadable}" FontFamily="Courier New" MinHeight="500" AcceptsReturn="True" AcceptsTab="True"/>
+                <TextBox Text="{Binding MachineReadable}" FontFamily="Courier New" MinHeight="100" AcceptsReturn="True" AcceptsTab="True" TextWrapping="Wrap" Height="Auto"/>
 
                 <Label FontSize="20" Margin="0,10,0,0">Human-Readable Content</Label>
                 <Label>Following is the human-readable text of the contract (as Markdown):</Label>
-                <TextBox Text="{Binding HumanReadableMarkdown, UpdateSourceTrigger=PropertyChanged}" FontFamily="Courier New" MinHeight="500" AcceptsReturn="True" AcceptsTab="True"/>
+                <TextBox Text="{Binding HumanReadableMarkdown, UpdateSourceTrigger=PropertyChanged}" FontFamily="Courier New" MinHeight="100" AcceptsReturn="True" AcceptsTab="True" TextWrapping="Wrap" Height="Auto"/>
                 <Label>The human-readable text will be rendered as follows:</Label>
                 <StackPanel Background="White">
                     <ContentControl Content="{Binding HumanReadable, UpdateSourceTrigger=PropertyChanged}" Margin="10"/>

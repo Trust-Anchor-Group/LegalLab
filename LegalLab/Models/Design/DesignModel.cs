@@ -138,8 +138,6 @@ namespace LegalLab.Models.Design
 			this.ArchiveOptional = Contract.ArchiveOptional;
 			this.ArchiveRequired = Contract.ArchiveRequired;
 			this.Duration = Contract.Duration;
-			this.Language = Contract.DefaultLanguage;
-			this.Languages = Contract.GetLanguages();
 			this.SignBefore = Contract.SignBefore;
 			this.SignAfter = Contract.SignAfter;
 
@@ -185,11 +183,14 @@ namespace LegalLab.Models.Design
 			this.ValidateParameters();
 
 			(string s, XmlElement E) = Contract.ForMachines.ToPrettyXml();
-			
+
 			this.MachineReadable = s.Replace("\n\t", "\n").Replace("\t", "    ");
 			this.ForMachines = E;
 
-			this.HumanReadableMarkdown = Contract.ToMarkdown(Contract.DefaultLanguage, MarkdownType.ForEditing);
+			this.Language = Contract.DefaultLanguage;
+			this.Languages = Contract.GetLanguages();
+
+			this.HumanReadableMarkdown = Contract.ToMarkdown(this.Language, MarkdownType.ForEditing);
 		}
 
 		/// <summary>
@@ -279,8 +280,19 @@ namespace LegalLab.Models.Design
 			get => this.language.Value;
 			set
 			{
-				this.language.Value = value;
-				this.removeLanguage.RaiseCanExecuteChanged();
+				if (this.language.Value != value)
+				{
+					this.language.Value = value;
+					this.removeLanguage.RaiseCanExecuteChanged();
+
+					foreach (ParameterInfo PI in this.Parameters)
+						PI.DescriptionAsMarkdown = this.contract.ToMarkdown(PI.Parameter.Descriptions, this.Language);
+
+					foreach (RoleInfo RI in this.Roles)
+						RI.DescriptionAsMarkdown = this.contract.ToMarkdown(RI.Role.Descriptions, this.Language);
+
+					this.HumanReadableMarkdown = this.contract.ToMarkdown(this.contract.ForHumans, this.Language);
+				}
 			}
 		}
 
@@ -1106,7 +1118,14 @@ namespace LegalLab.Models.Design
 
 		private void ExecuteAddLanguage()
 		{
-			// TODO
+			string Language = MainWindow.PromptUser("Add Language", "Language to add:", string.Empty, "Add", "Cancel");
+			if (string.IsNullOrEmpty(Language))
+				return;
+
+			if (Array.IndexOf(this.Languages, this.Language) < 0)
+				this.Languages = this.Languages.Append(this.Language);
+
+			this.Language = Language.ToLower();
 		}
 
 		/// <summary>

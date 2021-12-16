@@ -1,11 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<contract xmlns="urn:ieee:iot:leg:sc:1.0"
-          id="BuyServiceExampleTemplate"
-          archiveOpt="P3M"
-          archiveReq="P1M"
-          canActAsTemplate="true"
-          duration="P1M"
-          visibility="PublicSearchable">
+<contract archiveOpt="P3M" archiveReq="P1M" canActAsTemplate="true" duration="P1M" id="BuyServiceExampleTemplate" visibility="PublicSearchable" xmlns="urn:ieee:iot:leg:sc:1.0">
 	<ToBuy xmlns="https://paiwise.tagroot.io/Schema/Marketplace.xsd">
 		<Description>
 			<Type>
@@ -18,47 +11,47 @@
 				<String>Demo</String>
 			</Node>
 			<Tag name="ProductNumber">
-				<ParameterReference parameter="ProductNumber"/>
+				<ParameterReference parameter="ProductNumber" />
 			</Tag>
 			<Tag name="Quantity">
-				<ParameterReference parameter="Quantity"/>
+				<ParameterReference parameter="Quantity" />
 			</Tag>
 			<Tag name="Description">
-				<ParameterReference parameter="Description"/>
+				<ParameterReference parameter="Description" />
 			</Tag>
 		</Description>
 		<Price>
 			<AskingPrice>
-				<ParameterReference parameter="AskingPrice"/>
+				<ParameterReference parameter="AskingPrice" />
 			</AskingPrice>
 			<RejectPrice>
-				<ParameterReference parameter="RejectPrice"/>
+				<ParameterReference parameter="RejectPrice" />
 			</RejectPrice>
 			<AcceptPrice>
-				<ParameterReference parameter="AcceptPrice"/>
+				<ParameterReference parameter="AcceptPrice" />
 			</AcceptPrice>
 			<CommissionPercent>
-				<ParameterReference parameter="CommissionPercent"/>
+				<ParameterReference parameter="CommissionPercent" />
 			</CommissionPercent>
 			<Currency>
-				<ParameterReference parameter="Currency"/>
+				<ParameterReference parameter="Currency" />
 			</Currency>
 		</Price>
 		<Score>
 			<ScoreFunction>Price</ScoreFunction>
 		</Score>
 		<AvailableDays>
-			<ParameterReference parameter="AvailableDays"/>
+			<ParameterReference parameter="AvailableDays" />
 		</AvailableDays>
 	</ToBuy>
-	<role name="Buyer" minCount="1" maxCount="1">
+	<role maxCount="1" minCount="1" name="Buyer">
 		<description xml:lang="en">
 			<paragraph>
 				<text>This role represents the buyer of the transport service being requested.</text>
 			</paragraph>
 		</description>
 	</role>
-	<role name="Auctioneer" minCount="1" maxCount="1">
+	<role maxCount="1" minCount="1" name="Auctioneer">
 		<description xml:lang="en">
 			<paragraph>
 				<text>This role represents the auctioneer that brokers the sale of the service.</text>
@@ -66,7 +59,7 @@
 		</description>
 	</role>
 	<parts>
-		<templateOnly/>
+		<templateOnly />
 	</parts>
 	<parameters>
 		<stringParameter name="ProductNumber" guide="Product Number" minLength="1">
@@ -76,7 +69,7 @@
 				</paragraph>
 			</description>
 		</stringParameter>
-		<numericalParameter name="Quantity" guide="Quantity" min="1">
+		<numericalParameter name="Quantity" guide="Quantity" min="1" minIncluded="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Number of items of the product being sold.</text>
@@ -90,35 +83,35 @@
 				</paragraph>
 			</description>
 		</stringParameter>
-		<numericalParameter name="AskingPrice" guide="Asking Price" min="0">
+		<numericalParameter name="AskingPrice" guide="Asking Price" min="0" minIncluded="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The asking price of the sale, as requested by the seller.</text>
 				</paragraph>
 			</description>
 		</numericalParameter>
-		<numericalParameter name="RejectPrice" guide="Rejection Price" min="0" exp="RejectPrice&gt;=AskingPrice">
+		<numericalParameter name="RejectPrice" guide="Rejection Price" exp="RejectPrice&gt;=AskingPrice" min="0" minIncluded="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Bids will automatically be rejected above this limit.</text>
 				</paragraph>
 			</description>
 		</numericalParameter>
-		<numericalParameter name="AcceptPrice" guide="Accept Price" min="0" exp="AcceptPrice&lt;=AskingPrice">
+		<numericalParameter name="AcceptPrice" guide="Accept Price" exp="AcceptPrice&lt;=AskingPrice" min="0" minIncluded="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Bids will automatically be accepted if at or below this limit.</text>
 				</paragraph>
 			</description>
 		</numericalParameter>
-		<numericalParameter name="CommissionPercent" guide="Commission (%)" min="0" max="100">
+		<numericalParameter name="CommissionPercent" guide="Commission (%)" min="0" minIncluded="true" max="100" maxIncluded="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Commission, in percent, of the selling price, that is paid to the auctioneer.</text>
 				</paragraph>
 			</description>
 		</numericalParameter>
-		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="\w{3}">
+		<stringParameter name="Currency" guide="Currency" regEx="\w{3}" minLength="3" maxLength="3">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Currency of instant payments.</text>
@@ -224,7 +217,7 @@
 			</header>
 			<body>
 				<paragraph>
-					<text>This contract defines an auction consignment of the service of buying a transport service. The assignment of a seller to this consignment is negotiated by an online auction managed by TAG Marketplace. The document defines the rules for the automatic processing and matching of  prospective sellers to this request for tenders.</text>
+					<text>This contract defines an auction consignment of the service of buying a transport service. The assignment of a seller to this consignment is negotiated by an online auction managed by TAG Marketplace. The document defines the rules for the automatic processing and matching of prospective sellers to this request for tenders.</text>
 				</paragraph>
 				<section>
 					<header>
@@ -252,7 +245,7 @@
 							<italic>
 								<text>Sellers</text>
 							</italic>
-							<text>, until the best candidate is found, the first acceptable bid has been received, or the auction  expires due to lack of sufficient interest.</text>
+							<text>, until the best candidate is found, the first acceptable bid has been received, or the auction expires due to lack of sufficient interest.</text>
 						</paragraph>
 					</body>
 				</section>
@@ -358,7 +351,7 @@
 							<italic>
 								<text>asking price</text>
 							</italic>
-							<text> of  </text>
+							<text> of </text>
 							<bold>
 								<parameter name="AskingPrice" />
 								<text> </text>
@@ -400,7 +393,7 @@
 								<text> </text>
 								<parameter name="Currency" />
 							</bold>
-							<text> will be automatically rejected.  Information of the best bid will also be presented.</text>
+							<text> will be automatically rejected. Information of the best bid will also be presented.</text>
 						</paragraph>
 						<paragraph>
 							<text>The consignment concludes at the end of </text>
@@ -417,33 +410,33 @@
 								<text> </text>
 								<parameter name="Currency" />
 							</bold>
-							<text> is received if no bids are available, the consignment concludes without any payments being processed.  Otherwise, two payments will be made:</text>
+							<text> is received. If no bids are available when the auction expires, the consignment concludes without any payments being processed. Otherwise, two payments will be made:</text>
 						</paragraph>
 						<bulletItems>
 							<item>
-								<text>An instant payment representing the agreed upon price for the best or first accepted bid will be made from the </text>
+								<text>An instant payment representing the agreed upon price for the best or first accepted bid plus the agreed upon commission, as a percentage of the price (</text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text>), will be made from the </text>
 								<bold>
 									<text>Buyer</text>
 								</bold>
 								<text> to the </text>
 								<italic>
-									<text>Seller</text>
+									<text>Auctioneer</text>
 								</italic>
-								<text> who won the auction.</text>
+								<text>.</text>
 							</item>
 							<item>
-								<text>An instant payment representing the agreed upon commission, as a percentage of the price (</text>
+								<text>An instant payment representing the agreed upon price for the best or first accepted bid, will be made from the </text>
 								<bold>
-									<parameter name="CommissionPercent" />
-									<text> %</text>
-								</bold>
-								<text>) for the best or first  accepted bid, will be made from the </text>
-								<bold>
-									<text>Buyer</text>
+									<text>Auctioneer</text>
 								</bold>
 								<text> to the </text>
 								<bold>
-									<text>Auctioneer</text>
+									<text>Seller</text>
 								</bold>
 								<text>. The </text>
 								<bold>
@@ -466,7 +459,7 @@
 							<italic>
 								<text>wallet</text>
 							</italic>
-							<text> will have their request for tender invalidated, and the  sale assignment cancelled.</text>
+							<text> will have their request for tender invalidated, and the sale assignment cancelled.</text>
 						</paragraph>
 					</body>
 				</section>

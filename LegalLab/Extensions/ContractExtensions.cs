@@ -242,7 +242,7 @@ namespace LegalLab.Extensions
 					Sorted[Old.Language] = Old;
 			}
 
-			Sorted[Text.Language] = Text;
+			Sorted[Text.Language ?? string.Empty] = Text;
 
 			int c = Sorted.Count;
 			HumanReadableText[] Result = new HumanReadableText[c];
@@ -272,6 +272,56 @@ namespace LegalLab.Extensions
 			}
 
 			return Result.ToArray();
+		}
+
+		/// <summary>
+		/// Appends a text to an array of texts.
+		/// </summary>
+		/// <param name="Texts">Set of texts</param>
+		/// <param name="Text">New addition</param>
+		/// <returns>Sorted array of updated texts.</returns>
+		public static string[] Append(this string[] Texts, string Text)
+		{
+			SortedDictionary<string, string> Sorted = new SortedDictionary<string, string>();
+
+			if (!(Texts is null))
+			{
+				foreach (string Old in Texts)
+					Sorted[Old] = Old;
+			}
+
+			Sorted[Text] = Text;
+
+			int c = Sorted.Count;
+			string[] Result = new string[c];
+
+			Sorted.Values.CopyTo(Result, 0);
+
+			return Result;
+		}
+
+		/// <summary>
+		/// Gets editable Markdown from a localized set of texts.
+		/// </summary>
+		/// <param name="Contract">Contract hosting texts.</param>
+		/// <param name="Texts">Localized set of texts.</param>
+		/// <param name="Language">Language</param>
+		/// <returns>Editable markdown</returns>
+		public static string ToMarkdown(this Contract Contract, HumanReadableText[] Texts, string Language)
+		{
+			foreach (HumanReadableText Text in Texts)
+			{
+				if (Text.Language == Language)
+					return Text.GenerateMarkdown(Contract, MarkdownType.ForEditing);
+			}
+
+			foreach (HumanReadableText Text in Texts)
+			{
+				if (Text.Language == Contract.DefaultLanguage)
+					return Text.GenerateMarkdown(Contract, MarkdownType.ForEditing);
+			}
+
+			return string.Empty;
 		}
 	}
 }

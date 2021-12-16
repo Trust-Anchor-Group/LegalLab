@@ -37,9 +37,11 @@ namespace LegalLab.Models.Legal.Items
 		public ParameterInfo(Contract Contract, Parameter Parameter, Control Control, DesignModel DesignModel, Property<ParameterInfo[]> Parameters)
 			: base(Parameters)
 		{
+			string Language = DesignModel?.Language ?? Contract.DefaultLanguage;
+
 			this.name = new Property<string>(nameof(this.Name), Parameter.Name, this);
-			this.description = new Property<object>(nameof(this.Description), Parameter.ToSimpleXAML(Contract.DefaultLanguage, Contract), this);
-			this.descriptionAsMarkdown = new Property<string>(nameof(this.DescriptionAsMarkdown), Parameter.ToMarkdown(Contract.DefaultLanguage, Contract, MarkdownType.ForEditing).Trim(), this);
+			this.description = new Property<object>(nameof(this.Description), Parameter.ToSimpleXAML(Language, Contract), this);
+			this.descriptionAsMarkdown = new Property<string>(nameof(this.DescriptionAsMarkdown), Parameter.ToMarkdown(Language, Contract, MarkdownType.ForEditing).Trim(), this);
 			this.value = new Property<object>(nameof(this.Value), Parameter.ObjectValue, this);
 			this.expression = new Property<string>(nameof(this.Expression), Parameter.Expression, this);
 			this.guide = new Property<string>(nameof(this.Guide), Parameter.Guide, this);
@@ -97,15 +99,16 @@ namespace LegalLab.Models.Legal.Items
 			get => this.descriptionAsMarkdown.Value;
 			set
 			{
-				HumanReadableText Text = value.ToHumanReadableText(this.designModel.Language);
+				string Language = this.designModel?.Language ?? this.Contract.DefaultLanguage;
+				HumanReadableText Text = value.ToHumanReadableText(Language);
 
 				if (Text is null)
-					this.Parameter.Descriptions = this.Parameter.Descriptions.Remove(this.designModel.Language);
+					this.Parameter.Descriptions = this.Parameter.Descriptions.Remove(Language);
 				else
 					this.Parameter.Descriptions = this.Parameter.Descriptions.Append(Text);
 
 				this.descriptionAsMarkdown.Value = value;
-				this.description.Value = value.ToSimpleXAML(this.Contract, this.designModel.Language);
+				this.description.Value = value.ToSimpleXAML(this.Contract, Language);
 			}
 		}
 
