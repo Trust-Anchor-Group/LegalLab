@@ -5,6 +5,7 @@ using LegalLab.Models.Items;
 using System;
 using System.Windows.Input;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Contracts.HumanReadable;
 
 namespace LegalLab.Models.Legal.Items
 {
@@ -64,7 +65,7 @@ namespace LegalLab.Models.Legal.Items
 
 			this.name = new Property<string>(nameof(this.Name), Role.Name, this);
 			this.description = new Property<object>(nameof(this.Description), Role.ToSimpleXAML(this.contract?.DefaultLanguage, this.contract), this);
-			this.descriptionAsMarkdown = new Property<string>(nameof(this.DescriptionAsMarkdown), Role.ToMarkdown(this.contract?.DefaultLanguage, this.contract).Trim(), this);
+			this.descriptionAsMarkdown = new Property<string>(nameof(this.DescriptionAsMarkdown), Role.ToMarkdown(this.contract?.DefaultLanguage, this.contract, MarkdownType.ForEditing).Trim(), this);
 			this.minCount = new Property<int>(nameof(this.MaxCount), Role.MinCount, this);
 			this.maxCount = new Property<int>(nameof(this.MinCount), Role.MaxCount, this);
 			this.canRevoke = new Property<bool>(nameof(this.CanRevoke), Role.CanRevoke, this);

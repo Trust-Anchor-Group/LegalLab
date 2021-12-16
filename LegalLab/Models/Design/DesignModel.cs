@@ -174,7 +174,7 @@ namespace LegalLab.Models.Design
 
 			(this.MachineReadable, this.ForMachines) = Contract.ForMachines.ToPrettyXml();
 
-			this.HumanReadableMarkdown = Contract.ToMarkdown(Contract.DefaultLanguage);
+			this.HumanReadableMarkdown = Contract.ToMarkdown(Contract.DefaultLanguage, MarkdownType.ForEditing);
 		}
 
 		/// <summary>

@@ -104,7 +104,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 			set
 			{
 				this.stringParameter.MaxIncluded = value;
-				base.MinIncluded = value;
+				base.MaxIncluded = value;
 			}
 		}
 

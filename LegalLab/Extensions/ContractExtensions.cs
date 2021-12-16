@@ -60,7 +60,10 @@ namespace LegalLab.Extensions
 			w.Flush();
 
 			string Xml = sb.ToString();
-			XmlDocument ParsedXml = new XmlDocument();
+			XmlDocument ParsedXml = new XmlDocument()
+			{
+				PreserveWhitespace = true
+			};
 			ParsedXml.LoadXml(Xml);
 
 			HumanReadableText Result = HumanReadableText.Parse(ParsedXml.DocumentElement);
@@ -163,7 +166,10 @@ namespace LegalLab.Extensions
 			StringBuilder sb = new StringBuilder();
 			Contract.NormalizeXml(Xml, sb, ContractsClient.NamespaceSmartContracts);
 
-			XmlDocument Doc = new XmlDocument();
+			XmlDocument Doc = new XmlDocument()
+			{
+				PreserveWhitespace = true
+			};
 			Doc.LoadXml(sb.ToString());
 			sb.Clear();
 
@@ -189,7 +195,10 @@ namespace LegalLab.Extensions
 			if (string.IsNullOrEmpty(Xml))
 				return null;
 
-			XmlDocument Doc = new XmlDocument();
+			XmlDocument Doc = new XmlDocument()
+			{
+				PreserveWhitespace = true
+			};
 			Doc.LoadXml(Xml);
 
 			if (Doc.DocumentElement is null)
@@ -198,7 +207,10 @@ namespace LegalLab.Extensions
 			StringBuilder sb = new StringBuilder();
 			Contract.NormalizeXml(Doc.DocumentElement, sb, ContractsClient.NamespaceSmartContracts);
 
-			Doc = new XmlDocument();
+			Doc = new XmlDocument()
+			{
+				PreserveWhitespace = true
+			};
 			Doc.LoadXml(sb.ToString());
 
 			return Doc.DocumentElement;

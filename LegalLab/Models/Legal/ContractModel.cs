@@ -84,7 +84,10 @@ namespace LegalLab.Models.Legal
 			StringBuilder sb = new StringBuilder();
 			Contract.NormalizeXml(Contract.ForMachines, sb, ContractsClient.NamespaceSmartContracts);
 
-			XmlDocument Doc = new XmlDocument();
+			XmlDocument Doc = new XmlDocument()
+			{
+				PreserveWhitespace = true
+			};
 			Doc.LoadXml(sb.ToString());
 			sb.Clear();
 

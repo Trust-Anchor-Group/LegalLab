@@ -39,7 +39,7 @@ namespace LegalLab.Models.Legal.Items
 		{
 			this.name = new Property<string>(nameof(this.Name), Parameter.Name, this);
 			this.description = new Property<object>(nameof(this.Description), Parameter.ToSimpleXAML(Contract.DefaultLanguage, Contract), this);
-			this.descriptionAsMarkdown = new Property<string>(nameof(this.DescriptionAsMarkdown), Parameter.ToMarkdown(Contract.DefaultLanguage, Contract).Trim(), this);
+			this.descriptionAsMarkdown = new Property<string>(nameof(this.DescriptionAsMarkdown), Parameter.ToMarkdown(Contract.DefaultLanguage, Contract, MarkdownType.ForEditing).Trim(), this);
 			this.value = new Property<object>(nameof(this.Value), Parameter.ObjectValue, this);
 			this.expression = new Property<string>(nameof(this.Expression), Parameter.Expression, this);
 			this.guide = new Property<string>(nameof(this.Guide), Parameter.Guide, this);
