@@ -286,12 +286,12 @@ namespace LegalLab.Models.Design
 					this.removeLanguage.RaiseCanExecuteChanged();
 
 					foreach (ParameterInfo PI in this.Parameters)
-						PI.DescriptionAsMarkdown = this.contract.ToMarkdown(PI.Parameter.Descriptions, this.Language);
+						PI.DescriptionAsMarkdown = this.contract.ToMarkdown(PI.Parameter.Descriptions, this.Language).Trim();
 
 					foreach (RoleInfo RI in this.Roles)
-						RI.DescriptionAsMarkdown = this.contract.ToMarkdown(RI.Role.Descriptions, this.Language);
+						RI.DescriptionAsMarkdown = this.contract.ToMarkdown(RI.Role.Descriptions, this.Language).Trim();
 
-					this.HumanReadableMarkdown = this.contract.ToMarkdown(this.contract.ForHumans, this.Language);
+					this.HumanReadableMarkdown = this.contract.ToMarkdown(this.contract.ForHumans, this.Language).Trim();
 				}
 			}
 		}
