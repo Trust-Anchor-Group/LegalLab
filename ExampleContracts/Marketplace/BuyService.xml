@@ -50,11 +50,21 @@
 				<text>This role represents the buyer of the transport service being requested.</text>
 			</paragraph>
 		</description>
+		<description xml:lang="sv">
+			<paragraph>
+				<text>Denna roll representerar köparen av transporttjänsten som efterfrågas.</text>
+			</paragraph>
+		</description>
 	</role>
 	<role maxCount="1" minCount="1" name="Auctioneer">
 		<description xml:lang="en">
 			<paragraph>
 				<text>This role represents the auctioneer that brokers the sale of the service.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="sv">
+			<paragraph>
+				<text>Denna roll representerar auktionsförrättaren som förmedlar försäljningen av tjänsten.</text>
 			</paragraph>
 		</description>
 	</role>
@@ -68,25 +78,45 @@
 					<text>Reference to the product number in the sellers database.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Referens till produktnumret i säljarens databas.</text>
+				</paragraph>
+			</description>
 		</stringParameter>
 		<numericalParameter name="Quantity" guide="Quantity" min="1" minIncluded="true">
 			<description xml:lang="en">
 				<paragraph>
-					<text>Number of items of the product being sold.</text>
+					<text>Number of items of the product requested.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Antal enheter av produkten som efterfrågas.</text>
 				</paragraph>
 			</description>
 		</numericalParameter>
 		<stringParameter name="Description" guide="Description" minLength="1">
 			<description xml:lang="en">
 				<paragraph>
-					<text>A description of the product being sold.</text>
+					<text>A description of the product being requested.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>En beskrivning av produkten som efterfrågas.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
 		<numericalParameter name="AskingPrice" guide="Asking Price" min="0" minIncluded="true">
 			<description xml:lang="en">
 				<paragraph>
-					<text>The asking price of the sale, as requested by the seller.</text>
+					<text>The asking price of the sale, requested by the buyer.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Begärt pris för upphandlingen, efterfrågat av köparen.</text>
 				</paragraph>
 			</description>
 		</numericalParameter>
@@ -96,11 +126,21 @@
 					<text>Bids will automatically be rejected above this limit.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Anbud kommer automatiskt att förkastas om de överstiger denna gräns.</text>
+				</paragraph>
+			</description>
 		</numericalParameter>
 		<numericalParameter name="AcceptPrice" guide="Accept Price" exp="AcceptPrice&lt;=AskingPrice" min="0" minIncluded="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Bids will automatically be accepted if at or below this limit.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Anbud kommer automatiskt att accepteras vid denna gräns eller under.</text>
 				</paragraph>
 			</description>
 		</numericalParameter>
@@ -110,11 +150,21 @@
 					<text>Commission, in percent, of the selling price, that is paid to the auctioneer.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Kommission, i procent, av försäljningspriset, som betalas till auktionsförrättaren.</text>
+				</paragraph>
+			</description>
 		</numericalParameter>
 		<stringParameter name="Currency" guide="Currency" regEx="\w{3}" minLength="3" maxLength="3">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Currency of instant payments.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Valuta för omedelbara betalningar.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
@@ -124,11 +174,21 @@
 					<text>Number of days offer is available in the marketplace.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Antal dagar som erbjudantet finns tillgängligt på marknadsplatsen.</text>
+				</paragraph>
+			</description>
 		</numericalParameter>
 		<stringParameter name="FromAddress1" guide="Address" minLength="1">
 			<description xml:lang="en">
 				<paragraph>
 					<text>First row of address of pickup point.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Första adressraden för upphämtningsstället.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
@@ -138,11 +198,21 @@
 					<text>Optional second row of address of pickup point.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Valfri andra rad för adressen på upphämtningsstället.</text>
+				</paragraph>
+			</description>
 		</stringParameter>
 		<stringParameter name="FromAddress3" value="">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Optional third row of address of pickup point.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Valdri tredje rad för adressen på upphämtningsstället.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
@@ -152,11 +222,21 @@
 					<text>Postal code of pickup point.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Postkod för upphämtningsstället.</text>
+				</paragraph>
+			</description>
 		</stringParameter>
 		<stringParameter name="FromCity" guide="City" minLength="1">
 			<description xml:lang="en">
 				<paragraph>
 					<text>City of pickup point.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Stad för upphämtningsstället.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
@@ -166,11 +246,21 @@
 					<text>Country of pickup point.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Land  för upphämtningsstället.</text>
+				</paragraph>
+			</description>
 		</stringParameter>
 		<stringParameter name="ToAddress1" guide="Address" minLength="1">
 			<description xml:lang="en">
 				<paragraph>
 					<text>First row of address of delivery point.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Första adressraden för avlämningsstället.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
@@ -180,11 +270,21 @@
 					<text>Optional second row of address of delivery point.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Valfri andra rad för avlämningsstället.</text>
+				</paragraph>
+			</description>
 		</stringParameter>
 		<stringParameter name="ToAddress3" value="">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Optional third row of address of delivery point.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Valfri tredje rad för avlämningsstället.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
@@ -194,6 +294,11 @@
 					<text>Postal code of delivery point.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Postkod för avlämningsstället.</text>
+				</paragraph>
+			</description>
 		</stringParameter>
 		<stringParameter name="ToCity" guide="City" minLength="1">
 			<description xml:lang="en">
@@ -201,11 +306,21 @@
 					<text>City of delivery point.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Stad för avlämningsstället.</text>
+				</paragraph>
+			</description>
 		</stringParameter>
 		<stringParameter name="ToCountry" guide="Country" minLength="1">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Country of delivery point.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Land för avlämningsstället.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
