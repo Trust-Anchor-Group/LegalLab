@@ -1122,7 +1122,7 @@ namespace LegalLab.Models.Design
 			if (string.IsNullOrEmpty(Language))
 				return;
 
-			if (Array.IndexOf(this.Languages, this.Language) < 0)
+			if (Array.IndexOf(this.Languages, Language) < 0)
 				this.Languages = this.Languages.Append(this.Language);
 
 			this.Language = Language.ToLower();
