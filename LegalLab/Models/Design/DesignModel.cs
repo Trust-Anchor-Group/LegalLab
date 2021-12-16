@@ -53,6 +53,7 @@ namespace LegalLab.Models.Design
 		private readonly Command addNumericParameter;
 		private readonly Command addStringParameter;
 		private readonly Command addBooleanParameter;
+		private readonly Command @new;
 		private readonly Command load;
 		private readonly Command save;
 		private readonly Command propose;
@@ -93,6 +94,7 @@ namespace LegalLab.Models.Design
 			this.addNumericParameter = new Command(this.ExecuteAddNumericParameter);
 			this.addStringParameter = new Command(this.ExecuteAddStringParameter);
 			this.addBooleanParameter = new Command(this.ExecuteAddBooleanParameter);
+			this.@new = new Command(this.ExecuteNewContract);
 			this.load = new Command(this.ExecuteLoadContract);
 			this.save = new Command(this.ExecuteSaveContract);
 			this.propose = new Command(this.CanExecuteProposeContract, this.ExecuteProposeContract);
@@ -971,6 +973,40 @@ namespace LegalLab.Models.Design
 					Log.Critical(ex);
 				}
 			});
+		}
+
+		/// <summary>
+		/// New command
+		/// </summary>
+		public ICommand New => this.@new;
+
+		private void ExecuteNewContract()
+		{
+			if (MessageBox.Show("Are you sure you want clear the form and lose all data that has not been saved?", "Confirm",
+				MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
+			{
+				return;
+			}
+
+			this.Visibility = ContractVisibility.Public;
+			this.PartsMode = ContractParts.TemplateOnly;
+			this.ArchiveOptional = Waher.Content.Duration.Zero;
+			this.ArchiveRequired = Waher.Content.Duration.Zero;
+			this.Duration = Waher.Content.Duration.Zero;
+			this.Language = "en";
+			this.Languages = new string[0];
+			this.SignBefore = null;
+			this.SignAfter = null;
+			this.Roles = new RoleInfo[0];
+			this.Parts = new PartInfo[0];
+			this.Parameters = new ParameterInfo[0];
+			this.MachineReadable = string.Empty;
+			this.ForMachines = null;
+			this.ContractId = string.Empty;
+			this.HumanReadableMarkdown = string.Empty;
+			this.HumanReadable = null;
+
+			this.GenerateContract();
 		}
 
 		/// <summary>

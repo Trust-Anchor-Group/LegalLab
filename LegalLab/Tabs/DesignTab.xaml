@@ -9,9 +9,10 @@
     <DockPanel LastChildFill="True" Background="#FFE5E5E5">
         <ScrollViewer DockPanel.Dock="Left">
             <StackPanel Name="DesignCommands" Orientation="Vertical" Width="250" Margin="10">
-                <Button Command="{Binding Load}">Load</Button>
-                <Button Command="{Binding Save}" Margin="0,10,0,0">Save</Button>
-                <Button Command="{Binding Propose}" Margin="0,10,0,0">Propose</Button>
+                <Button Command="{Binding New}" Margin="0,0,0,10">New</Button>
+                <Button Command="{Binding Load}" Margin="0,0,0,10">Load</Button>
+                <Button Command="{Binding Save}" Margin="0,0,0,10">Save</Button>
+                <Button Command="{Binding Propose}" Margin="0,0,0,10">Propose</Button>
             </StackPanel>
         </ScrollViewer>
         <ScrollViewer VerticalScrollBarVisibility="Auto" DockPanel.Dock="Right">
