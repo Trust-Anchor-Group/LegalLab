@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LegalLab.Models.Legal
+namespace LegalLab.Models.Standards
 {
 	/// <summary>
 	/// Static class containing ISO 3166-1 country codes
