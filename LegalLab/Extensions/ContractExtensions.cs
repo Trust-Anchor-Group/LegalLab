@@ -239,7 +239,10 @@ namespace LegalLab.Extensions
 			if (!(Texts is null))
 			{
 				foreach (HumanReadableText Old in Texts)
-					Sorted[Old.Language] = Old;
+				{
+					if (!(Old.Language is null))
+						Sorted[Old.Language] = Old;
+				}
 			}
 
 			Sorted[Text.Language ?? string.Empty] = Text;
@@ -296,6 +299,34 @@ namespace LegalLab.Extensions
 			string[] Result = new string[c];
 
 			Sorted.Values.CopyTo(Result, 0);
+
+			return Result;
+		}
+
+		/// <summary>
+		/// Removes a text from an array of texts.
+		/// </summary>
+		/// <param name="Texts">Set of texts.</param>
+		/// <param name="Text">Text to remove</param>
+		/// <returns>Updated array</returns>
+		public static string[] Remove(this string[] Texts, string Text)
+		{
+			int i = Array.IndexOf<string>(Texts, Text);
+
+			if (i < 0)
+				return Texts;
+
+			int c = Texts.Length;
+			if (c == 1)
+				return new string[0];
+
+			string[] Result = new string[c - 1];
+
+			if (i > 0)
+				Array.Copy(Texts, 0, Result, 0, i);
+
+			if (i < c - 1)
+				Array.Copy(Texts, i + 1, Result, i, c - i - 1);
 
 			return Result;
 		}

@@ -298,6 +298,8 @@ namespace LegalLab.Models.Design
 						RI.DescriptionAsMarkdown = this.contract.ToMarkdown(RI.Role.Descriptions, this.Language).Trim();
 
 					this.HumanReadableMarkdown = this.contract.ToMarkdown(this.contract.ForHumans, this.Language).Trim();
+
+					this.removeLanguage.RaiseCanExecuteChanged();
 				}
 			}
 		}
@@ -308,7 +310,11 @@ namespace LegalLab.Models.Design
 		public string[] Languages
 		{
 			get => this.languages.Value;
-			set => this.languages.Value = value;
+			set
+			{
+				this.languages.Value = value;
+				this.removeLanguage.RaiseCanExecuteChanged();
+			}
 		}
 
 		/// <summary>
@@ -1141,12 +1147,29 @@ namespace LegalLab.Models.Design
 
 		private bool CanExecuteRemoveLanguage()
 		{
-			return !string.IsNullOrEmpty(this.Language);
+			return !string.IsNullOrEmpty(this.Language) && this.Languages.Length >= 2;
 		}
 
 		private void ExecuteRemoveLanguage()
 		{
-			// TODO
+			string Language = this.Language;
+
+			if (MessageBox.Show("Are you sure you want to remove language " + Language + " from the contract?", "Confirm",
+				MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
+			{
+				return;
+			}
+
+			foreach (ParameterInfo PI in this.Parameters)
+				PI.Parameter.Descriptions = PI.Parameter.Descriptions.Remove(Language);
+
+			foreach (RoleInfo RI in this.Roles)
+				RI.Role.Descriptions = RI.Role.Descriptions.Remove(Language);
+
+			this.contract.ForHumans = this.contract.ForHumans.Remove(Language);
+
+			this.Languages = this.Languages.Remove(Language);
+			this.Language = this.contract.DefaultLanguage;
 		}
 
 		/// <summary>
