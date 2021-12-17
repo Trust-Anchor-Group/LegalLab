@@ -190,6 +190,12 @@ namespace LegalLab.Models.Design
 			this.Language = Contract.DefaultLanguage;
 			this.Languages = Contract.GetLanguages();
 
+			if (string.IsNullOrEmpty(this.Language) && this.Languages.Length == 0)
+			{
+				this.Languages = new string[] { "en" };
+				this.Language = "en";
+			}
+
 			this.HumanReadableMarkdown = Contract.ToMarkdown(this.Language, MarkdownType.ForEditing);
 		}
 
