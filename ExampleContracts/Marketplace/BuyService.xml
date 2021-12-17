@@ -52,7 +52,11 @@
 		</description>
 		<description xml:lang="sv">
 			<paragraph>
-				<text>Denna roll representerar köparen av transporttjänsten som efterfrågas.</text>
+				<text>Denna roll representerar </text>
+				<bold>
+					<text>köparen</text>
+				</bold>
+				<text> av transporttjänsten som efterfrågas.</text>
 			</paragraph>
 		</description>
 	</role>
@@ -64,7 +68,11 @@
 		</description>
 		<description xml:lang="sv">
 			<paragraph>
-				<text>Denna roll representerar auktionsförrättaren som förmedlar försäljningen av tjänsten.</text>
+				<text>Denna roll representerar </text>
+				<bold>
+					<text>auktionsförrättaren</text>
+				</bold>
+				<text> som förmedlar försäljningen av tjänsten.</text>
 			</paragraph>
 		</description>
 	</role>
@@ -328,11 +336,15 @@
 	<humanReadableText xml:lang="en">
 		<section>
 			<header>
-				<text>Request for Tenders - Transport Service (Demo)</text>
+				<text>Request for Tenders - Transport Service (Example)</text>
 			</header>
 			<body>
 				<paragraph>
-					<text>This contract defines an auction consignment of the service of buying a transport service. The assignment of a seller to this consignment is negotiated by an online auction managed by TAG Marketplace. The document defines the rules for the automatic processing and matching of prospective sellers to this request for tenders.</text>
+					<text>This contract defines an auction consignment of the service of buying a transport service. The assignment of a seller to this consignment is negotiated by an online auction managed by </text>
+					<italic>
+						<text>TAG Marketplace</text>
+					</italic>
+					<text>™. The document defines the rules for the automatic processing and matching of prospective sellers to this request for tenders.</text>
 				</paragraph>
 				<section>
 					<header>
@@ -340,7 +352,11 @@
 					</header>
 					<body>
 						<paragraph>
-							<text>This contract defines the request to buy the service of transportation of item(s) using the TAG Marketplace auctioning service. The </text>
+							<text>This contract defines the request to buy the service of transportation of item(s) using the </text>
+							<italic>
+								<text>TAG Marketplace</text>
+							</italic>
+							<text>™ auctioning service. The </text>
 							<bold>
 								<text>Buyer</text>
 							</bold>
@@ -562,7 +578,7 @@
 									<parameter name="CommissionPercent" />
 									<text> %</text>
 								</bold>
-								<text> as payment for  its services.</text>
+								<text> as payment for its services.</text>
 							</item>
 						</bulletItems>
 						<paragraph>
@@ -575,6 +591,269 @@
 								<text>wallet</text>
 							</italic>
 							<text> will have their request for tender invalidated, and the sale assignment cancelled.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="sv">
+		<section>
+			<header>
+				<text>Begäran om anbud - Transporttjänst (Exempel)</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Detta kontrakt definier en auktionskonsignation för tjänsten att upphandla en transporttjänst. Tilldelningen av en säljare till denna konsignation förhandlas genom en online-auktion hanterad av </text>
+					<italic>
+						<text>TAG Marketplace</text>
+					</italic>
+					<text>™. Dokumentet definierar reglerna för den automatiska behandlingen och matchningen av prospektiva säljare för denna begäran om anbud.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Introduktion</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Detta kontrakt definierar förfrågan att upphandla transporttjänst av enhet(er) genom nyttjande av auktionstjänsten hos </text>
+							<italic>
+								<text>TAG Marketplace</text>
+							</italic>
+							<text>™. </text>
+							<bold>
+								<text>Köparen</text>
+							</bold>
+							<text> har frågat </text>
+							<bold>
+								<text>auktionsförrättaren</text>
+							</bold>
+							<text> att hitta den bästa matchningen bland erbjudanden från prospektiva </text>
+							<italic>
+								<text>säljare</text>
+							</italic>
+							<text> för denna anbudsförfrågan. </text>
+							<bold>
+								<text>Auktionsförrättaren</text>
+							</bold>
+							<text> matchar inkommande anbud från potentiella </text>
+							<italic>
+								<text>säljare</text>
+							</italic>
+							<text>, tills dess den bästa kandidaten hittas, den första acceptabla erbjudandet har mottagits, eller auktionen löper ut på grund av avsaknad av tillräckligt intresse.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Manifest</text>
+					</header>
+					<body>
+						<paragraph>
+							<bold>
+								<text>Köparent</text>
+							</bold>
+							<text> efterfrågar transport av </text>
+							<bold>
+								<parameter name="Quantity" />
+							</bold>
+							<text> enhet(er) av </text>
+							<bold>
+								<parameter name="ProductNumber" />
+							</bold>
+							<text> (</text>
+							<parameter name="Description" />
+							<text>).</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Upphämtningsplats</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Transportföretaget hämtar leveransen från </text>
+							<bold>
+								<parameter name="FromAddress1" />
+								<text> </text>
+								<parameter name="FromAddress2" />
+								<text> </text>
+								<parameter name="FromAddress3" />
+							</bold>
+							<text>, </text>
+							<bold>
+								<parameter name="FromPostalCode" />
+								<text> </text>
+								<parameter name="FromCity" />
+							</bold>
+							<text>,  </text>
+							<bold>
+								<parameter name="FromCountry" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Utdelningsplats</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Transportföretaget transporterar leveransen till </text>
+							<bold>
+								<parameter name="ToAddress1" />
+								<text> </text>
+								<parameter name="ToAddress2" />
+								<text> </text>
+								<parameter name="ToAddress3" />
+							</bold>
+							<text>, </text>
+							<bold>
+								<parameter name="ToPostalCode" />
+								<text> </text>
+								<parameter name="ToCity" />
+							</bold>
+							<text>,  </text>
+							<bold>
+								<parameter name="ToCountry" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Auktionskonsignation</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Vid signatur av detta kontrakt, anförtror </text>
+							<bold>
+								<text>köparen</text>
+							</bold>
+							<text> till </text>
+							<bold>
+								<text>auktionsförättaren</text>
+							</bold>
+							<text> uppgiften att hitta en tjänsteleverantör som säljer den efterfrågade tjänsten att transportera enheten/enheterna specificerade i </text>
+							<italic>
+								<text>manifestet</text>
+							</italic>
+							<text> ovan, med det initiala </text>
+							<italic>
+								<text>begärda priset</text>
+							</italic>
+							<text> av </text>
+							<bold>
+								<parameter name="AskingPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. </text>
+							<bold>
+								<text>Auktionsförättaren</text>
+							</bold>
+							<text> publicerar informationen om denna </text>
+							<italic>
+								<text>anbudsförfrågan</text>
+							</italic>
+							<text> till prospektiva </text>
+							<italic>
+								<text>säljare</text>
+							</italic>
+							<text> som kan göra </text>
+							<italic>
+								<text>erbjudanden</text>
+							</italic>
+							<text> under </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> dagar från signaturen av överenskommelsen, eller tills dess den första </text>
+							<italic>
+								<text>acceptabla</text>
+							</italic>
+							<text> erbjudandet av </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> har mottagits. Alla erbjudanden över </text>
+							<bold>
+								<parameter name="RejectPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> kommer automatiskt att förkastas. Informationen om det bästa erbjudandet kommer också att presenteras.</text>
+						</paragraph>
+						<paragraph>
+							<text>Konsignationen upphör efter </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> dagar från signaturen av överenskommelsen, eller när första </text>
+							<italic>
+								<text>acceptabla</text>
+							</italic>
+							<text> erbjudande av </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> emottagits. Om inget erbjudande emottagits när auktionen upphör, avslutas konsignationen utan att några betalningar behandlas. Annars kommer två betalningar att göras:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>En omedelbar betalning representerande det överenskomna priset för den bästa eller första acceptabla erbjudandet plus den överenskomna kommissionen, som en procentenhet av priset (</text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text>), kommer att göras från </text>
+								<bold>
+									<text>köparen</text>
+								</bold>
+								<text> till </text>
+								<italic>
+									<text>auktionsförättaren</text>
+								</italic>
+								<text>.</text>
+							</item>
+							<item>
+								<text>En omedelbar betalning representerande det överenskomna priset för den bästa eller första acceptabla erbjudandet, kommer att göras från </text>
+								<bold>
+									<text>auktionsförättaren</text>
+								</bold>
+								<text> till </text>
+								<bold>
+									<text>säljaren</text>
+								</bold>
+								<text>. </text>
+								<bold>
+									<text>Auktionsförättaren</text>
+								</bold>
+								<text> behåller sin </text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text> som betalning för sin tjänst.</text>
+							</item>
+						</bulletItems>
+						<paragraph>
+							<text>Alla betalningar kommer att utföras med hjälp av </text>
+							<italic>
+								<text>e-Daler</text>
+							</italic>
+							<text>. En köpare utan medel i sin </text>
+							<italic>
+								<text>plånbok</text>
+							</italic>
+							<text> kommer att få sin anbudsförfrågan ogiltigförklarad, och tilldelning av försäljning att avbrytas.</text>
 						</paragraph>
 					</body>
 				</section>
