@@ -3,6 +3,7 @@ using LegalLab.Items;
 using LegalLab.Models.Legal.Items;
 using LegalLab.Models.Legal.Items.Parameters;
 using LegalLab.Models.Network;
+using LegalLab.Models.Standards;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace LegalLab.Models.Design
 		private readonly Property<ContractVisibility> visibility;
 		private readonly Property<ContractParts> partsMode;
 		private readonly Property<string> language;
-		private readonly Property<string[]> languages;
+		private readonly Property<Iso__639_1.Record[]> languages;
 		private readonly Property<DateTime?> signBefore;
 		private readonly Property<DateTime?> signAfter;
 		private readonly Property<string> contractId;
@@ -73,7 +74,7 @@ namespace LegalLab.Models.Design
 			this.archiveRequired = new Property<Waher.Content.Duration>(nameof(this.ArchiveRequired), Waher.Content.Duration.Zero, this);
 			this.duration = new Property<Waher.Content.Duration>(nameof(this.Duration), Waher.Content.Duration.Zero, this);
 			this.language = new Property<string>(nameof(this.Language), "en", this);
-			this.languages = new Property<string[]>(nameof(this.Languages), new string[0], this);
+			this.languages = new Property<Iso__639_1.Record[]>(nameof(this.Languages), new Iso__639_1.Record[0], this);
 			this.signBefore = new Property<DateTime?>(nameof(this.SignBefore), null, this);
 			this.signAfter = new Property<DateTime?>(nameof(this.SignAfter), null, this);
 			this.parametersOk = new Property<bool>(nameof(this.ParametersOk), false, this);
@@ -187,12 +188,12 @@ namespace LegalLab.Models.Design
 			this.MachineReadable = s.Replace("\n\t", "\n").Replace("\t", "    ");
 			this.ForMachines = E;
 
+			this.Languages = Contract.GetLanguages().ToIso639_1();
 			this.Language = Contract.DefaultLanguage;
-			this.Languages = Contract.GetLanguages();
 
 			if (string.IsNullOrEmpty(this.Language) && this.Languages.Length == 0)
 			{
-				this.Languages = new string[] { "en" };
+				this.Languages = new string[] { "en" }.ToIso639_1();
 				this.Language = "en";
 			}
 
@@ -307,7 +308,7 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Available languages.
 		/// </summary>
-		public string[] Languages
+		public Iso__639_1.Record[] Languages
 		{
 			get => this.languages.Value;
 			set
@@ -1026,7 +1027,7 @@ namespace LegalLab.Models.Design
 			this.ArchiveRequired = Waher.Content.Duration.Zero;
 			this.Duration = Waher.Content.Duration.Zero;
 			this.Language = "en";
-			this.Languages = new string[0];
+			this.Languages = new Iso__639_1.Record[0];
 			this.SignBefore = null;
 			this.SignAfter = null;
 			this.Roles = new RoleInfo[0];
@@ -1135,7 +1136,7 @@ namespace LegalLab.Models.Design
 				return;
 
 			if (Array.IndexOf(this.Languages, Language) < 0)
-				this.Languages = this.Languages.Append(this.Language);
+				this.Languages = this.Languages.ToCodes().Append(this.Language).ToIso639_1();
 
 			this.Language = Language.ToLower();
 		}
@@ -1168,7 +1169,7 @@ namespace LegalLab.Models.Design
 
 			this.contract.ForHumans = this.contract.ForHumans.Remove(Language);
 
-			this.Languages = this.Languages.Remove(Language);
+			this.Languages = this.Languages.ToCodes().Remove(Language).ToIso639_1();
 			this.Language = this.contract.DefaultLanguage;
 		}
 

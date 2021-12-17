@@ -6,7 +6,7 @@ namespace LegalLab.Models.Standards
 	/// <summary>
 	/// Static class containing ISO 3166-1 country codes
 	/// </summary>
-	public static class Iso3166_1
+	public static class Iso_3166_1
 	{
 		/// <summary>
 		/// Contains one record of the ISO 3166-1 data set.
@@ -42,7 +42,7 @@ namespace LegalLab.Models.Standards
 		/// </summary>
 		/// <param name="Code">Country code</param>
 		/// <param name="Country">Country, if found.</param>
-		/// <returns>If a corresponding country code was foudn.</returns>
+		/// <returns>If a corresponding country code was found.</returns>
 		public static bool CodeToCountry(string Code, out string Country)
 		{
 			if (countryByCode is null)

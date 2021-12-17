@@ -14,7 +14,7 @@
                 <Button Command="{Binding Save}" Margin="0,0,0,10">Save</Button>
                 <Button Command="{Binding Propose}" Margin="0,0,0,10">Propose</Button>
                 <Label>Language:</Label>
-                <ComboBox SelectedItem="{Binding Language}" ItemsSource="{Binding Languages}" Margin="0,0,0,10"/>
+                <ComboBox ItemsSource="{Binding Languages}" DisplayMemberPath="Language" SelectedValuePath="Code" SelectedValue="{Binding Language}" Margin="0,0,0,10"/>
                 <Button Command="{Binding AddLanguage}" Margin="0,0,0,10">Add Language</Button>
                 <Button Command="{Binding RemoveLanguage}" Margin="0,0,0,10">Remove Language</Button>
             </StackPanel>

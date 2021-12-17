@@ -234,9 +234,9 @@ namespace LegalLab.Models.Legal
 		/// <summary>
 		/// ISO 3166-1 country codes
 		/// </summary>
-		public Iso3166_1.Record[] CountryCodes
+		public Iso_3166_1.Record[] CountryCodes
 		{
-			get => Iso3166_1.Data;
+			get => Iso_3166_1.Data;
 		}
 
 		#endregion
@@ -353,7 +353,7 @@ namespace LegalLab.Models.Legal
 			string s = e.RequestorIdentity["ADDR"];
 			if (!string.IsNullOrEmpty(s))
 			{
-				if (Iso3166_1.CodeToCountry(s, out string Country))
+				if (Iso_3166_1.CodeToCountry(s, out string Country))
 					s = Country;
 
 				Append(Question, s, " ", string.Empty);
