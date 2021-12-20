@@ -6,6 +6,7 @@ using LegalLab.Models.Network.Events;
 using LegalLab.Models.Window;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -395,6 +396,27 @@ namespace LegalLab
 			public DateTime Requested;
 			public DateTime Started;
 			public DateTime Ended;
+		}
+
+		/// <summary>
+		/// Opens an URL in the currently selected browser using the Shell.
+		/// </summary>
+		/// <param name="Url">URL to open</param>
+		public static void OpenUrl(Uri Url)
+		{
+			try
+			{
+				Process.Start(new ProcessStartInfo()
+				{
+					FileName = Url.OriginalString,
+					UseShellExecute = true
+				});
+			}
+			catch (Exception ex)
+			{
+				Log.Critical(ex);
+				MainWindow.ErrorBox(ex.Message);
+			}
 		}
 
 		#endregion

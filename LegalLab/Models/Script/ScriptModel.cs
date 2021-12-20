@@ -390,26 +390,6 @@ namespace LegalLab.Models.Script
 		}
 
 		/// <summary>
-		/// Script reference documentation link clicked.
-		/// </summary>
-		public void HyperLinkClicked()
-		{
-			try
-			{
-				Process.Start(new ProcessStartInfo()
-				{
-					FileName = this.ReferenceUri,
-					UseShellExecute = true
-				});
-			}
-			catch (Exception ex)
-			{
-				Log.Critical(ex);
-				MainWindow.ErrorBox(ex.Message);
-			}
-		}
-
-		/// <summary>
 		/// Starts the model.
 		/// </summary>
 		public override async Task Start()

@@ -8,7 +8,7 @@ namespace LegalLab.Models.Network
 	/// <summary>
 	/// A model that is sensitive to the connection state.
 	/// </summary>
-	public class ConnectionSensitiveModel : Model
+	public class ConnectionSensitiveModel : PersistedModel
 	{
 		private readonly Property<XmppState> connectionState;
 		private readonly Property<bool> connected;

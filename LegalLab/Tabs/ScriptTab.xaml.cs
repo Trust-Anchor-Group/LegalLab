@@ -2,6 +2,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using Waher.Events;
 
@@ -35,7 +36,8 @@ namespace LegalLab.Tabs
 
 		private void OpenScriptReference(object sender, RoutedEventArgs e)
 		{
-			scriptModel?.HyperLinkClicked();
+			if (sender is Hyperlink Link)
+				MainWindow.OpenUrl(Link.NavigateUri);
 		}
 
 		private void InputPreviewKeyDown(object sender, KeyEventArgs e)

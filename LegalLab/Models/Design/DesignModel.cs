@@ -19,6 +19,8 @@ using Waher.Events;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
+using Waher.Runtime.Inventory;
+using Waher.Runtime.Settings;
 using Waher.Script;
 
 namespace LegalLab.Models.Design
@@ -26,6 +28,7 @@ namespace LegalLab.Models.Design
 	/// <summary>
 	/// Contract model
 	/// </summary>
+	[Singleton]
 	public class DesignModel : ConnectionSensitiveModel
 	{
 		private readonly Property<Waher.Content.Duration> archiveOptional;
@@ -48,6 +51,7 @@ namespace LegalLab.Models.Design
 		private readonly Property<XmlElement> forMachines;
 		private readonly DelayedActionProperty<string> humanReadableMarkdown;
 		private readonly Property<object> humanReadable;
+		private readonly PersistedProperty<string> bingTranslatorKey;
 
 		private readonly Command addRole;
 		private readonly Command addPart;
@@ -88,6 +92,8 @@ namespace LegalLab.Models.Design
 			this.contractId = new Property<string>(nameof(this.ContractId), string.Empty, this);
 			this.humanReadableMarkdown = new DelayedActionProperty<string>(nameof(this.HumanReadableMarkdown), TimeSpan.FromSeconds(1), true, string.Empty, this);
 			this.humanReadable = new Property<object>(nameof(this.HumanReadable), null, this);
+			
+			this.Add(this.bingTranslatorKey = new PersistedProperty<string>("Design", nameof(BingTranslatorKey), true, string.Empty, this));
 
 			this.machineReadable.OnAction += NormalizeMachineReadableXml;
 			this.humanReadableMarkdown.OnAction += RenderHumanReadableMarkdown;
@@ -208,8 +214,10 @@ namespace LegalLab.Models.Design
 		/// <inheritdoc/>
 		public override async Task Start()
 		{
-			MainWindow.currentInstance.DesignTab.DataContext = this;
 			await base.Start();
+
+			MainWindow.currentInstance.DesignTab.DataContext = this;
+			MainWindow.currentInstance.DesignTab.BingTranslationKey.Password = this.BingTranslatorKey;
 		}
 
 		/// <summary>
@@ -1171,6 +1179,15 @@ namespace LegalLab.Models.Design
 
 			this.Languages = this.Languages.ToCodes().Remove(Language).ToIso639_1();
 			this.Language = this.contract.DefaultLanguage;
+		}
+
+		/// <summary>
+		/// Key to use when calling the Bing Translator service.
+		/// </summary>
+		public string BingTranslatorKey
+		{
+			get => this.bingTranslatorKey.Value;
+			set => this.bingTranslatorKey.Value = value;
 		}
 
 		/// <summary>
