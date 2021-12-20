@@ -47,7 +47,29 @@
 	<role maxCount="1" minCount="1" name="Buyer">
 		<description xml:lang="en">
 			<paragraph>
-				<text>This role represents the buyer of the transport service being requested.</text>
+				<text>This role represents the </text>
+				<bold>
+					<text>buyer</text>
+				</bold>
+				<text> of the transport service being requested.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="es">
+			<paragraph>
+				<text>Este rol representa al </text>
+				<bold>
+					<text>comprador</text>
+				</bold>
+				<text> del servicio de transporte que se solicita.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="pt">
+			<paragraph>
+				<text>Esta função representa o </text>
+				<bold>
+					<text>comprador</text>
+				</bold>
+				<text> do serviço de transporte que está sendo solicitado.</text>
 			</paragraph>
 		</description>
 		<description xml:lang="sv">
@@ -63,7 +85,29 @@
 	<role maxCount="1" minCount="1" name="Auctioneer">
 		<description xml:lang="en">
 			<paragraph>
-				<text>This role represents the auctioneer that brokers the sale of the service.</text>
+				<text>This role represents the </text>
+				<bold>
+					<text>auctioneer</text>
+				</bold>
+				<text> that brokers the sale of the service.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="es">
+			<paragraph>
+				<text>Este rol representa al </text>
+				<bold>
+					<text>subastador</text>
+				</bold>
+				<text> que intermedia la venta del servicio.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="pt">
+			<paragraph>
+				<text>Esse papel representa o </text>
+				<bold>
+					<text>leiloeiro</text>
+				</bold>
+				<text> que intermedia a venda do serviço.</text>
 			</paragraph>
 		</description>
 		<description xml:lang="sv">
@@ -86,6 +130,16 @@
 					<text>Reference to the product number in the sellers database.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Referencia al número de producto en la base de datos de vendedores.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Referência ao número do produto no banco de dados dos vendedores.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="sv">
 				<paragraph>
 					<text>Referens till produktnumret i säljarens databas.</text>
@@ -96,6 +150,16 @@
 			<description xml:lang="en">
 				<paragraph>
 					<text>Number of items of the product requested.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Número de artículos del producto solicitado.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Número de itens do produto solicitado.</text>
 				</paragraph>
 			</description>
 			<description xml:lang="sv">
@@ -110,6 +174,16 @@
 					<text>A description of the product being requested.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Una descripción del producto que se solicita.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Uma descrição do produto que está sendo solicitado.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="sv">
 				<paragraph>
 					<text>En beskrivning av produkten som efterfrågas.</text>
@@ -120,6 +194,16 @@
 			<description xml:lang="en">
 				<paragraph>
 					<text>The asking price of the sale, requested by the buyer.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>El precio de venta de la venta, solicitado por el comprador.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>O preço pedido da venda, solicitado pelo comprador.</text>
 				</paragraph>
 			</description>
 			<description xml:lang="sv">
@@ -134,6 +218,16 @@
 					<text>Bids will automatically be rejected above this limit.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Las pujas se rechazarán automáticamente por encima de este límite.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Os lances serão automaticamente rejeitados acima desse limite.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="sv">
 				<paragraph>
 					<text>Anbud kommer automatiskt att förkastas om de överstiger denna gräns.</text>
@@ -144,6 +238,16 @@
 			<description xml:lang="en">
 				<paragraph>
 					<text>Bids will automatically be accepted if at or below this limit.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Las pujas se aceptarán automáticamente si están por debajo de este límite.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Os lances serão aceitos automaticamente se estiver abaixo desse limite.</text>
 				</paragraph>
 			</description>
 			<description xml:lang="sv">
@@ -158,6 +262,16 @@
 					<text>Commission, in percent, of the selling price, that is paid to the auctioneer.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Comisión, en porcentaje, del precio de venta, que se paga al subastador.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Comissão, em porcentagem, do preço de venda, que é pago ao leiloeiro.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="sv">
 				<paragraph>
 					<text>Kommission, i procent, av försäljningspriset, som betalas till auktionsförrättaren.</text>
@@ -168,6 +282,16 @@
 			<description xml:lang="en">
 				<paragraph>
 					<text>Currency of instant payments.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Moneda de pagos instantáneos.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Moeda de pagamentos instantâneos.</text>
 				</paragraph>
 			</description>
 			<description xml:lang="sv">
@@ -182,6 +306,16 @@
 					<text>Number of days offer is available in the marketplace.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>La oferta de número de días está disponible en el mercado.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>O número de dias de oferta está disponível no mercado.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="sv">
 				<paragraph>
 					<text>Antal dagar som erbjudantet finns tillgängligt på marknadsplatsen.</text>
@@ -192,6 +326,16 @@
 			<description xml:lang="en">
 				<paragraph>
 					<text>First row of address of pickup point.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Primera fila de la dirección del punto de recogida.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Primeira linha de endereço do ponto de coleta.</text>
 				</paragraph>
 			</description>
 			<description xml:lang="sv">
@@ -206,6 +350,16 @@
 					<text>Optional second row of address of pickup point.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Segunda fila opcional de la dirección del punto de recogida.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Segunda linha opcional de endereço do ponto de coleta.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="sv">
 				<paragraph>
 					<text>Valfri andra rad för adressen på upphämtningsstället.</text>
@@ -216,6 +370,16 @@
 			<description xml:lang="en">
 				<paragraph>
 					<text>Optional third row of address of pickup point.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Tercera fila opcional de la dirección del punto de recogida.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Terceira linha opcional de endereço do ponto de coleta.</text>
 				</paragraph>
 			</description>
 			<description xml:lang="sv">
@@ -230,6 +394,16 @@
 					<text>Postal code of pickup point.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Código postal del punto de recogida.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Código postal de ponto de coleta.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="sv">
 				<paragraph>
 					<text>Postkod för upphämtningsstället.</text>
@@ -240,6 +414,16 @@
 			<description xml:lang="en">
 				<paragraph>
 					<text>City of pickup point.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Ciudad del punto de recogida.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Cidade do ponto de coleta.</text>
 				</paragraph>
 			</description>
 			<description xml:lang="sv">
@@ -254,6 +438,16 @@
 					<text>Country of pickup point.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>País del punto de recogida.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>País de ponto de coleta.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="sv">
 				<paragraph>
 					<text>Land  för upphämtningsstället.</text>
@@ -264,6 +458,16 @@
 			<description xml:lang="en">
 				<paragraph>
 					<text>First row of address of delivery point.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Primera fila de dirección del punto de entrega.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Primeira linha de endereço do ponto de entrega.</text>
 				</paragraph>
 			</description>
 			<description xml:lang="sv">
@@ -278,6 +482,16 @@
 					<text>Optional second row of address of delivery point.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Segunda fila opcional de la dirección del punto de entrega.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Segunda linha opcional de endereço do ponto de entrega.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="sv">
 				<paragraph>
 					<text>Valfri andra rad för avlämningsstället.</text>
@@ -288,6 +502,16 @@
 			<description xml:lang="en">
 				<paragraph>
 					<text>Optional third row of address of delivery point.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Tercera fila opcional de la dirección del punto de entrega.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Terceira linha opcional de endereço do ponto de entrega.</text>
 				</paragraph>
 			</description>
 			<description xml:lang="sv">
@@ -302,6 +526,16 @@
 					<text>Postal code of delivery point.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Código postal del punto de entrega.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Código postal do ponto de entrega.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="sv">
 				<paragraph>
 					<text>Postkod för avlämningsstället.</text>
@@ -314,6 +548,16 @@
 					<text>City of delivery point.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Ciudad del punto de entrega.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Cidade do ponto de entrega.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="sv">
 				<paragraph>
 					<text>Stad för avlämningsstället.</text>
@@ -324,6 +568,16 @@
 			<description xml:lang="en">
 				<paragraph>
 					<text>Country of delivery point.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>País del punto de entrega.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>País de ponto de entrega.</text>
 				</paragraph>
 			</description>
 			<description xml:lang="sv">
@@ -591,6 +845,534 @@
 								<text>wallet</text>
 							</italic>
 							<text> will have their request for tender invalidated, and the sale assignment cancelled.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="es">
+		<section>
+			<header>
+				<text>Solicitud de licitación - Servicio de transporte (Ejemplo)</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Este contrato define un envío de subasta del servicio de compra de un servicio de transporte. La asignación de un vendedor a este envío se negocia mediante una subasta en línea gestionada por </text>
+					<italic>
+						<text>TAG Marketplace</text>
+					</italic>
+					<text>™. El documento define las reglas para el procesamiento automático y la correspondencia de los posibles vendedores con esta solicitud de licitación.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Introducción</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Este contrato define la solicitud de compra del servicio de transporte de artículos (s) utilizando el </text>
+							<italic>
+								<text>TAG Marketplace</text>
+							</italic>
+							<text>™ servicio de subastas. El </text>
+							<bold>
+								<text>Comprador</text>
+							</bold>
+							<text> ha pedido al </text>
+							<bold>
+								<text>Subastador</text>
+							</bold>
+							<text> que encuentre la mejor coincidencia entre las ofertas de los posibles </text>
+							<italic>
+								<text>Vendedores</text>
+							</italic>
+							<text> a esta Solicitud de Licitaciones. El </text>
+							<bold>
+								<text>Subastador</text>
+							</bold>
+							<text> coincide con las ofertas entrantes de los posibles </text>
+							<italic>
+								<text>Vendedores</text>
+							</italic>
+							<text>, hasta que se encuentre el mejor candidato, se haya recibido la primera oferta aceptable o la subasta expire debido a la falta de interés suficiente.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Manifiesto</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>El </text>
+							<bold>
+								<text>Comprador</text>
+							</bold>
+							<text> solicita el transporte de </text>
+							<bold>
+								<parameter name="Quantity" />
+							</bold>
+							<text> artículo(s) de </text>
+							<bold>
+								<parameter name="ProductNumber" />
+							</bold>
+							<text> (</text>
+							<parameter name="Description" />
+							<text>).</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Punto de recogida</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>El transportista recogerá la entrega en </text>
+							<bold>
+								<parameter name="FromAddress1" />
+								<text> </text>
+								<parameter name="FromAddress2" />
+								<text> </text>
+								<parameter name="FromAddress3" />
+							</bold>
+							<text>, </text>
+							<bold>
+								<parameter name="FromPostalCode" />
+								<text> </text>
+								<parameter name="FromCity" />
+							</bold>
+							<text>, </text>
+							<bold>
+								<parameter name="FromCountry" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Punto de entrega</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>El transportista transportará la entrega a </text>
+							<bold>
+								<parameter name="ToAddress1" />
+								<text> </text>
+								<parameter name="ToAddress2" />
+								<text> </text>
+								<parameter name="ToAddress3" />
+							</bold>
+							<text>, </text>
+							<bold>
+								<parameter name="ToPostalCode" />
+								<text> </text>
+								<parameter name="ToCity" />
+							</bold>
+							<text>, </text>
+							<bold>
+								<parameter name="ToCountry" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Consignación de subasta</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Tras la firma de este contrato, el </text>
+							<bold>
+								<text>Comprador</text>
+							</bold>
+							<text> consigna al </text>
+							<bold>
+								<text>Subastador</text>
+							</bold>
+							<text> la tarea de encontrar un proveedor de servicios que venda el servicio solicitado de transporte del artículo(s) especificado en el </text>
+							<italic>
+								<text>Manifiesto</text>
+							</italic>
+							<text> anterior, con un </text>
+							<italic>
+								<text>precio de venta</text>
+							</italic>
+							<text> inicial de </text>
+							<bold>
+								<parameter name="AskingPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. El </text>
+							<bold>
+								<text>Subastador</text>
+							</bold>
+							<text> publica información sobre la </text>
+							<italic>
+								<text>Solicitud de Licitaciones</text>
+							</italic>
+							<text> a los posibles </text>
+							<italic>
+								<text>Vendedores</text>
+							</italic>
+							<text> que pueden realizar </text>
+							<italic>
+								<text>Ofertas</text>
+							</italic>
+							<text> durante el tiempo de </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> días a partir de la firma del acuerdo, o hasta que se reciba la primera puja </text>
+							<italic>
+								<text>aceptable</text>
+							</italic>
+							<text> de </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. Cualquier puja por encima de </text>
+							<bold>
+								<parameter name="RejectPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> será rechazada automáticamente. También se presentará información de la mejor oferta.</text>
+						</paragraph>
+						<paragraph>
+							<text>El envío concluye al final de </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> días a partir de la firma del acuerdo, o cuando se recibe la primera oferta </text>
+							<italic>
+								<text>aceptable</text>
+							</italic>
+							<text> de </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. Si no hay ofertas disponibles cuando expira la subasta, el envío concluye sin que se procese ningún pago. De lo contrario, se realizarán dos pagos:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>Un pago instantáneo que representa el precio acordado para la mejor o primera oferta aceptada más la comisión acordada, como porcentaje del precio (</text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text>), se realizará desde el </text>
+								<bold>
+									<text>Comprador</text>
+								</bold>
+								<text> hasta el </text>
+								<italic>
+									<text>Subastador</text>
+								</italic>
+								<text>.</text>
+							</item>
+							<item>
+								<text>Se realizará un pago instantáneo que represente el precio acordado para la mejor o primera oferta aceptada, desde el </text>
+								<bold>
+									<text>Subastador</text>
+								</bold>
+								<text> hasta el </text>
+								<bold>
+									<text>Vendedor</text>
+								</bold>
+								<text>. El </text>
+								<bold>
+									<text>Subastador</text>
+								</bold>
+								<text> mantiene su </text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text> como pago por sus servicios.</text>
+							</item>
+						</bulletItems>
+						<paragraph>
+							<text>Todos los pagos se realizarán utilizando </text>
+							<italic>
+								<text>e-Daler</text>
+							</italic>
+							<text>. Un comprador sin fondos en su </text>
+							<italic>
+								<text>billetera</text>
+							</italic>
+							<text> verá invalidada su solicitud de licitación y la asignación de venta cancelada.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="pt">
+		<section>
+			<header>
+				<text>Solicitação de Concursos - Serviço de Transporte (Exemplo)</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Este contrato define um leilão de remessa do serviço de compra de um serviço de transporte. A cessão de um vendedor para esta remessa é negociada por um leilão online gerenciado pela </text>
+					<italic>
+						<text>TAG Marketplace</text>
+					</italic>
+					<text>™. O documento define as regras para o processamento automático e correspondência de potenciais vendedores a este pedido de licitação.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Introdução</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Este contrato define a solicitação de compra do serviço de transporte de itens(s) utilizando o serviço de leilão </text>
+							<italic>
+								<text>TAG Marketplace</text>
+							</italic>
+							<text>™. O </text>
+							<bold>
+								<text>Comprador</text>
+							</bold>
+							<text> pediu ao </text>
+							<bold>
+								<text>Leiloeiro</text>
+							</bold>
+							<text> para encontrar o melhor match entre as ofertas de potenciais </text>
+							<italic>
+								<text>Vendedores</text>
+							</italic>
+							<text> para este Pedido de Concursos. O </text>
+							<bold>
+								<text>Leiloeiro</text>
+							</bold>
+							<text> corresponde aos lances recebidos de potenciais </text>
+							<italic>
+								<text>Vendedores</text>
+							</italic>
+							<text>, até que o melhor candidato seja encontrado, o primeiro lance aceitável tenha sido recebido, ou o leilão expira por falta de interesse suficiente.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Manifesto</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>O </text>
+							<bold>
+								<text>Buyer</text>
+							</bold>
+							<text> solicita o transporte de </text>
+							<bold>
+								<parameter name="Quantity" />
+							</bold>
+							<text> item(s) de </text>
+							<bold>
+								<parameter name="ProductNumber" />
+							</bold>
+							<text> (</text>
+							<parameter name="Description" />
+							<text>).</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Ponto de captação</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>A transportadora vai pegar a entrega em </text>
+							<bold>
+								<parameter name="FromAddress1" />
+								<text> </text>
+								<parameter name="FromAddress2" />
+								<text> </text>
+								<parameter name="FromAddress3" />
+							</bold>
+							<text>, </text>
+							<bold>
+								<parameter name="FromPostalCode" />
+								<text> </text>
+								<parameter name="FromCity" />
+							</bold>
+							<text>, </text>
+							<bold>
+								<parameter name="FromCountry" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Ponto de Entrega</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>A transportadora transportará a entrega para </text>
+							<bold>
+								<parameter name="ToAddress1" />
+								<text> </text>
+								<parameter name="ToAddress2" />
+								<text> </text>
+								<parameter name="ToAddress3" />
+							</bold>
+							<text>, </text>
+							<bold>
+								<parameter name="ToPostalCode" />
+								<text> </text>
+								<parameter name="ToCity" />
+							</bold>
+							<text>, </text>
+							<bold>
+								<parameter name="ToCountry" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Remessa de Leilões</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Após a assinatura deste contrato, o </text>
+							<bold>
+								<text>Buyer</text>
+							</bold>
+							<text> consigna ao </text>
+							<bold>
+								<text>Leiloeiro</text>
+							</bold>
+							<text> a tarefa de encontrar um prestador de serviços que vende o serviço solicitado de transporte do item(s) especificado no </text>
+							<italic>
+								<text>Manifest</text>
+							</italic>
+							<text> acima, com um preço inicial </text>
+							<italic>
+								<text>pedido</text>
+							</italic>
+							<text> de </text>
+							<bold>
+								<parameter name="AskingPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. O </text>
+							<bold>
+								<text>Leiloeiro</text>
+							</bold>
+							<text> publica informações sobre o </text>
+							<italic>
+								<text>Pedido de Concursos</text>
+							</italic>
+							<text> a potenciais </text>
+							<italic>
+								<text>Vendedores</text>
+							</italic>
+							<text> que podem fazer </text>
+							<italic>
+								<text>Ofertas</text>
+							</italic>
+							<text> durante a duração de </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> dias a partir da assinatura do contrato, ou até que o primeiro lance </text>
+							<italic>
+								<text>aceitável</text>
+							</italic>
+							<text> de </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> seja recebido. Qualquer lance acima de </text>
+							<bold>
+								<parameter name="RejectPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> será automaticamente rejeitado. Informações sobre o melhor lance também serão apresentadas.</text>
+						</paragraph>
+						<paragraph>
+							<text>A remessa termina no final de </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> dias a partir da assinatura do contrato, ou quando a primeira licitação </text>
+							<italic>
+								<text>aceitável</text>
+							</italic>
+							<text> de </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> é recebida. Se não houver lances disponíveis quando o leilão expirar, a remessa termina sem que nenhum pagamento seja processado. Caso contrário, dois pagamentos serão feitos:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>Um pagamento instantâneo representando o preço acordado para a melhor ou primeira oferta aceita mais a comissão acordada, como uma porcentagem do preço (</text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text>), será feito do </text>
+								<bold>
+									<text>Comprador</text>
+								</bold>
+								<text> para o </text>
+								<italic>
+									<text>Leiloeiro</text>
+								</italic>
+								<text>.</text>
+							</item>
+							<item>
+								<text>Um pagamento instantâneo representando o preço acordado para o melhor ou primeiro lance aceito, será feito do </text>
+								<bold>
+									<text>Leiloeiro</text>
+								</bold>
+								<text> para o </text>
+								<bold>
+									<text>Seller</text>
+								</bold>
+								<text>. O </text>
+								<bold>
+									<text>Leiloeiro</text>
+								</bold>
+								<text> mantém seu </text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text> como pagamento por seus serviços.</text>
+							</item>
+						</bulletItems>
+						<paragraph>
+							<text>Todos os pagamentos serão feitos usando </text>
+							<italic>
+								<text>e-Daler</text>
+							</italic>
+							<text>. Um comprador sem fundos em sua </text>
+							<italic>
+								<text>carteira</text>
+							</italic>
+							<text> terá seu pedido de oferta invalidado, e a cessão de venda cancelada.</text>
 						</paragraph>
 					</body>
 				</section>
