@@ -67,7 +67,7 @@ namespace LegalLab.Models.Design
 					i = s.IndexOf("[%", i + s2.Length);
 				}
 
-				Req.Add(new Dictionary<string, object>() { { "Text", Text } });
+				Req.Add(new Dictionary<string, object>() { { "Text", s } });
 			}
 
 			StringBuilder Url = new StringBuilder();
