@@ -1,0 +1,18 @@
+﻿<Window x:Class="LegalLab.Dialogs.AddLanguage.AddLanguageDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" FocusManager.FocusedElement="{Binding ElementName=Language}"
+        Width="300" Height="130" Background="#FFE5E5E5" Title="Add Language">
+    <DockPanel Margin="10,10,10,0" LastChildFill="True">
+        <Label Content="Select Language to add:" DockPanel.Dock="Top"/>
+        <ComboBox SelectedValue="{Binding Language}" DisplayMemberPath="Language" SelectedValuePath="Code" ItemsSource="{Binding Languages}" DockPanel.Dock="Top"/>
+        <StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Command="{Binding Add}" Content="Add" Width="100" IsDefault="True"/>
+                <Button Command="{Binding Cancel}" Content="Cancel" Width="100" Margin="10,0,0,0" IsCancel="True"/>
+            </StackPanel>
+        </StackPanel>
+    </DockPanel>
+</Window>

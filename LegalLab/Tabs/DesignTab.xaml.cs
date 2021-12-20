@@ -16,10 +16,10 @@ namespace LegalLab.Tabs
 			InitializeComponent();
 		}
 
-		private void BingTranslationKey_PasswordChanged(object sender, System.Windows.RoutedEventArgs e)
+		private void MicrosoftTranslationKey_PasswordChanged(object sender, System.Windows.RoutedEventArgs e)
 		{
 			DesignModel Model = Types.InstantiateDefault<DesignModel>(false);
-			Model.BingTranslatorKey = this.BingTranslationKey.Password;
+			Model.MicrosoftTranslatorKey = this.MicrosoftTranslationKey.Password;
 		}
 
 		private void Hyperlink_Click(object sender, System.Windows.RoutedEventArgs e)

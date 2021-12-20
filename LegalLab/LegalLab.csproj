@@ -54,4 +54,17 @@
     <PackageReference Include="Waher.Security.SHA3" Version="1.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Dialogs\AddLanguage\AddLanguageDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Dialogs\AddLanguage\AddLanguageDialog.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
 </Project>

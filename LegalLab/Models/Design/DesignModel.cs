@@ -1,4 +1,5 @@
-﻿using LegalLab.Extensions;
+﻿using LegalLab.Dialogs.AddLanguage;
+using LegalLab.Extensions;
 using LegalLab.Items;
 using LegalLab.Models.Legal.Items;
 using LegalLab.Models.Legal.Items.Parameters;
@@ -20,7 +21,6 @@ using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
 using Waher.Runtime.Inventory;
-using Waher.Runtime.Settings;
 using Waher.Script;
 
 namespace LegalLab.Models.Design
@@ -51,7 +51,7 @@ namespace LegalLab.Models.Design
 		private readonly Property<XmlElement> forMachines;
 		private readonly DelayedActionProperty<string> humanReadableMarkdown;
 		private readonly Property<object> humanReadable;
-		private readonly PersistedProperty<string> bingTranslatorKey;
+		private readonly PersistedProperty<string> microsoftTranslatorKey;
 
 		private readonly Command addRole;
 		private readonly Command addPart;
@@ -92,8 +92,8 @@ namespace LegalLab.Models.Design
 			this.contractId = new Property<string>(nameof(this.ContractId), string.Empty, this);
 			this.humanReadableMarkdown = new DelayedActionProperty<string>(nameof(this.HumanReadableMarkdown), TimeSpan.FromSeconds(1), true, string.Empty, this);
 			this.humanReadable = new Property<object>(nameof(this.HumanReadable), null, this);
-			
-			this.Add(this.bingTranslatorKey = new PersistedProperty<string>("Design", nameof(BingTranslatorKey), true, string.Empty, this));
+
+			this.Add(this.microsoftTranslatorKey = new PersistedProperty<string>("Design", nameof(MicrosoftTranslatorKey), true, string.Empty, this));
 
 			this.machineReadable.OnAction += NormalizeMachineReadableXml;
 			this.humanReadableMarkdown.OnAction += RenderHumanReadableMarkdown;
@@ -217,7 +217,7 @@ namespace LegalLab.Models.Design
 			await base.Start();
 
 			MainWindow.currentInstance.DesignTab.DataContext = this;
-			MainWindow.currentInstance.DesignTab.BingTranslationKey.Password = this.BingTranslatorKey;
+			MainWindow.currentInstance.DesignTab.MicrosoftTranslationKey.Password = this.MicrosoftTranslatorKey;
 		}
 
 		/// <summary>
@@ -293,23 +293,33 @@ namespace LegalLab.Models.Design
 		public string Language
 		{
 			get => this.language.Value;
-			set
+			set => this.SetLanguage(value);
+		}
+
+		private async void SetLanguage(string Language)
+		{
+			try
 			{
-				if (this.language.Value != value)
+				if (this.language.Value != Language)
 				{
-					this.language.Value = value;
+					this.language.Value = Language;
 					this.removeLanguage.RaiseCanExecuteChanged();
 
 					foreach (ParameterInfo PI in this.Parameters)
-						PI.DescriptionAsMarkdown = this.contract.ToMarkdown(PI.Parameter.Descriptions, this.Language).Trim();
+						PI.DescriptionAsMarkdown = (await Translator.GetMarkdown(PI.Parameter.Descriptions, Language, this.contract, this.MicrosoftTranslatorKey)).Trim();
 
 					foreach (RoleInfo RI in this.Roles)
-						RI.DescriptionAsMarkdown = this.contract.ToMarkdown(RI.Role.Descriptions, this.Language).Trim();
+						RI.DescriptionAsMarkdown = (await Translator.GetMarkdown(RI.Role.Descriptions, Language, this.contract, this.MicrosoftTranslatorKey)).Trim();
 
-					this.HumanReadableMarkdown = this.contract.ToMarkdown(this.contract.ForHumans, this.Language).Trim();
+					this.HumanReadableMarkdown = (await Translator.GetMarkdown(this.contract.ForHumans, Language, this.contract, this.MicrosoftTranslatorKey)).Trim();
 
 					this.removeLanguage.RaiseCanExecuteChanged();
 				}
+			}
+			catch (Exception ex)
+			{
+				Log.Critical(ex);
+				MainWindow.ErrorBox(ex.Message);
 			}
 		}
 
@@ -435,7 +445,7 @@ namespace LegalLab.Models.Design
 		public string HumanReadableMarkdown
 		{
 			get => this.humanReadableMarkdown.Value;
-			set => this.humanReadableMarkdown.Value = value;
+			set => MainWindow.UpdateGui(() => this.humanReadableMarkdown.Value = value);
 		}
 
 		/// <summary>
@@ -1053,7 +1063,7 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Load command
 		/// </summary>
-		public ICommand Load => this.load;
+		public ICommand LoadCommand => this.load;
 
 		private void ExecuteLoadContract()
 		{
@@ -1099,7 +1109,7 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Save command
 		/// </summary>
-		public ICommand Save => this.save;
+		public ICommand SaveCommand => this.save;
 
 		private void ExecuteSaveContract()
 		{
@@ -1139,13 +1149,18 @@ namespace LegalLab.Models.Design
 
 		private void ExecuteAddLanguage()
 		{
-			string Language = MainWindow.PromptUser("Add Language", "Language to add:", string.Empty, "Add", "Cancel");
+			AddLanguageDialog Dialog = new AddLanguageDialog();
+			AddLanguageModel Model = new AddLanguageModel(Dialog);
+
+			bool? Result = Dialog.ShowDialog();
+			if (!Result.HasValue || !Result.Value)
+				return;
+
+			string Language = Model.Language;
 			if (string.IsNullOrEmpty(Language))
 				return;
 
-			if (Array.IndexOf(this.Languages, Language) < 0)
-				this.Languages = this.Languages.ToCodes().Append(this.Language).ToIso639_1();
-
+			this.Languages = this.Languages.ToCodes().Append(Language).ToIso639_1();
 			this.Language = Language.ToLower();
 		}
 
@@ -1182,12 +1197,12 @@ namespace LegalLab.Models.Design
 		}
 
 		/// <summary>
-		/// Key to use when calling the Bing Translator service.
+		/// Key to use when calling the Microsoft Translator service.
 		/// </summary>
-		public string BingTranslatorKey
+		public string MicrosoftTranslatorKey
 		{
-			get => this.bingTranslatorKey.Value;
-			set => this.bingTranslatorKey.Value = value;
+			get => this.microsoftTranslatorKey.Value;
+			set => this.microsoftTranslatorKey.Value = value;
 		}
 
 		/// <summary>

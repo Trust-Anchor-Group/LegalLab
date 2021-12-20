@@ -99,16 +99,19 @@ namespace LegalLab.Models.Legal.Items
 			get => this.descriptionAsMarkdown.Value;
 			set
 			{
-				string Language = this.designModel?.Language ?? this.Contract.DefaultLanguage;
-				HumanReadableText Text = value.ToHumanReadableText(Language);
+				MainWindow.UpdateGui(() =>
+				{
+					string Language = this.designModel?.Language ?? this.Contract.DefaultLanguage;
+					HumanReadableText Text = value.ToHumanReadableText(Language);
 
-				if (Text is null)
-					this.Parameter.Descriptions = this.Parameter.Descriptions.Remove(Language);
-				else
-					this.Parameter.Descriptions = this.Parameter.Descriptions.Append(Text);
+					if (Text is null)
+						this.Parameter.Descriptions = this.Parameter.Descriptions.Remove(Language);
+					else
+						this.Parameter.Descriptions = this.Parameter.Descriptions.Append(Text);
 
-				this.descriptionAsMarkdown.Value = value;
-				this.description.Value = value.ToSimpleXAML(this.Contract, Language);
+					this.descriptionAsMarkdown.Value = value;
+					this.description.Value = value.ToSimpleXAML(this.Contract, Language);
+				});
 			}
 		}
 

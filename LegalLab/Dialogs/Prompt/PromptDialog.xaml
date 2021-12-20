@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" FocusManager.FocusedElement="{Binding ElementName=UserInput}"
-        Height="120" Width="500" Background="#FFE5E5E5" d:Title="Title" Title="{Binding Title}">
+        Height="130" Width="500" Background="#FFE5E5E5" d:Title="Title" Title="{Binding Title}">
     <DockPanel Margin="10,10,10,0" LastChildFill="True">
         <Label Content="{Binding Label}" d:Content="Label:" DockPanel.Dock="Top"/>
         <TextBox Name="UserInput" Text="{Binding Text}" d:Text="User Input" DockPanel.Dock="Top"/>

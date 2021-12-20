@@ -10,8 +10,8 @@
         <ScrollViewer DockPanel.Dock="Left">
             <StackPanel Name="DesignCommands" Orientation="Vertical" Width="250" Margin="10">
                 <Button Command="{Binding New}" Margin="0,0,0,10">New</Button>
-                <Button Command="{Binding Load}" Margin="0,0,0,10">Load</Button>
-                <Button Command="{Binding Save}" Margin="0,0,0,10">Save</Button>
+                <Button Command="{Binding LoadCommand}" Margin="0,0,0,10">Load</Button>
+                <Button Command="{Binding SaveCommand}" Margin="0,0,0,10">Save</Button>
                 <Button Command="{Binding Propose}" Margin="0,0,0,10">Propose</Button>
                 <Label>Language:</Label>
                 <ComboBox ItemsSource="{Binding Languages}" DisplayMemberPath="Language" SelectedValuePath="Code" SelectedValue="{Binding Language}" Margin="0,0,0,10"/>
@@ -20,23 +20,24 @@
                 <Label>
                     <Label.Content>
                         <TextBlock>
-                            <Run>Bing Translation Key:</Run>
+                            <Run>Microsoft Translation Key:</Run>
                             <Run Foreground="Red">*</Run>
                         </TextBlock>
                     </Label.Content>
                 </Label>
-                <PasswordBox Name="BingTranslationKey" PasswordChanged="BingTranslationKey_PasswordChanged" Margin="0,0,0,10"/>
+                <PasswordBox Name="MicrosoftTranslationKey" PasswordChanged="MicrosoftTranslationKey_PasswordChanged" Margin="0,0,0,10"/>
                 <TextBlock TextWrapping="Wrap">
                     <Run Foreground="Red">* </Run>
-                    <Run>By adding a Bing Translation Key, localized texts will be automatically machine translated across languages when designing contracts. </Run>
-                    <Run>You can create a free (albeit rate limited) Bing Translation key by adding a </Run>
+                    <Run>By adding a Microsoft Translation Key, localized texts will be automatically machine translated across languages when designing contracts.</Run>
+                    <Run>You can create a free (albeit rate limited) Microsoft Translation key by adding a</Run>
                     <Hyperlink NavigateUri="https://www.microsoft.com/en-us/translator/business/trial/" Click="Hyperlink_Click">
                         <Run>Microsoft Translator</Run>
                     </Hyperlink>
-                    <Run> account in your </Run>
+                    <Run>account in your</Run>
                     <Hyperlink NavigateUri="https://portal.azure.com/" Click="Hyperlink_Click">
                         <Run>Azure Portal.</Run>
                     </Hyperlink>
+                    <Run>Translator keys must be global.</Run>
                 </TextBlock>
             </StackPanel>
         </ScrollViewer>
