@@ -1,38 +1,93 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<contract xmlns="urn:ieee:iot:leg:sc:1.0"
-          id="OfferServiceExampleTemplate"
-          archiveOpt="P3M"
-          archiveReq="P1M"
-          canActAsTemplate="true"
-          duration="P1M"
-          visibility="PublicSearchable">
+<contract archiveOpt="P3M" archiveReq="P1M" canActAsTemplate="true" duration="P1M" id="OfferServiceExampleTemplate" visibility="PublicSearchable" xmlns="urn:ieee:iot:leg:sc:1.0">
 	<Offer xmlns="https://paiwise.tagroot.io/Schema/Marketplace.xsd">
 		<ItemReference>
-			<ParameterReference parameter="RequestForTendersId"/>
+			<ParameterReference parameter="RequestForTendersId" />
 		</ItemReference>
 		<Price>
-			<ParameterReference parameter="Price"/>
+			<ParameterReference parameter="Price" />
 		</Price>
 		<Currency>
-			<ParameterReference parameter="Currency"/>
+			<ParameterReference parameter="Currency" />
 		</Currency>
 	</Offer>
-	<role name="Seller" minCount="1" maxCount="1">
+	<role maxCount="1" minCount="1" name="Seller">
 		<description xml:lang="en">
 			<paragraph>
-				<text>This role represents the prospective seller of the transport service, making the offer.</text>
+				<text>This role represents the prospective </text>
+				<bold>
+					<text>seller</text>
+				</bold>
+				<text> of the transport service, making the offer.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="es">
+			<paragraph>
+				<text>Este rol representa al posible </text>
+				<bold>
+					<text>vendedor</text>
+				</bold>
+				<text> del servicio de transporte, haciendo la oferta.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="pt">
+			<paragraph>
+				<text>Essa função representa o potencial </text>
+				<bold>
+					<text>seller</text>
+				</bold>
+				<text> do serviço de transporte, fazendo a oferta.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="sv">
+			<paragraph>
+				<text>Den här rollen representerar den potentiella </text>
+				<bold>
+					<text>säljaren</text>
+				</bold>
+				<text> av transporttjänsten, vilket ger erbjudandet.</text>
 			</paragraph>
 		</description>
 	</role>
-	<role name="Auctioneer" minCount="1" maxCount="1">
+	<role maxCount="1" minCount="1" name="Auctioneer">
 		<description xml:lang="en">
 			<paragraph>
-				<text>This role represents the auctioneer or broker that negotiates the sales of the requested service.</text>
+				<text>This role represents the </text>
+				<bold>
+					<text>auctioneer</text>
+				</bold>
+				<text> or broker that negotiates the sales of the requested service.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="es">
+			<paragraph>
+				<text>Este rol representa al </text>
+				<bold>
+					<text>subastador</text>
+				</bold>
+				<text> o corredor que negocia las ventas del servicio solicitado.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="pt">
+			<paragraph>
+				<text>Essa função representa o </text>
+				<bold>
+					<text>leiloeiro</text>
+				</bold>
+				<text> ou corretor que negocia as vendas do serviço solicitado.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="sv">
+			<paragraph>
+				<text>Den här rollen representerar </text>
+				<bold>
+					<text>auktionsförrättaren</text>
+				</bold>
+				<text> eller mäklaren som förhandlar om försäljningen av den begärda tjänsten.</text>
 			</paragraph>
 		</description>
 	</role>
 	<parts>
-		<templateOnly/>
+		<templateOnly />
 	</parts>
 	<parameters>
 		<stringParameter name="RequestForTendersId" guide="Request for Tenders Contract ID" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
@@ -41,18 +96,63 @@
 					<text>The offer references the Request for Tenders detailed by the smart contract referenced to by this parameter.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>La oferta hace referencia a la Solicitud de Licitaciones detallada por el contrato inteligente al que hace referencia este parámetro.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>A oferta faz referência ao Pedido de Ofertas detalhado pelo contrato inteligente a ver com este parâmetro.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Erbjudandet refererar till anbudsförfrågan som beskrivs av det smarta kontrakt som refereras till av denna parameter.</text>
+				</paragraph>
+			</description>
 		</stringParameter>
-		<numericalParameter name="Price" guide="Bid Price" min="0">
+		<numericalParameter name="Price" guide="Bid Price" min="0" minIncluded="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The offer price.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>El precio de oferta.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>O preço da oferta.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Erbjudandepriset.</text>
+				</paragraph>
+			</description>
 		</numericalParameter>
-		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="\w{3}">
+		<stringParameter name="Currency" guide="Currency" regEx="\w{3}" minLength="3" maxLength="3">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Currency of the bid.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Moneda de la oferta.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Moeda da oferta.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Budets valuta.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
@@ -159,6 +259,337 @@
 								<text>Auctioneer</text>
 							</bold>
 							<text> as part of the consignment agreement </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="es">
+		<section>
+			<header>
+				<text>Oferta de servicio - Servicio de transporte (Acuerdo de oferta de subasta)</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Este contrato representa una oferta de transporte de mercancías de acuerdo con una solicitud de licitación, negociada por una subasta en línea gestionada por TAG Marketplace.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Introducción</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Un </text>
+							<italic>
+								<text>Comprador</text>
+							</italic>
+							<text> ha publicado un artículo(s) para ser transportado en una solicitud de licitación en línea definida en el contrato inteligente </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>.  Este documento define una oferta creada por </text>
+							<bold>
+								<text>Vendedor</text>
+							</bold>
+							<text> para transportar estos artículos(s) de acuerdo con la solicitud de licitación antes mencionada por el precio de </text>
+							<bold>
+								<parameter name="Price" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Subasta</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>El </text>
+							<bold>
+								<text>Subastador</text>
+							</bold>
+							<text> ha sido consignado por el </text>
+							<italic>
+								<text>Comprador</text>
+							</italic>
+							<text> para negociar el derecho a transportar el artículo(s) definido en el contrato inteligente </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>. El </text>
+							<bold>
+								<text>Subastador</text>
+							</bold>
+							<text> recibe ofertas en forma de contratos de oferta; siendo este contrato un contrato de oferta de este tipo.  El </text>
+							<bold>
+								<text>Subastador</text>
+							</bold>
+							<text>, como parte del envío, elegirá la mejor oferta, o la primera oferta aceptable, mediante la firma del contrato de oferta correspondiente. Tan pronto como se haya firmado el contrato, el </text>
+							<italic>
+								<text>Comprador</text>
+							</italic>
+							<text> pagará el importe de </text>
+							<bold>
+								<parameter name="Price" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> más </text>
+							<italic>
+								<text>comisión</text>
+							</italic>
+							<text> al </text>
+							<bold>
+								<text>Subastador</text>
+							</bold>
+							<text>, quien a su vez, paga el importe (menos una </text>
+							<italic>
+								<text>comisión de comisión</text>
+							</italic>
+							<text>) al </text>
+							<bold>
+								<text>Vendedor</text>
+							</bold>
+							<text>. La </text>
+							<italic>
+								<text>comisión</text>
+							</italic>
+							<text> es negociada por el </text>
+							<italic>
+								<text>Comprador</text>
+							</italic>
+							<text> y el </text>
+							<bold>
+								<text>Subastador</text>
+							</bold>
+							<text> como parte del acuerdo de consignación </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="pt">
+		<section>
+			<header>
+				<text>Oferta de Serviços - Serviço de Transporte (Contrato de Oferta de Leilão)</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Este contrato representa uma oferta de transporte de mercadorias de acordo com um pedido de licitação, negociado por um leilão online gerenciado pela TAG Marketplace.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Introdução</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>A </text>
+							<italic>
+								<text>Buyer</text>
+							</italic>
+							<text> publicou item(s) a ser transportado em uma solicitação on-line de propostas definidas no contrato inteligente </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>.  Este documento define uma oferta criada por </text>
+							<bold>
+								<text>Seller</text>
+							</bold>
+							<text> para transportar esses itens(s) de acordo com o referido Pedido de Ofertas pelo preço de </text>
+							<bold>
+								<parameter name="Price" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Leilão</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>O </text>
+							<bold>
+								<text>Leiloeiro</text>
+							</bold>
+							<text> foi enviado pelo </text>
+							<italic>
+								<text>Comprador</text>
+							</italic>
+							<text> para negociar o direito de transportar o item(s) definido no contrato inteligente </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>. O </text>
+							<bold>
+								<text>Leiloeiro</text>
+							</bold>
+							<text> recebe lances sob a forma de contratos de oferta; este contrato sendo um contrato de oferta.  O </text>
+							<bold>
+								<text>Leiloeiro</text>
+							</bold>
+							<text>, como parte da remessa, escolherá o melhor lance, ou o primeiro lance aceitável, assinando o contrato de oferta correspondente. Assim que o contrato tiver sido assinado, o </text>
+							<italic>
+								<text>Comprador</text>
+							</italic>
+							<text> pagará o valor de </text>
+							<bold>
+								<parameter name="Price" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> mais </text>
+							<italic>
+								<text>comissão</text>
+							</italic>
+							<text> ao </text>
+							<bold>
+								<text>Leiloeiro</text>
+							</bold>
+							<text>, que, por sua vez, paga o valor (menos uma taxa de comissão) ao </text>
+							<bold>
+								<text>Seller</text>
+							</bold>
+							<text>. A </text>
+							<italic>
+								<text>comissão</text>
+							</italic>
+							<text> é negociada pelo </text>
+							<italic>
+								<text>Comprador</text>
+							</italic>
+							<text> e pelo </text>
+							<bold>
+								<text>Leiloeiro</text>
+							</bold>
+							<text> como parte do acordo de remessa </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="sv">
+		<section>
+			<header>
+				<text>Serviceerbjudande - Transporttjänst (Auktionserbjudande)</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Detta avtal utgör ett erbjudande om att transportera varor i enlighet med en anbudsförfrågan, som förhandlats fram av en onlineauktion som förvaltas av TAG Marketplace.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Införandet</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>En </text>
+							<italic>
+								<text>Köpare</text>
+							</italic>
+							<text> har publicerat artiklar(er) som ska transporteras i en online-begäran om anbud som definieras i det smarta kontraktet </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>.  Detta dokument definierar ett erbjudande som skapats av </text>
+							<bold>
+								<text>Säljare</text>
+							</bold>
+							<text> för att transportera dessa artiklar(er) i enlighet med ovannämnda anbudsförfrågan till priset av </text>
+							<bold>
+								<parameter name="Price" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Auktion</text>
+					</header>
+					<body>
+						<paragraph>
+							<bold>
+								<text>Auktionsförrättaren</text>
+							</bold>
+							<text> har avsänts av </text>
+							<italic>
+								<text>Köparen</text>
+							</italic>
+							<text> för att förhandla om rätten att transportera varan(er) som definieras i det smarta kontraktet </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>. </text>
+							<bold>
+								<text>Auktionsförrättaren</text>
+							</bold>
+							<text> erhåller bud i form av erbjudandekontrakt; detta avtal är ett sådant erbjudandekontrakt.  </text>
+							<bold>
+								<text>Auktionsförrättaren</text>
+							</bold>
+							<text>, som en del av sändningen, väljer det bästa budet, eller det första godtagbara budet, genom att underteckna motsvarande erbjudandekontrakt. Så snart avtalet har undertecknats kommer </text>
+							<italic>
+								<text>Köparen</text>
+							</italic>
+							<text> att betala beloppet </text>
+							<bold>
+								<parameter name="Price" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> plus </text>
+							<italic>
+								<text>provision</text>
+							</italic>
+							<text> till </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text>, som i sin tur betalar beloppet (minus en </text>
+							<italic>
+								<text>provisionsavgift</text>
+							</italic>
+							<text>) till </text>
+							<bold>
+								<text>Säljaren</text>
+							</bold>
+							<text>. </text>
+							<italic>
+								<text>Provisionen</text>
+							</italic>
+							<text> förhandlas fram av </text>
+							<italic>
+								<text>Köparen</text>
+							</italic>
+							<text> och </text>
+							<bold>
+								<text>Auktionsförrättaren</text>
+							</bold>
+							<text> som en del av försändelseavtalet </text>
 							<bold>
 								<parameter name="RequestForTendersId" />
 							</bold>
