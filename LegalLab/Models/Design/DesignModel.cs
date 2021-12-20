@@ -66,6 +66,7 @@ namespace LegalLab.Models.Design
 		private readonly Command removeLanguage;
 
 		private Contract contract;
+		private string lastLanguage = string.Empty;
 
 		/// <summary>
 		/// Design model
@@ -300,12 +301,12 @@ namespace LegalLab.Models.Design
 		{
 			try
 			{
-				if (this.language.Value != Language)
-				{
-					string FromLanguage = this.language.Value;
+				this.language.Value = Language;
+				this.removeLanguage.RaiseCanExecuteChanged();
 
-					this.language.Value = Language;
-					this.removeLanguage.RaiseCanExecuteChanged();
+				if (this.lastLanguage != Language)
+				{
+					string FromLanguage = this.lastLanguage;
 
 					if (string.IsNullOrEmpty(FromLanguage) || string.IsNullOrEmpty(Language))
 					{
@@ -318,10 +319,14 @@ namespace LegalLab.Models.Design
 								RI.DescriptionAsMarkdown = (RI.Role.Descriptions.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
 
 							this.HumanReadableMarkdown = (this.contract.ForHumans.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
+						
+							this.lastLanguage = Language;
 						}
 					}
 					else
 					{
+						this.lastLanguage = Language;
+
 						List<TranslationItem> Items = new List<TranslationItem>();
 
 						foreach (ParameterInfo PI in this.Parameters)
