@@ -278,6 +278,23 @@ namespace LegalLab.Extensions
 		}
 
 		/// <summary>
+		/// Finds a localized version of a text.
+		/// </summary>
+		/// <param name="AvailableTexts">Available texts</param>
+		/// <param name="Language">Language</param>
+		/// <returns>Result, if found.</returns>
+		public static HumanReadableText Find(this HumanReadableText[] AvailableTexts, string Language)
+		{
+			foreach (HumanReadableText Text in AvailableTexts)
+			{
+				if (Text.Language == Language)
+					return Text;
+			}
+
+			return null;
+		}
+
+		/// <summary>
 		/// Appends a text to an array of texts.
 		/// </summary>
 		/// <param name="Texts">Set of texts</param>

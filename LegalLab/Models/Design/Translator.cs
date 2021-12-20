@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LegalLab.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,9 +38,40 @@ namespace LegalLab.Models.Design
 		public static async Task<string[]> Translate(string[] Texts, string From, string To, string Key)
 		{
 			List<Dictionary<string, object>> Req = new List<Dictionary<string, object>>();
+			Dictionary<int, string> ImmutableByIndex = new Dictionary<int, string>();
+			Dictionary<string, int> ImmutableByString = new Dictionary<string, int>();
+			string s, s2, Ref;
+			int i, j, Index;
 
 			foreach (string Text in Texts)
+			{
+				s = Text;
+
+				i = s.IndexOf("[%");
+
+				while (i >= 0)
+				{
+					j = s.IndexOf(']', i + 2);
+					if (j < 0)
+						break;
+
+					Ref = s.Substring(i, j - i + 1);
+
+					if (!ImmutableByString.TryGetValue(Ref, out Index))
+					{
+						Index = ImmutableByString.Count;
+						ImmutableByString[Ref] = Index;
+						ImmutableByIndex[Index] = Ref;
+					}
+
+					s2 = "{" + Index.ToString() + "}";
+					s = s.Remove(i, j - i + 1).Insert(i, s2);
+
+					i = s.IndexOf("[%", i + s2.Length);
+				}
+
 				Req.Add(new Dictionary<string, object>() { { "Text", Text } });
+			}
 
 			StringBuilder Url = new StringBuilder();
 
@@ -69,68 +101,28 @@ namespace LegalLab.Models.Design
 					throw new Exception("Unexpected reponse returned.");
 				}
 
+				i = TranslatedText.IndexOf('{');
+				while (i >= 0)
+				{
+					j = TranslatedText.IndexOf('}', i + 1);
+					if (j < 0)
+						break;
+
+					if (int.TryParse(TranslatedText.Substring(i + 1, j - i - 1), out Index) &&
+						ImmutableByIndex.TryGetValue(Index, out Ref))
+					{
+						TranslatedText = TranslatedText.Remove(i, j - i + 1).Insert(i, Ref);
+						i = TranslatedText.IndexOf('{', i + Ref.Length);
+					}
+					else
+						i = TranslatedText.IndexOf('{', j + 1);
+				}
+
 				Response.Add(TranslatedText);
 			}
 
 			return Response.ToArray();
 		}
 
-		public static async Task<string> GetMarkdown(HumanReadableText[] AvailableTexts, string Language, Contract Contract, string Key)
-		{
-			HumanReadableText Text = FindText(AvailableTexts, Language);
-			if (!(Text is null))
-				return Text.GenerateMarkdown(Contract, MarkdownType.ForEditing);
-
-			string DefaultLanguage = Contract.DefaultLanguage;
-			Text = FindText(AvailableTexts, DefaultLanguage);
-			string Markdown = Text?.GenerateMarkdown(Contract, MarkdownType.ForEditing) ?? string.Empty;
-
-			if (string.IsNullOrEmpty(Key) || string.IsNullOrEmpty(Language) || string.IsNullOrEmpty(DefaultLanguage))
-				return Markdown;
-
-			List<string> Immutable = new List<string>();
-			int i = Markdown.IndexOf("[%");
-			int j;
-
-			while (i >= 0)
-			{
-				j = Markdown.IndexOf(']', i + 2);
-				if (j < 0)
-					break;
-
-				Immutable.Add(Markdown.Substring(i, j - i + 1));
-				string s = "{" + Immutable.Count.ToString() + "}";
-				Markdown = Markdown.Remove(i, j - i + 1).Insert(i, s);
-
-				i = Markdown.IndexOf("[%", i + s.Length);
-			}
-
-			Markdown = await Translate(Markdown, DefaultLanguage, Language, Key);
-
-			j = 1;
-			foreach (string s in Immutable)
-			{
-				string s2 = "{" + (j++).ToString() + "}";
-
-				i = Markdown.IndexOf(s2);
-				if (i < 0)
-					Markdown += s;
-				else
-					Markdown = Markdown.Remove(i, s2.Length).Insert(i, s);
-			}
-
-			return Markdown;
-		}
-
-		public static HumanReadableText FindText(HumanReadableText[] AvailableTexts, string Language)
-		{
-			foreach (HumanReadableText Text in AvailableTexts)
-			{
-				if (Text.Language == Language)
-					return Text;
-			}
-
-			return null;
-		}
 	}
 }

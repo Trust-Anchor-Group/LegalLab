@@ -14,7 +14,7 @@ namespace LegalLab.Models.Legal.Items
 	/// <summary>
 	/// Contains information about a parameter
 	/// </summary>
-	public abstract class ParameterInfo : OrderedItem<ParameterInfo>, INamedItem
+	public abstract class ParameterInfo : OrderedItem<ParameterInfo>, INamedItem, ITranslatable
 	{
 		private readonly Property<string> name;
 		private readonly Property<object> description;
@@ -141,7 +141,7 @@ namespace LegalLab.Models.Legal.Items
 
 				this.Parameter.Expression = value;
 				this.expression.Value = value;
-				
+
 				this.Revalidate();
 			}
 		}
@@ -229,6 +229,31 @@ namespace LegalLab.Models.Legal.Items
 		/// </summary>
 		/// <param name="Value">Text representation of value.</param>
 		public abstract void SetValue(string Value);
+
+		/// <summary>
+		/// Gets associated texts to translate.
+		/// </summary>
+		/// <param name="Language">Language to translate from.</param>
+		/// <returns>Array of translatable texts, or null if none.</returns>
+		public string[] GetTranslatableTexts(string Language)
+		{
+			HumanReadableText Text = this.Parameter.Descriptions.Find(Language);
+			if (Text is null)
+				return null;
+			else
+				return new string[] { Text.GenerateMarkdown(this.Contract, MarkdownType.ForEditing) };
+		}
+
+		/// <summary>
+		/// Sets translated texts.
+		/// </summary>
+		/// <param name="Texts">Available translated texts.</param>
+		/// <param name="Language">Language translated to.</param>
+		public void SetTranslatableTexts(string[] Texts, string Language)
+		{
+			if (Texts.Length > 0)
+				this.DescriptionAsMarkdown = Texts[0].Trim();
+		}
 
 	}
 }

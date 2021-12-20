@@ -29,7 +29,7 @@ namespace LegalLab.Models.Design
 	/// Contract model
 	/// </summary>
 	[Singleton]
-	public class DesignModel : ConnectionSensitiveModel
+	public class DesignModel : ConnectionSensitiveModel, ITranslatable
 	{
 		private readonly Property<Waher.Content.Duration> archiveOptional;
 		private readonly Property<Waher.Content.Duration> archiveRequired;
@@ -203,7 +203,7 @@ namespace LegalLab.Models.Design
 				this.Language = "en";
 			}
 
-			this.HumanReadableMarkdown = Contract.ToMarkdown(this.Language, MarkdownType.ForEditing);
+			this.HumanReadableMarkdown = Contract.ToMarkdown(this.Language, MarkdownType.ForEditing)?.Trim() ?? string.Empty;
 		}
 
 		/// <summary>
@@ -302,16 +302,64 @@ namespace LegalLab.Models.Design
 			{
 				if (this.language.Value != Language)
 				{
+					string FromLanguage = this.language.Value;
+
 					this.language.Value = Language;
 					this.removeLanguage.RaiseCanExecuteChanged();
 
-					foreach (ParameterInfo PI in this.Parameters)
-						PI.DescriptionAsMarkdown = (await Translator.GetMarkdown(PI.Parameter.Descriptions, Language, this.contract, this.MicrosoftTranslatorKey)).Trim();
+					if (string.IsNullOrEmpty(FromLanguage) || string.IsNullOrEmpty(Language))
+					{
+						if (!string.IsNullOrEmpty(Language))
+						{
+							foreach (ParameterInfo PI in this.Parameters)
+								PI.DescriptionAsMarkdown = (PI.Parameter.Descriptions.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
 
-					foreach (RoleInfo RI in this.Roles)
-						RI.DescriptionAsMarkdown = (await Translator.GetMarkdown(RI.Role.Descriptions, Language, this.contract, this.MicrosoftTranslatorKey)).Trim();
+							foreach (RoleInfo RI in this.Roles)
+								RI.DescriptionAsMarkdown = (RI.Role.Descriptions.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
 
-					this.HumanReadableMarkdown = (await Translator.GetMarkdown(this.contract.ForHumans, Language, this.contract, this.MicrosoftTranslatorKey)).Trim();
+							this.HumanReadableMarkdown = (this.contract.ForHumans.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
+						}
+					}
+					else
+					{
+						List<TranslationItem> Items = new List<TranslationItem>();
+
+						foreach (ParameterInfo PI in this.Parameters)
+							this.Add(Items, PI, FromLanguage, Language);
+
+						foreach (RoleInfo RI in this.Roles)
+							this.Add(Items, RI, FromLanguage, Language);
+
+						this.Add(Items, this, FromLanguage, Language);
+
+						if (Items.Count > 0)
+						{
+							List<string> AllTexts = new List<string>();
+
+							foreach (TranslationItem Item in Items)
+								AllTexts.AddRange(Item.Original);
+
+							string[] AllTranslated = await Translator.Translate(AllTexts.ToArray(), FromLanguage, Language, this.MicrosoftTranslatorKey);
+
+							MainWindow.UpdateGui(() =>
+							{
+								int i = 0;
+								int c;
+
+								foreach (TranslationItem Item in Items)
+								{
+									string[] Translated = new string[c = Item.Original.Length];
+
+									Array.Copy(AllTranslated, i, Translated, 0, c);
+									i += c;
+
+									Item.Object.SetTranslatableTexts(Translated, Language);
+								}
+	
+								this.removeLanguage.RaiseCanExecuteChanged();
+							});
+						}
+					}
 
 					this.removeLanguage.RaiseCanExecuteChanged();
 				}
@@ -321,6 +369,56 @@ namespace LegalLab.Models.Design
 				Log.Critical(ex);
 				MainWindow.ErrorBox(ex.Message);
 			}
+		}
+
+		private void Add(List<TranslationItem> Items, ITranslatable Translatable, string From, string To)
+		{
+			string[] Texts = Translatable.GetTranslatableTexts(To);
+			if (!(Texts is null))
+				Translatable.SetTranslatableTexts(Texts, To);
+			else
+			{
+				Texts = Translatable.GetTranslatableTexts(From);
+				if (!(Texts is null))
+				{
+					Items.Add(new TranslationItem()
+					{
+						Object = Translatable,
+						Original = Texts
+					});
+				}
+			}
+		}
+
+		private class TranslationItem
+		{
+			public ITranslatable Object;
+			public string[] Original;
+		}
+
+		/// <summary>
+		/// Gets associated texts to translate.
+		/// </summary>
+		/// <param name="Language">Language to translate from.</param>
+		/// <returns>Array of translatable texts, or null if none.</returns>
+		public string[] GetTranslatableTexts(string Language)
+		{
+			HumanReadableText Text = this.contract.ForHumans.Find(Language);
+			if (Text is null)
+				return null;
+			else
+				return new string[] { Text.GenerateMarkdown(this.Contract, MarkdownType.ForEditing) };
+		}
+
+		/// <summary>
+		/// Sets translated texts.
+		/// </summary>
+		/// <param name="Texts">Available translated texts.</param>
+		/// <param name="Language">Language translated to.</param>
+		public void SetTranslatableTexts(string[] Texts, string Language)
+		{
+			if (Texts.Length > 0)
+				this.HumanReadableMarkdown = Texts[0].Trim();
 		}
 
 		/// <summary>

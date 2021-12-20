@@ -12,7 +12,7 @@ namespace LegalLab.Models.Legal.Items
 	/// <summary>
 	/// Contains information about a role
 	/// </summary>
-	public class RoleInfo : OrderedItem<RoleInfo>, INamedItem
+	public class RoleInfo : OrderedItem<RoleInfo>, INamedItem, ITranslatable
 	{
 		private readonly ContractModel contractModel;
 		private readonly DesignModel designModel;
@@ -243,6 +243,31 @@ namespace LegalLab.Models.Legal.Items
 		public void ExecuteRemoveRole()
 		{
 			this.designModel?.RemoveRole(this);
+		}
+
+		/// <summary>
+		/// Gets associated texts to translate.
+		/// </summary>
+		/// <param name="Language">Language to translate from.</param>
+		/// <returns>Array of translatable texts, or null if none.</returns>
+		public string[] GetTranslatableTexts(string Language)
+		{
+			HumanReadableText Text = this.Role.Descriptions.Find(Language);
+			if (Text is null)
+				return null;
+			else
+				return new string[] { Text.GenerateMarkdown(this.contract, MarkdownType.ForEditing) };
+		}
+
+		/// <summary>
+		/// Sets translated texts.
+		/// </summary>
+		/// <param name="Texts">Available translated texts.</param>
+		/// <param name="Language">Language translated to.</param>
+		public void SetTranslatableTexts(string[] Texts, string Language)
+		{
+			if (Texts.Length > 0)
+				this.DescriptionAsMarkdown = Texts[0].Trim();
 		}
 
 	}
