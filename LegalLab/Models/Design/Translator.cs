@@ -1,11 +1,8 @@
-﻿using LegalLab.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Waher.Content;
-using Waher.Networking.XMPP.Contracts;
-using Waher.Networking.XMPP.Contracts.HumanReadable;
 
 namespace LegalLab.Models.Design
 {
