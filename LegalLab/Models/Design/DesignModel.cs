@@ -548,7 +548,7 @@ namespace LegalLab.Models.Design
 		public string HumanReadableMarkdown
 		{
 			get => this.humanReadableMarkdown.Value;
-			set => MainWindow.UpdateGui(() => this.humanReadableMarkdown.Value = value);
+			set => this.humanReadableMarkdown.Value = value;
 		}
 
 		/// <summary>
