@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SyntaxDefinition name="SmartContractMarkdown" extensions=".md" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+	<Color name="Heading1" foreground="Maroon" exampleText="Title\r\n=========" />
+	<Color name="Heading2" foreground="Maroon" exampleText="Title\r\n=========" />
+	<Color name="HeadingN" foreground="Maroon" exampleText="### Title ###" />
+	<Color name="Italic" fontStyle="italic" exampleText="*this* is important!" />
+	<Color name="Bold" fontWeight="bold" exampleText="**this** is more important!" />
+	<Color name="Underline" underline="true" exampleText="_this_ is more important!" />
+	<Color name="StrikeThrough" strikethrough="true" exampleText="_this_ is more important!" />
+	<Color name="Parameter" foreground="Blue" exampleText="[%Parameter]" />
+	<Color name="Subscript" foreground="Green" exampleText="[Subscript]" />
+	<Color name="Superscript" foreground="Red" exampleText="^[Superscript]" />
+	<Color name="BulletItem" foreground="Brown" exampleText="* Item 1" />
+
+	<RuleSet ignoreCase="true">
+		<Rule color="Parameter">\[%[^\]]+]</Rule>
+		<Rule color="HeadingN">^\#(?!\.\s)+.*</Rule>
+		<Span color="Heading1" multiline="true">
+			<Begin>^.+[\r\n]+=+[\r\n]+</Begin>
+			<End>^</End>
+		</Span>
+		<Span color="Heading2" multiline="true">
+			<Begin>^.+[\r\n]+-+[\r\n]+</Begin>
+			<End>^</End>
+		</Span>
+		<Rule color="Bold">\*\*[^*]*(\*[^*]+)*\*\*</Rule>
+		<Rule color="Italic">(?&lt;!\*)\*(?!\*)[^*]+\*(?!\*)</Rule>
+		<Rule color="Underline">(?&lt;!_)_(?!_)[^_]+_(?!_)</Rule>
+		<Rule color="StrikeThrough">(?&lt;!~)~(?!~)[^~]+~(?!~)</Rule>
+		<Rule color="Subscript">(?&lt;!\^)\[(?!%)[^\]]*\]</Rule>
+		<Rule color="Superscript">\^\[[^\]]+]</Rule>
+		<Rule color="BulletItem">^(\*|\#\.)\s+[^\r\n]*([\r\n]+(\t|    \s*)[^\r\n]+)*</Rule>
+	</RuleSet>
+</SyntaxDefinition>

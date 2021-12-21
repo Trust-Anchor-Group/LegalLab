@@ -1,0 +1,281 @@
+<contract archiveOpt="PT0S" archiveReq="PT0S" canActAsTemplate="true" duration="PT0S" id="ExampleMarkdown" visibility="PublicSearchable" xmlns="urn:ieee:iot:leg:sc:1.0">
+	<Nop xmlns="https://paiwise.tagroot.io/Schema/PaymentInstructions.xsd" />
+	<role maxCount="1" minCount="1" name="Role1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>Author of Smart Contracts</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<templateOnly />
+	</parts>
+	<parameters>
+		<stringParameter name="Example" value="Kilroy was here">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Enter parameter description as </text>
+					<bold>
+						<text>Markdown</text>
+					</bold>
+				</paragraph>
+			</description>
+		</stringParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Markdown for Smart Contracts</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This document contains information about Markdown constructs that can be used to design formatted text in smart contracts. Sign this contract to acknowledge the information has been read and understood.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Introduction</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Smart Contracts are XML objects with cryptographical signatures. They contain both machine-readable information, as well as human-readable information. Human-readable information can be formatted, and localized. To simplify editing of human-readable text for smart contracts, a reduced Markdown dialect has been created. By using the </text>
+							<bold>
+								<text>LegalLab</text>
+							</bold>
+							<text> software, made available on </text>
+							<italic>
+								<text>GitHub</text>
+							</italic>
+							<text> by </text>
+							<italic>
+								<text>Trust Anchor Group</text>
+							</italic>
+							<text>, smart contracts can be designed, where the used writes human-readable information using such Markdown.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Markdown Syntax</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>The following subsections lists available Markdown constructs that can be used when editing smart contracts.</text>
+						</paragraph>
+						<section>
+							<header>
+								<text>Text formatting</text>
+							</header>
+							<body>
+								<paragraph>
+									<text>The following constructs are available:</text>
+								</paragraph>
+								<bulletItems>
+									<item>
+										<text>To create </text>
+										<bold>
+											<text>bold text</text>
+										</bold>
+										<text>, text is enclosed between double asterisks (*). **Example** becomes </text>
+										<bold>
+											<text>Example</text>
+										</bold>
+										<text>.</text>
+									</item>
+									<item>
+										<text>To create </text>
+										<italic>
+											<text>italic text</text>
+										</italic>
+										<text>, text is enclosed between single asterisks (*). *Example* becomes </text>
+										<italic>
+											<text>Example</text>
+										</italic>
+										<text>.</text>
+									</item>
+									<item>
+										<text>To create </text>
+										<underline>
+											<text>underline text</text>
+										</underline>
+										<text>, text is enclosed between underscore characters (_). _Example_ becomes </text>
+										<underline>
+											<text>Example</text>
+										</underline>
+										<text>.</text>
+									</item>
+									<item>
+										<text>To create </text>
+										<strikeThrough>
+											<text>strikethrough text</text>
+										</strikeThrough>
+										<text>, text is enclosed between tilde characters (~). ~Example~ becomes </text>
+										<strikeThrough>
+											<text>Example</text>
+										</strikeThrough>
+										<text>.</text>
+									</item>
+								</bulletItems>
+							</body>
+						</section>
+						<section>
+							<header>
+								<text>Superscript and Subscript</text>
+							</header>
+							<body>
+								<bulletItems>
+									<item>
+										<text>Subscript is created by enclosing it between aquare brackets [ and ]. A[1], A[2], </text>
+										<text>…</text>
+										<text> becomes A</text>
+										<sub>
+											<text>1</text>
+										</sub>
+										<text>, A</text>
+										<sub>
+											<text>2</text>
+										</sub>
+										<text>, </text>
+										<text>…</text>
+									</item>
+									<item>
+										<text>Superscript is created by enclosing it between aquare brackets [ and ], with the first prefixed by a cirkumflex character (^). a^[2]+b^[2]=c^[2] becomes a</text>
+										<super>
+											<text>2</text>
+										</super>
+										<text>+b</text>
+										<super>
+											<text>2</text>
+										</super>
+										<text>=c</text>
+										<super>
+											<text>2</text>
+										</super>
+									</item>
+								</bulletItems>
+							</body>
+						</section>
+						<section>
+							<header>
+								<text>Parameter references</text>
+							</header>
+							<body>
+								<paragraph>
+									<text>You can include values of parameters in the contract, by enclosing the parameter name between [% and ]. [%Example] becomes: </text>
+									<parameter name="Example" />
+									<text>.</text>
+								</paragraph>
+							</body>
+						</section>
+						<section>
+							<header>
+								<text>Bullet lists</text>
+							</header>
+							<body>
+								<paragraph>
+									<text>Contracts can include bullet lists, both numbered and unnumbered. Unnumbered bullet lists are created by placing each bullet item on a separate row, prefxing with with an asterisk (*) and a space or tab character.</text>
+								</paragraph>
+								<paragraph>
+									<text>Example:</text>
+								</paragraph>
+								<paragraph>
+									<text>* Item 1</text>
+								</paragraph>
+								<paragraph>
+									<text>* Item 2</text>
+								</paragraph>
+								<paragraph>
+									<text>* Item 3</text>
+								</paragraph>
+								<paragraph>
+									<text>becomes</text>
+								</paragraph>
+								<bulletItems>
+									<item>
+										<text>Item 1</text>
+									</item>
+									<item>
+										<text>Item 2</text>
+									</item>
+									<item>
+										<text>Item 3</text>
+									</item>
+								</bulletItems>
+								<paragraph>
+									<text>If you want to create numbered bullet lists, prefix the items using #. instead (a hash sign, followed by a period, and space).</text>
+								</paragraph>
+								<paragraph>
+									<text>Example:</text>
+								</paragraph>
+								<paragraph>
+									<text>#. Item 1</text>
+								</paragraph>
+								<paragraph>
+									<text>#. Item 2</text>
+								</paragraph>
+								<paragraph>
+									<text>#. Item 3</text>
+								</paragraph>
+								<paragraph>
+									<text>becomes</text>
+								</paragraph>
+								<numberedItems>
+									<item>
+										<text>Item 1</text>
+									</item>
+									<item>
+										<text>Item 2</text>
+									</item>
+									<item>
+										<text>Item 3</text>
+									</item>
+								</numberedItems>
+							</body>
+						</section>
+						<section>
+							<header>
+								<text>Escaping characters</text>
+							</header>
+							<body>
+								<paragraph>
+									<text>If you want to use Markdown characters (such as *, [, ], ^, _, ~, #, \) in your text, prefix them using the backslash character (\).</text>
+								</paragraph>
+							</body>
+						</section>
+						<section>
+							<header>
+								<text>Paragraphs</text>
+							</header>
+							<body>
+								<paragraph>
+									<text>Paragraphs are lines of text separated by at least one empty row. Multiple lines without empty rows between them are joined into a single paragraph.</text>
+								</paragraph>
+							</body>
+						</section>
+						<section>
+							<header>
+								<text>Sections and headings</text>
+							</header>
+							<body>
+								<paragraph>
+									<text>Divide your text into sections by adding headings of different levels. A header is created by placing it on a separate row, prefixed by a number of hash signs (#), representing the level of the following section in the text. Level 1 (top) header is one #. Level 2, has two (##), level 3 has three (###), etc. Example:</text>
+								</paragraph>
+								<paragraph>
+									<text>### Example heading of level 3.</text>
+								</paragraph>
+								<paragraph>
+									<text>Level 1 headings can be generated without using #, and instead place a line of consequtive equal signs (=) below.</text>
+								</paragraph>
+								<paragraph>
+									<text>Level 2 headings can be generated without using #, and instead place a line of consequtive equal signs (-) below.</text>
+								</paragraph>
+								<paragraph>
+									<text>The row after the heading must be empty.</text>
+								</paragraph>
+							</body>
+						</section>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>

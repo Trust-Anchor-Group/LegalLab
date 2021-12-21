@@ -194,7 +194,7 @@ namespace LegalLab.Models.Design
 
 			(string s, XmlElement E) = Contract.ForMachines.ToPrettyXml();
 
-			this.MachineReadable = s.Replace("\n\t", "\n").Replace("\t", "    ");
+			this.MachineReadable = s.Replace("\n\t", "\n");
 			this.ForMachines = E;
 
 			this.Languages = Contract.GetLanguages().ToIso639_1();

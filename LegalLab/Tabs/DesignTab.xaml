@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:conv="clr-namespace:LegalLab.Converters"
+             xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel LastChildFill="True" Background="#FFE5E5E5">
@@ -316,11 +317,41 @@
 
                 <Label FontSize="20" Margin="0,10,0,0">Machine-Readable Content</Label>
                 <Label>Following is the embedded Machine-readable content of the contract (as XML):</Label>
-                <TextBox Text="{Binding MachineReadable}" FontFamily="Courier New" MinHeight="100" AcceptsReturn="True" AcceptsTab="True" TextWrapping="Wrap" Height="Auto"/>
+                <avalonedit:TextEditor Name="MachineReadableXmlEditor" TextChanged="MachineReadableXmlEditor_TextChanged"
+                                       FontFamily="Courier New" MinHeight="100" Height="Auto" WordWrap="False" SyntaxHighlighting="XML">
+                    <avalonedit:TextEditor.Options>
+                        <avalonedit:TextEditorOptions ShowSpaces="False" ShowTabs="False"/>
+                    </avalonedit:TextEditor.Options>
+                    <avalonedit:TextEditor.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Command="Undo" />
+                            <MenuItem Command="Redo" />
+                            <Separator/>
+                            <MenuItem Command="Cut" />
+                            <MenuItem Command="Copy" />
+                            <MenuItem Command="Paste" />
+                        </ContextMenu>
+                    </avalonedit:TextEditor.ContextMenu>
+                </avalonedit:TextEditor>
 
                 <Label FontSize="20" Margin="0,10,0,0">Human-Readable Content</Label>
                 <Label>Following is the human-readable text of the contract (as Markdown):</Label>
-                <TextBox Text="{Binding HumanReadableMarkdown, UpdateSourceTrigger=PropertyChanged}" FontFamily="Courier New" MinHeight="100" AcceptsReturn="True" AcceptsTab="True" TextWrapping="Wrap" Height="Auto"/>
+                <avalonedit:TextEditor Name="HumanReadableMarkdownEditor" TextChanged="HumanReadableMarkdownEditor_TextChanged"
+                                       FontFamily="Courier New" MinHeight="100" Height="Auto" WordWrap="True" SyntaxHighlighting="SmartContractMarkdown">
+                    <avalonedit:TextEditor.Options>
+                        <avalonedit:TextEditorOptions ShowSpaces="False" ShowTabs="False"/>
+                    </avalonedit:TextEditor.Options>
+                    <avalonedit:TextEditor.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Command="Undo" />
+                            <MenuItem Command="Redo" />
+                            <Separator/>
+                            <MenuItem Command="Cut" />
+                            <MenuItem Command="Copy" />
+                            <MenuItem Command="Paste" />
+                        </ContextMenu>
+                    </avalonedit:TextEditor.ContextMenu>
+                </avalonedit:TextEditor>
                 <Label>The human-readable text will be rendered as follows:</Label>
                 <StackPanel Background="White">
                     <ContentControl Content="{Binding HumanReadable, UpdateSourceTrigger=PropertyChanged}" Margin="10"/>

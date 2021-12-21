@@ -18,6 +18,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Marketplace", "Marketplace"
 		ExampleContracts\Marketplace\OfferService.xml = ExampleContracts\Marketplace\OfferService.xml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Markdown", "Markdown", "{A151F6AB-D6F2-40E4-A739-4D6E67F00E5D}"
+	ProjectSection(SolutionItems) = preProject
+		ExampleContracts\Markdown\Syntax.xml = ExampleContracts\Markdown\Syntax.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +40,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{46E61E48-A9A5-4CB8-8B7A-712F716F6FF5} = {5DCAD7B4-A632-4533-8B95-6D2838387720}
 		{A1B883CE-F616-4BE0-B37F-0000FA2A1839} = {46E61E48-A9A5-4CB8-8B7A-712F716F6FF5}
+		{A151F6AB-D6F2-40E4-A739-4D6E67F00E5D} = {46E61E48-A9A5-4CB8-8B7A-712F716F6FF5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {82820A85-2566-4DAB-A5B4-BABDC2569097}

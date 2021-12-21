@@ -7,6 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Models\Design\AvalonExtensions\SmartContractMarkdown.xshd" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Models\Design\AvalonExtensions\SmartContractMarkdown.xshd">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.1.2.30" />
     <PackageReference Include="EDaler" Version="1.0.12" />
     <PackageReference Include="SkiaSharp" Version="2.80.3" />
