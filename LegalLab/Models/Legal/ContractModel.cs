@@ -40,7 +40,6 @@ namespace LegalLab.Models.Legal
 		private readonly Property<string> templateName;
 		private readonly Property<string> contractId;
 
-		private readonly Command proposeTemplate;
 		private readonly Command createContract;
 
 		private readonly Dictionary<string, ParameterInfo> parametersByName = new Dictionary<string, ParameterInfo>();
@@ -72,7 +71,6 @@ namespace LegalLab.Models.Legal
 			this.templateName = new Property<string>(nameof(this.TemplateName), string.Empty, this);
 			this.contractId = new Property<string>(nameof(this.ContractId), Contract.ContractId, this);
 
-			this.proposeTemplate = new Command(this.CanExecuteProposeTemplate, this.ExecuteProposeTemplate);
 			this.createContract = new Command(this.CanExecuteCreateContract, this.ExecuteCreateContract);
 
 			this.legalModel = LegalModel;
@@ -239,7 +237,6 @@ namespace LegalLab.Models.Legal
 			set
 			{
 				this.parametersOk.Value = value;
-				this.proposeTemplate.RaiseCanExecuteChanged();
 				this.createContract.RaiseCanExecuteChanged();
 			}
 		}
@@ -301,11 +298,7 @@ namespace LegalLab.Models.Legal
 		public string TemplateName
 		{
 			get => this.templateName.Value;
-			set
-			{
-				this.templateName.Value = value;
-				this.proposeTemplate.RaiseCanExecuteChanged();
-			}
+			set => this.templateName.Value = value;
 		}
 
 		/// <summary>
@@ -315,20 +308,6 @@ namespace LegalLab.Models.Legal
 		{
 			get => this.contractId.Value;
 			set => this.contractId.Value = value;
-		}
-
-		/// <summary>
-		/// Propose template command
-		/// </summary>
-		public ICommand ProposeTemplate => this.proposeTemplate;
-
-		/// <summary>
-		/// If the propose template command can be exeucted.
-		/// </summary>
-		/// <returns></returns>
-		public bool CanExecuteProposeTemplate()
-		{
-			return (this.ParametersOk || this.contract.PartsMode == ContractParts.TemplateOnly) && !string.IsNullOrEmpty(this.TemplateName);
 		}
 
 		/// <summary>

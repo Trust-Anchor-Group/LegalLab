@@ -10,14 +10,14 @@ namespace LegalLab.Dialogs.AddLanguage
 	/// </summary>
 	public class AddLanguageModel : Model
 	{
-		private readonly Property<string> language;
+		private readonly Property<string> selectedLanguage;
 		private readonly AddLanguageDialog dialog;
 		private readonly Command add;
 		private readonly Command cancel;
 
 		public AddLanguageModel(AddLanguageDialog Dialog)
 		{
-			this.language = new Property<string>(nameof(Language), string.Empty, this);
+			this.selectedLanguage = new Property<string>(nameof(SelectedLanguage), string.Empty, this);
 
 			this.dialog = Dialog;
 			this.dialog.DataContext = this;
@@ -29,12 +29,12 @@ namespace LegalLab.Dialogs.AddLanguage
 		/// <summary>
 		/// Language selected
 		/// </summary>
-		public string Language
+		public string SelectedLanguage
 		{
-			get => this.language.Value;
+			get => this.selectedLanguage.Value;
 			set
 			{
-				this.language.Value = value;
+				this.selectedLanguage.Value = value;
 				this.add.RaiseCanExecuteChanged();
 			}
 		}
@@ -59,7 +59,7 @@ namespace LegalLab.Dialogs.AddLanguage
 
 		private bool CanExecuteAdd()
 		{
-			return !string.IsNullOrEmpty(this.Language) && Iso__639_1.CodeToLanguage(this.Language, out _);
+			return !string.IsNullOrEmpty(this.SelectedLanguage) && Iso__639_1.CodeToLanguage(this.SelectedLanguage, out _);
 		}
 
 		private void ExecuteAdd()

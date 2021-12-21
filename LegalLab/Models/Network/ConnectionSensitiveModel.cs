@@ -26,10 +26,12 @@ namespace LegalLab.Models.Network
 		/// <summary>
 		/// If connected or not.
 		/// </summary>
-		public bool Connected
-		{
-			get => this.connected.Value;
-		}
+		public bool Connected => this.connected.Value;
+
+		/// <summary>
+		/// Network model
+		/// </summary>
+		public NetworkModel Network => this.networkModel;
 
 		/// <summary>
 		/// Current connection state.

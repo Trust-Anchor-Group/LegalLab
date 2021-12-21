@@ -33,7 +33,6 @@ namespace LegalLab.Models.Legal
 		private readonly PersistedProperty<string> region;
 		private readonly PersistedProperty<string> country;
 
-		private readonly Property<Contract> proposedContract;
 		private readonly Property<Contract> template;
 		private readonly Property<TemplateReferenceModel[]> templates;
 		private readonly Property<string> contractTemplateName;
@@ -41,10 +40,8 @@ namespace LegalLab.Models.Legal
 		private readonly Dictionary<string, IdentityWrapper> identities = new Dictionary<string, IdentityWrapper>();
 
 		private readonly Command apply;
-		private readonly Command selectFile;
 
 		private readonly ContractsClient contracts;
-		private ContractModel currentTemplate;
 		private ContractModel currentContract;
 
 		/// <summary>
@@ -67,13 +64,11 @@ namespace LegalLab.Models.Legal
 			this.Add(this.region = new PersistedProperty<string>("Legal", nameof(this.Region), true, string.Empty, this));
 			this.Add(this.country = new PersistedProperty<string>("Legal", nameof(this.Country), true, string.Empty, this));
 
-			this.proposedContract = new Property<Contract>(nameof(this.ProposedContract), null, this);
 			this.template = new Property<Contract>(nameof(this.Template), null, this);
 			this.templates = new Property<TemplateReferenceModel[]>(nameof(this.Templates), new TemplateReferenceModel[0], this);
 			this.contractTemplateName = new Property<string>(nameof(ContractTemplateName), string.Empty, this);
 
 			this.apply = new Command(this.CanExecuteApply, this.ExecuteApply);
-			this.selectFile = new Command(this.ExecuteSelectFile);
 
 			this.contracts = new ContractsClient(Client, ComponentJid);
 			this.contracts.IdentityUpdated += Contracts_IdentityUpdated;
@@ -97,11 +92,8 @@ namespace LegalLab.Models.Legal
 			MainWindow.UpdateGui(() =>
 			{
 				MainWindow.currentInstance.LegalIdTab.DataContext = this;
-				MainWindow.currentInstance.UploadTab.DataContext = this;
 				MainWindow.currentInstance.ContractsTab.DataContext = this;
 				MainWindow.currentInstance.ContractsTab.ContractCommands.DataContext = this;
-
-				MainWindow.currentInstance.UploadTab.UploadCommands.Visibility = Visibility.Visible;
 			});
 
 			await this.contracts.LoadKeys(true);
@@ -387,75 +379,6 @@ namespace LegalLab.Models.Legal
 				Question.Append(PrefixIfNotEmpty);
 				Question.Append(Value);
 				Question.Append(SuffixIfNotEmpty);
-			}
-		}
-
-		#endregion
-
-		#region Loading Contract Template File
-
-		/// <summary>
-		/// Apply command
-		/// </summary>
-		public ICommand SelectFile => this.selectFile;
-
-		/// <summary>
-		/// Currently selected contract being displayed for proposal.
-		/// </summary>
-		public Contract ProposedContract
-		{
-			get => this.proposedContract.Value;
-			set => this.proposedContract.Value = value;
-		}
-
-		private async void ExecuteSelectFile()
-		{
-			try
-			{
-				OpenFileDialog Dialog = new OpenFileDialog()
-				{
-					CheckFileExists = true,
-					CheckPathExists = true,
-					DefaultExt = "xml",
-					Filter = "XML Files (*.xml)|*.xml|All Files (*.*)|*.*",
-					Multiselect = false,
-					ShowReadOnly = true,
-					Title = "Select Smart Contract to upload"
-				};
-
-				bool? Result = Dialog.ShowDialog(MainWindow.currentInstance);
-				if (!Result.HasValue || !Result.Value)
-					return;
-
-				XmlDocument Doc = new XmlDocument()
-				{
-					PreserveWhitespace = true
-				};
-
-				Doc.Load(Dialog.FileName);
-
-				Contract Contract = Contract.Parse(Doc, out _, out _);
-				if (Contract is null)
-					throw new InvalidOperationException("Not a valid Smart Contract file.");
-
-				if (!Contract.CanActAsTemplate)
-					throw new InvalidOperationException("Contract is not a template.");
-
-				this.ProposedContract = Contract;
-
-				if (!(this.currentTemplate is null))
-					await this.currentTemplate.Stop();
-
-				this.currentTemplate = new ContractModel(this.contracts, Contract, this);
-
-				await this.currentTemplate.Start();
-
-				this.currentTemplate.PopulateParameters(MainWindow.currentInstance.UploadTab.UploadParameters, MainWindow.currentInstance.UploadTab.TemplateCommands);
-				this.currentTemplate.PopulateContract(MainWindow.currentInstance.UploadTab.ProposedContract, MainWindow.currentInstance.UploadTab.ProposedContractHumanReadable);
-			}
-			catch (Exception ex)
-			{
-				MainWindow.ErrorBox(ex.Message);
 			}
 		}
 

@@ -1,6 +1,7 @@
 ﻿using LegalLab.Dialogs.AddLanguage;
 using LegalLab.Extensions;
 using LegalLab.Items;
+using LegalLab.Models.Legal;
 using LegalLab.Models.Legal.Items;
 using LegalLab.Models.Legal.Items.Parameters;
 using LegalLab.Models.Network;
@@ -21,6 +22,7 @@ using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
 using Waher.Runtime.Inventory;
+using Waher.Runtime.Settings;
 using Waher.Script;
 
 namespace LegalLab.Models.Design
@@ -471,7 +473,11 @@ namespace LegalLab.Models.Design
 		public bool ParametersOk
 		{
 			get => this.parametersOk.Value;
-			set => this.parametersOk.Value = value;
+			set
+			{
+				this.parametersOk.Value = value;
+				this.propose.RaiseCanExecuteChanged();
+			}
 		}
 
 		/// <summary>
@@ -1259,7 +1265,7 @@ namespace LegalLab.Models.Design
 			if (!Result.HasValue || !Result.Value)
 				return;
 
-			string Language = Model.Language;
+			string Language = Model.SelectedLanguage;
 			if (string.IsNullOrEmpty(Language))
 				return;
 
@@ -1315,7 +1321,7 @@ namespace LegalLab.Models.Design
 
 		private bool CanExecuteProposeContract()
 		{
-			return this.Connected;
+			return this.Connected && (this.ParametersOk || this.contract.PartsMode == ContractParts.TemplateOnly) && !string.IsNullOrEmpty(this.ContractId);
 		}
 
 		/// <inheritdoc/>
@@ -1325,9 +1331,35 @@ namespace LegalLab.Models.Design
 			return base.StateChanged(NewState);
 		}
 
-		private void ExecuteProposeContract()
+		private async void ExecuteProposeContract()
 		{
-			// TODO
+			try
+			{
+				LegalModel LegalModel = this.Network.Legal;
+
+				if (MessageBox.Show("Are you sure you want to propose the designed template to " + LegalModel.Contracts.ComponentAddress + "?", "Confirm",
+					MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
+				{
+					return;
+				}
+
+				MainWindow.MouseHourglass();
+
+				Contract Contract = await LegalModel.Contracts.CreateContractAsync(this.contract.ForMachines, this.contract.ForHumans, this.contract.Roles,
+					this.contract.Parts, this.contract.Parameters, this.contract.Visibility, this.contract.PartsMode, this.contract.Duration,
+					this.contract.ArchiveRequired, this.contract.ArchiveOptional, this.contract.SignAfter, this.contract.SignBefore,
+					this.contract.CanActAsTemplate);
+
+				await RuntimeSettings.SetAsync("Contract.Template." + this.ContractId, Contract.ContractId);
+				LegalModel.ContractTemplateAdded(this.ContractId, Contract);
+
+				MainWindow.SuccessBox("Template successfully proposed. The template ID, which has been copied to the clipboard, is: " + Contract.ContractId);
+				Clipboard.SetText(Contract.ContractId);
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
 		}
 	}
 }

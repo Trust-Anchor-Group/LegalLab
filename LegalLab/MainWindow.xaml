@@ -23,9 +23,6 @@
             <TabItem Header="Design">
                 <tabs:DesignTab x:Name="DesignTab"/>
             </TabItem>
-            <TabItem Header="Upload Template">
-                <tabs:UploadTab x:Name="UploadTab"/>
-            </TabItem>
             <TabItem Header="Create Contract">
                 <tabs:ContractsTab x:Name="ContractsTab"/>
             </TabItem>
