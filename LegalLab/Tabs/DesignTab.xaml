@@ -318,7 +318,8 @@
                 <Label FontSize="20" Margin="0,10,0,0">Machine-Readable Content</Label>
                 <Label>Following is the embedded Machine-readable content of the contract (as XML):</Label>
                 <avalonedit:TextEditor Name="MachineReadableXmlEditor" TextChanged="MachineReadableXmlEditor_TextChanged"
-                                       FontFamily="Courier New" MinHeight="100" Height="Auto" WordWrap="False" SyntaxHighlighting="XML">
+                                       FontFamily="Courier New" MinHeight="100" Height="Auto" WordWrap="False" SyntaxHighlighting="XML"
+                                       VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
                     <avalonedit:TextEditor.Options>
                         <avalonedit:TextEditorOptions ShowSpaces="False" ShowTabs="False"/>
                     </avalonedit:TextEditor.Options>
@@ -337,7 +338,8 @@
                 <Label FontSize="20" Margin="0,10,0,0">Human-Readable Content</Label>
                 <Label>Following is the human-readable text of the contract (as Markdown):</Label>
                 <avalonedit:TextEditor Name="HumanReadableMarkdownEditor" TextChanged="HumanReadableMarkdownEditor_TextChanged"
-                                       FontFamily="Courier New" MinHeight="100" Height="Auto" WordWrap="True" SyntaxHighlighting="SmartContractMarkdown">
+                                       FontFamily="Courier New" MinHeight="100" Height="Auto" WordWrap="True" SyntaxHighlighting="SmartContractMarkdown"
+                                       VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
                     <avalonedit:TextEditor.Options>
                         <avalonedit:TextEditorOptions ShowSpaces="False" ShowTabs="False"/>
                     </avalonedit:TextEditor.Options>
