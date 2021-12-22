@@ -396,7 +396,7 @@ namespace LegalLab.Models.Network
 
 				if (!this.AllowInsecureAlgorithms)
 				{
-					this.client.AllowDigestMD5 = false;
+					this.client.AllowCramMD5 = false;
 					this.client.AllowDigestMD5 = false;
 					this.client.AllowPlain = false;
 					this.client.AllowScramSHA1 = false;
