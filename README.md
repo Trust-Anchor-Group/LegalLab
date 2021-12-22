@@ -13,6 +13,9 @@ Desktop WPF application allowing you to work and experiment with TAG Legal objec
 Example Contracts
 ----------------------
 
+The repository contains several example contracts that can be used as templates in order to experiment and get to learn how to use 
+TAG technologies.
+
 * [Markdown](ExampleContracts/Markdown) contains examples related to use of Markdown when designing smart contracts
 
 	* [Syntax.xml](ExampleContracts/Markdown/Syntax.xml) describes the Markdown syntax available for designing human-readable text in
