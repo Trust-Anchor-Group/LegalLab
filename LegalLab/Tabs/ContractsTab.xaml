@@ -72,12 +72,55 @@
                 <Label FontSize="20" Margin="0,10,0,0">Parts</Label>
                 <Label>Following are parts defined in the contract:</Label>
                 <DataGrid ItemsSource="{Binding Parts}" Width="Auto" HorizontalAlignment="Left" 
-                          AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
+                          AutoGenerateColumns="False" GridLinesVisibility="None">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding LegalId}" Header="Legal ID"/>
-                        <DataGridTextColumn Binding="{Binding Role}" Header="Role"/>
+                        <DataGridTemplateColumn Header="Role">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ComboBox SelectedItem="{Binding Role}" ItemsSource="{Binding Roles}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="{Binding Path=Background, ElementName=ContractId}"/>
+                                </Style>
+                            </DataGridTemplateColumn.HeaderStyle>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding MoveUp}" Padding="5,0,5,0">Up</Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="{Binding Path=Background, ElementName=ContractId}"/>
+                                </Style>
+                            </DataGridTemplateColumn.HeaderStyle>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding MoveDown}" Padding="5,0,5,0">Down</Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="{Binding Path=Background, ElementName=ContractId}"/>
+                                </Style>
+                            </DataGridTemplateColumn.HeaderStyle>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding RemovePart}" Padding="5,0,5,0">Remove</Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
+                <Button Width="100" HorizontalAlignment="Left" Margin="0,5,0,0" Command="{Binding AddPart}">Add</Button>
 
                 <Label FontSize="20" Margin="0,10,0,0">Parameters</Label>
                 <Label>Following are parameters defined in the contract:</Label>

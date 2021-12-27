@@ -13,7 +13,7 @@ namespace LegalLab.Models.Legal.Items
 	{
 		private readonly Property<string> legalId;
 		private readonly Property<string> role;
-		private readonly DesignModel designModel;
+		private readonly IPartsModel partsModel;
 
 		private readonly Command removePart;
 
@@ -23,21 +23,21 @@ namespace LegalLab.Models.Legal.Items
 		/// Contains information about a part in the contract
 		/// </summary>
 		/// <param name="Part">Part</param>
-		/// <param name="DesignModel">Design model</param>
+		/// <param name="PartsModel">Parts model</param>
 		/// <param name="Parts">Collection of parts.</param>
-		public PartInfo(Part Part, DesignModel DesignModel, Property<PartInfo[]> Parts)
+		public PartInfo(Part Part, IPartsModel PartsModel, Property<PartInfo[]> Parts)
 			: base(Parts)
 		{
 			this.legalId = new Property<string>(nameof(this.LegalId), Part.LegalId, this);
 			this.role = new Property<string>(nameof(this.Role), Part.Role, this);
 
-			this.designModel = DesignModel;
+			this.partsModel = PartsModel;
 			this.part = Part;
 
 			this.removePart = new Command(this.CanExecuteRemovePart, this.ExecuteRemovePart);
 
-			if (!(this.designModel is null))
-				this.designModel.PropertyChanged += DesignModel_PropertyChanged;
+			if (!(this.partsModel is null))
+				this.partsModel.PropertyChanged += DesignModel_PropertyChanged;
 		}
 
 		/// <summary>
@@ -78,7 +78,7 @@ namespace LegalLab.Models.Legal.Items
 		{
 			get
 			{
-				RoleInfo[] Roles = this.designModel?.Roles;
+				RoleInfo[] Roles = this.partsModel.Roles;
 
 				if (Roles is null)
 					return new string[0];
@@ -110,7 +110,7 @@ namespace LegalLab.Models.Legal.Items
 		/// <returns></returns>
 		public bool CanExecuteRemovePart()
 		{
-			return !(this.designModel is null);
+			return !(this.partsModel is null);
 		}
 
 		/// <summary>
@@ -118,10 +118,10 @@ namespace LegalLab.Models.Legal.Items
 		/// </summary>
 		public void ExecuteRemovePart()
 		{
-			if (!(this.designModel is null))
+			if (!(this.partsModel is null))
 			{
-				this.designModel.PropertyChanged -= DesignModel_PropertyChanged;
-				this.designModel.RemovePart(this);
+				this.partsModel.PropertyChanged -= DesignModel_PropertyChanged;
+				this.partsModel.RemovePart(this);
 			}
 		}
 	}

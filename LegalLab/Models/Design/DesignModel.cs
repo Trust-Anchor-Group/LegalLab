@@ -31,7 +31,7 @@ namespace LegalLab.Models.Design
 	/// Contract model
 	/// </summary>
 	[Singleton]
-	public class DesignModel : ConnectionSensitiveModel, ITranslatable
+	public class DesignModel : ConnectionSensitiveModel, IPartsModel, ITranslatable
 	{
 		private readonly Property<Waher.Content.Duration> archiveOptional;
 		private readonly Property<Waher.Content.Duration> archiveRequired;

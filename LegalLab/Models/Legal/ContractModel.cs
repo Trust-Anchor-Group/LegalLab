@@ -1,4 +1,5 @@
 ﻿using LegalLab.Extensions;
+using LegalLab.Models.Design;
 using LegalLab.Models.Legal.Items;
 using LegalLab.Models.Legal.Items.Parameters;
 using System;
@@ -23,7 +24,7 @@ namespace LegalLab.Models.Legal
 	/// <summary>
 	/// Contract model
 	/// </summary>
-	public class ContractModel : Model
+	public class ContractModel : Model, IPartsModel
 	{
 		private readonly Property<bool> parametersOk;
 		private readonly Property<GenInfo[]> generalInformation;
@@ -40,6 +41,7 @@ namespace LegalLab.Models.Legal
 		private readonly Property<string> templateName;
 		private readonly Property<string> contractId;
 
+		private readonly Command addPart;
 		private readonly Command createContract;
 
 		private readonly Dictionary<string, ParameterInfo> parametersByName = new Dictionary<string, ParameterInfo>();
@@ -71,6 +73,7 @@ namespace LegalLab.Models.Legal
 			this.templateName = new Property<string>(nameof(this.TemplateName), string.Empty, this);
 			this.contractId = new Property<string>(nameof(this.ContractId), Contract.ContractId, this);
 
+			this.addPart = new Command(this.ExecuteAddPart);
 			this.createContract = new Command(this.CanExecuteCreateContract, this.ExecuteCreateContract);
 
 			this.legalModel = LegalModel;
@@ -142,7 +145,7 @@ namespace LegalLab.Models.Legal
 			if (!(this.contract.Parts is null))
 			{
 				foreach (Part Part in this.contract.Parts)
-					Parts.Add(new PartInfo(Part, null, this.parts));
+					Parts.Add(new PartInfo(Part, this, this.parts));
 			}
 
 			this.Parts = Parts.ToArray();
@@ -528,7 +531,11 @@ namespace LegalLab.Models.Legal
 		public PartInfo[] Parts
 		{
 			get => this.parts.Value;
-			set => this.parts.Value = value;
+			set
+			{
+				this.parts.Value = value;
+				this.contract.Parts = value.ToParts();
+			}
 		}
 
 		/// <summary>
@@ -580,6 +587,63 @@ namespace LegalLab.Models.Legal
 		}
 
 		/// <summary>
+		/// Command for adding a part to the contract.
+		/// </summary>
+		public ICommand AddPart => this.addPart;
+
+		/// <summary>
+		/// Adds a part to the contract.
+		/// </summary>
+		public void ExecuteAddPart()
+		{
+			PartInfo[] Parts = this.Parts;
+			int c = Parts.Length;
+
+			Array.Resize<PartInfo>(ref Parts, c + 1);
+			Parts[c] = new PartInfo(new Part()
+			{
+				LegalId = string.Empty,
+				Role = string.Empty
+			}, this, this.parts);
+
+			this.Parts = Parts;
+
+			if (this.contract.PartsMode != ContractParts.ExplicitlyDefined)
+			{
+				this.contract.PartsMode = ContractParts.ExplicitlyDefined;
+
+				foreach (GenInfo GI in this.GeneralInformation)
+				{
+					if (GI.Name == "Parts:")
+						GI.Value = this.contract.PartsMode.ToString();
+				}
+
+				this.RaisePropertyChanged(nameof(this.GeneralInformation));
+			}
+		}
+
+		/// <summary>
+		/// Removes a part from the design
+		/// </summary>
+		/// <param name="Part">Part to remove</param>
+		public void RemovePart(PartInfo Part)
+		{
+			PartInfo[] Parts = this.Parts;
+			int i = Array.IndexOf<PartInfo>(Parts, Part);
+			if (i < 0)
+				return;
+
+			int c = Parts.Length;
+
+			if (i < c - 1)
+				Array.Copy(Parts, i + 1, Parts, i, c - i - 1);
+
+			Array.Resize<PartInfo>(ref Parts, c - 1);
+
+			this.Parts = Parts;
+		}
+
+		/// <summary>
 		/// Create contract command
 		/// </summary>
 		public ICommand CreateContract => this.createContract;
@@ -609,10 +673,11 @@ namespace LegalLab.Models.Legal
 				MainWindow.MouseHourglass();
 
 				string TemplateId = this.legalModel.Template.ContractId;
-
+				
 				Contract Contract = await this.contracts.CreateContractAsync(TemplateId, this.contract.Parts, this.contract.Parameters,
-					this.contract.Visibility, ContractParts.Open, this.contract.Duration, this.contract.ArchiveRequired,
-					this.contract.ArchiveOptional, this.contract.SignAfter, this.contract.SignBefore, false);
+					this.contract.Visibility, this.Parts.Length > 0 ? ContractParts.ExplicitlyDefined : ContractParts.Open, 
+					this.contract.Duration, this.contract.ArchiveRequired, this.contract.ArchiveOptional, this.contract.SignAfter,
+					this.contract.SignBefore, false);
 
 				this.SetContract(Contract);
 
