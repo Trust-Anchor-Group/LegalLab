@@ -6,7 +6,7 @@ namespace LegalLab.Models.Items
 	/// Abstract base class for selectable items.
 	/// From the IoTGateway project, with permission.
 	/// </summary>
-	public abstract class SelectableItem
+	public abstract class SelectableItem : Model
 	{
 		private bool selected = false;
 

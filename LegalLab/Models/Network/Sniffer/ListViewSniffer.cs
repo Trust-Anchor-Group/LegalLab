@@ -2,6 +2,7 @@
 using System.Text;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Waher.Events;
 using Waher.Networking.Sniffers;
 
 namespace LegalLab.Models.Network.Sniffer
@@ -37,12 +38,12 @@ namespace LegalLab.Models.Network.Sniffer
 
 		public override void ReceiveBinary(DateTime Timestamp, byte[] Data)
 		{
-			this.Add(new SniffItem(Timestamp, SniffItemType.DataReceived, HexToString(Data), Data, Colors.White, Colors.Navy));
+			this.Add(new SniffItem(Timestamp, SniffItemType.DataReceived, HexToString(Data), Data, Colors.White, Colors.Navy, this));
 		}
 
 		public override void TransmitBinary(DateTime Timestamp, byte[] Data)
 		{
-			this.Add(new SniffItem(Timestamp, SniffItemType.DataTransmitted, HexToString(Data), Data, Colors.Black, Colors.White));
+			this.Add(new SniffItem(Timestamp, SniffItemType.DataTransmitted, HexToString(Data), Data, Colors.Black, Colors.White, this));
 		}
 
 		internal static string HexToString(byte[] Data)
@@ -67,32 +68,49 @@ namespace LegalLab.Models.Network.Sniffer
 
 		public override void ReceiveText(DateTime Timestamp, string Text)
 		{
-			this.Add(new SniffItem(Timestamp, SniffItemType.TextReceived, Text, null, Colors.White, Colors.Navy));
+			this.Add(new SniffItem(Timestamp, SniffItemType.TextReceived, Text, null, Colors.White, Colors.Navy, this));
 		}
 
 		public override void TransmitText(DateTime Timestamp, string Text)
 		{
-			this.Add(new SniffItem(Timestamp, SniffItemType.TextTransmitted, Text, null, Colors.Black, Colors.White));
+			this.Add(new SniffItem(Timestamp, SniffItemType.TextTransmitted, Text, null, Colors.Black, Colors.White, this));
 		}
 
 		public override void Information(DateTime Timestamp, string Comment)
 		{
-			this.Add(new SniffItem(Timestamp, SniffItemType.Information, Comment, null, Colors.Yellow, Colors.DarkGreen));
+			this.Add(new SniffItem(Timestamp, SniffItemType.Information, Comment, null, Colors.Yellow, Colors.DarkGreen, this));
 		}
 
 		public override void Warning(DateTime Timestamp, string Warning)
 		{
-			this.Add(new SniffItem(Timestamp, SniffItemType.Warning, Warning, null, Colors.Black, Colors.Yellow));
+			this.Add(new SniffItem(Timestamp, SniffItemType.Warning, Warning, null, Colors.Black, Colors.Yellow, this));
 		}
 
 		public override void Error(DateTime Timestamp, string Error)
 		{
-			this.Add(new SniffItem(Timestamp, SniffItemType.Error, Error, null, Colors.White, Colors.Red));
+			this.Add(new SniffItem(Timestamp, SniffItemType.Error, Error, null, Colors.White, Colors.Red, this));
 		}
 
 		public override void Exception(DateTime Timestamp, string Exception)
 		{
-			this.Add(new SniffItem(Timestamp, SniffItemType.Exception, Exception, null, Colors.White, Colors.DarkRed));
+			this.Add(new SniffItem(Timestamp, SniffItemType.Exception, Exception, null, Colors.White, Colors.DarkRed, this));
 		}
+
+		public void RaiseSelectionChanged()
+		{
+			try
+			{
+				this.SelectionChanged?.Invoke(this, EventArgs.Empty);
+			}
+			catch (Exception ex)
+			{
+				Log.Critical(ex);
+			}
+		}
+
+		/// <summary>
+		/// Event raised when selection changed
+		/// </summary>
+		public event EventHandler SelectionChanged;
 	}
 }

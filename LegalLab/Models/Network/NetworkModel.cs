@@ -1,12 +1,15 @@
 ﻿using EDaler;
+using LegalLab.Extensions;
 using LegalLab.Models.Legal;
 using LegalLab.Models.Network.Sniffer;
 using LegalLab.Models.Wallet;
 using System;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Xml;
 using Waher.Events;
 using Waher.Networking.DNS;
 using Waher.Networking.DNS.ResourceRecords;
@@ -42,6 +45,9 @@ namespace LegalLab.Models.Network
 		private readonly Command connect;
 		private readonly Command disconnect;
 		private readonly Command randomizePassword;
+		private readonly ParametrizedCommand copySnifferItem;
+		private readonly ParametrizedCommand removeSnifferItem;
+		private readonly Command clearSniffer;
 
 		private XmppClient client;
 		private LegalModel legalModel;
@@ -71,6 +77,9 @@ namespace LegalLab.Models.Network
 			this.connect = new Command(this.CanExecuteConnect, this.ExecuteConnect);
 			this.disconnect = new Command(this.CanExecuteDisconnect, this.ExecuteDisconnect);
 			this.randomizePassword = new Command(this.ExecuteRandomizePassword);
+			this.copySnifferItem = new ParametrizedCommand(this.CanExecuteCopy, this.ExecuteCopy);
+			this.removeSnifferItem = new ParametrizedCommand(this.CanExecuteRemove, this.ExecuteRemove);
+			this.clearSniffer = new Command(this.CanExecuteClearAll, this.ExecuteClearAll);
 		}
 
 		/// <summary>
@@ -382,6 +391,7 @@ namespace LegalLab.Models.Network
 				}
 
 				ListViewSniffer Sniffer = new ListViewSniffer(MainWindow.currentInstance.NetworkTab.SnifferListView, 1000);
+				Sniffer.SelectionChanged += Sniffer_SelectionChanged;
 
 				if (string.IsNullOrEmpty(this.PasswordMethod))
 					this.client = new XmppClient(Host, Port, this.Account, this.Password, "en", typeof(MainWindow).Assembly, Sniffer);
@@ -535,6 +545,80 @@ namespace LegalLab.Models.Network
 
 			this.State = XmppState.Offline;
 			this.ConnectOnStartup = false;
+		}
+
+		/// <summary>
+		/// Copy Sniffer Item Command
+		/// </summary>
+		public ICommand CopySnifferItem => this.copySnifferItem;
+
+		private bool CanExecuteCopy(object Item) => SelectedItem(Item) is SniffItem SniffItem && SniffItem.IsSelected;
+
+		private static object SelectedItem(object Item)
+		{
+			return Item ?? MainWindow.currentInstance.NetworkTab.SnifferListView.SelectedItem;
+		}
+
+		private void ExecuteCopy(object Item)
+		{
+			if (SelectedItem(Item) is SniffItem SniffItem)
+			{
+				StringBuilder Output = new StringBuilder();
+
+				Output.Append("Date:\t");
+				Output.AppendLine(SniffItem.Timestamp.Date.ToShortDateString());
+
+				Output.Append("Time:\t");
+				Output.AppendLine(SniffItem.Timestamp.ToLongTimeString());
+
+				Output.Append("Type:\t");
+				Output.AppendLine(SniffItem.Type.ToString());
+
+				Output.AppendLine();
+
+				try
+				{
+					(string PrettyXml, XmlElement _) = SniffItem.Message.ToPrettyXml();
+					Output.AppendLine(PrettyXml);
+				}
+				catch (Exception)
+				{
+					Output.AppendLine(SniffItem.Message);
+				}
+
+				Clipboard.SetText(Output.ToString());
+			}
+		}
+
+		/// <summary>
+		/// Remove Sniffer Item Command
+		/// </summary>
+		public ICommand RemoveSnifferItem => this.removeSnifferItem;
+
+		private bool CanExecuteRemove(object Item) => SelectedItem(Item) is SniffItem SniffItem && SniffItem.IsSelected;
+
+		private void ExecuteRemove(object Item)
+		{
+			if (SelectedItem(Item) is SniffItem SniffItem)
+				MainWindow.currentInstance.NetworkTab.SnifferListView.Items.Remove(SniffItem);
+		}
+
+		private void Sniffer_SelectionChanged(object sender, EventArgs e)
+		{
+			this.copySnifferItem?.RaiseCanExecuteChanged();
+			this.removeSnifferItem?.RaiseCanExecuteChanged();
+		}
+
+		/// <summary>
+		/// Clear Sniffer Command
+		/// </summary>
+		public ICommand ClearSniffer => this.clearSniffer;
+
+		private bool CanExecuteClearAll() => true;
+
+		private void ExecuteClearAll()
+		{
+			MainWindow.currentInstance.NetworkTab.SnifferListView.Items.Clear();
 		}
 
 	}
