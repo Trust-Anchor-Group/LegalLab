@@ -150,6 +150,8 @@ namespace LegalLab.Models.Design
 			this.Duration = Contract.Duration;
 			this.SignBefore = Contract.SignBefore;
 			this.SignAfter = Contract.SignAfter;
+			this.Visibility = Contract.Visibility;
+			this.PartsMode = Contract.PartsMode;
 
 			List<PartInfo> Parts = new List<PartInfo>();
 
