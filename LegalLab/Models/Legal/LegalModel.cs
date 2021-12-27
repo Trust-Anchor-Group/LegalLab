@@ -449,7 +449,7 @@ namespace LegalLab.Models.Legal
 				if (!(this.currentContract is null))
 					await this.currentContract.Stop();
 
-				this.currentContract = new ContractModel(this.contracts, this.Template, this);
+				this.currentContract = new ContractModel(this.contracts, this.Template, this, MainWindow.currentInstance.ContractsTab);
 				await this.currentContract.Start();
 
 				this.currentContract.PopulateParameters(MainWindow.currentInstance.ContractsTab.CreateParameters, MainWindow.currentInstance.ContractsTab.CreateCommands);

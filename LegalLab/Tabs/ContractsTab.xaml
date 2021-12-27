@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:conv="clr-namespace:LegalLab.Converters"
+             xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel LastChildFill="True" Background="#FFE5E5E5">
@@ -141,9 +142,18 @@
 
                 <Label FontSize="20" Margin="0,10,0,0">Machine-Readable Content</Label>
                 <Label>Following is the embedded Machine-readable content of the contract:</Label>
-                <StackPanel Background="White">
-                    <TextBlock Text="{Binding MachineReadable}" Margin="10" FontFamily="Courier New"/>
-                </StackPanel>
+                <avalonedit:TextEditor Name="MachineReadableXmlEditor" IsReadOnly="True"
+                                       FontFamily="Courier New" MinHeight="100" Height="Auto" WordWrap="False" SyntaxHighlighting="XML"
+                                       VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
+                    <avalonedit:TextEditor.Options>
+                        <avalonedit:TextEditorOptions ShowSpaces="False" ShowTabs="False"/>
+                    </avalonedit:TextEditor.Options>
+                    <avalonedit:TextEditor.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Command="Copy" />
+                        </ContextMenu>
+                    </avalonedit:TextEditor.ContextMenu>
+                </avalonedit:TextEditor>
 
                 <Label FontSize="20" Margin="0,10,0,0">Human-Readable Content</Label>
                 <StackPanel Background="White">

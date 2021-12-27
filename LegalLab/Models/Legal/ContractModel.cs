@@ -2,6 +2,7 @@
 using LegalLab.Models.Design;
 using LegalLab.Models.Legal.Items;
 using LegalLab.Models.Legal.Items.Parameters;
+using LegalLab.Tabs;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -47,6 +48,7 @@ namespace LegalLab.Models.Legal
 		private readonly Dictionary<string, ParameterInfo> parametersByName = new Dictionary<string, ParameterInfo>();
 		private readonly ContractsClient contracts;
 		private readonly LegalModel legalModel;
+		private readonly ContractsTab contractsTab;
 		private Contract contract;
 		private StackPanel humanReadableText = null;
 
@@ -56,7 +58,8 @@ namespace LegalLab.Models.Legal
 		/// <param name="Contracts">Contracts Client</param>
 		/// <param name="Contract">Contract</param>
 		/// <param name="LegalModel">Legal Model</param>
-		public ContractModel(ContractsClient Contracts, Contract Contract, LegalModel LegalModel)
+		/// <param name="ContractsTab">Tab where contract is being displayed.</param>
+		public ContractModel(ContractsClient Contracts, Contract Contract, LegalModel LegalModel, ContractsTab ContractsTab)
 		{
 			this.parametersOk = new Property<bool>(nameof(this.ParametersOk), false, this);
 			this.generalInformation = new Property<GenInfo[]>(nameof(this.GeneralInformation), new GenInfo[0], this);
@@ -76,28 +79,16 @@ namespace LegalLab.Models.Legal
 			this.addPart = new Command(this.ExecuteAddPart);
 			this.createContract = new Command(this.CanExecuteCreateContract, this.ExecuteCreateContract);
 
+			this.contractsTab = ContractsTab;
 			this.legalModel = LegalModel;
 			this.contracts = Contracts;
 			this.SetContract(Contract);
 
 			this.TemplateName = Contract.ContractId;
 
-			StringBuilder sb = new StringBuilder();
-			Contract.NormalizeXml(Contract.ForMachines, sb, ContractsClient.NamespaceSmartContracts);
+			(string s, XmlElement E) = Contract.ForMachines.ToPrettyXml();
 
-			XmlDocument Doc = new XmlDocument()
-			{
-				PreserveWhitespace = true
-			};
-			Doc.LoadXml(sb.ToString());
-			sb.Clear();
-
-			XmlWriterSettings Settings = XML.WriterSettings(true, true);
-			using XmlWriter w = XmlWriter.Create(sb, Settings);
-
-			this.contract.ForMachines.WriteTo(w);
-			w.Flush();
-			this.MachineReadable = sb.ToString().Replace("&#xD;\n", "\n").Replace("\n\t", "\n").Replace("\t", "    ");
+			this.MachineReadable = s;
 		}
 
 		private void SetContract(Contract Contract)
@@ -292,7 +283,11 @@ namespace LegalLab.Models.Legal
 		public string MachineReadable
 		{
 			get => this.machineReadable.Value;
-			set => this.machineReadable.Value = value;
+			set
+			{
+				this.machineReadable.Value = value;
+				this.contractsTab.MachineReadableXmlEditor.Text = value;
+			}
 		}
 
 		/// <summary>
