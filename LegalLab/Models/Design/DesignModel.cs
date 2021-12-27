@@ -231,7 +231,11 @@ namespace LegalLab.Models.Design
 		public ContractVisibility Visibility
 		{
 			get => this.visibility.Value;
-			set => this.visibility.Value = value;
+			set
+			{
+				this.visibility.Value = value;
+				this.contract.Visibility = value;
+			}
 		}
 
 		/// <summary>
@@ -245,7 +249,13 @@ namespace LegalLab.Models.Design
 		public ContractParts PartsMode
 		{
 			get => this.partsMode.Value;
-			set => this.partsMode.Value = value;
+			set
+			{
+				this.partsMode.Value = value;
+				this.contract.PartsMode = value;
+
+				this.propose.RaiseCanExecuteChanged();
+			}
 		}
 
 		/// <summary>
@@ -547,6 +557,8 @@ namespace LegalLab.Models.Design
 			{
 				this.contractId.Value = value;
 				this.contract.ContractId = value;
+
+				this.propose.RaiseCanExecuteChanged();
 			}
 		}
 
@@ -566,6 +578,31 @@ namespace LegalLab.Models.Design
 		{
 			get => this.humanReadable.Value;
 			set => this.humanReadable.Value = value;
+		}
+
+		private void RenderHumanReadableMarkdown(object sender, EventArgs e)
+		{
+			MainWindow.UpdateGui(() =>
+			{
+				try
+				{
+					HumanReadableText Text = this.HumanReadableMarkdown.ToHumanReadableText(this.Language);
+					if (Text is null)
+					{
+						this.contract.ForHumans = this.contract.ForHumans.Remove(this.Language);
+						this.HumanReadable = null;
+					}
+					else
+					{
+						this.contract.ForHumans = this.contract.ForHumans.Append(Text);
+						this.HumanReadable = XamlReader.Parse(Text.GenerateXAML(this.Contract));
+					}
+				}
+				catch (Exception ex)
+				{
+					Log.Critical(ex);
+				}
+			});
 		}
 
 		/// <summary>
@@ -728,6 +765,7 @@ namespace LegalLab.Models.Design
 			}, this, this.parts);
 
 			this.Parts = Parts;
+			this.PartsMode = ContractParts.ExplicitlyDefined;
 		}
 
 		/// <summary>
@@ -1112,31 +1150,6 @@ namespace LegalLab.Models.Design
 			this.Parameters = Parameters;
 		}
 
-		private void RenderHumanReadableMarkdown(object sender, EventArgs e)
-		{
-			MainWindow.UpdateGui(() =>
-			{
-				try
-				{
-					HumanReadableText Text = this.HumanReadableMarkdown.ToHumanReadableText(this.Language);
-					if (Text is null)
-					{
-						this.contract.ForHumans = this.contract.ForHumans.Remove(this.Language);
-						this.HumanReadable = null;
-					}
-					else
-					{
-						this.contract.ForHumans = this.contract.ForHumans.Append(Text);
-						this.HumanReadable = XamlReader.Parse(Text.GenerateXAML(this.Contract));
-					}
-				}
-				catch (Exception ex)
-				{
-					Log.Critical(ex);
-				}
-			});
-		}
-
 		/// <summary>
 		/// New command
 		/// </summary>
@@ -1323,7 +1336,7 @@ namespace LegalLab.Models.Design
 
 		private bool CanExecuteProposeContract()
 		{
-			return this.Connected && (this.ParametersOk || this.contract.PartsMode == ContractParts.TemplateOnly) && !string.IsNullOrEmpty(this.ContractId);
+			return this.Connected && (this.ParametersOk || this.PartsMode == ContractParts.TemplateOnly) && !string.IsNullOrEmpty(this.ContractId);
 		}
 
 		/// <inheritdoc/>

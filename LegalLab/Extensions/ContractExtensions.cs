@@ -115,18 +115,9 @@ namespace LegalLab.Extensions
 		{
 			int i, c = Parts.Length;
 			Part[] Result = new Part[c];
-			PartInfo Info;
 
 			for (i = 0; i < c; i++)
-			{
-				Info = Parts[i];
-
-				Result[i] = new Part()
-				{
-					LegalId = Info.LegalId,
-					Role = Info.Role
-				};
-			}
+				Result[i] = Parts[i].Part;
 
 			return Result;
 		}

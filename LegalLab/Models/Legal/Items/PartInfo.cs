@@ -41,6 +41,11 @@ namespace LegalLab.Models.Legal.Items
 		}
 
 		/// <summary>
+		/// Part reference object.
+		/// </summary>
+		public Part Part => this.part;
+
+		/// <summary>
 		/// Legal ID
 		/// </summary>
 		public string LegalId
