@@ -27,12 +27,14 @@ namespace LegalLab.Models.Network.Events
 			return Task.CompletedTask;
 		}
 
-		private void AddItem(object P)
+		private Task AddItem(object P)
 		{
 			if (this.view.Items.Count >= this.maxCount)
 				this.view.Items.RemoveAt(0);
 
 			this.view.Items.Add(new LogItem((Event)P));
+
+			return Task.CompletedTask;
 		}
 	}
 }

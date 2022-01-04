@@ -1,6 +1,7 @@
 ﻿using LegalLab.Models;
 using LegalLab.Models.Standards;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace LegalLab.Dialogs.AddLanguage
@@ -62,14 +63,16 @@ namespace LegalLab.Dialogs.AddLanguage
 			return !string.IsNullOrEmpty(this.SelectedLanguage) && Iso__639_1.CodeToLanguage(this.SelectedLanguage, out _);
 		}
 
-		private void ExecuteAdd()
+		private Task ExecuteAdd()
 		{
 			this.dialog.DialogResult = true;
+			return Task.CompletedTask;
 		}
 
-		private void ExecuteCancel()
+		private Task ExecuteCancel()
 		{
 			this.dialog.DialogResult = false;
+			return Task.CompletedTask;
 		}
 	}
 }

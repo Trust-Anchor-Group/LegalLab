@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace LegalLab.Models.Items
@@ -35,7 +36,7 @@ namespace LegalLab.Models.Items
 		/// <summary>
 		/// If the item can be moved up.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>If the item can move up.</returns>
 		public bool CanExecuteMoveUp()
 		{
 			return Array.IndexOf(this.items.Value, this) > 0;
@@ -44,24 +45,26 @@ namespace LegalLab.Models.Items
 		/// <summary>
 		/// Moves the item up.
 		/// </summary>
-		public void ExecuteMoveUp()
+		public Task ExecuteMoveUp()
 		{
 			T[] Items = (T[])this.items.Value.Clone();
 			int i = Array.IndexOf(Items, this);
 			if (i <= 0)
-				return;
+				return Task.CompletedTask;
 
 			T Temp = Items[i - 1];
 			Items[i - 1] = Items[i];
 			Items[i] = Temp;
 
 			this.items.Value = Items;
+		
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
 		/// If the item can be moved up.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>If the item can move down.</returns>
 		public bool CanExecuteMoveDown()
 		{
 			T[] Items = this.items.Value;
@@ -72,18 +75,20 @@ namespace LegalLab.Models.Items
 		/// <summary>
 		/// Moves the item up.
 		/// </summary>
-		public void ExecuteMoveDown()
+		public Task ExecuteMoveDown()
 		{
 			T[] Items = (T[])this.items.Value.Clone();
 			int i = Array.IndexOf(Items, this);
 			if (i < 0 || i >= Items.Length - 1)
-				return;
+				return Task.CompletedTask;
 
 			T Temp = Items[i + 1];
 			Items[i + 1] = Items[i];
 			Items[i] = Temp;
 
 			this.items.Value = Items;
+		
+			return Task.CompletedTask;
 		}
 
 	}

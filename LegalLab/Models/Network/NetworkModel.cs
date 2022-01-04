@@ -278,10 +278,12 @@ namespace LegalLab.Models.Network
 				MainWindow.currentInstance.NetworkTab.XmppPassword.PasswordChanged += this.PasswordChanged;
 				MainWindow.currentInstance.NetworkTab.XmppPassword2.PasswordChanged += this.Password2Changed;
 				MainWindow.currentInstance.NetworkTab.ApiKeySecret.PasswordChanged += this.ApiKeySecretChanged;
+
+				return Task.CompletedTask;
 			});
 
 			if (this.ConnectOnStartup)
-				this.ExecuteConnect();
+				await this.ExecuteConnect();
 
 			await base.Start();
 		}
@@ -330,7 +332,7 @@ namespace LegalLab.Models.Network
 			this.ApiKeySecret = MainWindow.currentInstance.NetworkTab.ApiKeySecret.Password;
 		}
 
-		public void ExecuteRandomizePassword()
+		public Task ExecuteRandomizePassword()
 		{
 			using RandomNumberGenerator Rnd = RandomNumberGenerator.Create();
 			byte[] Bin = new byte[28];
@@ -341,7 +343,11 @@ namespace LegalLab.Models.Network
 			{
 				MainWindow.currentInstance.NetworkTab.XmppPassword.Password = Password;
 				MainWindow.currentInstance.NetworkTab.XmppPassword2.Password = Password;
+
+				return Task.CompletedTask;
 			});
+		
+			return Task.CompletedTask;
 		}
 
 		private bool CanExecuteConnect()
@@ -352,7 +358,7 @@ namespace LegalLab.Models.Network
 		/// <summary>
 		/// Connects to the network
 		/// </summary>
-		public async void ExecuteConnect()
+		public async Task ExecuteConnect()
 		{
 			try
 			{
@@ -532,7 +538,7 @@ namespace LegalLab.Models.Network
 		/// <summary>
 		/// Disconnects from the network
 		/// </summary>
-		public void ExecuteDisconnect()
+		public Task ExecuteDisconnect()
 		{
 			this.LegalComponentJid = string.Empty;
 			this.EDalerComponentJid = string.Empty;
@@ -545,6 +551,8 @@ namespace LegalLab.Models.Network
 
 			this.State = XmppState.Offline;
 			this.ConnectOnStartup = false;
+	
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -616,9 +624,10 @@ namespace LegalLab.Models.Network
 
 		private bool CanExecuteClearAll() => true;
 
-		private void ExecuteClearAll()
+		private Task ExecuteClearAll()
 		{
 			MainWindow.currentInstance.NetworkTab.SnifferListView.Items.Clear();
+			return Task.CompletedTask;
 		}
 
 	}

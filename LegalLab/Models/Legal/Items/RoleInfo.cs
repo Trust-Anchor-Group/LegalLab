@@ -3,6 +3,7 @@ using LegalLab.Items;
 using LegalLab.Models.Design;
 using LegalLab.Models.Items;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
@@ -69,7 +70,7 @@ namespace LegalLab.Models.Legal.Items
 			this.role = Role;
 
 			this.name = new Property<string>(nameof(this.Name), Role.Name, this);
-			this.description = new Property<object>(nameof(this.Description), Role.ToSimpleXAML(Language, this.contract), this);
+			this.description = new Property<object>(nameof(this.Description), Role.ToSimpleXAML(Language, this.contract).Result, this);
 			this.descriptionAsMarkdown = new Property<string>(nameof(this.DescriptionAsMarkdown), Role.ToMarkdown(Language, this.contract, MarkdownType.ForEditing).Trim(), this);
 			this.minCount = new Property<int>(nameof(this.MaxCount), Role.MinCount, this);
 			this.maxCount = new Property<int>(nameof(this.MinCount), Role.MaxCount, this);
@@ -110,7 +111,7 @@ namespace LegalLab.Models.Legal.Items
 			get => this.descriptionAsMarkdown.Value;
 			set
 			{
-				HumanReadableText Text = value.ToHumanReadableText(this.designModel.Language);
+				HumanReadableText Text = value.ToHumanReadableText(this.designModel.Language).Result;
 
 				if (Text is null)
 					this.role.Descriptions = this.role.Descriptions.Remove(this.designModel.Language);
@@ -118,7 +119,7 @@ namespace LegalLab.Models.Legal.Items
 					this.role.Descriptions = this.role.Descriptions.Append(Text);
 
 				this.descriptionAsMarkdown.Value = value;
-				this.description.Value = value.ToSimpleXAML(this.contract, this.designModel.Language);
+				this.description.Value = value.ToSimpleXAML(this.contract, this.designModel.Language).Result;
 			}
 		}
 
@@ -193,9 +194,17 @@ namespace LegalLab.Models.Legal.Items
 		/// <summary>
 		/// Proposes the contract.
 		/// </summary>
-		public async void ExecuteSignAsRole()
+		public async Task ExecuteSignAsRole()
 		{
-			await this.contractModel?.SignAsRole(this.Name);
+			try
+			{
+				if (!(this.contractModel is null))
+					await this.contractModel.SignAsRole(this.Name);
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
 		}
 
 		/// <summary>
@@ -215,9 +224,10 @@ namespace LegalLab.Models.Legal.Items
 		/// <summary>
 		/// Proposes the contract for a given role.
 		/// </summary>
-		public void ExecuteProposeForRole()
+		public Task ExecuteProposeForRole()
 		{
 			this.contractModel?.ProposeForRole(this.Name);
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -237,9 +247,10 @@ namespace LegalLab.Models.Legal.Items
 		/// <summary>
 		/// Removes the role.
 		/// </summary>
-		public void ExecuteRemoveRole()
+		public Task ExecuteRemoveRole()
 		{
 			this.designModel?.RemoveRole(this);
+			return Task.CompletedTask;
 		}
 
 		/// <summary>

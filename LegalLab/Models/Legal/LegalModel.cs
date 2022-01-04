@@ -1,13 +1,11 @@
 ﻿using LegalLab.Extensions;
 using LegalLab.Models.Standards;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Xml;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
@@ -94,6 +92,8 @@ namespace LegalLab.Models.Legal
 				MainWindow.currentInstance.LegalIdTab.DataContext = this;
 				MainWindow.currentInstance.ContractsTab.DataContext = this;
 				MainWindow.currentInstance.ContractsTab.ContractCommands.DataContext = this;
+
+				return Task.CompletedTask;
 			});
 
 			await this.contracts.LoadKeys(true);
@@ -277,7 +277,7 @@ namespace LegalLab.Models.Legal
 			return this.contracts.Client.State == XmppState.Connected;
 		}
 
-		private async void ExecuteApply()
+		private async Task ExecuteApply()
 		{
 			try
 			{
@@ -367,6 +367,8 @@ namespace LegalLab.Models.Legal
 						Task.Run(() => this.contracts.PetitionIdentityResponseAsync(e.RequestedIdentityId, e.PetitionId, e.RequestorFullJid, false));
 						break;
 				}
+
+				return Task.CompletedTask;
 			});
 
 			return Task.CompletedTask;
@@ -452,8 +454,8 @@ namespace LegalLab.Models.Legal
 				this.currentContract = new ContractModel(this.contracts, this.Template, this, MainWindow.currentInstance.ContractsTab);
 				await this.currentContract.Start();
 
-				this.currentContract.PopulateParameters(MainWindow.currentInstance.ContractsTab.CreateParameters, MainWindow.currentInstance.ContractsTab.CreateCommands);
-				this.currentContract.PopulateContract(MainWindow.currentInstance.ContractsTab.ContractToCreate, MainWindow.currentInstance.ContractsTab.ContractToCreateHumanReadable);
+				await this.currentContract.PopulateParameters(MainWindow.currentInstance.ContractsTab.CreateParameters, MainWindow.currentInstance.ContractsTab.CreateCommands);
+				await this.currentContract.PopulateContract(MainWindow.currentInstance.ContractsTab.ContractToCreate, MainWindow.currentInstance.ContractsTab.ContractToCreateHumanReadable);
 			}
 			catch (Exception ex)
 			{

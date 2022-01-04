@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
@@ -45,9 +46,9 @@ namespace LegalLab.Extensions
 		/// <param name="Language">Language</param>
 		/// <param name="Contract">Contract</param>
 		/// <returns>Simple XAML</returns>
-		public static object ToSimpleXAML(this Role Role, string Language, Contract Contract)
+		public static async Task<object> ToSimpleXAML(this Role Role, string Language, Contract Contract)
 		{
-			return Role.ToXAML(Language, Contract).ParseSimple();
+			return (await Role.ToXAML(Language, Contract)).ParseSimple();
 		}
 
 		/// <summary>
@@ -57,9 +58,9 @@ namespace LegalLab.Extensions
 		/// <param name="Language">Language</param>
 		/// <param name="Contract">Contract</param>
 		/// <returns>Simple XAML</returns>
-		public static object ToSimpleXAML(this Parameter Parameter, string Language, Contract Contract)
+		public static async Task<object> ToSimpleXAML(this Parameter Parameter, string Language, Contract Contract)
 		{
-			return Parameter.ToXAML(Language, Contract).ParseSimple();
+			return (await Parameter.ToXAML(Language, Contract)).ParseSimple();
 		}
 
 		/// <summary>
@@ -69,13 +70,13 @@ namespace LegalLab.Extensions
 		/// <param name="Contract">Contract</param>
 		/// <param name="Language">Language code</param>
 		/// <returns>Simple XAML</returns>
-		public static object ToSimpleXAML(this string Markdown, Contract Contract, string Language)
+		public static async Task<object> ToSimpleXAML(this string Markdown, Contract Contract, string Language)
 		{
 			if (string.IsNullOrEmpty(Markdown))
 				return null;
 
-			HumanReadableText Text = Markdown.ToHumanReadableText(Language);
-			string Xaml = Text.GenerateXAML(Contract);
+			HumanReadableText Text = await Markdown.ToHumanReadableText(Language);
+			string Xaml = await Text.GenerateXAML(Contract);
 			return Xaml.ParseSimple();
 		}
 
@@ -86,13 +87,13 @@ namespace LegalLab.Extensions
 		/// <param name="Contract">Contract</param>
 		/// <param name="Language">Language code</param>
 		/// <returns>XAML</returns>
-		public static object ToXAML(this string Markdown, Contract Contract, string Language)
+		public static async Task<object> ToXAML(this string Markdown, Contract Contract, string Language)
 		{
 			if (string.IsNullOrEmpty(Markdown))
 				return null;
 
-			HumanReadableText Text = Markdown.ToHumanReadableText(Language);
-			string Xaml = Text.GenerateXAML(Contract);
+			HumanReadableText Text = await Markdown.ToHumanReadableText(Language);
+			string Xaml = await Text.GenerateXAML(Contract);
 			return XamlReader.Parse(Xaml);
 		}
 	}

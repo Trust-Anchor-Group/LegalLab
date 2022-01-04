@@ -148,7 +148,7 @@ namespace LegalLab.Models.Wallet
 			return this.eDalerClient.Client.State == XmppState.Connected && !string.IsNullOrEmpty(this.Uri);
 		}
 
-		private async void ExecuteSend()
+		private async Task ExecuteSend()
 		{
 			try
 			{
@@ -167,6 +167,7 @@ namespace LegalLab.Models.Wallet
 			MainWindow.UpdateGui(() =>
 			{
 				MainWindow.currentInstance.WalletTab.DataContext = this;
+				return Task.CompletedTask;
 			});
 
 			this.Balance = await this.eDalerClient.GetBalanceAsync();

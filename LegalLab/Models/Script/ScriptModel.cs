@@ -1,6 +1,5 @@
 ﻿using SkiaSharp;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -133,7 +132,10 @@ namespace LegalLab.Models.Script
 
 					Exp.OnPreview += (sender2, e2) =>
 					{
-						MainWindow.UpdateGui(() => ResultBlock = this.ShowResult(ResultBlock, e2.Preview, ScriptBlock));
+						MainWindow.UpdateGui(async () =>
+						{
+							ResultBlock = await this.ShowResult(ResultBlock, e2.Preview, ScriptBlock);
+						});
 					};
 
 					try
@@ -151,7 +153,10 @@ namespace LegalLab.Models.Script
 
 					this.variables["Ans"] = Ans;
 
-					MainWindow.UpdateGui(() => ResultBlock = this.ShowResult(ResultBlock, Ans, ScriptBlock));
+					MainWindow.UpdateGui(async () =>
+					{
+						ResultBlock = await this.ShowResult(ResultBlock, Ans, ScriptBlock);
+					});
 				}
 				catch (Exception ex)
 				{
@@ -161,7 +166,7 @@ namespace LegalLab.Models.Script
 			});
 		}
 
-		private UIElement ShowResult(UIElement ResultBlock, IElement Ans, TextBlock ScriptBlock)
+		private async Task<UIElement> ShowResult(UIElement ResultBlock, IElement Ans, TextBlock ScriptBlock)
 		{
 			try
 			{
@@ -227,8 +232,8 @@ namespace LegalLab.Models.Script
 						Markdown.AppendLine(" |");
 					}
 
-					MarkdownDocument Doc = new MarkdownDocument(Markdown.ToString(), GetMarkdownSettings());
-					string XAML = Doc.GenerateXAML();
+					MarkdownDocument Doc = await MarkdownDocument.CreateAsync(Markdown.ToString(), GetMarkdownSettings());
+					string XAML = await Doc.GenerateXAML();
 
 					if (XamlReader.Parse(XAML) is UIElement Parsed)
 						return this.AddBlock(ScriptBlock, Parsed);
@@ -380,7 +385,11 @@ namespace LegalLab.Models.Script
 
 		internal void Print(string Output)
 		{
-			MainWindow.UpdateGui(() => this.AddTextBlock(null, Output, Colors.Blue, FontWeights.Normal, null, false));
+			MainWindow.UpdateGui(() =>
+			{
+				this.AddTextBlock(null, Output, Colors.Blue, FontWeights.Normal, null, false);
+				return Task.CompletedTask;
+			});
 		}
 
 		/// <inheritdoc/>
@@ -397,6 +406,7 @@ namespace LegalLab.Models.Script
 			MainWindow.UpdateGui(() =>
 			{
 				MainWindow.currentInstance.ScriptTab.DataContext = this;
+				return Task.CompletedTask;
 			});
 
 			await base.Start();

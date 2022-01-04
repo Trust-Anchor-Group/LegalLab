@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 using Waher.Content.Markdown;
 using Waher.Content.Xml;
@@ -32,7 +33,7 @@ namespace LegalLab.Extensions
 		/// </summary>
 		/// <param name="Xml">XML string</param>
 		/// <returns>Contract</returns>
-		public static Contract ToContract(this string Xml)
+		public static async Task<Contract> ToContract(this string Xml)
 		{
 			XmlDocument Doc = new XmlDocument()
 			{
@@ -41,7 +42,8 @@ namespace LegalLab.Extensions
 
 			Doc.LoadXml(Xml);
 
-			return Contract.Parse(Doc, out _, out _);
+			ParsedContract Parsed = await Contract.Parse(Doc);
+			return Parsed.Contract;
 		}
 
 		/// <summary>
@@ -50,17 +52,17 @@ namespace LegalLab.Extensions
 		/// <param name="Markdown">Markdown text</param>
 		/// <param name="Language">Language code</param>
 		/// <returns>Human-readable text.</returns>
-		public static HumanReadableText ToHumanReadableText(this string Markdown, string Language)
+		public static async Task<HumanReadableText> ToHumanReadableText(this string Markdown, string Language)
 		{
 			if (string.IsNullOrEmpty(Markdown))
 				return null;
 
-			MarkdownDocument ParsedMarkdown = new MarkdownDocument(Markdown);
+			MarkdownDocument ParsedMarkdown = await MarkdownDocument.CreateAsync(Markdown);
 			StringBuilder sb = new StringBuilder();
 			using XmlWriter w = XmlWriter.Create(sb);
 
 			w.WriteStartElement("Root", ContractsClient.NamespaceSmartContracts);
-			ParsedMarkdown.GenerateSmartContractXml(w);
+			await ParsedMarkdown.GenerateSmartContractXml(w);
 			w.WriteEndElement();
 			w.Flush();
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Waher.Events;
 
@@ -13,7 +14,7 @@ namespace LegalLab.Models
 	/// <summary>
 	/// Delegate for callback methods called when a command is executed.
 	/// </summary>
-	public delegate void ExecuteHandler();
+	public delegate Task ExecuteHandler();
 
 	/// <summary>
 	/// Defines a custom command.
@@ -63,6 +64,8 @@ namespace LegalLab.Models
 				{
 					Log.Critical(ex);
 				}
+
+				return Task.CompletedTask;
 			});
 		}
 
@@ -93,13 +96,13 @@ namespace LegalLab.Models
 		/// Defines the method to be called when the command is invoked.
 		/// </summary>
 		/// <param name="parameter">Data used by the command. If the command does not require data to be passed, this object can be set to null.</param>
-		public void Execute(object parameter)
+		public async void Execute(object parameter)
 		{
 			if (!(this.executeCallback is null))
 			{
 				try
 				{
-					this.executeCallback();
+					await this.executeCallback();
 				}
 				catch (Exception ex)
 				{

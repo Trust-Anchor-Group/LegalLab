@@ -1,6 +1,7 @@
 ﻿using LegalLab.Models.Design;
 using LegalLab.Models.Items;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Waher.Networking.XMPP.Contracts;
 
@@ -116,13 +117,15 @@ namespace LegalLab.Models.Legal.Items
 		/// <summary>
 		/// Removes the part.
 		/// </summary>
-		public void ExecuteRemovePart()
+		public Task ExecuteRemovePart()
 		{
 			if (!(this.partsModel is null))
 			{
 				this.partsModel.PropertyChanged -= DesignModel_PropertyChanged;
 				this.partsModel.RemovePart(this);
 			}
+	
+			return Task.CompletedTask;
 		}
 	}
 }

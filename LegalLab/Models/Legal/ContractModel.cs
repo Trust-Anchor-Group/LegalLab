@@ -14,7 +14,7 @@ using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Xml;
-using Waher.Content.Xml;
+using Waher.Events;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Settings;
@@ -345,7 +345,7 @@ namespace LegalLab.Models.Legal
 		/// Populates a <see cref="StackPanel"/> with parameter controls.
 		/// </summary>
 		/// <param name="Parameters">StackPanel to populate</param>
-		public void PopulateParameters(StackPanel Parameters, StackPanel AdditionalCommands)
+		public async Task PopulateParameters(StackPanel Parameters, StackPanel AdditionalCommands)
 		{
 			List<ParameterInfo> ParameterList = new List<ParameterInfo>();
 			ParameterInfo ParameterInfo;
@@ -365,7 +365,7 @@ namespace LegalLab.Models.Legal
 						IsChecked = BP.Value.HasValue && BP.Value.Value,
 						VerticalContentAlignment = VerticalAlignment.Center,
 						Content = Parameter.GetLabel(),
-						ToolTip = Parameter.ToSimpleXAML(this.contract.DefaultLanguage, this.contract),
+						ToolTip = await Parameter.ToSimpleXAML(this.contract.DefaultLanguage, this.contract),
 						Margin = new Thickness(0, 10, 0, 0)
 					};
 
@@ -388,7 +388,7 @@ namespace LegalLab.Models.Legal
 					{
 						Tag = Parameter.Name,
 						Text = Parameter.ObjectValue?.ToString(),
-						ToolTip = Parameter.ToSimpleXAML(this.contract.DefaultLanguage, this.contract)
+						ToolTip = await Parameter.ToSimpleXAML(this.contract.DefaultLanguage, this.contract)
 					};
 
 					TextBox.TextChanged += Parameter_TextChanged;
@@ -415,51 +415,65 @@ namespace LegalLab.Models.Legal
 
 			this.Parameters = ParameterList.ToArray();
 
-			this.ValidateParameters();
-			PopulateHumanReadableText();
+			await this.ValidateParameters();
+			await PopulateHumanReadableText();
 
 			AdditionalCommands.DataContext = this;
 			AdditionalCommands.Visibility = Visibility.Visible;
 			AdditionalCommands.InvalidateVisual();
 		}
 
-		private void Parameter_CheckedChanged(object sender, RoutedEventArgs e)
+		private async void Parameter_CheckedChanged(object sender, RoutedEventArgs e)
 		{
-			if (!(sender is CheckBox CheckBox) || !this.parametersByName.TryGetValue(CheckBox.Tag.ToString(), out ParameterInfo ParameterInfo))
-				return;
-
-			ParameterInfo.Value = CheckBox.IsChecked;
-
-			this.ValidateParameters();
-			PopulateHumanReadableText();
-		}
-
-		private void Parameter_TextChanged(object sender, RoutedEventArgs e)
-		{
-			if (!(sender is TextBox TextBox) || !this.parametersByName.TryGetValue(TextBox.Tag.ToString(), out ParameterInfo ParameterInfo))
-				return;
-
 			try
 			{
-				if (ParameterInfo.Parameter is NumericalParameter && double.TryParse(TextBox.Text, out double d))
-					ParameterInfo.Value = d;
-				else if (ParameterInfo.Parameter is BooleanParameter && bool.TryParse(TextBox.Text, out bool b))
-					ParameterInfo.Value = b;
-				else
-					ParameterInfo.Value = TextBox.Text;
+				if (!(sender is CheckBox CheckBox) || !this.parametersByName.TryGetValue(CheckBox.Tag.ToString(), out ParameterInfo ParameterInfo))
+					return;
 
-				TextBox.Background = null;
-				this.ValidateParameters();
+				ParameterInfo.Value = CheckBox.IsChecked;
+
+				await this.ValidateParameters();
+				await PopulateHumanReadableText();
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				TextBox.Background = Brushes.Salmon;
+				Log.Critical(ex);
 			}
-
-			PopulateHumanReadableText();
 		}
 
-		private void ValidateParameters()
+		private async void Parameter_TextChanged(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				if (!(sender is TextBox TextBox) || !this.parametersByName.TryGetValue(TextBox.Tag.ToString(), out ParameterInfo ParameterInfo))
+					return;
+
+				try
+				{
+					if (ParameterInfo.Parameter is NumericalParameter && double.TryParse(TextBox.Text, out double d))
+						ParameterInfo.Value = d;
+					else if (ParameterInfo.Parameter is BooleanParameter && bool.TryParse(TextBox.Text, out bool b))
+						ParameterInfo.Value = b;
+					else
+						ParameterInfo.Value = TextBox.Text;
+
+					TextBox.Background = null;
+					await this.ValidateParameters();
+				}
+				catch (Exception)
+				{
+					TextBox.Background = Brushes.Salmon;
+				}
+
+				await PopulateHumanReadableText();
+			}
+			catch (Exception ex)
+			{
+				Log.Critical(ex);
+			}
+		}
+
+		private async Task ValidateParameters()
 		{
 			Variables Variables = new Variables();
 			bool Ok = true;
@@ -469,7 +483,7 @@ namespace LegalLab.Models.Legal
 
 			foreach (ParameterInfo P in this.parametersByName.Values)
 			{
-				if (P.Parameter.IsParameterValid(Variables))
+				if (await P.Parameter.IsParameterValid(Variables))
 					P.Control.Background = null;
 				else
 				{
@@ -481,14 +495,14 @@ namespace LegalLab.Models.Legal
 			this.ParametersOk = Ok;
 		}
 
-		private void PopulateHumanReadableText()
+		private async Task PopulateHumanReadableText()
 		{
 			if (this.humanReadableText is null)
 				return;
 
 			this.humanReadableText.Children.Clear();
 
-			if (XamlReader.Parse(this.contract.ToXAML(this.contract.DefaultLanguage)) is StackPanel Panel)
+			if (XamlReader.Parse(await this.contract.ToXAML(this.contract.DefaultLanguage)) is StackPanel Panel)
 			{
 				LinkedList<UIElement> Elements = new LinkedList<UIElement>();
 
@@ -570,10 +584,10 @@ namespace LegalLab.Models.Legal
 		/// </summary>
 		/// <param name="ContractLayout">Where to layout the contract</param>
 		/// <param name="HumanReadableText">Control where human-readable content is placed</param>
-		public void PopulateContract(StackPanel ContractLayout, StackPanel HumanReadableText)
+		public async Task PopulateContract(StackPanel ContractLayout, StackPanel HumanReadableText)
 		{
 			this.humanReadableText = HumanReadableText;
-			this.PopulateHumanReadableText();
+			await this.PopulateHumanReadableText();
 
 			ContractLayout.DataContext = this;
 			ContractLayout.Visibility = Visibility.Visible;
@@ -589,7 +603,7 @@ namespace LegalLab.Models.Legal
 		/// <summary>
 		/// Adds a part to the contract.
 		/// </summary>
-		public void ExecuteAddPart()
+		public Task ExecuteAddPart()
 		{
 			PartInfo[] Parts = this.Parts;
 			int c = Parts.Length;
@@ -615,6 +629,8 @@ namespace LegalLab.Models.Legal
 
 				this.RaisePropertyChanged(nameof(this.GeneralInformation));
 			}
+		
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -655,7 +671,7 @@ namespace LegalLab.Models.Legal
 		/// <summary>
 		/// Proposes the contract.
 		/// </summary>
-		public async void ExecuteCreateContract()
+		public async Task ExecuteCreateContract()
 		{
 			try
 			{
@@ -668,9 +684,9 @@ namespace LegalLab.Models.Legal
 				MainWindow.MouseHourglass();
 
 				string TemplateId = this.legalModel.Template.ContractId;
-				
+
 				Contract Contract = await this.contracts.CreateContractAsync(TemplateId, this.contract.Parts, this.contract.Parameters,
-					this.contract.Visibility, this.Parts.Length > 0 ? ContractParts.ExplicitlyDefined : ContractParts.Open, 
+					this.contract.Visibility, this.Parts.Length > 0 ? ContractParts.ExplicitlyDefined : ContractParts.Open,
 					this.contract.Duration, this.contract.ArchiveRequired, this.contract.ArchiveOptional, this.contract.SignAfter,
 					this.contract.SignBefore, false);
 

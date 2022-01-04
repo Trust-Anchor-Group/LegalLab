@@ -10,7 +10,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -24,6 +23,17 @@ using Waher.Runtime.Inventory.Loader;
 
 namespace LegalLab
 {
+	/// <summary>
+	/// Delegate for GUI update methods with parameter.
+	/// </summary>
+	public delegate Task GuiDelegate();
+
+	/// <summary>
+	/// Delegate for GUI update methods with parameter.
+	/// </summary>
+	/// <param name="Parameter">Parameter</param>
+	public delegate Task GuiDelegateWithParameter(object Parameter);
+
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
@@ -105,7 +115,7 @@ namespace LegalLab
 				designModel = await InstantiateModel<DesignModel>();
 
 				if (StartGuiTask)
-					await this.Dispatcher.BeginInvoke(new ThreadStart(DoUpdates));
+					await this.Dispatcher.BeginInvoke(new GuiDelegate(DoUpdates));
 			}
 			catch (Exception ex)
 			{
@@ -220,6 +230,7 @@ namespace LegalLab
 			UpdateGui(() =>
 			{
 				currentInstance.Status.Content = Message;
+				return Task.CompletedTask;
 			});
 		}
 
@@ -236,6 +247,7 @@ namespace LegalLab
 			{
 				Mouse.OverrideCursor = null;
 				System.Windows.MessageBox.Show(currentInstance, Text, Caption, Button, Icon);
+				return Task.CompletedTask;
 			});
 		}
 
@@ -296,7 +308,11 @@ namespace LegalLab
 		/// </summary>
 		public static void MouseDefault()
 		{
-			UpdateGui(() => Mouse.OverrideCursor = null);
+			UpdateGui(() =>
+			{
+				Mouse.OverrideCursor = null;
+				return Task.CompletedTask;
+			});
 		}
 
 		/// <summary>
@@ -304,16 +320,20 @@ namespace LegalLab
 		/// </summary>
 		public static void MouseHourglass()
 		{
-			UpdateGui(() => Mouse.OverrideCursor = Cursors.Wait);
+			UpdateGui(() =>
+			{
+				Mouse.OverrideCursor = Cursors.Wait;
+				return Task.CompletedTask;
+			});
 		}
 
 		/// <summary>
 		/// Calls a method from the Main UI thread.
 		/// </summary>
 		/// <param name="Method">Method to call.</param>
-		public static void UpdateGui(ThreadStart Method)
+		public static void UpdateGui(GuiDelegate Method)
 		{
-			UpdateGui((State) => ((ThreadStart)State)(), Method.Method.DeclaringType + "." + Method.Method.Name, Method);
+			UpdateGui((State) => ((GuiDelegate)State)(), Method.Method.DeclaringType + "." + Method.Method.Name, Method);
 		}
 
 		/// <summary>
@@ -321,12 +341,12 @@ namespace LegalLab
 		/// </summary>
 		/// <param name="Method">Method to call.</param>
 		/// <param name="State">State object to pass on to the callback method.</param>
-		public static void UpdateGui(ParameterizedThreadStart Method, object State)
+		public static void UpdateGui(GuiDelegateWithParameter Method, object State)
 		{
 			UpdateGui(Method, Method.Method.DeclaringType + "." + Method.Method.Name, State);
 		}
 
-		private static void UpdateGui(ParameterizedThreadStart Method, string Name, object State)
+		private static void UpdateGui(GuiDelegateWithParameter Method, string Name, object State)
 		{
 			bool Start;
 			GuiUpdateTask Rec = new GuiUpdateTask()
@@ -344,53 +364,65 @@ namespace LegalLab
 			}
 
 			if (Start)
-				currentInstance.Dispatcher.BeginInvoke(new ThreadStart(DoUpdates));
+				currentInstance.Dispatcher.BeginInvoke(new GuiDelegate(DoUpdates));
 		}
 
-		private static void DoUpdates()
+		private static async Task DoUpdates()
 		{
-			GuiUpdateTask Rec = null;
-			GuiUpdateTask Prev;
-
-			while (true)
+			try
 			{
+				GuiUpdateTask Rec = null;
+				GuiUpdateTask Prev;
+
+				while (true)
+				{
+					lock (guiUpdateQueue)
+					{
+						if (!(Rec is null))
+							guiUpdateQueue.RemoveFirst();
+
+						Prev = Rec;
+						Rec = guiUpdateQueue.First?.Value;
+						if (Rec is null)
+							return;
+					}
+
+					try
+					{
+						Rec.Started = DateTime.Now;
+						await Rec.Method(Rec.State);
+					}
+					catch (Exception ex)
+					{
+						Log.Critical(ex);
+					}
+					finally
+					{
+						Rec.Ended = DateTime.Now;
+					}
+
+					TimeSpan TS;
+
+					if ((TS = (Rec.Ended - Rec.Started)).TotalSeconds >= 1)
+						Log.Notice("GUI update method is slow: " + TS.ToString(), Rec.Name, Prev?.Name);
+					else if ((TS = (Rec.Ended - Rec.Requested)).TotalSeconds >= 1)
+						Log.Notice("GUI update pipeline is slow: " + TS.ToString(), Rec.Name, Prev?.Name);
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.Critical(ex);
+
 				lock (guiUpdateQueue)
 				{
-					if (!(Rec is null))
-						guiUpdateQueue.RemoveFirst();
-
-					Prev = Rec;
-					Rec = guiUpdateQueue.First?.Value;
-					if (Rec is null)
-						return;
+					guiUpdateQueue.Clear();
 				}
-
-				try
-				{
-					Rec.Started = DateTime.Now;
-					Rec.Method(Rec.State);
-				}
-				catch (Exception ex)
-				{
-					Log.Critical(ex);
-				}
-				finally
-				{
-					Rec.Ended = DateTime.Now;
-				}
-
-				TimeSpan TS;
-
-				if ((TS = (Rec.Ended - Rec.Started)).TotalSeconds >= 1)
-					Log.Notice("GUI update method is slow: " + TS.ToString(), Rec.Name, Prev?.Name);
-				else if ((TS = (Rec.Ended - Rec.Requested)).TotalSeconds >= 1)
-					Log.Notice("GUI update pipeline is slow: " + TS.ToString(), Rec.Name, Prev?.Name);
 			}
 		}
 
 		private class GuiUpdateTask
 		{
-			public ParameterizedThreadStart Method;
+			public GuiDelegateWithParameter Method;
 			public object State;
 			public string Name;
 			public DateTime Requested;

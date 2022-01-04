@@ -121,6 +121,8 @@ namespace LegalLab.Models.Window
 				MainWindow.currentInstance.LocationChanged += WindowLocationChanged;
 				MainWindow.currentInstance.StateChanged += WindowStateChanged;
 				MainWindow.currentInstance.TabControl.SelectionChanged += TabIndexChanged;
+
+				return Task.CompletedTask;
 			});
 
 			return base.Start();

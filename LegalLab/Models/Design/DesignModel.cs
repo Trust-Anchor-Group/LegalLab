@@ -113,12 +113,12 @@ namespace LegalLab.Models.Design
 			this.addLanguage = new Command(this.ExecuteAddLanguage);
 			this.removeLanguage = new Command(this.CanExecuteRemoveLanguage, this.ExecuteRemoveLanguage);
 
-			this.GenerateContract();
+			this.GenerateContract().Wait();
 		}
 
-		private void GenerateContract()
+		private async Task GenerateContract()
 		{
-			this.SetContract(new Contract()
+			await this.SetContract(new Contract()
 			{
 				ArchiveOptional = this.ArchiveOptional,
 				ArchiveRequired = this.ArchiveRequired,
@@ -141,7 +141,7 @@ namespace LegalLab.Models.Design
 			});
 		}
 
-		public void SetContract(Contract Contract)
+		public async Task SetContract(Contract Contract)
 		{
 			this.contract = Contract;
 			this.ContractId = Contract.ContractId;
@@ -192,7 +192,7 @@ namespace LegalLab.Models.Design
 
 			this.Parameters = ParameterList.ToArray();
 
-			this.ValidateParameters();
+			await this.ValidateParameters();
 
 			(string s, XmlElement E) = Contract.ForMachines.ToPrettyXml();
 
@@ -333,7 +333,7 @@ namespace LegalLab.Models.Design
 								RI.DescriptionAsMarkdown = (RI.Role.Descriptions.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
 
 							this.HumanReadableMarkdown = (this.contract.ForHumans.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
-						
+
 							this.lastLanguage = Language;
 						}
 					}
@@ -374,8 +374,10 @@ namespace LegalLab.Models.Design
 
 									Item.Object.SetTranslatableTexts(Translated, Language);
 								}
-	
+
 								this.removeLanguage.RaiseCanExecuteChanged();
+
+								return Task.CompletedTask;
 							});
 						}
 					}
@@ -514,6 +516,8 @@ namespace LegalLab.Models.Design
 				{
 					Log.Critical(ex);
 				}
+
+				return Task.CompletedTask;
 			});
 		}
 
@@ -582,11 +586,11 @@ namespace LegalLab.Models.Design
 
 		private void RenderHumanReadableMarkdown(object sender, EventArgs e)
 		{
-			MainWindow.UpdateGui(() =>
+			MainWindow.UpdateGui(async () =>
 			{
 				try
 				{
-					HumanReadableText Text = this.HumanReadableMarkdown.ToHumanReadableText(this.Language);
+					HumanReadableText Text = await this.HumanReadableMarkdown.ToHumanReadableText(this.Language);
 					if (Text is null)
 					{
 						this.contract.ForHumans = this.contract.ForHumans.Remove(this.Language);
@@ -595,7 +599,7 @@ namespace LegalLab.Models.Design
 					else
 					{
 						this.contract.ForHumans = this.contract.ForHumans.Append(Text);
-						this.HumanReadable = XamlReader.Parse(Text.GenerateXAML(this.Contract));
+						this.HumanReadable = XamlReader.Parse(await Text.GenerateXAML(this.Contract));
 					}
 				}
 				catch (Exception ex)
@@ -608,7 +612,7 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Validates parameters.
 		/// </summary>
-		public void ValidateParameters()
+		public async Task ValidateParameters()
 		{
 			Variables Variables = new Variables();
 			bool Ok = true;
@@ -618,7 +622,7 @@ namespace LegalLab.Models.Design
 
 			foreach (ParameterInfo P in this.Parameters)
 			{
-				if (P.Parameter.IsParameterValid(Variables))
+				if (await P.Parameter.IsParameterValid(Variables))
 					P.Control.Background = null;
 				else
 				{
@@ -677,7 +681,7 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Adds a role to the design.
 		/// </summary>
-		public void ExecuteAddRole()
+		public async Task ExecuteAddRole()
 		{
 			RoleInfo[] Roles = this.Roles;
 			int c = Roles.Length;
@@ -686,7 +690,7 @@ namespace LegalLab.Models.Design
 			Roles[c] = new RoleInfo(this, new Role()
 			{
 				Name = this.FindNewName("Role", this.Roles),
-				Descriptions = new HumanReadableText[] { "Enter role description as **Markdown**".ToHumanReadableText("en") },
+				Descriptions = new HumanReadableText[] { await "Enter role description as **Markdown**".ToHumanReadableText("en") },
 				MinCount = 1,
 				MaxCount = 1,
 				CanRevoke = false
@@ -752,7 +756,7 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Adds a part to the design.
 		/// </summary>
-		public void ExecuteAddPart()
+		public Task ExecuteAddPart()
 		{
 			PartInfo[] Parts = this.Parts;
 			int c = Parts.Length;
@@ -766,6 +770,8 @@ namespace LegalLab.Models.Design
 
 			this.Parts = Parts;
 			this.PartsMode = ContractParts.ExplicitlyDefined;
+	
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -797,12 +803,12 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Adds a numeric parameter to the design.
 		/// </summary>
-		public void ExecuteAddNumericParameter()
+		public async Task ExecuteAddNumericParameter()
 		{
 			NumericalParameter NP = new NumericalParameter()
 			{
 				Name = this.FindNewName("Numeric", this.Parameters),
-				Descriptions = new HumanReadableText[] { "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
+				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Max = null,
@@ -858,12 +864,12 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Adds a string parameter to the design.
 		/// </summary>
-		public void ExecuteAddStringParameter()
+		public async Task ExecuteAddStringParameter()
 		{
 			StringParameter SP = new StringParameter()
 			{
 				Name = this.FindNewName("String", this.Parameters),
-				Descriptions = new HumanReadableText[] { "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
+				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Max = null,
@@ -927,123 +933,165 @@ namespace LegalLab.Models.Design
 			return ParameterInfo;
 		}
 
-		private void Parameter_TextChanged(object sender, RoutedEventArgs e)
+		private async void Parameter_TextChanged(object sender, RoutedEventArgs e)
 		{
-			if (!(sender is TextBox TextBox) || !(TextBox.Tag is ParameterInfo ParameterInfo))
-				return;
-
 			try
 			{
-				ParameterInfo.SetValue(TextBox.Text);
+				if (!(sender is TextBox TextBox) || !(TextBox.Tag is ParameterInfo ParameterInfo))
+					return;
 
-				TextBox.Background = null;
-				this.ValidateParameters();
+				try
+				{
+					ParameterInfo.SetValue(TextBox.Text);
+
+					TextBox.Background = null;
+					await this.ValidateParameters();
+				}
+				catch (Exception)
+				{
+					TextBox.Background = Brushes.Salmon;
+				}
+
+				this.RenderHumanReadableMarkdown(this, EventArgs.Empty);
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				TextBox.Background = Brushes.Salmon;
-			}
-
-			this.RenderHumanReadableMarkdown(this, EventArgs.Empty);
-		}
-
-		private void Parameter_MinTextChanged(object sender, RoutedEventArgs e)
-		{
-			if (!(sender is TextBox TextBox) || !(TextBox.Tag is RangedParameterInfo ParameterInfo))
-				return;
-
-			try
-			{
-				ParameterInfo.SetMin(TextBox.Text);
-
-				TextBox.Background = null;
-				this.ValidateParameters();
-			}
-			catch (Exception)
-			{
-				TextBox.Background = Brushes.Salmon;
+				Log.Critical(ex);
 			}
 		}
 
-		private void Parameter_MaxTextChanged(object sender, RoutedEventArgs e)
+		private async void Parameter_MinTextChanged(object sender, RoutedEventArgs e)
 		{
-			if (!(sender is TextBox TextBox) || !(TextBox.Tag is RangedParameterInfo ParameterInfo))
-				return;
-
 			try
 			{
-				ParameterInfo.SetMax(TextBox.Text);
+				if (!(sender is TextBox TextBox) || !(TextBox.Tag is RangedParameterInfo ParameterInfo))
+					return;
 
-				TextBox.Background = null;
-				this.ValidateParameters();
+				try
+				{
+					ParameterInfo.SetMin(TextBox.Text);
+
+					TextBox.Background = null;
+					await this.ValidateParameters();
+				}
+				catch (Exception)
+				{
+					TextBox.Background = Brushes.Salmon;
+				}
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				TextBox.Background = Brushes.Salmon;
+				Log.Critical(ex);
 			}
 		}
 
-		private void Parameter_MinLengthTextChanged(object sender, RoutedEventArgs e)
+		private async void Parameter_MaxTextChanged(object sender, RoutedEventArgs e)
 		{
-			if (!(sender is TextBox TextBox) || !(TextBox.Tag is StringParameterInfo ParameterInfo))
-				return;
-
 			try
 			{
-				string Value = TextBox.Text;
+				if (!(sender is TextBox TextBox) || !(TextBox.Tag is RangedParameterInfo ParameterInfo))
+					return;
 
-				if (string.IsNullOrEmpty(Value))
-					ParameterInfo.MinLength = null;
-				else
-					ParameterInfo.MinLength = int.Parse(Value);
+				try
+				{
+					ParameterInfo.SetMax(TextBox.Text);
 
-				TextBox.Background = null;
-				this.ValidateParameters();
+					TextBox.Background = null;
+					await this.ValidateParameters();
+				}
+				catch (Exception)
+				{
+					TextBox.Background = Brushes.Salmon;
+				}
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				TextBox.Background = Brushes.Salmon;
+				Log.Critical(ex);
 			}
 		}
 
-		private void Parameter_MaxLengthTextChanged(object sender, RoutedEventArgs e)
+		private async void Parameter_MinLengthTextChanged(object sender, RoutedEventArgs e)
 		{
-			if (!(sender is TextBox TextBox) || !(TextBox.Tag is StringParameterInfo ParameterInfo))
-				return;
-
 			try
 			{
-				string Value = TextBox.Text;
+				if (!(sender is TextBox TextBox) || !(TextBox.Tag is StringParameterInfo ParameterInfo))
+					return;
 
-				if (string.IsNullOrEmpty(Value))
-					ParameterInfo.MinLength = null;
-				else
-					ParameterInfo.MinLength = int.Parse(Value);
+				try
+				{
+					string Value = TextBox.Text;
 
-				TextBox.Background = null;
-				this.ValidateParameters();
+					if (string.IsNullOrEmpty(Value))
+						ParameterInfo.MinLength = null;
+					else
+						ParameterInfo.MinLength = int.Parse(Value);
+
+					TextBox.Background = null;
+					await this.ValidateParameters();
+				}
+				catch (Exception)
+				{
+					TextBox.Background = Brushes.Salmon;
+				}
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				TextBox.Background = Brushes.Salmon;
+				Log.Critical(ex);
 			}
 		}
 
-		private void Parameter_RegExTextChanged(object sender, RoutedEventArgs e)
+		private async void Parameter_MaxLengthTextChanged(object sender, RoutedEventArgs e)
 		{
-			if (!(sender is TextBox TextBox) || !(TextBox.Tag is StringParameterInfo ParameterInfo))
-				return;
-
 			try
 			{
-				ParameterInfo.RegEx = TextBox.Text;
+				if (!(sender is TextBox TextBox) || !(TextBox.Tag is StringParameterInfo ParameterInfo))
+					return;
 
-				TextBox.Background = null;
-				this.ValidateParameters();
+				try
+				{
+					string Value = TextBox.Text;
+
+					if (string.IsNullOrEmpty(Value))
+						ParameterInfo.MinLength = null;
+					else
+						ParameterInfo.MinLength = int.Parse(Value);
+
+					TextBox.Background = null;
+					await this.ValidateParameters();
+				}
+				catch (Exception)
+				{
+					TextBox.Background = Brushes.Salmon;
+				}
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				TextBox.Background = Brushes.Salmon;
+				Log.Critical(ex);
+			}
+		}
+
+		private async void Parameter_RegExTextChanged(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				if (!(sender is TextBox TextBox) || !(TextBox.Tag is StringParameterInfo ParameterInfo))
+					return;
+
+				try
+				{
+					ParameterInfo.RegEx = TextBox.Text;
+
+					TextBox.Background = null;
+					await this.ValidateParameters();
+				}
+				catch (Exception)
+				{
+					TextBox.Background = Brushes.Salmon;
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.Critical(ex);
 			}
 		}
 
@@ -1055,12 +1103,12 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Adds a boolean parameter to the design.
 		/// </summary>
-		public void ExecuteAddBooleanParameter()
+		public async Task ExecuteAddBooleanParameter()
 		{
 			BooleanParameter BP = new BooleanParameter()
 			{
 				Name = this.FindNewName("Boolean", this.Parameters),
-				Descriptions = new HumanReadableText[] { "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
+				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Value = null
@@ -1087,35 +1135,56 @@ namespace LegalLab.Models.Design
 			return ParameterInfo;
 		}
 
-		private void Parameter_CheckedChanged(object sender, RoutedEventArgs e)
+		private async void Parameter_CheckedChanged(object sender, RoutedEventArgs e)
 		{
-			if (!(sender is CheckBox CheckBox) || !(CheckBox.Tag is ParameterInfo ParameterInfo))
-				return;
+			try
+			{
+				if (!(sender is CheckBox CheckBox) || !(CheckBox.Tag is ParameterInfo ParameterInfo))
+					return;
 
-			ParameterInfo.Value = CheckBox.IsChecked;
+				ParameterInfo.Value = CheckBox.IsChecked;
 
-			this.ValidateParameters();
-			this.RenderHumanReadableMarkdown(this, EventArgs.Empty);
+				await this.ValidateParameters();
+				this.RenderHumanReadableMarkdown(this, EventArgs.Empty);
+			}
+			catch (Exception ex)
+			{
+				Log.Critical(ex);
+			}
 		}
 
-		private void Parameter_MinIncludedCheckedChanged(object sender, RoutedEventArgs e)
+		private async void Parameter_MinIncludedCheckedChanged(object sender, RoutedEventArgs e)
 		{
-			if (!(sender is CheckBox CheckBox) || !(CheckBox.Tag is RangedParameterInfo ParameterInfo))
-				return;
+			try
+			{
+				if (!(sender is CheckBox CheckBox) || !(CheckBox.Tag is RangedParameterInfo ParameterInfo))
+					return;
 
-			ParameterInfo.MinIncluded = CheckBox.IsChecked ?? false;
+				ParameterInfo.MinIncluded = CheckBox.IsChecked ?? false;
 
-			this.ValidateParameters();
+				await this.ValidateParameters();
+			}
+			catch (Exception ex)
+			{
+				Log.Critical(ex);
+			}
 		}
 
-		private void Parameter_MaxIncludedCheckedChanged(object sender, RoutedEventArgs e)
+		private async void Parameter_MaxIncludedCheckedChanged(object sender, RoutedEventArgs e)
 		{
-			if (!(sender is CheckBox CheckBox) || !(CheckBox.Tag is RangedParameterInfo ParameterInfo))
-				return;
+			try
+			{
+				if (!(sender is CheckBox CheckBox) || !(CheckBox.Tag is RangedParameterInfo ParameterInfo))
+					return;
 
-			ParameterInfo.MaxIncluded = CheckBox.IsChecked ?? false;
+				ParameterInfo.MaxIncluded = CheckBox.IsChecked ?? false;
 
-			this.ValidateParameters();
+				await this.ValidateParameters();
+			}
+			catch (Exception ex)
+			{
+				Log.Critical(ex);
+			}
 		}
 
 		private void AddParameter(ParameterInfo Parameter)
@@ -1155,33 +1224,40 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public ICommand New => this.@new;
 
-		private void ExecuteNewContract()
+		private async Task ExecuteNewContract()
 		{
-			if (MessageBox.Show("Are you sure you want clear the form and lose all data that has not been saved?", "Confirm",
-				MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
+			try
 			{
-				return;
+				if (MessageBox.Show("Are you sure you want clear the form and lose all data that has not been saved?", "Confirm",
+					MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
+				{
+					return;
+				}
+
+				this.Visibility = ContractVisibility.Public;
+				this.PartsMode = ContractParts.TemplateOnly;
+				this.ArchiveOptional = Waher.Content.Duration.Zero;
+				this.ArchiveRequired = Waher.Content.Duration.Zero;
+				this.Duration = Waher.Content.Duration.Zero;
+				this.Language = "en";
+				this.Languages = new Iso__639_1.Record[0];
+				this.SignBefore = null;
+				this.SignAfter = null;
+				this.Roles = new RoleInfo[0];
+				this.Parts = new PartInfo[0];
+				this.Parameters = new ParameterInfo[0];
+				this.MachineReadable = string.Empty;
+				this.ForMachines = null;
+				this.ContractId = string.Empty;
+				this.HumanReadableMarkdown = string.Empty;
+				this.HumanReadable = null;
+
+				await this.GenerateContract();
 			}
-
-			this.Visibility = ContractVisibility.Public;
-			this.PartsMode = ContractParts.TemplateOnly;
-			this.ArchiveOptional = Waher.Content.Duration.Zero;
-			this.ArchiveRequired = Waher.Content.Duration.Zero;
-			this.Duration = Waher.Content.Duration.Zero;
-			this.Language = "en";
-			this.Languages = new Iso__639_1.Record[0];
-			this.SignBefore = null;
-			this.SignAfter = null;
-			this.Roles = new RoleInfo[0];
-			this.Parts = new PartInfo[0];
-			this.Parameters = new ParameterInfo[0];
-			this.MachineReadable = string.Empty;
-			this.ForMachines = null;
-			this.ContractId = string.Empty;
-			this.HumanReadableMarkdown = string.Empty;
-			this.HumanReadable = null;
-
-			this.GenerateContract();
+			catch (Exception ex)
+			{
+				Log.Critical(ex.Message);
+			}
 		}
 
 		/// <summary>
@@ -1189,7 +1265,7 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public ICommand LoadCommand => this.load;
 
-		private void ExecuteLoadContract()
+		private async Task ExecuteLoadContract()
 		{
 			try
 			{
@@ -1215,14 +1291,15 @@ namespace LegalLab.Models.Design
 
 				Doc.Load(Dialog.FileName);
 
-				Contract Contract = Contract.Parse(Doc, out _, out _);
+				ParsedContract Parsed = await Waher.Networking.XMPP.Contracts.Contract.Parse(Doc);
+				Contract Contract = Parsed.Contract;
 				if (Contract is null)
 					throw new InvalidOperationException("Not a valid Smart Contract file.");
 
 				if (!Contract.CanActAsTemplate)
 					throw new InvalidOperationException("Contract is not a template.");
 
-				this.SetContract(Contract);
+				await this.SetContract(Contract);
 			}
 			catch (Exception ex)
 			{
@@ -1235,7 +1312,7 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public ICommand SaveCommand => this.save;
 
-		private void ExecuteSaveContract()
+		private Task ExecuteSaveContract()
 		{
 			try
 			{
@@ -1253,7 +1330,7 @@ namespace LegalLab.Models.Design
 
 				bool? Result = Dialog.ShowDialog(MainWindow.currentInstance);
 				if (!Result.HasValue || !Result.Value)
-					return;
+					return Task.CompletedTask;
 
 				string Xml = this.contract.ToXml();
 				(string Pretty, XmlElement Parsed) = Xml.ToPrettyXml();
@@ -1264,6 +1341,8 @@ namespace LegalLab.Models.Design
 			{
 				MainWindow.ErrorBox(ex.Message);
 			}
+
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -1271,21 +1350,23 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public ICommand AddLanguage => this.addLanguage;
 
-		private void ExecuteAddLanguage()
+		private Task ExecuteAddLanguage()
 		{
 			AddLanguageDialog Dialog = new AddLanguageDialog();
 			AddLanguageModel Model = new AddLanguageModel(Dialog);
 
 			bool? Result = Dialog.ShowDialog();
 			if (!Result.HasValue || !Result.Value)
-				return;
+				return Task.CompletedTask;
 
 			string Language = Model.SelectedLanguage;
 			if (string.IsNullOrEmpty(Language))
-				return;
+				return Task.CompletedTask;
 
 			this.Languages = this.Languages.ToCodes().Append(Language).ToIso639_1();
 			this.Language = Language.ToLower();
+	
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -1298,14 +1379,14 @@ namespace LegalLab.Models.Design
 			return !string.IsNullOrEmpty(this.Language) && this.Languages.Length >= 2;
 		}
 
-		private void ExecuteRemoveLanguage()
+		private Task ExecuteRemoveLanguage()
 		{
 			string Language = this.Language;
 
 			if (MessageBox.Show("Are you sure you want to remove language " + Language + " from the contract?", "Confirm",
 				MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
 			{
-				return;
+				return Task.CompletedTask;
 			}
 
 			foreach (ParameterInfo PI in this.Parameters)
@@ -1318,6 +1399,8 @@ namespace LegalLab.Models.Design
 
 			this.Languages = this.Languages.ToCodes().Remove(Language).ToIso639_1();
 			this.Language = this.contract.DefaultLanguage;
+	
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -1346,7 +1429,7 @@ namespace LegalLab.Models.Design
 			return base.StateChanged(NewState);
 		}
 
-		private async void ExecuteProposeContract()
+		private async Task ExecuteProposeContract()
 		{
 			try
 			{

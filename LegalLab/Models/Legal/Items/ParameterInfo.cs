@@ -3,6 +3,7 @@ using LegalLab.Items;
 using LegalLab.Models.Design;
 using LegalLab.Models.Items;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Waher.Networking.XMPP.Contracts;
@@ -40,7 +41,7 @@ namespace LegalLab.Models.Legal.Items
 			string Language = DesignModel?.Language ?? Contract.DefaultLanguage;
 
 			this.name = new Property<string>(nameof(this.Name), Parameter.Name, this);
-			this.description = new Property<object>(nameof(this.Description), Parameter.ToSimpleXAML(Language, Contract), this);
+			this.description = new Property<object>(nameof(this.Description), Parameter.ToSimpleXAML(Language, Contract).Result, this);
 			this.descriptionAsMarkdown = new Property<string>(nameof(this.DescriptionAsMarkdown), Parameter.ToMarkdown(Language, Contract, MarkdownType.ForEditing).Trim(), this);
 			this.value = new Property<object>(nameof(this.Value), Parameter.ObjectValue, this);
 			this.expression = new Property<string>(nameof(this.Expression), Parameter.Expression, this);
@@ -100,7 +101,7 @@ namespace LegalLab.Models.Legal.Items
 			set
 			{
 				string Language = this.designModel?.Language ?? this.Contract.DefaultLanguage;
-				HumanReadableText Text = value.ToHumanReadableText(Language);
+				HumanReadableText Text = value.ToHumanReadableText(Language).Result;
 
 				if (Text is null)
 					this.Parameter.Descriptions = this.Parameter.Descriptions.Remove(Language);
@@ -108,7 +109,7 @@ namespace LegalLab.Models.Legal.Items
 					this.Parameter.Descriptions = this.Parameter.Descriptions.Append(Text);
 
 				this.descriptionAsMarkdown.Value = value;
-				this.description.Value = value.ToSimpleXAML(this.Contract, Language);
+				this.description.Value = value.ToSimpleXAML(this.Contract, Language).Result;
 			}
 		}
 
@@ -216,9 +217,10 @@ namespace LegalLab.Models.Legal.Items
 		/// <summary>
 		/// Removes the parameter.
 		/// </summary>
-		public void ExecuteRemoveParameter()
+		public Task ExecuteRemoveParameter()
 		{
 			this.designModel?.RemoveParameter(this);
+			return Task.CompletedTask;
 		}
 
 		/// <summary>

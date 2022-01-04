@@ -1,5 +1,6 @@
 ﻿using LegalLab.Models;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace LegalLab.Dialogs.Prompt
@@ -57,14 +58,16 @@ namespace LegalLab.Dialogs.Prompt
 		/// </summary>
 		public ICommand Cancel => this.cancel;
 
-		private void ExecuteOk()
+		private Task ExecuteOk()
 		{
 			this.dialog.DialogResult = true;
+			return Task.CompletedTask;
 		}
 
-		private void ExecuteCancel()
+		private Task ExecuteCancel()
 		{
 			this.dialog.DialogResult = false;
+			return Task.CompletedTask;
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Waher.Events;
 
@@ -65,6 +66,8 @@ namespace LegalLab.Models
 				{
 					Log.Critical(ex);
 				}
+
+				return Task.CompletedTask;
 			});
 		}
 
