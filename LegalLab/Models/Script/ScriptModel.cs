@@ -124,7 +124,7 @@ namespace LegalLab.Models.Script
 				return;
 			}
 
-			Task.Run(() =>
+			Task.Run(async () =>
 			{
 				try
 				{
@@ -140,7 +140,7 @@ namespace LegalLab.Models.Script
 
 					try
 					{
-						Ans = Exp.Root.Evaluate(this.variables);
+						Ans = await Exp.Root.EvaluateAsync(this.variables);
 					}
 					catch (ScriptReturnValueException ex)
 					{
