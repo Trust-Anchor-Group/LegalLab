@@ -110,8 +110,13 @@ namespace LegalLab.Models.Window
 				this.skipNextPosition = double.IsNaN(MainWindow.currentInstance.Left);
 
 				MainWindow.currentInstance.WindowState = this.State;
-				MainWindow.currentInstance.Left = this.Left;
-				MainWindow.currentInstance.Top = this.Top;
+
+				if (this.Left > -25600)
+					MainWindow.currentInstance.Left = this.Left;
+
+				if (this.Top > -25600)
+					MainWindow.currentInstance.Top = this.Top;
+
 				MainWindow.currentInstance.Width = this.Width;
 				MainWindow.currentInstance.Height = this.Height;
 				MainWindow.currentInstance.TabControl.SelectedIndex = this.TabIndex;
@@ -169,8 +174,11 @@ namespace LegalLab.Models.Window
 				}
 				else
 				{
-					this.Left = MainWindow.currentInstance.Left;
-					this.Top = MainWindow.currentInstance.Top;
+					if (MainWindow.currentInstance.Left > -25600)
+						this.Left = MainWindow.currentInstance.Left;
+
+					if (MainWindow.currentInstance.Top > -25600)
+						this.Top = MainWindow.currentInstance.Top;
 				}
 			}
 		}
