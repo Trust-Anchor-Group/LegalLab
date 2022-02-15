@@ -518,8 +518,11 @@ namespace LegalLab.Models.Design
 				}
 				catch (Exception ex)
 				{
+					this.contract.ForMachines = null;
 					Log.Critical(ex);
 				}
+
+				this.propose.RaiseCanExecuteChanged();
 
 				return Task.CompletedTask;
 			});
@@ -1426,7 +1429,10 @@ namespace LegalLab.Models.Design
 
 		private bool CanExecuteProposeContract()
 		{
-			return this.Connected && (this.ParametersOk || this.PartsMode == ContractParts.TemplateOnly) && !string.IsNullOrEmpty(this.ContractId);
+			return this.Connected && 
+				(this.ParametersOk || this.PartsMode == ContractParts.TemplateOnly) && 
+				!string.IsNullOrEmpty(this.ContractId) &&
+				!(this.contract.ForMachines is null);
 		}
 
 		/// <inheritdoc/>
