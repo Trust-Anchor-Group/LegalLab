@@ -13,15 +13,22 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExampleContracts", "ExampleContracts", "{46E61E48-A9A5-4CB8-8B7A-712F716F6FF5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Marketplace", "Marketplace", "{A1B883CE-F616-4BE0-B37F-0000FA2A1839}"
-	ProjectSection(SolutionItems) = preProject
-		ExampleContracts\Marketplace\BuyService.xml = ExampleContracts\Marketplace\BuyService.xml
-		ExampleContracts\Marketplace\OfferService.xml = ExampleContracts\Marketplace\OfferService.xml
-		ExampleContracts\Marketplace\SellItem.xml = ExampleContracts\Marketplace\SellItem.xml
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Markdown", "Markdown", "{A151F6AB-D6F2-40E4-A739-4D6E67F00E5D}"
 	ProjectSection(SolutionItems) = preProject
 		ExampleContracts\Markdown\Syntax.xml = ExampleContracts\Markdown\Syntax.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Buying Services", "Buying Services", "{C0BD025A-D93B-4E43-9383-904927669BF5}"
+	ProjectSection(SolutionItems) = preProject
+		ExampleContracts\Marketplace\Buying Services\BuyService.xml = ExampleContracts\Marketplace\Buying Services\BuyService.xml
+		ExampleContracts\Marketplace\Buying Services\OfferService.xml = ExampleContracts\Marketplace\Buying Services\OfferService.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Selling Items", "Selling Items", "{C6C5ED1C-B116-4183-9C51-E65AD2CA37D4}"
+	ProjectSection(SolutionItems) = preProject
+		ExampleContracts\Marketplace\Selling Items\OfferItem.xml = ExampleContracts\Marketplace\Selling Items\OfferItem.xml
+		ExampleContracts\Marketplace\Selling Items\SellItem.xml = ExampleContracts\Marketplace\Selling Items\SellItem.xml
 	EndProjectSection
 EndProject
 Global
@@ -42,6 +49,8 @@ Global
 		{46E61E48-A9A5-4CB8-8B7A-712F716F6FF5} = {5DCAD7B4-A632-4533-8B95-6D2838387720}
 		{A1B883CE-F616-4BE0-B37F-0000FA2A1839} = {46E61E48-A9A5-4CB8-8B7A-712F716F6FF5}
 		{A151F6AB-D6F2-40E4-A739-4D6E67F00E5D} = {46E61E48-A9A5-4CB8-8B7A-712F716F6FF5}
+		{C0BD025A-D93B-4E43-9383-904927669BF5} = {A1B883CE-F616-4BE0-B37F-0000FA2A1839}
+		{C6C5ED1C-B116-4183-9C51-E65AD2CA37D4} = {A1B883CE-F616-4BE0-B37F-0000FA2A1839}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {82820A85-2566-4DAB-A5B4-BABDC2569097}
