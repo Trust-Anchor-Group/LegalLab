@@ -92,7 +92,11 @@ namespace LegalLab.Models.Legal.Items
 		public string Name
 		{
 			get => this.name.Value;
-			set => this.name.Value = value;
+			set
+			{
+				this.Role.Name = value;
+				this.name.Value = value;
+			}
 		}
 
 		/// <summary>
