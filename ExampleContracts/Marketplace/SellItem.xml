@@ -454,138 +454,6 @@
 				</paragraph>
 			</description>
 		</stringParameter>
-		<stringParameter name="ToAddress1" guide="Address" minLength="1">
-			<description xml:lang="en">
-				<paragraph>
-					<text>First row of address of delivery point.</text>
-				</paragraph>
-			</description>
-			<description xml:lang="es">
-				<paragraph>
-					<text>Primera fila de dirección del punto de entrega.</text>
-				</paragraph>
-			</description>
-			<description xml:lang="pt">
-				<paragraph>
-					<text>Primeira linha de endereço do ponto de entrega.</text>
-				</paragraph>
-			</description>
-			<description xml:lang="sv">
-				<paragraph>
-					<text>Första adressraden för avlämningsstället.</text>
-				</paragraph>
-			</description>
-		</stringParameter>
-		<stringParameter name="ToAddress2" value="">
-			<description xml:lang="en">
-				<paragraph>
-					<text>Optional second row of address of delivery point.</text>
-				</paragraph>
-			</description>
-			<description xml:lang="es">
-				<paragraph>
-					<text>Segunda fila opcional de la dirección del punto de entrega.</text>
-				</paragraph>
-			</description>
-			<description xml:lang="pt">
-				<paragraph>
-					<text>Segunda linha opcional de endereço do ponto de entrega.</text>
-				</paragraph>
-			</description>
-			<description xml:lang="sv">
-				<paragraph>
-					<text>Valfri andra rad för avlämningsstället.</text>
-				</paragraph>
-			</description>
-		</stringParameter>
-		<stringParameter name="ToAddress3" value="">
-			<description xml:lang="en">
-				<paragraph>
-					<text>Optional third row of address of delivery point.</text>
-				</paragraph>
-			</description>
-			<description xml:lang="es">
-				<paragraph>
-					<text>Tercera fila opcional de la dirección del punto de entrega.</text>
-				</paragraph>
-			</description>
-			<description xml:lang="pt">
-				<paragraph>
-					<text>Terceira linha opcional de endereço do ponto de entrega.</text>
-				</paragraph>
-			</description>
-			<description xml:lang="sv">
-				<paragraph>
-					<text>Valfri tredje rad för avlämningsstället.</text>
-				</paragraph>
-			</description>
-		</stringParameter>
-		<stringParameter name="ToPostalCode" guide="Postal Code" minLength="1">
-			<description xml:lang="en">
-				<paragraph>
-					<text>Postal code of delivery point.</text>
-				</paragraph>
-			</description>
-			<description xml:lang="es">
-				<paragraph>
-					<text>Código postal del punto de entrega.</text>
-				</paragraph>
-			</description>
-			<description xml:lang="pt">
-				<paragraph>
-					<text>Código postal do ponto de entrega.</text>
-				</paragraph>
-			</description>
-			<description xml:lang="sv">
-				<paragraph>
-					<text>Postkod för avlämningsstället.</text>
-				</paragraph>
-			</description>
-		</stringParameter>
-		<stringParameter name="ToCity" guide="City" minLength="1">
-			<description xml:lang="en">
-				<paragraph>
-					<text>City of delivery point.</text>
-				</paragraph>
-			</description>
-			<description xml:lang="es">
-				<paragraph>
-					<text>Ciudad del punto de entrega.</text>
-				</paragraph>
-			</description>
-			<description xml:lang="pt">
-				<paragraph>
-					<text>Cidade do ponto de entrega.</text>
-				</paragraph>
-			</description>
-			<description xml:lang="sv">
-				<paragraph>
-					<text>Stad för avlämningsstället.</text>
-				</paragraph>
-			</description>
-		</stringParameter>
-		<stringParameter name="ToCountry" guide="Country" minLength="1">
-			<description xml:lang="en">
-				<paragraph>
-					<text>Country of delivery point.</text>
-				</paragraph>
-			</description>
-			<description xml:lang="es">
-				<paragraph>
-					<text>País del punto de entrega.</text>
-				</paragraph>
-			</description>
-			<description xml:lang="pt">
-				<paragraph>
-					<text>País de ponto de entrega.</text>
-				</paragraph>
-			</description>
-			<description xml:lang="sv">
-				<paragraph>
-					<text>Land för avlämningsstället.</text>
-				</paragraph>
-			</description>
-		</stringParameter>
 	</parameters>
 	<humanReadableText xml:lang="en">
 		<section>
@@ -681,34 +549,6 @@
 							<text>,  </text>
 							<bold>
 								<parameter name="FromCountry" />
-							</bold>
-							<text>.</text>
-						</paragraph>
-					</body>
-				</section>
-				<section>
-					<header>
-						<text>Delivery Point</text>
-					</header>
-					<body>
-						<paragraph>
-							<text>The carrier will transport the delivery to </text>
-							<bold>
-								<parameter name="ToAddress1" />
-								<text> </text>
-								<parameter name="ToAddress2" />
-								<text> </text>
-								<parameter name="ToAddress3" />
-							</bold>
-							<text>, </text>
-							<bold>
-								<parameter name="ToPostalCode" />
-								<text> </text>
-								<parameter name="ToCity" />
-							</bold>
-							<text>,  </text>
-							<bold>
-								<parameter name="ToCountry" />
 							</bold>
 							<text>.</text>
 						</paragraph>
@@ -952,34 +792,6 @@
 				</section>
 				<section>
 					<header>
-						<text>Punto de entrega</text>
-					</header>
-					<body>
-						<paragraph>
-							<text>El transportista transportará la entrega a </text>
-							<bold>
-								<parameter name="ToAddress1" />
-								<text> </text>
-								<parameter name="ToAddress2" />
-								<text> </text>
-								<parameter name="ToAddress3" />
-							</bold>
-							<text>, </text>
-							<bold>
-								<parameter name="ToPostalCode" />
-								<text> </text>
-								<parameter name="ToCity" />
-							</bold>
-							<text>, </text>
-							<bold>
-								<parameter name="ToCountry" />
-							</bold>
-							<text>.</text>
-						</paragraph>
-					</body>
-				</section>
-				<section>
-					<header>
 						<text>Consignación de subasta</text>
 					</header>
 					<body>
@@ -1211,34 +1023,6 @@
 				</section>
 				<section>
 					<header>
-						<text>Ponto de entrega</text>
-					</header>
-					<body>
-						<paragraph>
-							<text>A transportadora transportará a entrega para </text>
-							<bold>
-								<parameter name="ToAddress1" />
-								<text> </text>
-								<parameter name="ToAddress2" />
-								<text> </text>
-								<parameter name="ToAddress3" />
-							</bold>
-							<text>, </text>
-							<bold>
-								<parameter name="ToPostalCode" />
-								<text> </text>
-								<parameter name="ToCity" />
-							</bold>
-							<text>, </text>
-							<bold>
-								<parameter name="ToCountry" />
-							</bold>
-							<text>.</text>
-						</paragraph>
-					</body>
-				</section>
-				<section>
-					<header>
 						<text>Remessa de Leilões</text>
 					</header>
 					<body>
@@ -1465,34 +1249,6 @@
 							<bold>
 								<parameter name="FromCountry" />
 							</bold>
-						</paragraph>
-					</body>
-				</section>
-				<section>
-					<header>
-						<text>Leveransställe</text>
-					</header>
-					<body>
-						<paragraph>
-							<text>Transportören transporterar leveransen till </text>
-							<bold>
-								<parameter name="ToAddress1" />
-								<text> </text>
-								<parameter name="ToAddress2" />
-								<text> </text>
-								<parameter name="ToAddress3" />
-							</bold>
-							<text>, </text>
-							<bold>
-								<parameter name="ToPostalCode" />
-								<text> </text>
-								<parameter name="ToCity" />
-							</bold>
-							<text>, </text>
-							<bold>
-								<parameter name="ToCountry" />
-							</bold>
-							<text>.</text>
 						</paragraph>
 					</body>
 				</section>
