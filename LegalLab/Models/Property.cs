@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using Waher.Events;
 
 namespace LegalLab.Models
 {
@@ -52,8 +54,27 @@ namespace LegalLab.Models
 
 				this.value = value;
 
+				PropertyChangedEventHandler h = this.PropertyChanged;
+				if (!(h is null))
+				{
+					try
+					{
+						h.Invoke(this, new PropertyChangedEventArgs(this.name));
+					}
+					catch (Exception ex)
+					{
+						Log.Critical(ex);
+					}
+				}
+
 				this.model.RaisePropertyChanged(this.name);
 			}
 		}
+
+		/// <summary>
+		/// Occurs when the property value changes.
+		/// </summary>
+		public event PropertyChangedEventHandler PropertyChanged;
+
 	}
 }

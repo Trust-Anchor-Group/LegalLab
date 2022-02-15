@@ -96,6 +96,10 @@ namespace LegalLab.Models.Design
 			this.humanReadableMarkdown = new DelayedActionProperty<string>(nameof(this.HumanReadableMarkdown), TimeSpan.FromSeconds(1), true, string.Empty, this);
 			this.humanReadable = new Property<object>(nameof(this.HumanReadable), null, this);
 
+			this.roles.PropertyChanged += Roles_PropertyChanged;
+			this.parameters.PropertyChanged += Parameters_PropertyChanged;
+			this.parts.PropertyChanged += Parts_PropertyChanged;
+
 			this.Add(this.microsoftTranslatorKey = new PersistedProperty<string>("Design", nameof(MicrosoftTranslatorKey), true, string.Empty, this));
 
 			this.machineReadable.OnAction += NormalizeMachineReadableXml;
@@ -640,11 +644,12 @@ namespace LegalLab.Models.Design
 		public RoleInfo[] Roles
 		{
 			get => this.roles.Value;
-			set
-			{
-				this.roles.Value = value;
-				this.contract.Roles = value.ToRoles();
-			}
+			set => this.roles.Value = value;
+		}
+
+		private void Roles_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			this.contract.Roles = this.roles.Value.ToRoles();
 		}
 
 		/// <summary>
@@ -653,11 +658,12 @@ namespace LegalLab.Models.Design
 		public PartInfo[] Parts
 		{
 			get => this.parts.Value;
-			set
-			{
-				this.parts.Value = value;
-				this.contract.Parts = value.ToParts();
-			}
+			set => this.parts.Value = value;
+		}
+
+		private void Parts_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			this.contract.Parts = this.parts.Value.ToParts();
 		}
 
 		/// <summary>
@@ -666,11 +672,12 @@ namespace LegalLab.Models.Design
 		public ParameterInfo[] Parameters
 		{
 			get => this.parameters.Value;
-			set
-			{
-				this.parameters.Value = value;
-				this.contract.Parameters = value.ToParameters();
-			}
+			set => this.parameters.Value = value;
+		}
+
+		private void Parameters_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			this.contract.Parameters = this.parameters.Value.ToParameters();
 		}
 
 		/// <summary>
