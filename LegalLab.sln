@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Marketplace", "Marketplace"
 	ProjectSection(SolutionItems) = preProject
 		ExampleContracts\Marketplace\BuyService.xml = ExampleContracts\Marketplace\BuyService.xml
 		ExampleContracts\Marketplace\OfferService.xml = ExampleContracts\Marketplace\OfferService.xml
+		ExampleContracts\Marketplace\SellItem.xml = ExampleContracts\Marketplace\SellItem.xml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Markdown", "Markdown", "{A151F6AB-D6F2-40E4-A739-4D6E67F00E5D}"
