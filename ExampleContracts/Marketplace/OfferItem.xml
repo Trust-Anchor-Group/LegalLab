@@ -1,0 +1,590 @@
+<contract archiveOpt="P3M" archiveReq="P1M" canActAsTemplate="true" duration="P1M" id="OfferItemExampleTemplate" visibility="PublicSearchable" xmlns="urn:ieee:iot:leg:sc:1.0">
+	<Offer xmlns="https://paiwise.tagroot.io/Schema/Marketplace.xsd">
+		<ItemReference>
+			<ParameterReference parameter="RequestForTendersId" />
+		</ItemReference>
+		<Price>
+			<ParameterReference parameter="Price" />
+		</Price>
+		<Currency>
+			<ParameterReference parameter="Currency" />
+		</Currency>
+	</Offer>
+	<role maxCount="1" minCount="1" name="Buyer">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This role represents the prospective </text>
+				<bold>
+					<text>buyer</text>
+				</bold>
+				<text> of the item(s), making the offer.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="es">
+			<paragraph>
+				<text>Este rol representa al posible </text>
+				<bold>
+					<text>comprador</text>
+				</bold>
+				<text> del artículo(s), que hace la oferta.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="pt">
+			<paragraph>
+				<text>Essa função representa o potencial </text>
+				<bold>
+					<text>comprador</text>
+				</bold>
+				<text> do item(s), que faz a oferta.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="sv">
+			<paragraph>
+				<text>Den här funktionen representerar den potentiella </text>
+				<bold>
+					<text>köparen</text>
+				</bold>
+				<text> för artikeln(er), som ger erbjudandet.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role maxCount="1" minCount="1" name="Auctioneer">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This role represents the </text>
+				<bold>
+					<text>auctioneer</text>
+				</bold>
+				<text> or broker that negotiates the sales of the requested service.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="es">
+			<paragraph>
+				<text>Este rol representa al </text>
+				<bold>
+					<text>subastador</text>
+				</bold>
+				<text> o corredor que negocia las ventas del servicio solicitado.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="pt">
+			<paragraph>
+				<text>Essa função representa o </text>
+				<bold>
+					<text>leiloeiro</text>
+				</bold>
+				<text> ou corretor que negocia as vendas do serviço solicitado.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="sv">
+			<paragraph>
+				<text>Den här rollen representerar </text>
+				<bold>
+					<text>auktionsförrättaren</text>
+				</bold>
+				<text> eller mäklaren som förhandlar om försäljningen av den begärda tjänsten.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<templateOnly />
+	</parts>
+	<parameters>
+		<stringParameter name="RequestForTendersId" guide="Request for Tenders Contract ID" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The offer references the Request for Tenders detailed by the smart contract referenced to by this parameter.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>La oferta hace referencia a la Solicitud de Licitaciones detallada por el contrato inteligente al que hace referencia este parámetro.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>A oferta faz referência ao Pedido de Ofertas detalhado pelo contrato inteligente a ver com este parâmetro.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Erbjudandet refererar till anbudsförfrågan som beskrivs av det smarta kontrakt som refereras till av denna parameter.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<numericalParameter name="Price" guide="Bid Price" min="0" minIncluded="true">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The offer price.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>El precio de oferta.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>O preço da oferta.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Erbjudandepriset.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<stringParameter name="Currency" guide="Currency" regEx="\w{3}" minLength="3" maxLength="3">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Currency of the bid.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Moneda de la oferta.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Moeda da oferta.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Budets valuta.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Offer to buy Item(s) (Auction Offer Agreement)</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This contract represents an offer buy the item(s) offered in accordance with a request for tenders, negotiated by an online auction managed by TAG Marketplace.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Introduction</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>A </text>
+							<italic>
+								<text>Seller</text>
+							</italic>
+							<text> has published item(s) to be sold and transported in an online request for tenders defined in the smart contract </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>.  This document defines an offer created by </text>
+							<bold>
+								<text>Buyer</text>
+							</bold>
+							<text> to buy these item(s) in accordance with the aforementioned Request for Tenders for the price of </text>
+							<bold>
+								<parameter name="Price" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Auction</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>The </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text> has been consigned by the </text>
+							<italic>
+								<text>Seller</text>
+							</italic>
+							<text> to negotiate the right to sell the item(s) defined in the smart contract  </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>. The </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text> receives bids in the form of offer contracts; this contract being such an offer contract.  The </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text>, as part of the consignment, will choose the best bid, or the first acceptable bid, by signing the corresponding offer contract. As soon as the contract has been signed, The </text>
+							<italic>
+								<text>Buyer</text>
+							</italic>
+							<text> will pay the amount of </text>
+							<bold>
+								<parameter name="Price" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> to the </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text>, who in turn, pays the amount (minus the </text>
+							<italic>
+								<text>commission fee</text>
+							</italic>
+							<text>) to the </text>
+							<bold>
+								<text>Seller</text>
+							</bold>
+							<text>. The </text>
+							<italic>
+								<text>commission</text>
+							</italic>
+							<text> is negotiated by the </text>
+							<italic>
+								<text>Seller</text>
+							</italic>
+							<text> and the </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text> as part of the consignment agreement </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="es">
+		<section>
+			<header>
+				<text>Oferta de compra de artículo(s) (Acuerdo de oferta de subasta)</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Este contrato representa una oferta de compra del artículo ofrecido de acuerdo con una solicitud de licitación, negociada por una subasta en línea administrada por TAG Marketplace.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Introducción</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Un </text>
+							<italic>
+								<text>Vendedor</text>
+							</italic>
+							<text> ha publicado un artículo(s) para ser vendido y transportado en una solicitud en línea de licitaciones definidas en el contrato inteligente </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>.  Este documento define una oferta creada por </text>
+							<bold>
+								<text>Comprador</text>
+							</bold>
+							<text> para comprar estos artículos(s) de acuerdo con la solicitud de licitación antes mencionada por el precio de </text>
+							<bold>
+								<parameter name="Price" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Subasta</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>El </text>
+							<bold>
+								<text>Subastador</text>
+							</bold>
+							<text> ha sido consignado por el </text>
+							<italic>
+								<text>Vendedor</text>
+							</italic>
+							<text> para negociar el derecho a vender el artículo(s) definido en el contrato inteligente </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>. El </text>
+							<bold>
+								<text>Subastador</text>
+							</bold>
+							<text> recibe ofertas en forma de contratos de oferta; siendo este contrato un contrato de oferta de este tipo.  El </text>
+							<bold>
+								<text>Subastador</text>
+							</bold>
+							<text>, como parte del envío, elegirá la mejor oferta, o la primera oferta aceptable, mediante la firma del contrato de oferta correspondiente. Tan pronto como se haya firmado el contrato, el </text>
+							<italic>
+								<text>Comprador</text>
+							</italic>
+							<text> pagará el importe de </text>
+							<bold>
+								<parameter name="Price" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> al </text>
+							<bold>
+								<text>Subastador</text>
+							</bold>
+							<text>, quien a su vez, paga el importe (menos la </text>
+							<italic>
+								<text>comisión de comisión</text>
+							</italic>
+							<text>) al </text>
+							<bold>
+								<text>Vendedor</text>
+							</bold>
+							<text>. La </text>
+							<italic>
+								<text>comisión</text>
+							</italic>
+							<text> es negociada por el </text>
+							<italic>
+								<text>Vendedor</text>
+							</italic>
+							<text> y el </text>
+							<bold>
+								<text>Subastador</text>
+							</bold>
+							<text> como parte del acuerdo de consignación </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="pt">
+		<section>
+			<header>
+				<text>Oferta de compra de itens(s) (Contrato de Lance de Leilão)</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Este contrato representa uma oferta de compra do item oferecido de acordo com uma solicitação de licitação, negociada por um leilão online gerenciado pela TAG Marketplace.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Introdução</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>A </text>
+							<italic>
+								<text>Seller</text>
+							</italic>
+							<text> postou um item(s) para ser vendido e transportado em uma solicitação de lance on-line definida no contrato inteligente </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>.  Este documento define uma oferta criada por </text>
+							<bold>
+								<text>Buyer</text>
+							</bold>
+							<text> para comprar esses itens(s) de acordo com a solicitação de oferta acima mencionada para o preço de </text>
+							<bold>
+								<parameter name="Price" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Leilão</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>O </text>
+							<bold>
+								<text>Leiloeiro</text>
+							</bold>
+							<text> foi enviado pelo </text>
+							<italic>
+								<text>Vendedor</text>
+							</italic>
+							<text> para negociar o direito de vender o item(s) definido no contrato inteligente </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>. O </text>
+							<bold>
+								<text>Leiloeiro</text>
+							</bold>
+							<text> recebe licitações sob a forma de contratos de licitação; este contrato sendo um contrato de oferta.  O </text>
+							<bold>
+								<text>Leiloeiro</text>
+							</bold>
+							<text>, como parte da remessa, escolherá a melhor oferta, ou a primeira oferta aceitável, mediante a assinatura do contrato de licitação correspondente. Assim que o contrato tiver sido assinado, o </text>
+							<italic>
+								<text>Comprador</text>
+							</italic>
+							<text> pagará o valor de </text>
+							<bold>
+								<parameter name="Price" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> ao </text>
+							<bold>
+								<text>Leiloeiro</text>
+							</bold>
+							<text>, que, por sua vez, paga o valor (menos a </text>
+							<bold>
+								<text>comissão</text>
+							</bold>
+							<text>) ao </text>
+							<bold>
+								<text>Vendedor</text>
+							</bold>
+							<text>. A </text>
+							<italic>
+								<text>comissão</text>
+							</italic>
+							<text> é negociada pelo </text>
+							<italic>
+								<text>Vendedor</text>
+							</italic>
+							<text> e pelo </text>
+							<bold>
+								<text>Leiloeiro</text>
+							</bold>
+							<text> como parte do acordo de remessa </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="sv">
+		<section>
+			<header>
+				<text>Erbjudande om köp av föremål(s) (Anbudsavtal för auktion)</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Detta avtal representerar ett erbjudande om att köpa den erbjudna varan enligt en budförfrågan, förhandlad av en onlineauktion som hanteras av TAG Marketplace.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Introduktion</text>
+					</header>
+					<body>
+						<paragraph>
+							<italic>
+								<text>Säljare</text>
+							</italic>
+							<text> bokförde en artikel(s) som ska säljas och transporteras i en budförfrågan online som definieras i det smarta kontraktet </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>.  Detta dokument definierar ett erbjudande som skapats av </text>
+							<bold>
+								<text>Köparen</text>
+							</bold>
+							<text> för att köpa dessa artiklar(er) enligt ovanstående erbjudandeförfrågan till priset av </text>
+							<bold>
+								<parameter name="Price" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Auktion</text>
+					</header>
+					<body>
+						<paragraph>
+							<bold>
+								<text>Auktionsförrättaren</text>
+							</bold>
+							<text> har skickats av </text>
+							<italic>
+								<text>Säljare</text>
+							</italic>
+							<text> för att förhandla om rätten att sälja varan(er) som definieras i det smarta kontraktet </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>. </text>
+							<bold>
+								<text>Auktionsförrättaren</text>
+							</bold>
+							<text> erhåller bud i form av budavtal; detta kontrakt är ett erbjudandekontrakt.  </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text>, som en del av leveransen, kommer att välja det bästa erbjudandet, eller det första acceptabla erbjudandet, när du undertecknar motsvarande budavtal. När kontraktet har undertecknats betalar </text>
+							<italic>
+								<text>Köparen</text>
+							</italic>
+							<text> beloppet </text>
+							<bold>
+								<parameter name="Price" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> till </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text>, som i sin tur betalar beloppet (minus </text>
+							<bold>
+								<text>provision</text>
+							</bold>
+							<text>) till </text>
+							<bold>
+								<text>Seller</text>
+							</bold>
+							<text>. </text>
+							<italic>
+								<text>Kommissionen</text>
+							</italic>
+							<text> förhandlas fram av </text>
+							<italic>
+								<text>Säljare</text>
+							</italic>
+							<text> och </text>
+							<bold>
+								<text>Auktionsförrättare</text>
+							</bold>
+							<text> som en del av remitteringsavtalet </text>
+							<bold>
+								<parameter name="RequestForTendersId" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>
