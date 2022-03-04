@@ -10,6 +10,8 @@ namespace LegalLab.Models
 	/// </summary>
 	public abstract class Model : IModel
 	{
+		private bool started = false;
+
 		/// <summary>
 		/// Occurs when a property value changes.
 		/// </summary>
@@ -36,6 +38,7 @@ namespace LegalLab.Models
 		/// </summary>
 		public virtual Task Start()
 		{
+			this.started = true;
 			return Task.CompletedTask;
 		}
 
@@ -44,7 +47,13 @@ namespace LegalLab.Models
 		/// </summary>
 		public virtual Task Stop()
 		{
+			this.started = false;
 			return Task.CompletedTask;
 		}
+
+		/// <summary>
+		/// If the model has been started.
+		/// </summary>
+		public bool Started => this.started;
 	}
 }

@@ -24,5 +24,10 @@ namespace LegalLab.Models
 		/// Stops the model.
 		/// </summary>
 		Task Stop();
+
+		/// <summary>
+		/// If the model has been started.
+		/// </summary>
+		bool Started { get; }
 	}
 }

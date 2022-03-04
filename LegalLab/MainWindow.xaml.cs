@@ -134,10 +134,13 @@ namespace LegalLab
 		{
 			T Result = Types.InstantiateDefault<T>(false, Arguments);
 
-			if (Result is PersistedModel P)
-				await P.Load();
+			if (!Result.Started)
+			{
+				if (Result is PersistedModel P)
+					await P.Load();
 
-			await Result.Start();
+				await Result.Start();
+			}
 
 			return Result;
 		}
