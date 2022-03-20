@@ -33,9 +33,9 @@ namespace LegalLab.Models.Design
 	[Singleton]
 	public class DesignModel : ConnectionSensitiveModel, IPartsModel, ITranslatable
 	{
-		private readonly Property<Waher.Content.Duration> archiveOptional;
-		private readonly Property<Waher.Content.Duration> archiveRequired;
-		private readonly Property<Waher.Content.Duration> duration;
+		private readonly Property<Waher.Content.Duration?> archiveOptional;
+		private readonly Property<Waher.Content.Duration?> archiveRequired;
+		private readonly Property<Waher.Content.Duration?> duration;
 		private readonly Property<ContractVisibility> visibility;
 		private readonly Property<ContractParts> partsMode;
 		private readonly Property<string> language;
@@ -77,9 +77,9 @@ namespace LegalLab.Models.Design
 		{
 			this.visibility = new Property<ContractVisibility>(nameof(this.Visibility), ContractVisibility.Public, this);
 			this.partsMode = new Property<ContractParts>(nameof(this.PartsMode), ContractParts.TemplateOnly, this);
-			this.archiveOptional = new Property<Waher.Content.Duration>(nameof(this.ArchiveOptional), Waher.Content.Duration.Zero, this);
-			this.archiveRequired = new Property<Waher.Content.Duration>(nameof(this.ArchiveRequired), Waher.Content.Duration.Zero, this);
-			this.duration = new Property<Waher.Content.Duration>(nameof(this.Duration), Waher.Content.Duration.Zero, this);
+			this.archiveOptional = new Property<Waher.Content.Duration?>(nameof(this.ArchiveOptional), Waher.Content.Duration.Zero, this);
+			this.archiveRequired = new Property<Waher.Content.Duration?>(nameof(this.ArchiveRequired), Waher.Content.Duration.Zero, this);
+			this.duration = new Property<Waher.Content.Duration?>(nameof(this.Duration), Waher.Content.Duration.Zero, this);
 			this.language = new Property<string>(nameof(this.Language), "en", this);
 			this.languages = new Property<Iso__639_1.Record[]>(nameof(this.Languages), new Iso__639_1.Record[0], this);
 			this.signBefore = new Property<DateTime?>(nameof(this.SignBefore), null, this);
@@ -270,7 +270,7 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Optional archiving time
 		/// </summary>
-		public Waher.Content.Duration ArchiveOptional
+		public Waher.Content.Duration? ArchiveOptional
 		{
 			get => this.archiveOptional.Value;
 			set
@@ -283,7 +283,7 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Required archiving time
 		/// </summary>
-		public Waher.Content.Duration ArchiveRequired
+		public Waher.Content.Duration? ArchiveRequired
 		{
 			get => this.archiveRequired.Value;
 			set
@@ -296,7 +296,7 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Duration of contract, once signed
 		/// </summary>
-		public Waher.Content.Duration Duration
+		public Waher.Content.Duration? Duration
 		{
 			get => this.duration.Value;
 			set
