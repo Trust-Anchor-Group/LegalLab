@@ -31,6 +31,26 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Selling Items", "Selling It
 		ExampleContracts\Marketplace\Selling Items\SellItem.xml = ExampleContracts\Marketplace\Selling Items\SellItem.xml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tokens", "Tokens", "{FE86B209-349B-47FB-9A12-5BEAFE9F35DC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Create", "Create", "{4884851F-3B3B-4666-B245-BDE968DC48A8}"
+	ProjectSection(SolutionItems) = preProject
+		ExampleContracts\Tokens\Create\CreateTokenContract1.xml = ExampleContracts\Tokens\Create\CreateTokenContract1.xml
+		ExampleContracts\Tokens\Create\CreateTokenContract1RandomId.xml = ExampleContracts\Tokens\Create\CreateTokenContract1RandomId.xml
+		ExampleContracts\Tokens\Create\CreateTokenContract1UniqueId.xml = ExampleContracts\Tokens\Create\CreateTokenContract1UniqueId.xml
+		ExampleContracts\Tokens\Create\CreateTokenContract5.xml = ExampleContracts\Tokens\Create\CreateTokenContract5.xml
+		ExampleContracts\Tokens\Create\CreateTokenContract5RandomId.xml = ExampleContracts\Tokens\Create\CreateTokenContract5RandomId.xml
+		ExampleContracts\Tokens\Create\CreateTokenContract5UniqueId.xml = ExampleContracts\Tokens\Create\CreateTokenContract5UniqueId.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Destroy", "Destroy", "{34AB437E-CCCB-4C9E-B0D3-A0AA451EE5B1}"
+	ProjectSection(SolutionItems) = preProject
+		ExampleContracts\Tokens\Destroy\DestroyTokenContract1.xml = ExampleContracts\Tokens\Destroy\DestroyTokenContract1.xml
+		ExampleContracts\Tokens\Destroy\DestroyTokenContract5.xml = ExampleContracts\Tokens\Destroy\DestroyTokenContract5.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Transfer", "Transfer", "{1CACA399-0F2F-4C13-8404-C76B93561759}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +71,10 @@ Global
 		{A151F6AB-D6F2-40E4-A739-4D6E67F00E5D} = {46E61E48-A9A5-4CB8-8B7A-712F716F6FF5}
 		{C0BD025A-D93B-4E43-9383-904927669BF5} = {A1B883CE-F616-4BE0-B37F-0000FA2A1839}
 		{C6C5ED1C-B116-4183-9C51-E65AD2CA37D4} = {A1B883CE-F616-4BE0-B37F-0000FA2A1839}
+		{FE86B209-349B-47FB-9A12-5BEAFE9F35DC} = {46E61E48-A9A5-4CB8-8B7A-712F716F6FF5}
+		{4884851F-3B3B-4666-B245-BDE968DC48A8} = {FE86B209-349B-47FB-9A12-5BEAFE9F35DC}
+		{34AB437E-CCCB-4C9E-B0D3-A0AA451EE5B1} = {FE86B209-349B-47FB-9A12-5BEAFE9F35DC}
+		{1CACA399-0F2F-4C13-8404-C76B93561759} = {FE86B209-349B-47FB-9A12-5BEAFE9F35DC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {82820A85-2566-4DAB-A5B4-BABDC2569097}

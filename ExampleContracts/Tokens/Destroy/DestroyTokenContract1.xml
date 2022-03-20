@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<contract xmlns="urn:ieee:iot:leg:sc:1.0"
+          id="CreateTokenContract1"
+          archiveOpt="P3M"
+          archiveReq="P1M"
+          canActAsTemplate="true"
+          duration="P1M"
+          visibility="Public">
+	<Destroy xmlns="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd">
+		<TokenID>
+			<ParameterReference parameter="TokenID"/>
+		</TokenID>
+		<Owner>
+			<RoleReference role="Owner"/>
+		</Owner>
+		<TrustProvider>
+			<RoleReference role="TrustProvider"/>
+		</TrustProvider>
+	</Destroy>
+	<role name="Owner" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This is the role of the part that will receive the token after it has been created.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="TrustProvider" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This is the role of the trust provider that acts will host the token and approve its creation.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<open/>
+	</parts>
+	<parameters>
+		<stringParameter name="TokenID" guide="Token ID (GUID)" regEx="[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The ID of the token to destroy.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Destroy token</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This contract destroys a simple token.</text>
+				</paragraph>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>

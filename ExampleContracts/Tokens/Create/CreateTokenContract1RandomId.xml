@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<contract xmlns="urn:ieee:iot:leg:sc:1.0"
+          id="CreateTokenContract1"
+          archiveOpt="P3M"
+          archiveReq="P1M"
+          canActAsTemplate="true"
+          duration="P1M"
+          visibility="Public">
+	<Create xmlns="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd">
+		<TokenID>
+			<Random/>
+		</TokenID>
+		<Creator>
+			<RoleReference role="Creator"/>
+		</Creator>
+		<Owner>
+			<RoleReference role="Owner"/>
+		</Owner>
+		<TrustProvider>
+			<RoleReference role="TrustProvider"/>
+		</TrustProvider>
+		<Value>
+			<ParameterReference parameter="Value"/>
+		</Value>
+		<Currency>
+			<ParameterReference parameter="Currency"/>
+		</Currency>
+		<CommissionPercent>
+			<ParameterReference parameter="CommissionPercent"/>
+		</CommissionPercent>
+		<Expires>
+			<ParameterReference parameter="Expires"/>
+		</Expires>
+		<CreatorCanDestroy>
+			<ParameterReference parameter="CreatorCanDestroy"/>
+		</CreatorCanDestroy>
+		<OwnerCanDestroyBatch>
+			<Boolean>false</Boolean>
+		</OwnerCanDestroyBatch>
+		<OwnerCanDestroyIndividual>
+			<ParameterReference parameter="OwnerCanDestroyIndividual"/>
+		</OwnerCanDestroyIndividual>
+		<CertifierCanDestroy>
+			<ParameterReference parameter="CertifierCanDestroy"/>
+		</CertifierCanDestroy>
+		<Definition>
+			<Nop xmlns="https://paiwise.tagroot.io/Schema/PaymentInstructions.xsd"/>
+		</Definition>
+		<FriendlyName>
+			<ParameterReference parameter="FriendlyName"/>
+		</FriendlyName>
+		<Glyph contentType="image/png">iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAABFFJREFUeJztWU1IMlsYfrqTFmgLIb5yEURlLQo3YVZUCi1qFUFQUKt2QURWm7IgIkhqJ9IP1EIIWkWuIugPLIh0GVFUBC5SocCkEM2/uYvv3oPDNNM43Thwv3lgYM77d57zeI7nzEwBy7Is/mD8RZsAbSgC0CZAG4oAtAnQhiIAbQK0oQhAmwBtKALQJkAbigC0CdCGIgBtArShCECbAG0oAtAmQBuKALQJ0EahkCMYDGJpaQklJSV5F43H4+jr60NHRwfPNz8/j3g8jmw2i5qaGoyMjORdHwBSqRScTicODg5wfX2N19dXqNVqVFRUoLGxET09Pejv7/+6ECsAn8/HApB9LS4u8mo+PT3x4vJFJpNh29vbJfPY2dkRrSe4BL77uSCTyfBs4+PjPNvCwoLkmqenp2AYBufn55JzHh8fRf0FQh9G3t7ecHx8jOLiYo69tLQUZrOZtLe3t/Hr1y+k02liSyaTMBqNqKqq4nZWUAAA0Gg0iMVixC5FbK/XC6vVyrE1Nzdjbm4O3d3dYBiG2O/v77G7u4vZ2VlMT0/D4XAIF857Dv5mS65oNCopx+FwkBy73c5arVbS3t/fz6tPAOzt7a2kfgOBgHhdSVVEyITD4bxzYrEYe3R0RNoGg0E0d2BggJOfTCbl0P6cl6ykPAXIHWx1dfWndV5eXiT153K55FAWri0rKU8BGhoaSLzH4yF2u91O7ENDQ5/mer3eb+0aX+HHBYhGo6ID+GpwKysrxF9fXy+Hrih+/CRos9nI/dTUFM+fe1hyOp08fygUIvcGg0Fyv3V1dWhtbYXJZBIPlKMa8pgBubHpdJrn9/v9xM8wDM9vs9mIv7e3VxZHMfzoDFhdXSX3FouFs1f/C5PJBI1GA+D34eni4oLjLysrI/eBQOA/5yh4EBJN+udAAwDhcBjl5eWfxhUVFSGZTAIAlpeX0dbWhkQiwYnRarXY2trC5uYmAKCpqQk+n4/4Dw8P0dXVRdpS6eZyFM2RPKcEppfQEri8vJT9HPHx8SHY397eXt4cReOkDVm4uJAALS0tsgUYHR3l1LJYLHlvhVLjf2QJpNNpqFQq0na73UilUoJTkWEYPD8/Y2ZmhthyY6PRKHQ6HWmr1WrEYjEUFgo+zdNdAmNjY8RvNpsl19VqtSTP7XZzfGtra7yZMjg4yPr9fl4dj8dDdwnk+s/OziTXXV9fJ3k6nY7ndzqdspaU6Fgks8tNyikeDAY5PpfL9a2ja27uZ79uKBRia2trJQ++srJStD/hRSSCiYkJqFQqvL+/816ZJRIJTE5OIpvNcrYvqXC73bi6ukI2m8XDwwPvJKfX63F3d4dIJIKNjQ2cnJzg5uYGkUgEDMNAr9fDaDSis7MTw8PD5IwhBFl/gv8n/PFvhRUBaBOgDUUA2gRoQxGANgHaUASgTYA2FAFoE6ANRQDaBGhDEYA2AdpQBKBNgDYUAWgToA1FANoEaONve9o8PVvYS2AAAAAASUVORK5CYII=</Glyph>
+	</Create>
+	<role name="Creator" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This is the role of the part that acts as the creator of the token being created.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="Owner" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This is the role of the part that will receive the token after it has been created.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="TrustProvider" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This is the role of the trust provider that acts will host the token and approve its creation.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<open/>
+	</parts>
+	<parameters>
+		<numericalParameter name="Value" guide="Value of token" min="0">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The initial value of the token.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="\w{3}">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The initial currency of the token.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<numericalParameter name="CommissionPercent" guide="Commision (%)" min="0" max="100">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The commission the Trust Provider gets for creating the tokens.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<dateParameter name="Expires" guide="Expiry date" exp="Expires&gt;Now.Date">
+			<description xml:lang="en">
+				<paragraph>
+					<text>When token expires.</text>
+				</paragraph>
+			</description>
+		</dateParameter>
+		<booleanParameter name="CreatorCanDestroy" guide="Creator can destroy token?">
+			<description xml:lang="en">
+				<paragraph>
+					<text>If the creator is allowed to destroy the token.</text>
+				</paragraph>
+			</description>
+		</booleanParameter>
+		<booleanParameter name="OwnerCanDestroyIndividual" guide="Owner can destroy individual token?">
+			<description xml:lang="en">
+				<paragraph>
+					<text>If the current owner is allowed to destroy the individual token.</text>
+				</paragraph>
+			</description>
+		</booleanParameter>
+		<booleanParameter name="CertifierCanDestroy" guide="Certifier can destroy token?">
+			<description xml:lang="en">
+				<paragraph>
+					<text>If a certifier is allowed to destroy the token.</text>
+				</paragraph>
+			</description>
+		</booleanParameter>
+		<stringParameter name="FriendlyName" guide="Friendly Name" minLength="1">
+			<description xml:lang="en">
+				<paragraph>
+					<text>A friendly name for the token.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Create token</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This contract creates a simple token.</text>
+				</paragraph>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>
