@@ -1,4 +1,5 @@
-﻿using LegalLab.Dialogs.AddLanguage;
+﻿using LegalLab.Converters;
+using LegalLab.Dialogs.AddLanguage;
 using LegalLab.Extensions;
 using LegalLab.Items;
 using LegalLab.Models.Legal;
@@ -13,6 +14,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
@@ -60,6 +62,10 @@ namespace LegalLab.Models.Design
 		private readonly Command addNumericParameter;
 		private readonly Command addStringParameter;
 		private readonly Command addBooleanParameter;
+		private readonly Command addDateParameter;
+		private readonly Command addDateTimeParameter;
+		private readonly Command addTimeParameter;
+		private readonly Command addDurationParameter;
 		private readonly Command @new;
 		private readonly Command load;
 		private readonly Command save;
@@ -110,6 +116,10 @@ namespace LegalLab.Models.Design
 			this.addNumericParameter = new Command(this.ExecuteAddNumericParameter);
 			this.addStringParameter = new Command(this.ExecuteAddStringParameter);
 			this.addBooleanParameter = new Command(this.ExecuteAddBooleanParameter);
+			this.addDateParameter = new Command(this.ExecuteAddDateParameter);
+			this.addDateTimeParameter = new Command(this.ExecuteAddDateTimeParameter);
+			this.addTimeParameter = new Command(this.ExecuteAddTimeParameter);
+			this.addDurationParameter = new Command(this.ExecuteAddDurationParameter);
 			this.@new = new Command(this.ExecuteNewContract);
 			this.load = new Command(this.ExecuteLoadContract);
 			this.save = new Command(this.ExecuteSaveContract);
@@ -188,6 +198,14 @@ namespace LegalLab.Models.Design
 					ParameterInfo = this.GetParameterInfo(NP);
 				else if (Parameter is StringParameter SP)
 					ParameterInfo = this.GetParameterInfo(SP);
+				else if (Parameter is DateParameter DP)
+					ParameterInfo = this.GetParameterInfo(DP);
+				else if (Parameter is DateTimeParameter DTP)
+					ParameterInfo = this.GetParameterInfo(DTP);
+				else if (Parameter is TimeParameter TP)
+					ParameterInfo = this.GetParameterInfo(TP);
+				else if (Parameter is DurationParameter DrP)
+					ParameterInfo = this.GetParameterInfo(DrP);
 				else
 					continue;
 
@@ -1195,6 +1213,274 @@ namespace LegalLab.Models.Design
 			{
 				Log.Critical(ex);
 			}
+		}
+
+		/// <summary>
+		/// Command for adding a date parameter
+		/// </summary>
+		public ICommand AddDateParameter => this.addDateParameter;
+
+		/// <summary>
+		/// Adds a date parameter to the design.
+		/// </summary>
+		public async Task ExecuteAddDateParameter()
+		{
+			DateParameter DP = new DateParameter()
+			{
+				Name = this.FindNewName("Date", this.Parameters),
+				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
+				Expression = string.Empty,
+				Guide = string.Empty,
+				Max = null,
+				MaxIncluded = false,
+				Min = null,
+				MinIncluded = false,
+				Value = null
+			};
+
+			this.AddParameter(this.GetParameterInfo(DP));
+		}
+
+		private ParameterInfo GetParameterInfo(DateParameter DP)
+		{
+			TextBox ValueControl = new TextBox();
+			Binding Binding = new Binding("Value");
+			Binding.Converter = new DateToXmlString();
+			ValueControl.SetBinding(TextBox.TextProperty, Binding);
+			ValueControl.TextChanged += Parameter_TextChanged;
+
+			TextBox MinControl = new TextBox();
+			Binding = new Binding("Min");
+			Binding.Converter = new DateToXmlString(); 
+			MinControl.SetBinding(TextBox.TextProperty, Binding);
+			MinControl.TextChanged += Parameter_MinTextChanged;
+
+			TextBox MaxControl = new TextBox();
+			Binding = new Binding("Max");
+			Binding.Converter = new DateToXmlString();
+			MaxControl.SetBinding(TextBox.TextProperty, Binding);
+			MaxControl.TextChanged += Parameter_MaxTextChanged;
+
+			CheckBox MinIncludedControl = new CheckBox();
+			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
+			MinIncludedControl.Checked += Parameter_MinIncludedCheckedChanged;
+			MinIncludedControl.Unchecked += Parameter_MinIncludedCheckedChanged;
+
+			CheckBox MaxIncludedControl = new CheckBox();
+			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
+			MaxIncludedControl.Checked += Parameter_MaxIncludedCheckedChanged;
+			MaxIncludedControl.Unchecked += Parameter_MaxIncludedCheckedChanged;
+
+			ParameterInfo ParameterInfo = new DateParameterInfo(this.contract, DP, ValueControl, MinControl, MinIncludedControl,
+				MaxControl, MaxIncludedControl, this, this.parameters);
+			ValueControl.Tag = ParameterInfo;
+			MinControl.Tag = ParameterInfo;
+			MaxControl.Tag = ParameterInfo;
+			MinIncludedControl.Tag = ParameterInfo;
+			MaxIncludedControl.Tag = ParameterInfo;
+
+			return ParameterInfo;
+		}
+
+		/// <summary>
+		/// Command for adding a date and time parameter
+		/// </summary>
+		public ICommand AddDateTimeParameter => this.addDateTimeParameter;
+
+		/// <summary>
+		/// Adds a date and time parameter to the design.
+		/// </summary>
+		public async Task ExecuteAddDateTimeParameter()
+		{
+			DateTimeParameter DP = new DateTimeParameter()
+			{
+				Name = this.FindNewName("DateTime", this.Parameters),
+				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
+				Expression = string.Empty,
+				Guide = string.Empty,
+				Max = null,
+				MaxIncluded = false,
+				Min = null,
+				MinIncluded = false,
+				Value = null
+			};
+
+			this.AddParameter(this.GetParameterInfo(DP));
+		}
+
+		private ParameterInfo GetParameterInfo(DateTimeParameter DP)
+		{
+			TextBox ValueControl = new TextBox();
+			Binding Binding = new Binding("Value");
+			Binding.Converter = new DateTimeToXmlString();
+			ValueControl.SetBinding(TextBox.TextProperty, Binding);
+			ValueControl.TextChanged += Parameter_TextChanged;
+
+			TextBox MinControl = new TextBox();
+			Binding = new Binding("Min");
+			Binding.Converter = new DateTimeToXmlString();
+			MinControl.SetBinding(TextBox.TextProperty, Binding);
+			MinControl.TextChanged += Parameter_MinTextChanged;
+
+			TextBox MaxControl = new TextBox();
+			Binding = new Binding("Max");
+			Binding.Converter = new DateTimeToXmlString();
+			MaxControl.SetBinding(TextBox.TextProperty, Binding);
+			MaxControl.TextChanged += Parameter_MaxTextChanged;
+
+			CheckBox MinIncludedControl = new CheckBox();
+			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
+			MinIncludedControl.Checked += Parameter_MinIncludedCheckedChanged;
+			MinIncludedControl.Unchecked += Parameter_MinIncludedCheckedChanged;
+
+			CheckBox MaxIncludedControl = new CheckBox();
+			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
+			MaxIncludedControl.Checked += Parameter_MaxIncludedCheckedChanged;
+			MaxIncludedControl.Unchecked += Parameter_MaxIncludedCheckedChanged;
+
+			ParameterInfo ParameterInfo = new DateTimeParameterInfo(this.contract, DP, ValueControl, MinControl, MinIncludedControl,
+				MaxControl, MaxIncludedControl, this, this.parameters);
+			ValueControl.Tag = ParameterInfo;
+			MinControl.Tag = ParameterInfo;
+			MaxControl.Tag = ParameterInfo;
+			MinIncludedControl.Tag = ParameterInfo;
+			MaxIncludedControl.Tag = ParameterInfo;
+
+			return ParameterInfo;
+		}
+
+		/// <summary>
+		/// Command for adding a time parameter
+		/// </summary>
+		public ICommand AddTimeParameter => this.addTimeParameter;
+
+		/// <summary>
+		/// Adds a time parameter to the design.
+		/// </summary>
+		public async Task ExecuteAddTimeParameter()
+		{
+			TimeParameter DP = new TimeParameter()
+			{
+				Name = this.FindNewName("Time", this.Parameters),
+				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
+				Expression = string.Empty,
+				Guide = string.Empty,
+				Max = null,
+				MaxIncluded = false,
+				Min = null,
+				MinIncluded = false,
+				Value = null
+			};
+
+			this.AddParameter(this.GetParameterInfo(DP));
+		}
+
+		private ParameterInfo GetParameterInfo(TimeParameter DP)
+		{
+			TextBox ValueControl = new TextBox();
+			Binding Binding = new Binding("Value");
+			Binding.Converter = new TimeToXmlString();
+			ValueControl.SetBinding(TextBox.TextProperty, Binding);
+			ValueControl.TextChanged += Parameter_TextChanged;
+
+			TextBox MinControl = new TextBox();
+			Binding = new Binding("Min");
+			Binding.Converter = new TimeToXmlString();
+			MinControl.SetBinding(TextBox.TextProperty, Binding);
+			MinControl.TextChanged += Parameter_MinTextChanged;
+
+			TextBox MaxControl = new TextBox();
+			Binding = new Binding("Min");
+			Binding.Converter = new TimeToXmlString();
+			MaxControl.SetBinding(TextBox.TextProperty, Binding);
+			MaxControl.TextChanged += Parameter_MaxTextChanged;
+
+			CheckBox MinIncludedControl = new CheckBox();
+			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
+			MinIncludedControl.Checked += Parameter_MinIncludedCheckedChanged;
+			MinIncludedControl.Unchecked += Parameter_MinIncludedCheckedChanged;
+
+			CheckBox MaxIncludedControl = new CheckBox();
+			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
+			MaxIncludedControl.Checked += Parameter_MaxIncludedCheckedChanged;
+			MaxIncludedControl.Unchecked += Parameter_MaxIncludedCheckedChanged;
+
+			ParameterInfo ParameterInfo = new TimeParameterInfo(this.contract, DP, ValueControl, MinControl, MinIncludedControl,
+				MaxControl, MaxIncludedControl, this, this.parameters);
+			ValueControl.Tag = ParameterInfo;
+			MinControl.Tag = ParameterInfo;
+			MaxControl.Tag = ParameterInfo;
+			MinIncludedControl.Tag = ParameterInfo;
+			MaxIncludedControl.Tag = ParameterInfo;
+
+			return ParameterInfo;
+		}
+
+		/// <summary>
+		/// Command for adding a duration parameter
+		/// </summary>
+		public ICommand AddDurationParameter => this.addDurationParameter;
+
+		/// <summary>
+		/// Adds a duration parameter to the design.
+		/// </summary>
+		public async Task ExecuteAddDurationParameter()
+		{
+			DurationParameter DP = new DurationParameter()
+			{
+				Name = this.FindNewName("Duration", this.Parameters),
+				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
+				Expression = string.Empty,
+				Guide = string.Empty,
+				Max = null,
+				MaxIncluded = false,
+				Min = null,
+				MinIncluded = false,
+				Value = null
+			};
+
+			this.AddParameter(this.GetParameterInfo(DP));
+		}
+
+		private ParameterInfo GetParameterInfo(DurationParameter DP)
+		{
+			TextBox ValueControl = new TextBox();
+			Binding Binding = new Binding("Value");
+			Binding.Converter = new DurationToXmlString();
+			ValueControl.SetBinding(TextBox.TextProperty, Binding);
+			ValueControl.TextChanged += Parameter_TextChanged;
+
+			TextBox MinControl = new TextBox();
+			Binding = new Binding("Min");
+			Binding.Converter = new DurationToXmlString();
+			MinControl.SetBinding(TextBox.TextProperty, Binding);
+			MinControl.TextChanged += Parameter_MinTextChanged;
+
+			TextBox MaxControl = new TextBox();
+			Binding = new Binding("Max");
+			Binding.Converter = new DurationToXmlString();
+			MaxControl.SetBinding(TextBox.TextProperty, Binding);
+			MaxControl.TextChanged += Parameter_MaxTextChanged;
+
+			CheckBox MinIncludedControl = new CheckBox();
+			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
+			MinIncludedControl.Checked += Parameter_MinIncludedCheckedChanged;
+			MinIncludedControl.Unchecked += Parameter_MinIncludedCheckedChanged;
+
+			CheckBox MaxIncludedControl = new CheckBox();
+			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
+			MaxIncludedControl.Checked += Parameter_MaxIncludedCheckedChanged;
+			MaxIncludedControl.Unchecked += Parameter_MaxIncludedCheckedChanged;
+
+			ParameterInfo ParameterInfo = new DurationParameterInfo(this.contract, DP, ValueControl, MinControl, MinIncludedControl,
+				MaxControl, MaxIncludedControl, this, this.parameters);
+			ValueControl.Tag = ParameterInfo;
+			MinControl.Tag = ParameterInfo;
+			MaxControl.Tag = ParameterInfo;
+			MinIncludedControl.Tag = ParameterInfo;
+			MaxIncludedControl.Tag = ParameterInfo;
+
+			return ParameterInfo;
 		}
 
 		private void AddParameter(ParameterInfo Parameter)
