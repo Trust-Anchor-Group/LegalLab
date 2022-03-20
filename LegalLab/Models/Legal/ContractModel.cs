@@ -403,6 +403,26 @@ namespace LegalLab.Models.Legal
 						this.parametersByName[Parameter.Name] = ParameterInfo = new StringParameterInfo(this.contract, SP, TextBox,
 							null, null, null, null, null, null, null, null, this.parameters);
 					}
+					else if (Parameter is DateParameter DP)
+					{
+						this.parametersByName[Parameter.Name] = ParameterInfo = new DateParameterInfo(this.contract, DP, TextBox,
+							null, null, null, null, null, this.parameters);
+					}
+					else if (Parameter is DateTimeParameter DTP)
+					{
+						this.parametersByName[Parameter.Name] = ParameterInfo = new DateTimeParameterInfo(this.contract, DTP, TextBox,
+							null, null, null, null, null, this.parameters);
+					}
+					else if (Parameter is TimeParameter TP)
+					{
+						this.parametersByName[Parameter.Name] = ParameterInfo = new TimeParameterInfo(this.contract, TP, TextBox,
+							null, null, null, null, null, this.parameters);
+					}
+					else if (Parameter is DurationParameter DrP)
+					{
+						this.parametersByName[Parameter.Name] = ParameterInfo = new DurationParameterInfo(this.contract, DrP, TextBox,
+							null, null, null, null, null, this.parameters);
+					}
 					else
 						continue;
 
