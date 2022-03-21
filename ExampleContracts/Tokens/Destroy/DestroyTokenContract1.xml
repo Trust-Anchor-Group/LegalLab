@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <contract xmlns="urn:ieee:iot:leg:sc:1.0"
-          id="CreateTokenContract1"
+          id="DestroyTokenContract1"
           archiveOpt="P3M"
           archiveReq="P1M"
           canActAsTemplate="true"
@@ -32,7 +32,7 @@
 		</description>
 	</role>
 	<parts>
-		<open/>
+		<templateOnly/>
 	</parts>
 	<parameters>
 		<stringParameter name="TokenID" guide="Token ID (GUID)" regEx="[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}">
