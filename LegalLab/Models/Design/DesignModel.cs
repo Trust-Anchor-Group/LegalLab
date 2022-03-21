@@ -1244,20 +1244,26 @@ namespace LegalLab.Models.Design
 		private ParameterInfo GetParameterInfo(DateParameter DP)
 		{
 			TextBox ValueControl = new TextBox();
-			Binding Binding = new Binding("Value");
-			Binding.Converter = new DateToXmlString();
+			Binding Binding = new Binding("Value")
+			{
+				Converter = new DateToXmlString()
+			};
 			ValueControl.SetBinding(TextBox.TextProperty, Binding);
 			ValueControl.TextChanged += Parameter_TextChanged;
 
 			TextBox MinControl = new TextBox();
-			Binding = new Binding("Min");
-			Binding.Converter = new DateToXmlString(); 
+			Binding = new Binding("Min")
+			{
+				Converter = new DateToXmlString()
+			};
 			MinControl.SetBinding(TextBox.TextProperty, Binding);
 			MinControl.TextChanged += Parameter_MinTextChanged;
 
 			TextBox MaxControl = new TextBox();
-			Binding = new Binding("Max");
-			Binding.Converter = new DateToXmlString();
+			Binding = new Binding("Max")
+			{
+				Converter = new DateToXmlString()
+			};
 			MaxControl.SetBinding(TextBox.TextProperty, Binding);
 			MaxControl.TextChanged += Parameter_MaxTextChanged;
 
@@ -1311,20 +1317,26 @@ namespace LegalLab.Models.Design
 		private ParameterInfo GetParameterInfo(DateTimeParameter DP)
 		{
 			TextBox ValueControl = new TextBox();
-			Binding Binding = new Binding("Value");
-			Binding.Converter = new DateTimeToXmlString();
+			Binding Binding = new Binding("Value")
+			{
+				Converter = new DateTimeToXmlString()
+			};
 			ValueControl.SetBinding(TextBox.TextProperty, Binding);
 			ValueControl.TextChanged += Parameter_TextChanged;
 
 			TextBox MinControl = new TextBox();
-			Binding = new Binding("Min");
-			Binding.Converter = new DateTimeToXmlString();
+			Binding = new Binding("Min")
+			{
+				Converter = new DateTimeToXmlString()
+			};
 			MinControl.SetBinding(TextBox.TextProperty, Binding);
 			MinControl.TextChanged += Parameter_MinTextChanged;
 
 			TextBox MaxControl = new TextBox();
-			Binding = new Binding("Max");
-			Binding.Converter = new DateTimeToXmlString();
+			Binding = new Binding("Max")
+			{
+				Converter = new DateTimeToXmlString()
+			};
 			MaxControl.SetBinding(TextBox.TextProperty, Binding);
 			MaxControl.TextChanged += Parameter_MaxTextChanged;
 
@@ -1378,20 +1390,26 @@ namespace LegalLab.Models.Design
 		private ParameterInfo GetParameterInfo(TimeParameter DP)
 		{
 			TextBox ValueControl = new TextBox();
-			Binding Binding = new Binding("Value");
-			Binding.Converter = new TimeToXmlString();
+			Binding Binding = new Binding("Value")
+			{
+				Converter = new TimeToXmlString()
+			};
 			ValueControl.SetBinding(TextBox.TextProperty, Binding);
 			ValueControl.TextChanged += Parameter_TextChanged;
 
 			TextBox MinControl = new TextBox();
-			Binding = new Binding("Min");
-			Binding.Converter = new TimeToXmlString();
+			Binding = new Binding("Min")
+			{
+				Converter = new TimeToXmlString()
+			};
 			MinControl.SetBinding(TextBox.TextProperty, Binding);
 			MinControl.TextChanged += Parameter_MinTextChanged;
 
 			TextBox MaxControl = new TextBox();
-			Binding = new Binding("Min");
-			Binding.Converter = new TimeToXmlString();
+			Binding = new Binding("Min")
+			{
+				Converter = new TimeToXmlString()
+			};
 			MaxControl.SetBinding(TextBox.TextProperty, Binding);
 			MaxControl.TextChanged += Parameter_MaxTextChanged;
 
@@ -1445,20 +1463,26 @@ namespace LegalLab.Models.Design
 		private ParameterInfo GetParameterInfo(DurationParameter DP)
 		{
 			TextBox ValueControl = new TextBox();
-			Binding Binding = new Binding("Value");
-			Binding.Converter = new DurationToXmlString();
+			Binding Binding = new Binding("Value")
+			{
+				Converter = new DurationToXmlString()
+			};
 			ValueControl.SetBinding(TextBox.TextProperty, Binding);
 			ValueControl.TextChanged += Parameter_TextChanged;
 
 			TextBox MinControl = new TextBox();
-			Binding = new Binding("Min");
-			Binding.Converter = new DurationToXmlString();
+			Binding = new Binding("Min")
+			{
+				Converter = new DurationToXmlString()
+			};
 			MinControl.SetBinding(TextBox.TextProperty, Binding);
 			MinControl.TextChanged += Parameter_MinTextChanged;
 
 			TextBox MaxControl = new TextBox();
-			Binding = new Binding("Max");
-			Binding.Converter = new DurationToXmlString();
+			Binding = new Binding("Max")
+			{
+				Converter = new DurationToXmlString()
+			};
 			MaxControl.SetBinding(TextBox.TextProperty, Binding);
 			MaxControl.TextChanged += Parameter_MaxTextChanged;
 
