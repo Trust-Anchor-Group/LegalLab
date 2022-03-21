@@ -474,6 +474,19 @@ namespace LegalLab.Models.Legal
 						ParameterInfo.Value = d;
 					else if (ParameterInfo.Parameter is BooleanParameter && bool.TryParse(TextBox.Text, out bool b))
 						ParameterInfo.Value = b;
+					else if (ParameterInfo.Parameter is DateParameter && DateTime.TryParse(TextBox.Text, out DateTime TP))
+					{
+						if (TP.TimeOfDay != TimeSpan.Zero)
+							throw new Exception("Date only.");
+
+						ParameterInfo.Value = TP;
+					}
+					else if (ParameterInfo.Parameter is DateTimeParameter && DateTime.TryParse(TextBox.Text, out TP))
+						ParameterInfo.Value = TP;
+					else if (ParameterInfo.Parameter is TimeParameter && TimeSpan.TryParse(TextBox.Text, out TimeSpan TS))
+						ParameterInfo.Value = TS;
+					else if (ParameterInfo.Parameter is DurationParameter && Waher.Content.Duration.TryParse(TextBox.Text, out Waher.Content.Duration Dr))
+						ParameterInfo.Value = Dr;
 					else
 						ParameterInfo.Value = TextBox.Text;
 
