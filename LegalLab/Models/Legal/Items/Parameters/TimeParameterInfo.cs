@@ -13,7 +13,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		private readonly Property<TimeSpan?> min;
 		private readonly Property<TimeSpan?> max;
 
-		private readonly TimeParameter timeParameter;
+		private TimeParameter timeParameter;
 
 		/// <summary>
 		/// Contains information about a time parameter
@@ -116,6 +116,13 @@ namespace LegalLab.Models.Legal.Items.Parameters
 				return TS;
 			else
 				throw new ArgumentException("Invalid time value.", nameof(Value));
+		}
+
+		/// <inheritdoc/>
+		public override void ContractUpdated(Contract Contract)
+		{
+			base.ContractUpdated(Contract);
+			this.timeParameter = this.Parameter as TimeParameter;
 		}
 	}
 }

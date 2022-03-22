@@ -14,7 +14,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		private readonly Property<Duration?> min;
 		private readonly Property<Duration?> max;
 
-		private readonly DurationParameter durationParameter;
+		private DurationParameter durationParameter;
 
 		/// <summary>
 		/// Contains information about a duration parameter
@@ -117,6 +117,13 @@ namespace LegalLab.Models.Legal.Items.Parameters
 				return Dr;
 			else
 				throw new ArgumentException("Invalid duration value.", nameof(Value));
+		}
+
+		/// <inheritdoc/>
+		public override void ContractUpdated(Contract Contract)
+		{
+			base.ContractUpdated(Contract);
+			this.durationParameter = this.Parameter as DurationParameter;
 		}
 	}
 }

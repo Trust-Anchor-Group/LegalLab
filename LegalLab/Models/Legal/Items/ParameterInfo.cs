@@ -58,12 +58,20 @@ namespace LegalLab.Models.Legal.Items
 		/// <summary>
 		/// Original parameter object in contract
 		/// </summary>
-		public Contract Contract { get; }
+		public Contract Contract
+		{
+			get;
+			private set;
+		}
 
 		/// <summary>
 		/// Original parameter object in contract
 		/// </summary>
-		public Parameter Parameter { get; }
+		public Parameter Parameter 
+		{ 
+			get;
+			private set;
+		}
 
 		/// <summary>
 		/// Generated control.
@@ -254,5 +262,25 @@ namespace LegalLab.Models.Legal.Items
 				this.DescriptionAsMarkdown = Texts[0].Trim();
 		}
 
+		/// <summary>
+		/// Called when the contract has been updated.
+		/// </summary>
+		/// <param name="Contract">Updated contract.</param>
+		public virtual void ContractUpdated(Contract Contract)
+		{
+			if (this.Contract != Contract)
+			{
+				this.Contract = Contract;
+
+				foreach (Parameter P in Contract.Parameters)
+				{
+					if (P.Name == this.name.Value)
+					{
+						this.Parameter = P;
+						break;
+					}
+				}
+			}
+		}
 	}
 }

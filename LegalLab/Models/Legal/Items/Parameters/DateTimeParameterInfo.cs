@@ -1,7 +1,6 @@
 ﻿using LegalLab.Models.Design;
 using System;
 using System.Windows.Controls;
-using Waher.Content;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP.Contracts;
 
@@ -15,7 +14,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		private readonly Property<DateTime?> min;
 		private readonly Property<DateTime?> max;
 
-		private readonly DateTimeParameter dateParameter;
+		private DateTimeParameter dateTimeParameter;
 
 		/// <summary>
 		/// Contains information about a date and time parameter
@@ -33,7 +32,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 			Control MaxControl, Control MaxIncludedControl, DesignModel DesignModel, Property<ParameterInfo[]> Parameters)
 			: base(Contract, Parameter, Control, MinControl, MinIncludedControl, MaxControl, MaxIncludedControl, DesignModel, Parameters)
 		{
-			this.dateParameter = Parameter;
+			this.dateTimeParameter = Parameter;
 
 			this.min = new Property<DateTime?>(nameof(this.Min), Parameter.Min, this);
 			this.max = new Property<DateTime?>(nameof(this.Max), Parameter.Max, this);
@@ -50,7 +49,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 			get => this.min.Value;
 			set
 			{
-				this.dateParameter.Min = value;
+				this.dateTimeParameter.Min = value;
 				this.min.Value = value;
 				this.Revalidate();
 			}
@@ -64,7 +63,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 			get => this.max.Value;
 			set
 			{
-				this.dateParameter.Max = value;
+				this.dateTimeParameter.Max = value;
 				this.max.Value = value;
 				this.Revalidate();
 			}
@@ -76,7 +75,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 			get => base.MinIncluded;
 			set
 			{
-				this.dateParameter.MinIncluded = value;
+				this.dateTimeParameter.MinIncluded = value;
 				base.MinIncluded = value;
 			}
 		}
@@ -87,7 +86,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 			get => base.MaxIncluded;
 			set
 			{
-				this.dateParameter.MaxIncluded = value;
+				this.dateTimeParameter.MaxIncluded = value;
 				base.MaxIncluded = value;
 			}
 		}
@@ -118,6 +117,13 @@ namespace LegalLab.Models.Legal.Items.Parameters
 				return d;
 			else
 				throw new ArgumentException("Invalid date and time value.", nameof(Value));
+		}
+
+		/// <inheritdoc/>
+		public override void ContractUpdated(Contract Contract)
+		{
+			base.ContractUpdated(Contract);
+			this.dateTimeParameter = this.Parameter as DateTimeParameter;
 		}
 	}
 }

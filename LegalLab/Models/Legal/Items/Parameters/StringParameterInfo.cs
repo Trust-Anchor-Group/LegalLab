@@ -16,7 +16,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		private readonly Property<int?> minLength;
 		private readonly Property<string> regEx;
 
-		private readonly StringParameter stringParameter;
+		private StringParameter stringParameter;
 
 		private readonly Control minLengthControl;
 		private readonly Control maxLengthControl;
@@ -182,6 +182,13 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		/// Control for editing a regular expression for validating parameter values.
 		/// </summary>
 		public override Control RegExControl => this.regExControl;
+
+		/// <inheritdoc/>
+		public override void ContractUpdated(Contract Contract)
+		{
+			base.ContractUpdated(Contract);
+			this.stringParameter = this.Parameter as StringParameter;
+		}
 
 	}
 }

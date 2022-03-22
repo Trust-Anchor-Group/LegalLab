@@ -14,7 +14,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		private readonly Property<double?> min;
 		private readonly Property<double?> max;
 
-		private readonly NumericalParameter numericalParameter;
+		private NumericalParameter numericalParameter;
 
 		/// <summary>
 		/// Contains information about a numerical parameter
@@ -117,6 +117,13 @@ namespace LegalLab.Models.Legal.Items.Parameters
 				return d;
 			else
 				throw new ArgumentException("Invalid numerical value.", nameof(Value));
+		}
+
+		/// <inheritdoc/>
+		public override void ContractUpdated(Contract Contract)
+		{
+			base.ContractUpdated(Contract);
+			this.numericalParameter = this.Parameter as NumericalParameter;
 		}
 	}
 }

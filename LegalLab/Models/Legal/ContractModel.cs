@@ -157,7 +157,10 @@ namespace LegalLab.Models.Legal
 				foreach (Parameter Parameter in this.contract.Parameters)
 				{
 					if (this.parametersByName.TryGetValue(Parameter.Name, out ParameterInfo ParameterInfo))
+					{
 						Parameters.Add(ParameterInfo);
+						ParameterInfo.ContractUpdated(this.contract);
+					}
 				}
 			}
 

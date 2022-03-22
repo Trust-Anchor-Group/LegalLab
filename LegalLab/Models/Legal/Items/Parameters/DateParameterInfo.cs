@@ -15,7 +15,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		private readonly Property<DateTime?> min;
 		private readonly Property<DateTime?> max;
 
-		private readonly DateParameter dateParameter;
+		private DateParameter dateParameter;
 
 		/// <summary>
 		/// Contains information about a date parameter
@@ -118,6 +118,13 @@ namespace LegalLab.Models.Legal.Items.Parameters
 				return d.Date;
 			else
 				throw new ArgumentException("Invalid date value.", nameof(Value));
+		}
+
+		/// <inheritdoc/>
+		public override void ContractUpdated(Contract Contract)
+		{
+			base.ContractUpdated(Contract);
+			this.dateParameter = this.Parameter as DateParameter;
 		}
 	}
 }
