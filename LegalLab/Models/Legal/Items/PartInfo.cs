@@ -1,6 +1,5 @@
 ﻿using LegalLab.Models.Design;
 using LegalLab.Models.Items;
-using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Waher.Networking.XMPP.Contracts;

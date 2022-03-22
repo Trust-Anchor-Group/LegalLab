@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LegalLab.Models.Legal
+﻿namespace LegalLab.Models.Legal
 {
 	/// <summary>
 	/// Template reference model

@@ -1,5 +1,4 @@
 ﻿using LegalLab.Models.Design;
-using System;
 using System.Windows.Controls;
 using Waher.Networking.XMPP.Contracts;
 
