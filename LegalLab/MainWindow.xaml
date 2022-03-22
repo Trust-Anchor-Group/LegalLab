@@ -20,6 +20,9 @@
             <TabItem Header="Wallet">
                 <tabs:WalletTab x:Name="WalletTab"/>
             </TabItem>
+            <TabItem Header="Tokens">
+                <tabs:TokensTab x:Name="TokensTab"/>
+            </TabItem>
             <TabItem Header="Design">
                 <tabs:DesignTab x:Name="DesignTab"/>
             </TabItem>

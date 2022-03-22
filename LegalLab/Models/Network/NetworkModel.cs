@@ -2,7 +2,9 @@
 using LegalLab.Extensions;
 using LegalLab.Models.Legal;
 using LegalLab.Models.Network.Sniffer;
+using LegalLab.Models.Tokens;
 using LegalLab.Models.Wallet;
+using NeuroFeatures;
 using System;
 using System.Security.Cryptography;
 using System.Text;
@@ -34,6 +36,7 @@ namespace LegalLab.Models.Network
 		private readonly PersistedProperty<string> apiKeySecret;
 		private readonly PersistedProperty<string> legalComponentJid;
 		private readonly PersistedProperty<string> eDalerComponentJid;
+		private readonly PersistedProperty<string> neuroFeaturesComponentJid;
 		private readonly PersistedProperty<bool> createAccount;
 		private readonly PersistedProperty<bool> trustServerCertificate;
 		private readonly PersistedProperty<bool> allowInsecureAlgorithms;
@@ -52,6 +55,7 @@ namespace LegalLab.Models.Network
 		private XmppClient client;
 		private LegalModel legalModel;
 		private WalletModel walletModel;
+		private TokensModel tokensModel;
 
 		public NetworkModel()
 			: base()
@@ -70,6 +74,7 @@ namespace LegalLab.Models.Network
 
 			this.Add(this.legalComponentJid = new PersistedProperty<string>("XMPP", nameof(this.LegalComponentJid), true, string.Empty, this));
 			this.Add(this.eDalerComponentJid = new PersistedProperty<string>("XMPP", nameof(this.EDalerComponentJid), true, string.Empty, this));
+			this.Add(this.neuroFeaturesComponentJid = new PersistedProperty<string>("XMPP", nameof(this.NeuroFeaturesComponentJid), true, string.Empty, this));
 
 			this.password2 = new Property<string>(nameof(this.Password2), string.Empty, this);
 			this.state = new Property<XmppState>(nameof(this.State), XmppState.Offline, this);
@@ -211,6 +216,15 @@ namespace LegalLab.Models.Network
 		}
 
 		/// <summary>
+		/// Neuro-Features Component JID
+		/// </summary>
+		public string NeuroFeaturesComponentJid
+		{
+			get => this.neuroFeaturesComponentJid.Value;
+			set => this.neuroFeaturesComponentJid.Value = value;
+		}
+
+		/// <summary>
 		/// Connection command
 		/// </summary>
 		public ICommand Connect => this.connect;
@@ -261,6 +275,11 @@ namespace LegalLab.Models.Network
 		/// Wallet model
 		/// </summary>
 		public WalletModel Wallet => this.Wallet;
+
+		/// <summary>
+		/// Tokens model
+		/// </summary>
+		public TokensModel Tokens => this.Tokens;
 
 		/// <summary>
 		/// Starts the model.
@@ -471,7 +490,9 @@ namespace LegalLab.Models.Network
 
 						if (this.legalModel is null || this.walletModel is null)
 						{
-							if (string.IsNullOrEmpty(this.LegalComponentJid) || string.IsNullOrEmpty(this.EDalerComponentJid))
+							if (string.IsNullOrEmpty(this.LegalComponentJid) || 
+								string.IsNullOrEmpty(this.EDalerComponentJid) ||
+								string.IsNullOrEmpty(this.NeuroFeaturesComponentJid))
 							{
 								ServiceItemsDiscoveryEventArgs e = await this.client.ServiceItemsDiscoveryAsync(string.Empty);
 								if (e.Ok)
@@ -485,8 +506,12 @@ namespace LegalLab.Models.Network
 										{
 											this.LegalComponentJid = Component.JID;
 										}
-										else if (e2.HasFeature(EDalerClient.NamespaceEDaler))
+										
+										if (e2.HasFeature(EDalerClient.NamespaceEDaler))
 											this.EDalerComponentJid = Component.JID;
+
+										if (e2.HasFeature(NeuroFeaturesClient.NamespaceNeuroFeatures))
+											this.NeuroFeaturesComponentJid = Component.JID;
 									}
 								}
 							}
@@ -505,6 +530,13 @@ namespace LegalLab.Models.Network
 									this.walletModel = new WalletModel(this.client, this.legalModel.Contracts, this.EDalerComponentJid);
 									await this.walletModel.Load();
 									await this.walletModel.Start();
+								}
+
+								if (!string.IsNullOrEmpty(this.NeuroFeaturesComponentJid) && this.tokensModel is null)
+								{
+									this.tokensModel = new TokensModel(this.client, this.legalModel.Contracts, this.NeuroFeaturesComponentJid);
+									await this.tokensModel.Load();
+									await this.tokensModel.Start();
 								}
 							}
 						}
@@ -542,6 +574,7 @@ namespace LegalLab.Models.Network
 		{
 			this.LegalComponentJid = string.Empty;
 			this.EDalerComponentJid = string.Empty;
+			this.NeuroFeaturesComponentJid = string.Empty;
 
 			this.legalModel?.Dispose();
 			this.legalModel = null;
