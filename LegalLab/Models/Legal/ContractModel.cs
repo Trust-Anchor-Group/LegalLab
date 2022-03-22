@@ -6,7 +6,6 @@ using LegalLab.Tabs;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -662,7 +661,7 @@ namespace LegalLab.Models.Legal
 
 				this.RaisePropertyChanged(nameof(this.GeneralInformation));
 			}
-		
+
 			return Task.CompletedTask;
 		}
 
