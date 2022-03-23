@@ -32,14 +32,14 @@
 	<role name="Owner" minCount="1" maxCount="1">
 		<description xml:lang="en">
 			<paragraph>
-				<text>This is the role of the part that will receive the token after it has been created.</text>
+				<text>This is the role of the part that owns the tokens before they are destroyed.</text>
 			</paragraph>
 		</description>
 	</role>
 	<role name="TrustProvider" minCount="1" maxCount="1">
 		<description xml:lang="en">
 			<paragraph>
-				<text>This is the role of the trust provider that acts will host the token and approve its creation.</text>
+				<text>This is the role of the trust provider that hosts the tokens and approves their destruction.</text>
 			</paragraph>
 		</description>
 	</role>
