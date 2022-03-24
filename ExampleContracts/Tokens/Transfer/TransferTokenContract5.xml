@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<contract xmlns="urn:ieee:iot:leg:sc:1.0"
+          id="CreateTokenContract5"
+          archiveOpt="P3M"
+          archiveReq="P1M"
+          canActAsTemplate="true"
+          duration="P2M"
+          visibility="Public">
+	<Transfer xmlns="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd">
+		<TokenID>
+			<ParameterReference parameter="TokenID1"/>
+		</TokenID>
+		<TokenID>
+			<ParameterReference parameter="TokenID2"/>
+		</TokenID>
+		<TokenID>
+			<ParameterReference parameter="TokenID3"/>
+		</TokenID>
+		<TokenID>
+			<ParameterReference parameter="TokenID4"/>
+		</TokenID>
+		<TokenID>
+			<ParameterReference parameter="TokenID5"/>
+		</TokenID>
+		<Seller>
+			<RoleReference role="Seller"/>
+		</Seller>
+		<Buyer>
+			<RoleReference role="Buyer"/>
+		</Buyer>
+		<TrustProvider>
+			<RoleReference role="TrustProvider"/>
+		</TrustProvider>
+		<Value>
+			<ParameterReference parameter="Value"/>
+		</Value>
+		<Currency>
+			<ParameterReference parameter="Currency"/>
+		</Currency>
+		<CommissionPercent>
+			<ParameterReference parameter="CommissionPercent"/>
+		</CommissionPercent>
+		<OwnershipContract>
+			<ParameterReference parameter="OwnershipContract"/>
+		</OwnershipContract>
+	</Transfer>
+	<role name="Seller" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This is the role of the part that owns the tokens, before the transfer.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="Buyer" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This is the role of the part that will become the new ower of the tokens, after a successful payment.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="TrustProvider" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This is the role of the trust provider that acts as the host for the tokens and approves its transfer.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<open/>
+	</parts>
+	<parameters>
+		<stringParameter name="TokenID1" guide="Token ID 1 (GUID)" regEx="[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The ID of the token to transfer.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="TokenID2" guide="Token ID 2 (GUID)" regEx="[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The ID of the token to transfer.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="TokenID3" guide="Token ID 3 (GUID)" regEx="[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The ID of the token to transfer.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="TokenID4" guide="Token ID 4 (GUID)" regEx="[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The ID of the token to transfer.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="TokenID5" guide="Token ID 5 (GUID)" regEx="[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The ID of the token to transfer.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<numericalParameter name="Value" guide="Value of token" min="0">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The agreed upon price of the token.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="\w{3}">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The currency of the agreed upon price of the token.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<numericalParameter name="CommissionPercent" guide="Commision (%)" min="0" max="100">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The commission the Trust Provider gets for providing the sale, and transfer of the token.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<stringParameter name="OwnershipContract" guide="Ownership Contract ID" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The ID of the contract that shows the current owner is the current owner of the token.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Transfer of tokens</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This contract transfers tokens from one owner to another, through a monetary transcation.</text>
+				</paragraph>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>

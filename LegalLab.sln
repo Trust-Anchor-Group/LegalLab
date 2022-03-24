@@ -50,6 +50,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Destroy", "Destroy", "{34AB
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Transfer", "Transfer", "{1CACA399-0F2F-4C13-8404-C76B93561759}"
+	ProjectSection(SolutionItems) = preProject
+		ExampleContracts\Tokens\Transfer\TransferTokenContract1.xml = ExampleContracts\Tokens\Transfer\TransferTokenContract1.xml
+		ExampleContracts\Tokens\Transfer\TransferTokenContract5.xml = ExampleContracts\Tokens\Transfer\TransferTokenContract5.xml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
