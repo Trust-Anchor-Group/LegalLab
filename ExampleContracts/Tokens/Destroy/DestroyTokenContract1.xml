@@ -4,7 +4,7 @@
           archiveOpt="P3M"
           archiveReq="P1M"
           canActAsTemplate="true"
-          duration="P1M"
+          duration="P2M"
           visibility="Public">
 	<Destroy xmlns="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd">
 		<TokenID>
