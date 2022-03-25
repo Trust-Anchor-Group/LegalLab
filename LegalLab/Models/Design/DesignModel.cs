@@ -66,6 +66,7 @@ namespace LegalLab.Models.Design
 		private readonly Command addDateTimeParameter;
 		private readonly Command addTimeParameter;
 		private readonly Command addDurationParameter;
+		private readonly Command addCalcParameter;
 		private readonly Command @new;
 		private readonly Command load;
 		private readonly Command save;
@@ -120,6 +121,7 @@ namespace LegalLab.Models.Design
 			this.addDateTimeParameter = new Command(this.ExecuteAddDateTimeParameter);
 			this.addTimeParameter = new Command(this.ExecuteAddTimeParameter);
 			this.addDurationParameter = new Command(this.ExecuteAddDurationParameter);
+			this.addCalcParameter = new Command(this.ExecuteAddCalcParameter);
 			this.@new = new Command(this.ExecuteNewContract);
 			this.load = new Command(this.ExecuteLoadContract);
 			this.save = new Command(this.ExecuteSaveContract);
@@ -206,6 +208,8 @@ namespace LegalLab.Models.Design
 					ParameterInfo = this.GetParameterInfo(TP);
 				else if (Parameter is DurationParameter DrP)
 					ParameterInfo = this.GetParameterInfo(DrP);
+				else if (Parameter is CalcParameter CP)
+					ParameterInfo = this.GetParameterInfo(CP);
 				else
 					continue;
 
@@ -647,7 +651,7 @@ namespace LegalLab.Models.Design
 
 			foreach (ParameterInfo P in this.Parameters)
 			{
-				if (await P.Parameter.IsParameterValid(Variables))
+				if (await P.ValidateParameter(Variables))
 					P.Control.Background = null;
 				else
 				{
@@ -852,14 +856,29 @@ namespace LegalLab.Models.Design
 		private ParameterInfo GetParameterInfo(NumericalParameter NP)
 		{
 			TextBox ValueControl = new TextBox();
+			Binding Binding = new Binding("Value")
+			{
+				Converter = new MoneyToString()
+			};
+			ValueControl.SetBinding(TextBox.TextProperty, Binding);
 			ValueControl.SetBinding(TextBox.TextProperty, "Value");
 			ValueControl.TextChanged += Parameter_TextChanged;
 
 			TextBox MinControl = new TextBox();
+			Binding = new Binding("Value")
+			{
+				Converter = new MoneyToString()
+			};
+			MinControl.SetBinding(TextBox.TextProperty, Binding);
 			MinControl.SetBinding(TextBox.TextProperty, "Min");
 			MinControl.TextChanged += Parameter_MinTextChanged;
 
 			TextBox MaxControl = new TextBox();
+			Binding = new Binding("Value")
+			{
+				Converter = new MoneyToString()
+			};
+			MaxControl.SetBinding(TextBox.TextProperty, Binding);
 			MaxControl.SetBinding(TextBox.TextProperty, "Max");
 			MaxControl.TextChanged += Parameter_MaxTextChanged;
 
@@ -1503,6 +1522,45 @@ namespace LegalLab.Models.Design
 			MaxControl.Tag = ParameterInfo;
 			MinIncludedControl.Tag = ParameterInfo;
 			MaxIncludedControl.Tag = ParameterInfo;
+
+			return ParameterInfo;
+		}
+
+		/// <summary>
+		/// Command for adding a calculation parameter
+		/// </summary>
+		public ICommand AddCalcParameter => this.addCalcParameter;
+
+		/// <summary>
+		/// Adds a calculation parameter to the design.
+		/// </summary>
+		public async Task ExecuteAddCalcParameter()
+		{
+			CalcParameter CP = new CalcParameter()
+			{
+				Name = this.FindNewName("Calc", this.Parameters),
+				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
+				Expression = string.Empty,
+				Guide = string.Empty
+			};
+
+			this.AddParameter(this.GetParameterInfo(CP));
+		}
+
+		private ParameterInfo GetParameterInfo(CalcParameter CP)
+		{
+			TextBox ValueControl = new TextBox()
+			{
+				IsReadOnly = true
+			};
+			Binding Binding = new Binding("Value")
+			{
+				Converter = new MoneyToString()
+			};
+			ValueControl.SetBinding(TextBox.TextProperty, Binding);
+
+			ParameterInfo ParameterInfo = new CalcParameterInfo(this.contract, CP, ValueControl, this, this.parameters);
+			ValueControl.Tag = ParameterInfo;
 
 			return ParameterInfo;
 		}

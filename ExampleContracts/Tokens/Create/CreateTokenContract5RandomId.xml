@@ -131,6 +131,13 @@
 				</paragraph>
 			</description>
 		</stringParameter>
+		<calcParameter name="TotalValue" guide="Total Value of contract" exp="5*Value">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The total value of the contract.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
 	</parameters>
 	<humanReadableText xml:lang="en">
 		<section>

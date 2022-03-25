@@ -1,0 +1,105 @@
+<contract archiveOpt="PT0S" archiveReq="PT0S" canActAsTemplate="true" duration="PT0S" id="CalculatedParameters" visibility="PublicSearchable" xmlns="urn:ieee:iot:leg:sc:1.0">
+	<Nop xmlns="https://paiwise.tagroot.io/Schema/PaymentInstructions.xsd" />
+	<role maxCount="1" minCount="1" name="Author">
+		<description xml:lang="en">
+			<paragraph>
+				<text>Author of smart contracts.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<templateOnly />
+	</parts>
+	<parameters>
+		<numericalParameter name="A" value="3" min="0" minIncluded="false" max="10" maxIncluded="false">
+			<description xml:lang="en">
+				<paragraph>
+					<text>A number between 1 and 9.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<numericalParameter name="B" value="7" min="0" minIncluded="false" max="10" maxIncluded="false">
+			<description xml:lang="en">
+				<paragraph>
+					<text>A number between 1 and 9.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<calcParameter name="Sum" exp="A+B">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Sum of first two numbers.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+		<calcParameter name="Prod" exp="A*B">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Product of first two numbers.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+		<calcParameter name="Pow" exp="A^B">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The first number to the power of the second number</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Calculation Parameters</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This example demonstrates how to use calculated parameters in a contract.</text>
+				</paragraph>
+				<paragraph>
+					<text>The following parameters are set by the contract creator:</text>
+				</paragraph>
+				<bulletItems>
+					<item>
+						<text>A = </text>
+						<bold>
+							<parameter name="A" />
+						</bold>
+					</item>
+					<item>
+						<text>B = </text>
+						<bold>
+							<parameter name="B" />
+						</bold>
+					</item>
+				</bulletItems>
+				<paragraph>
+					<text>The following parameters are then calculated by the contract, using the input from above:</text>
+				</paragraph>
+				<bulletItems>
+					<item>
+						<text>Sum = </text>
+						<bold>
+							<parameter name="Sum" />
+						</bold>
+					</item>
+					<item>
+						<text>Prod = </text>
+						<bold>
+							<parameter name="Prod" />
+						</bold>
+					</item>
+					<item>
+						<text>Pow = </text>
+						<bold>
+							<parameter name="Pow" />
+						</bold>
+					</item>
+				</bulletItems>
+				<paragraph>
+					<text>As you edit the values of the contract, the parameters will change automatically.</text>
+				</paragraph>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>

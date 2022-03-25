@@ -1,6 +1,6 @@
 <contract archiveOpt="PT0S" archiveReq="PT0S" canActAsTemplate="true" duration="PT0S" id="ExampleMarkdown" visibility="PublicSearchable" xmlns="urn:ieee:iot:leg:sc:1.0">
 	<Nop xmlns="https://paiwise.tagroot.io/Schema/PaymentInstructions.xsd" />
-	<role maxCount="1" minCount="1" name="Role1">
+	<role maxCount="1" minCount="1" name="Author">
 		<description xml:lang="en">
 			<paragraph>
 				<text>Author of Smart Contracts</text>
@@ -124,9 +124,7 @@
 							<body>
 								<bulletItems>
 									<item>
-										<text>Subscript is created by enclosing it between aquare brackets [ and ]. A[1], A[2], </text>
-										<text>…</text>
-										<text> becomes A</text>
+										<text>Subscript is created by enclosing it between aquare brackets [ and ]. A[1], A[2], … becomes A</text>
 										<sub>
 											<text>1</text>
 										</sub>
@@ -134,8 +132,7 @@
 										<sub>
 											<text>2</text>
 										</sub>
-										<text>, </text>
-										<text>…</text>
+										<text>, …</text>
 									</item>
 									<item>
 										<text>Superscript is created by enclosing it between aquare brackets [ and ], with the first prefixed by a cirkumflex character (^). a^[2]+b^[2]=c^[2] becomes a</text>

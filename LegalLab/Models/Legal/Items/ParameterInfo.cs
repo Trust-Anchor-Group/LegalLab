@@ -160,6 +160,14 @@ namespace LegalLab.Models.Legal.Items
 		}
 
 		/// <summary>
+		/// Method called when the parameter needs to be validated.
+		/// </summary>
+		public virtual async Task<bool> ValidateParameter(Variables Variables)
+		{
+			return await this.Parameter.IsParameterValid(Variables);
+		}
+
+		/// <summary>
 		/// Guiding text.
 		/// </summary>
 		public string Guide

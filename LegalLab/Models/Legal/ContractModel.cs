@@ -425,6 +425,13 @@ namespace LegalLab.Models.Legal
 						this.parametersByName[Parameter.Name] = ParameterInfo = new DurationParameterInfo(this.contract, DrP, TextBox,
 							null, null, null, null, null, this.parameters);
 					}
+					else if (Parameter is CalcParameter CP)
+					{
+						TextBox.IsReadOnly = true;
+
+						this.parametersByName[Parameter.Name] = ParameterInfo = new CalcParameterInfo(this.contract, CP, TextBox,
+							null, this.parameters);
+					}
 					else
 						continue;
 
@@ -472,7 +479,7 @@ namespace LegalLab.Models.Legal
 
 				try
 				{
-					if (ParameterInfo.Parameter is NumericalParameter && double.TryParse(TextBox.Text, out double d))
+					if (ParameterInfo.Parameter is NumericalParameter && decimal.TryParse(TextBox.Text, out decimal d))
 						ParameterInfo.Value = d;
 					else if (ParameterInfo.Parameter is BooleanParameter && bool.TryParse(TextBox.Text, out bool b))
 						ParameterInfo.Value = b;
@@ -489,7 +496,7 @@ namespace LegalLab.Models.Legal
 						ParameterInfo.Value = TS;
 					else if (ParameterInfo.Parameter is DurationParameter && Waher.Content.Duration.TryParse(TextBox.Text, out Waher.Content.Duration Dr))
 						ParameterInfo.Value = Dr;
-					else
+					else if (!(ParameterInfo.Parameter is CalcParameter))
 						ParameterInfo.Value = TextBox.Text;
 
 					TextBox.Background = null;
@@ -518,7 +525,7 @@ namespace LegalLab.Models.Legal
 
 			foreach (ParameterInfo P in this.parametersByName.Values)
 			{
-				if (await P.Parameter.IsParameterValid(Variables))
+				if (await P.ValidateParameter(Variables))
 					P.Control.Background = null;
 				else
 				{

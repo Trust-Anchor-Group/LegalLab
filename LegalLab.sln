@@ -14,9 +14,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExampleContracts", "Example
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Marketplace", "Marketplace", "{A1B883CE-F616-4BE0-B37F-0000FA2A1839}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Markdown", "Markdown", "{A151F6AB-D6F2-40E4-A739-4D6E67F00E5D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Syntax", "Syntax", "{A151F6AB-D6F2-40E4-A739-4D6E67F00E5D}"
 	ProjectSection(SolutionItems) = preProject
-		ExampleContracts\Markdown\Syntax.xml = ExampleContracts\Markdown\Syntax.xml
+		ExampleContracts\Syntax\Markdown.xml = ExampleContracts\Syntax\Markdown.xml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Buying Services", "Buying Services", "{C0BD025A-D93B-4E43-9383-904927669BF5}"
