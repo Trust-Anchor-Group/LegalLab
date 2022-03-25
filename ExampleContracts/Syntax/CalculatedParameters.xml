@@ -1,4 +1,4 @@
-<contract archiveOpt="PT0S" archiveReq="PT0S" canActAsTemplate="true" duration="PT0S" id="CalculatedParameters" visibility="PublicSearchable" xmlns="urn:ieee:iot:leg:sc:1.0">
+<contract archiveOpt="PT0S" archiveReq="PT0S" canActAsTemplate="true" duration="PT0S" id="ExampleCalculatedParameters" visibility="PublicSearchable" xmlns="urn:ieee:iot:leg:sc:1.0">
 	<Nop xmlns="https://paiwise.tagroot.io/Schema/PaymentInstructions.xsd" />
 	<role maxCount="1" minCount="1" name="Author">
 		<description xml:lang="en">

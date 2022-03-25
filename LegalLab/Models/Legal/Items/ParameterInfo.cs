@@ -19,7 +19,7 @@ namespace LegalLab.Models.Legal.Items
 		private readonly Property<string> name;
 		private readonly Property<object> description;
 		private readonly Property<string> descriptionAsMarkdown;
-		private readonly Property<object> value;
+		protected readonly Property<object> value;
 		private readonly Property<string> expression;
 		private readonly Property<string> guide;
 
@@ -123,7 +123,7 @@ namespace LegalLab.Models.Legal.Items
 		/// <summary>
 		/// Parameter value
 		/// </summary>
-		public object Value
+		public virtual object Value
 		{
 			get => this.value.Value;
 			set

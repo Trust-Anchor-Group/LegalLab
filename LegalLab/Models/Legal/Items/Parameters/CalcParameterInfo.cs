@@ -41,6 +41,8 @@ namespace LegalLab.Models.Legal.Items.Parameters
 			{
 				object Value = this.Parameter.ObjectValue;
 
+				this.value.Value = Value;
+
 				if (Value is decimal d)
 					this.textBox.Text = MoneyToString.ToString(d);
 				else if (Value is double d2)
@@ -52,6 +54,15 @@ namespace LegalLab.Models.Legal.Items.Parameters
 			}
 			else
 				return false;
+		}
+
+		/// <summary>
+		/// Parameter value
+		/// </summary>
+		public override object Value
+		{
+			get => this.value.Value;
+			set => this.value.Value = value;
 		}
 
 		/// <inheritdoc/>
