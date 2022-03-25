@@ -64,7 +64,7 @@ namespace LegalLab.Models.Tokens
 		/// <summary>
 		/// Current value of token
 		/// </summary>
-		public double Value => this.token.Value;
+		public decimal Value => this.token.Value;
 
 		/// <summary>
 		/// Currency

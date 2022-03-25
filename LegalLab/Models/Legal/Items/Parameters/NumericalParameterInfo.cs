@@ -11,8 +11,8 @@ namespace LegalLab.Models.Legal.Items.Parameters
 	/// </summary>
 	public class NumericalParameterInfo : RangedParameterInfo
 	{
-		private readonly Property<double?> min;
-		private readonly Property<double?> max;
+		private readonly Property<decimal?> min;
+		private readonly Property<decimal?> max;
 
 		private NumericalParameter numericalParameter;
 
@@ -34,8 +34,8 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		{
 			this.numericalParameter = Parameter;
 		
-			this.min = new Property<double?>(nameof(this.Min), Parameter.Min, this);
-			this.max = new Property<double?>(nameof(this.Max), Parameter.Max, this);
+			this.min = new Property<decimal?>(nameof(this.Min), Parameter.Min, this);
+			this.max = new Property<decimal?>(nameof(this.Max), Parameter.Max, this);
 
 			this.MinIncluded = Parameter.MinIncluded;
 			this.MaxIncluded = Parameter.MaxIncluded;
@@ -44,7 +44,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		/// <summary>
 		/// Minimum value of parameter
 		/// </summary>
-		public double? Min
+		public decimal? Min
 		{
 			get => this.min.Value;
 			set
@@ -58,7 +58,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		/// <summary>
 		/// Maximum value of parameter
 		/// </summary>
-		public double? Max
+		public decimal? Max
 		{
 			get => this.max.Value;
 			set
@@ -109,11 +109,11 @@ namespace LegalLab.Models.Legal.Items.Parameters
 			this.Value = Parse(Value);
 		}
 
-		private static double? Parse(string Value)
+		private static decimal? Parse(string Value)
 		{
 			if (string.IsNullOrEmpty(Value))
 				return null;
-			else if (CommonTypes.TryParse(Value, out double d))
+			else if (CommonTypes.TryParse(Value, out decimal d))
 				return d;
 			else
 				throw new ArgumentException("Invalid numerical value.", nameof(Value));
