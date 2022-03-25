@@ -10,7 +10,7 @@
         <ScrollViewer DockPanel.Dock="Left">
             <StackPanel Orientation="Vertical" Width="250" Margin="10">
                 <Label Padding="0">Balance:</Label>
-                <TextBox Text="{Binding Amount}" IsReadOnly="True"/>
+                <TextBox Text="{Binding Amount, Converter={conv:MoneyToString}}" IsReadOnly="True"/>
                 <Label Padding="0,10,0,0">Currency:</Label>
                 <TextBox Text="{Binding Currency}" IsReadOnly="True"/>
                 <Label Padding="0,10,0,0">Timestamp:</Label>
@@ -35,14 +35,14 @@
                     <GridViewColumn Header="Change" Width="75">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Change, Converter={conv:ToString}}" HorizontalAlignment="Right"/>
+                                <TextBlock Text="{Binding Change, Converter={conv:MoneyToString}}" HorizontalAlignment="Right"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <GridViewColumn Header="Balance" Width="75">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Balance, Converter={conv:ToString}}" HorizontalAlignment="Right"/>
+                                <TextBlock Text="{Binding Balance, Converter={conv:MoneyToString}}" HorizontalAlignment="Right"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
