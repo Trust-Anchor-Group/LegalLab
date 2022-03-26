@@ -15,7 +15,7 @@ namespace LegalLab.Models.Tokens
 	public class TokensModel : PersistedModel, IDisposable
 	{
 		private readonly List<TokenModel> tokens = new List<TokenModel>();
-		private readonly List<object> totals = new List<object>();
+		private readonly List<TokenTotal> totals = new List<TokenTotal>();
 
 		private readonly NeuroFeaturesClient neuroFeaturesClient;
 
@@ -87,6 +87,17 @@ namespace LegalLab.Models.Tokens
 			}
 		}
 
+		public IEnumerable<TokenTotal> Totals
+		{
+			get
+			{
+				lock (this.totals)
+				{
+					return this.totals.ToArray();
+				}
+			}
+		}
+
 		/// <inheritdoc/>
 		public override async Task Start()
 		{
@@ -96,25 +107,36 @@ namespace LegalLab.Models.Tokens
 				return Task.CompletedTask;
 			});
 
+			TokenTotalsEventArgs e = await this.neuroFeaturesClient.GetTotalsAsync();
+			if (e.Ok)
+			{
+				lock (this.totals)
+				{
+					this.totals.AddRange(e.Totals);
+				}
+			
+				this.RaisePropertyChanged(nameof(this.Totals));
+			}
+
 			int Offset = 0;
 			int c = 20;
 
-			TokensEventArgs e = await this.neuroFeaturesClient.GetTokensAsync(Offset, c);
-			while (e.Ok)
+			TokensEventArgs e2 = await this.neuroFeaturesClient.GetTokensAsync(Offset, c);
+			while (e2.Ok)
 			{
 				lock (this.tokens)
 				{
-					foreach (Token Token in e.Tokens)
+					foreach (Token Token in e2.Tokens)
 						this.tokens.Add(new TokenModel(Token));
 				}
 
 				this.RaisePropertyChanged(nameof(this.Tokens));
 
-				Offset += e.Tokens.Length;
-				if (e.Tokens.Length == 0)
+				Offset += e2.Tokens.Length;
+				if (e2.Tokens.Length == 0)
 					break;
 
-				e = await this.neuroFeaturesClient.GetTokensAsync(Offset, c);
+				e2 = await this.neuroFeaturesClient.GetTokensAsync(Offset, c);
 			}
 
 			await base.Start();

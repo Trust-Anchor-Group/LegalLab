@@ -19,18 +19,18 @@
                     </ListView.ItemContainerStyle>
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="Currency" Width="75" DisplayMemberBinding="{Binding Currency}"/>
-                            <GridViewColumn Header="Nr" Width="50" DisplayMemberBinding="{Binding Number}">
+                            <GridViewColumn Header="Currency" Width="70" DisplayMemberBinding="{Binding Currency}"/>
+                            <GridViewColumn Header="Nr" Width="50">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Change, Converter={conv:ToString}}" HorizontalAlignment="Right"/>
+                                        <TextBlock Text="{Binding NrTokens, Converter={conv:ToString}}" HorizontalAlignment="Right"/>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Header="Value" Width="100" DisplayMemberBinding="{Binding Value}">
+                            <GridViewColumn Header="Total Value" Width="100">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Change, Converter={conv:ToString}}" HorizontalAlignment="Right"/>
+                                        <TextBlock Text="{Binding Total, Converter={conv:MoneyToString}}" HorizontalAlignment="Right"/>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
