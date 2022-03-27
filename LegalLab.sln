@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Marketplace", "Marketplace"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Syntax", "Syntax", "{A151F6AB-D6F2-40E4-A739-4D6E67F00E5D}"
 	ProjectSection(SolutionItems) = preProject
+		ExampleContracts\Syntax\CalculatedParameters.xml = ExampleContracts\Syntax\CalculatedParameters.xml
 		ExampleContracts\Syntax\Markdown.xml = ExampleContracts\Syntax\Markdown.xml
 	EndProjectSection
 EndProject
