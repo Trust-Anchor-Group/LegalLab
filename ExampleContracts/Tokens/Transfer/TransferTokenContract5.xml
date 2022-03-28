@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <contract xmlns="urn:ieee:iot:leg:sc:1.0"
-          id="CreateTokenContract5"
+          id="TransferTokenContract5"
           archiveOpt="P3M"
           archiveReq="P1M"
           canActAsTemplate="true"
