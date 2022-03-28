@@ -54,7 +54,7 @@
 		</description>
 	</role>
 	<parts>
-		<open/>
+		<templateOnly/>
 	</parts>
 	<parameters>
 		<stringParameter name="TokenID" guide="Token ID (GUID)" regEx="[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}">
