@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Waher.Events;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
@@ -43,6 +44,8 @@ namespace LegalLab.Models.Tokens
 
 			this.RaisePropertyChanged(nameof(this.Tokens));
 
+			Task _ = this.LoadTotals();
+
 			return Task.CompletedTask;
 		}
 
@@ -64,7 +67,9 @@ namespace LegalLab.Models.Tokens
 
 			this.RaisePropertyChanged(nameof(this.Tokens));
 
-			return Task.CompletedTask;  // TODO
+			Task _ = this.LoadTotals();
+
+			return Task.CompletedTask; 
 		}
 
 		/// <inheritdoc/>
@@ -98,6 +103,28 @@ namespace LegalLab.Models.Tokens
 			}
 		}
 
+		private async Task LoadTotals()
+		{
+			try
+			{
+				TokenTotalsEventArgs e = await this.neuroFeaturesClient.GetTotalsAsync();
+				if (e.Ok)
+				{
+					lock (this.totals)
+					{
+						this.totals.Clear();
+						this.totals.AddRange(e.Totals);
+					}
+
+					this.RaisePropertyChanged(nameof(this.Totals));
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.Critical(ex);
+			}
+		}
+
 		/// <inheritdoc/>
 		public override async Task Start()
 		{
@@ -107,16 +134,7 @@ namespace LegalLab.Models.Tokens
 				return Task.CompletedTask;
 			});
 
-			TokenTotalsEventArgs e = await this.neuroFeaturesClient.GetTotalsAsync();
-			if (e.Ok)
-			{
-				lock (this.totals)
-				{
-					this.totals.AddRange(e.Totals);
-				}
-			
-				this.RaisePropertyChanged(nameof(this.Totals));
-			}
+			await this.LoadTotals();
 
 			int Offset = 0;
 			int c = 20;
