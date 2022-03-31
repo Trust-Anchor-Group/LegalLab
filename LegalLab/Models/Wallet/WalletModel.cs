@@ -20,12 +20,13 @@ namespace LegalLab.Models.Wallet
 		private readonly Property<DateTime> timestamp;
 		private readonly Property<string> uri;
 
-		private readonly List<AccountEvent> events = new List<AccountEvent>();
+		private readonly List<AccountEventWrapper> events = new List<AccountEventWrapper>();
 
 		private readonly Command send;
 
 		private readonly EDalerClient eDalerClient;
 		private Balance balance = null;
+		private AccountEventWrapper selectedItem = null;
 
 		/// <summary>
 		/// Wallet Model
@@ -51,15 +52,33 @@ namespace LegalLab.Models.Wallet
 		{
 			this.Balance = e.Balance;
 
+			AccountEventWrapper Item = new AccountEventWrapper(e.Balance.Event);
+			Item.Selected += Item_Selected;
+			Item.Deselected += Item_Deselected;
+
 			lock (this.events)
 			{
-				this.events.Insert(0, e.Balance.Event);
-
+				this.events.Insert(0, Item);
 			}
 
 			this.RaisePropertyChanged(nameof(this.Events));
 
 			return Task.CompletedTask;
+		}
+
+		private void Item_Deselected(object sender, EventArgs e)
+		{
+			if (this.selectedItem == sender)
+			{
+				this.selectedItem = null;
+				this.RaisePropertyChanged(nameof(this.SelectedItem));
+			}
+		}
+
+		private void Item_Selected(object sender, EventArgs e)
+		{
+			this.selectedItem = sender as AccountEventWrapper;
+			this.RaisePropertyChanged(nameof(this.SelectedItem));
 		}
 
 		/// <inheritdoc/>
@@ -127,7 +146,7 @@ namespace LegalLab.Models.Wallet
 		/// <summary>
 		/// Account events
 		/// </summary>
-		public IEnumerable<AccountEvent> Events
+		public IEnumerable<AccountEventWrapper> Events
 		{
 			get
 			{
@@ -136,6 +155,15 @@ namespace LegalLab.Models.Wallet
 					return this.events.ToArray();
 				}
 			}
+		}
+
+		/// <summary>
+		/// Selected item
+		/// </summary>
+		public AccountEventWrapper SelectedItem
+		{
+			get => this.selectedItem;
+			set => this.selectedItem = value;
 		}
 
 		/// <summary>
@@ -176,7 +204,14 @@ namespace LegalLab.Models.Wallet
 
 			lock (this.events)
 			{
-				this.events.AddRange(Events);
+				foreach (AccountEvent Event in Events)
+				{
+					AccountEventWrapper Item = new AccountEventWrapper(Event);
+					Item.Selected += Item_Selected;
+					Item.Deselected += Item_Deselected;
+
+					this.events.Add(Item);
+				}
 			}
 
 			this.RaisePropertyChanged(nameof(this.Events));
