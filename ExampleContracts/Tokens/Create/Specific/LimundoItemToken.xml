@@ -31,7 +31,7 @@
 			<Boolean>true</Boolean>
 		</OwnerCanDestroyIndividual>
 		<Definition>
-			<Item xmlns="https://lab.tagroot.io/Test/LimundoToken.xsd">
+			<Item xmlns="https://lab.tagroot.io/Test/LimundoItemToken.xsd">
 				<Title tag="Title" />
 				<Description tag="Description" />
 				<ItemUrl tag="ItemUrl" />
