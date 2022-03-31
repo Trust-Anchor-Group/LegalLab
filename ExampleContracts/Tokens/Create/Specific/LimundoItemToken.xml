@@ -140,9 +140,7 @@
 			</header>
 			<body>
 				<paragraph>
-					<text>This contract creates a Neuro-Feature</text>
-					<text>™</text>
-					<text> token representing an item for sale on Limundo.</text>
+					<text>This contract creates a Neuro-Feature™ token representing an item for sale on Limundo.</text>
 				</paragraph>
 				<section>
 					<header>
@@ -236,9 +234,7 @@
 					</header>
 					<body>
 						<paragraph>
-							<text>Only one Neuro-Feature</text>
-							<text>™</text>
-							<text> token can be generated for each Limundo item, according to the encoding scheme used.</text>
+							<text>Only one Neuro-Feature™ token can be generated for each Limundo item, according to the encoding scheme used.</text>
 						</paragraph>
 					</body>
 				</section>
@@ -248,7 +244,7 @@
 					</header>
 					<body>
 						<paragraph>
-							<text>The token creation commission is paid by the Creator to the Trust Provider upon signature by both parties.</text>
+							<text>The token creation commission is paid by the Creator to the Trust Provider upon signature by both parties. Payment is done using eDaler®.</text>
 						</paragraph>
 					</body>
 				</section>
