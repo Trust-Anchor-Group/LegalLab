@@ -39,6 +39,21 @@
 				<ClientId tag="ClientId" />
 			</Item>
 		</Definition>
+		<Tag name="Title">
+			<ParameterReference parameter="Title"/>
+		</Tag>
+		<Tag name="Description">
+			<ParameterReference parameter="Description"/>
+		</Tag>
+		<Tag name="ItemUrl">
+			<ParameterReference parameter="ItemUrl"/>
+		</Tag>
+		<Tag name="ImageUrl">
+			<ParameterReference parameter="ImageUrl"/>
+		</Tag>
+		<Tag name="ClientId">
+			<ParameterReference parameter="ClientId"/>
+		</Tag>
 		<FriendlyName>
 			<ParameterReference parameter="Title" />
 		</FriendlyName>
