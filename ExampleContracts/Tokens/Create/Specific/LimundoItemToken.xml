@@ -34,7 +34,7 @@
 			<Item xmlns="https://lab.tagroot.io/Test/LimundoToken.xsd">
 				<Title tag="Title" />
 				<Description tag="Description" />
-				<ItelUrl tag="ItelUrl" />
+				<ItemUrl tag="ItemUrl" />
 				<ImageUrl tag="ImageUrl" />
 				<ClientId tag="ClientId" />
 			</Item>
@@ -202,7 +202,7 @@
 								</bold>
 								<text>, corresponding to </text>
 								<bold>
-									<parameter name="Commisson" />
+									<parameter name="Commission" />
 									<text> </text>
 									<parameter name="Currency" />
 								</bold>
