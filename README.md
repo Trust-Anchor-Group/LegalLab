@@ -50,26 +50,42 @@ TAG technologies.
 		* [Specific](ExampleContracts/Tokens/Create/Specific) contains specific examples on how to create tokens.
 
 			* [LimundoItemToken.xml](ExampleContracts/Tokens/Create/Specific/LimundoItemToken.xml) creates a mirror token of an item in Limundo.
+			The operation includes instant payments of commissions.
 
 			* [LimundoItemToken.xsd](ExampleContracts/Tokens/Create/Specific/LimundoItemToken.xsd) contains the schema for the definition of
-			a Limundo token.
+			a Limundo token. The operation includes instant payments of commissions.
 
 		* [CreateTokenContract1.xml](ExampleContracts/Tokens/Create/CreateTokenContract1.xml) can be used to create one named (ID) token.
+		The operation includes instant payments of commissions.
 
 		* [CreateTokenContract1RandomId.xml](ExampleContracts/Tokens/Create/CreateTokenContract1RandomId.xml) can be used to create one token,
-		where the Trust Provider assigns a random ID.
+		where the Trust Provider assigns a random ID. The operation includes instant payments of commissions.
 		
 		* [CreateTokenContract1UniqueId.xml](ExampleContracts/Tokens/Create/CreateTokenContract1UniqueId.xml) can be used to create one token whose
-		ID is determined by its contents, and is therefore guaranteed to be unique.
+		ID is determined by its contents, and is therefore guaranteed to be unique. The operation includes instant payments of commissions.
 		
-		* [CreateTokenContract5.xml](ExampleContracts/Tokens/Create/CreateTokenContract5.xml) can be used to create a batch of five named (ID) tokens.
+		* [CreateTokenContract5.xml](ExampleContracts/Tokens/Create/CreateTokenContract5.xml) can be used to create a batch of five named (ID) 
+		tokens. The operation includes instant payments of commissions.
 
 		* [CreateTokenContract5RandomId.xml](ExampleContracts/Tokens/Create/CreateTokenContract5RandomId.xml) can be used to create a batch
-		of five tokens, where the Trust Provider assigns them random IDs.
+		of five tokens, where the Trust Provider assigns them random IDs. The operation includes instant payments of commissions.
 		
 		* [CreateTokenContract5UniqueId.xml](ExampleContracts/Tokens/Create/CreateTokenContract5UniqueId.xml) can be used to create a batch
-		of five tokens, whose IDs are determined by their contents, and are therefore guaranteed to be unique, as a batch.
+		of five tokens, whose IDs are determined by their contents, and are therefore guaranteed to be unique, as a batch. The operation 
+		includes instant payments of commissions.
 
 	* [Destroy](ExampleContracts/Tokens/Destroy) contains examples on how to destroy tokens.
+	
+		* [DestroyTokenContract1.xml](ExampleContracts/Tokens/Destroy/DestroyTokenContract1.xml) can be used to destroy a token one owns.
+	
+		* [DestroyTokenContract5.xml](ExampleContracts/Tokens/Destroy/DestroyTokenContract5.xml) can be used to destroy a batch of five tokens,
+		as long as one owns all tokens in the batch.
 
 	* [Transfer](ExampleContracts/Tokens/Transfer) contains examples on how to transfer the ownership of tokens.
+	
+		* [TransferTokenContract1.xml](ExampleContracts/Tokens/Transfer/TransferTokenContract1.xml) can be used to transfer the ownership of a
+		token from the current owner to a new owner. The process includes assigning a new value, as well as performing instant payments.
+	
+		* [TransferTokenContract5.xml](ExampleContracts/Tokens/Transfer/TransferTokenContract5.xml) can be used to transfer the ownership of a
+		batch of five tokens from the current owner to a new owner. The process includes assigning a new value for the tokens, as well as 
+		performing instant payments.
