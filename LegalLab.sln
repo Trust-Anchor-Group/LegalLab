@@ -56,6 +56,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Transfer", "Transfer", "{1C
 		ExampleContracts\Tokens\Transfer\TransferTokenContract5.xml = ExampleContracts\Tokens\Transfer\TransferTokenContract5.xml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Specific", "Specific", "{E65D2413-D0F0-47AF-98DC-6C6B5C458A03}"
+	ProjectSection(SolutionItems) = preProject
+		ExampleContracts\Tokens\Create\Specific\LimundoItemToken.xml = ExampleContracts\Tokens\Create\Specific\LimundoItemToken.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,6 +85,7 @@ Global
 		{4884851F-3B3B-4666-B245-BDE968DC48A8} = {FE86B209-349B-47FB-9A12-5BEAFE9F35DC}
 		{34AB437E-CCCB-4C9E-B0D3-A0AA451EE5B1} = {FE86B209-349B-47FB-9A12-5BEAFE9F35DC}
 		{1CACA399-0F2F-4C13-8404-C76B93561759} = {FE86B209-349B-47FB-9A12-5BEAFE9F35DC}
+		{E65D2413-D0F0-47AF-98DC-6C6B5C458A03} = {4884851F-3B3B-4666-B245-BDE968DC48A8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {82820A85-2566-4DAB-A5B4-BABDC2569097}
