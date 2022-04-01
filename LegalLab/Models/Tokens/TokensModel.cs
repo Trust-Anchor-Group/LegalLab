@@ -20,6 +20,8 @@ namespace LegalLab.Models.Tokens
 
 		private readonly NeuroFeaturesClient neuroFeaturesClient;
 
+		private TokenModel selectedItem = null;
+
 		/// <summary>
 		/// Tokens Model
 		/// </summary>
@@ -37,9 +39,13 @@ namespace LegalLab.Models.Tokens
 
 		private Task NeuroFeaturesClient_TokenAdded(object Sender, TokenEventArgs e)
 		{
+			TokenModel Token = new TokenModel(e.Token);
+			Token.Selected += Token_Selected;
+			Token.Deselected += Token_Deselected;
+
 			lock (this.tokens)
 			{
-				this.tokens.Insert(0, new TokenModel(e.Token));
+				this.tokens.Insert(0, Token);
 			}
 
 			this.RaisePropertyChanged(nameof(this.Tokens));
@@ -47,6 +53,21 @@ namespace LegalLab.Models.Tokens
 			Task _ = this.LoadTotals();
 
 			return Task.CompletedTask;
+		}
+
+		private void Token_Deselected(object sender, EventArgs e)
+		{
+			if (this.selectedItem == sender)
+			{
+				this.selectedItem = null;
+				this.RaisePropertyChanged(nameof(this.SelectedItem));
+			}
+		}
+
+		private void Token_Selected(object sender, EventArgs e)
+		{
+			this.selectedItem = sender as TokenModel;
+			this.RaisePropertyChanged(nameof(this.SelectedItem));
 		}
 
 		private Task NeuroFeaturesClient_TokenRemoved(object Sender, TokenEventArgs e)
@@ -90,6 +111,15 @@ namespace LegalLab.Models.Tokens
 					return this.tokens.ToArray();
 				}
 			}
+		}
+
+		/// <summary>
+		/// Selected item
+		/// </summary>
+		public TokenModel SelectedItem
+		{
+			get => this.selectedItem;
+			set => this.selectedItem = value;
 		}
 
 		public IEnumerable<TokenTotal> Totals
@@ -145,7 +175,13 @@ namespace LegalLab.Models.Tokens
 				lock (this.tokens)
 				{
 					foreach (Token Token in e2.Tokens)
-						this.tokens.Add(new TokenModel(Token));
+					{
+						TokenModel TokenModel = new TokenModel(Token);
+						TokenModel.Selected += Token_Selected;
+						TokenModel.Deselected += Token_Deselected;
+
+						this.tokens.Add(TokenModel);
+					}
 				}
 
 				this.RaisePropertyChanged(nameof(this.Tokens));
