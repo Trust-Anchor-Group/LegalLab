@@ -3,6 +3,8 @@ using NeuroFeatures;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using Waher.Content.Xml;
 using Waher.Events;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
@@ -24,6 +26,9 @@ namespace LegalLab.Models.Tokens
 		private TokenModel selectedItem = null;
 		private TokenEventDetail[] events = null;
 
+		private readonly Command addTextNote;
+		private readonly Command addXmlNote;
+
 		/// <summary>
 		/// Tokens Model
 		/// </summary>
@@ -37,6 +42,9 @@ namespace LegalLab.Models.Tokens
 
 			this.neuroFeaturesClient.TokenAdded += NeuroFeaturesClient_TokenAdded;
 			this.neuroFeaturesClient.TokenRemoved += NeuroFeaturesClient_TokenRemoved;
+
+			this.addTextNote = new Command(this.CanExecuteAddNote, this.ExecuteAddTextNote);
+			this.addXmlNote = new Command(this.CanExecuteAddNote, this.ExecuteAddXmlNote);
 		}
 
 		private Task NeuroFeaturesClient_TokenAdded(object Sender, TokenEventArgs e)
@@ -74,6 +82,11 @@ namespace LegalLab.Models.Tokens
 			this.selectedItem = sender as TokenModel;
 			this.RaisePropertyChanged(nameof(this.SelectedItem));
 
+			this.LoadEvents();
+		}
+
+		private void LoadEvents()
+		{
 			this.events = new TokenEventDetail[0];
 			this.RaisePropertyChanged(nameof(this.Events));
 
@@ -182,6 +195,72 @@ namespace LegalLab.Models.Tokens
 			catch (Exception ex)
 			{
 				Log.Critical(ex);
+			}
+		}
+
+		/// <summary>
+		/// Command for adding a text note to a token.
+		/// </summary>
+		public ICommand AddTextNote => this.addTextNote;
+
+		/// <summary>
+		/// Command for adding an XML note to a token.
+		/// </summary>
+		public ICommand AddXmlNote => this.addXmlNote;
+
+		private bool CanExecuteAddNote()
+		{
+			return !(this.selectedItem is null);
+		}
+
+		private async Task ExecuteAddTextNote()
+		{
+			string s = MainWindow.PromptUser("Add Text Note", "Enter text note to add to token:");
+
+			if (!string.IsNullOrEmpty(s))
+			{
+				if (this.selectedItem is null)
+					MainWindow.ErrorBox("No token selected.");
+				else
+				{
+					try
+					{
+						await this.neuroFeaturesClient.AddTextNoteAsync(this.selectedItem.TokenId, s);
+						this.LoadEvents();
+					}
+					catch (Exception ex)
+					{
+						MainWindow.ErrorBox(ex.Message);
+					}
+				}
+			}
+		}
+
+		private async Task ExecuteAddXmlNote()
+		{
+			string s = string.Empty;
+
+			do
+			{
+				s = MainWindow.PromptUser("Add Text Note", "Enter text note to add to token:", s);
+				if (string.IsNullOrEmpty(s))
+					return;
+			}
+			while (!XML.IsValidXml(s));
+
+			if (this.selectedItem is null)
+				MainWindow.ErrorBox("No token selected.");
+			else
+			{
+				try
+				{
+					await this.neuroFeaturesClient.AddXmlNoteAsync(this.selectedItem.TokenId, s);
+					this.LoadEvents();
+				}
+				catch (Exception ex)
+				{
+					MainWindow.ErrorBox(ex.Message);
+				}
 			}
 		}
 
