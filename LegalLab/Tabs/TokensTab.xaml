@@ -39,9 +39,75 @@
                 </ListView>
             </StackPanel>
         </ScrollViewer>
+        <StackPanel DockPanel.Dock="Bottom" Visibility="{Binding Events, Converter={conv:VisibleIfNotNull}}">
+            <ListView HorizontalAlignment="Stretch" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                  ItemsSource="{Binding Events}" SelectionMode="Single" MaxHeight="100">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Timestamp" Width="200">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Timestamp, Converter={conv:DateTimeToString}}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Personal" Width="70">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Personal}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Message" Width="300">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBox Text="{Binding Message, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                                             IsReadOnly="True" BorderThickness="0" Background="Transparent"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Value" Width="100">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Value}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Currency" Width="70">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Currency}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Owner" Width="200">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBox Text="{Binding Owner, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                                             IsReadOnly="True" BorderThickness="0" Background="Transparent"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Ownership Contract" Width="200">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBox Text="{Binding OwnershipContract, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                                             IsReadOnly="True" BorderThickness="0" Background="Transparent"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </StackPanel>
         <StackPanel DockPanel.Dock="Bottom" Visibility="{Binding SelectedItem, Converter={conv:VisibleIfNotNull}}">
             <ListView HorizontalAlignment="Stretch" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Auto" 
-                  ItemsSource="{Binding Details}" SelectionMode="Single" DataContext="{Binding SelectedItem}" MaxHeight="400">
+                  ItemsSource="{Binding Details}" SelectionMode="Single" DataContext="{Binding SelectedItem}" MaxHeight="300">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>

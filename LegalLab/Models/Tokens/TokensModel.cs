@@ -1,4 +1,5 @@
-﻿using NeuroFeatures;
+﻿using LegalLab.Models.Tokens.Events;
+using NeuroFeatures;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ namespace LegalLab.Models.Tokens
 		private readonly NeuroFeaturesClient neuroFeaturesClient;
 
 		private TokenModel selectedItem = null;
+		private TokenEventDetail[] events = null;
 
 		/// <summary>
 		/// Tokens Model
@@ -61,6 +63,9 @@ namespace LegalLab.Models.Tokens
 			{
 				this.selectedItem = null;
 				this.RaisePropertyChanged(nameof(this.SelectedItem));
+
+				this.events = null;
+				this.RaisePropertyChanged(nameof(this.Events));
 			}
 		}
 
@@ -68,6 +73,26 @@ namespace LegalLab.Models.Tokens
 		{
 			this.selectedItem = sender as TokenModel;
 			this.RaisePropertyChanged(nameof(this.SelectedItem));
+
+			this.events = new TokenEventDetail[0];
+			this.RaisePropertyChanged(nameof(this.Events));
+
+			this.neuroFeaturesClient.GetEvents(this.selectedItem.TokenId, 0, 100, (sender, e) =>
+			{
+				if (e.Ok && e.Events.Length > 0 && e.Events[0].TokenId == (string)e.State)
+				{
+					int i, c = e.Events.Length;
+					TokenEventDetail[] Events = new TokenEventDetail[c];
+
+					for (i = 0; i < c; i++)
+						Events[i] = TokenEventDetail.Create(e.Events[i]);
+
+					this.events = Events;
+					this.RaisePropertyChanged(nameof(this.Events));
+				}
+
+				return Task.CompletedTask;
+			}, this.selectedItem.TokenId);
 		}
 
 		private Task NeuroFeaturesClient_TokenRemoved(object Sender, TokenEventArgs e)
@@ -90,7 +115,7 @@ namespace LegalLab.Models.Tokens
 
 			Task _ = this.LoadTotals();
 
-			return Task.CompletedTask; 
+			return Task.CompletedTask;
 		}
 
 		/// <inheritdoc/>
@@ -121,6 +146,11 @@ namespace LegalLab.Models.Tokens
 			get => this.selectedItem;
 			set => this.selectedItem = value;
 		}
+
+		/// <summary>
+		/// Events of selected item.
+		/// </summary>
+		public TokenEventDetail[] Events => this.events;
 
 		public IEnumerable<TokenTotal> Totals
 		{
