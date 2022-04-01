@@ -21,32 +21,32 @@
             </StackPanel>
         </ScrollViewer>
         <StackPanel DockPanel.Dock="Bottom" Visibility="{Binding SelectedItem, Converter={conv:VisibleIfNotNull}}">
-        <Grid Margin="10" DataContext="{Binding SelectedItem}" Visibility="{Binding SelectedItem, Converter={conv:VisibleIfNotNull}}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Label Grid.Column="0" Grid.Row="0" Padding="0">Transaction ID:</Label>
-            <TextBox Grid.Column="0" Grid.Row="1" Margin="0,0,10,0" Text="{Binding TransactionId, Mode=OneWay}" IsReadOnly="True"/>
-            <Label Grid.Column="0" Grid.Row="2" Padding="0,10,0,0">Timestamp:</Label>
-            <TextBox Grid.Column="0" Grid.Row="3" Margin="0,0,10,0" Text="{Binding Timestamp, Mode=OneWay, Converter={conv:DateTimeToString}}" IsReadOnly="True"/>
-            <Label Grid.Column="0" Grid.Row="4" Padding="0,10,0,0">Remote party:</Label>
-            <TextBox Grid.Column="0" Grid.Row="5" Margin="0,0,10,0" Text="{Binding Remote, Mode=OneWay}" IsReadOnly="True"/>
-            <Label Grid.Column="1" Grid.Row="0" Padding="0">Change:</Label>
-            <TextBox Grid.Column="1" Grid.Row="1" Width="100" HorizontalAlignment="Left" Text="{Binding Change, Mode=OneWay, Converter={conv:MoneyToString}}" IsReadOnly="True"/>
-            <Label Grid.Column="1" Grid.Row="2" Padding="0,10,0,0">Balance:</Label>
-            <TextBox Grid.Column="1" Grid.Row="3" Width="100" HorizontalAlignment="Left" Text="{Binding Balance, Mode=OneWay, Converter={conv:MoneyToString}}" IsReadOnly="True"/>
-            <Label Grid.Column="1" Grid.Row="4" Padding="0,10,0,0">Message:</Label>
-            <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Message, Mode=OneWay}" IsReadOnly="True"/>
-        </Grid>
+            <Grid Margin="10" DataContext="{Binding SelectedItem}" Visibility="{Binding SelectedItem, Converter={conv:VisibleIfNotNull}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" Grid.Row="0" Padding="0">Transaction ID:</Label>
+                <TextBox Grid.Column="0" Grid.Row="1" Margin="0,0,10,0" Text="{Binding TransactionId, Mode=OneWay}" IsReadOnly="True"/>
+                <Label Grid.Column="0" Grid.Row="2" Padding="0,10,0,0">Timestamp:</Label>
+                <TextBox Grid.Column="0" Grid.Row="3" Margin="0,0,10,0" Text="{Binding Timestamp, Mode=OneWay, Converter={conv:DateTimeToString}}" IsReadOnly="True"/>
+                <Label Grid.Column="0" Grid.Row="4" Padding="0,10,0,0">Remote party:</Label>
+                <TextBox Grid.Column="0" Grid.Row="5" Margin="0,0,10,0" Text="{Binding Remote, Mode=OneWay}" IsReadOnly="True"/>
+                <Label Grid.Column="1" Grid.Row="0" Padding="0">Change:</Label>
+                <TextBox Grid.Column="1" Grid.Row="1" Width="100" HorizontalAlignment="Left" Text="{Binding Change, Mode=OneWay, Converter={conv:MoneyToString}}" IsReadOnly="True"/>
+                <Label Grid.Column="1" Grid.Row="2" Padding="0,10,0,0">Balance:</Label>
+                <TextBox Grid.Column="1" Grid.Row="3" Width="100" HorizontalAlignment="Left" Text="{Binding Balance, Mode=OneWay, Converter={conv:MoneyToString}}" IsReadOnly="True"/>
+                <Label Grid.Column="1" Grid.Row="4" Padding="0,10,0,0">Message:</Label>
+                <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Message, Mode=OneWay}" IsReadOnly="True"/>
+            </Grid>
         </StackPanel>
         <ListView HorizontalAlignment="Stretch" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible" 
                   ItemsSource="{Binding Events}" DockPanel.Dock="Right" SelectionMode="Single">
