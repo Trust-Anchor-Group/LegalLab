@@ -439,6 +439,7 @@ namespace LegalLab.Models.Network
 
 				this.client.OnStateChanged += Client_OnStateChanged;
 				this.client.OnConnectionError += Client_OnConnectionError;
+				this.client.OnChatMessage += Client_OnChatMessage;
 
 				this.client.Connect(this.XmppServer);
 			}
@@ -447,6 +448,12 @@ namespace LegalLab.Models.Network
 				MainWindow.MouseDefault();
 				MainWindow.ErrorBox("Unable to connect to the XMPP network. Error reported: " + ex.Message);
 			}
+		}
+
+		private Task Client_OnChatMessage(object Sender, MessageEventArgs e)
+		{
+			MainWindow.MessageBox(e.Body, "Message from " + e.From, MessageBoxButton.OK, MessageBoxImage.Information);
+			return Task.CompletedTask;
 		}
 
 		private Task Client_OnConnectionError(object Sender, Exception Exception)
