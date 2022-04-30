@@ -1,52 +1,45 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<contract xmlns="urn:ieee:iot:leg:sc:1.0"
-          id="TransferTokenContract1"
-          archiveOpt="P3M"
-          archiveReq="P1M"
-          canActAsTemplate="true"
-          duration="P2M"
-          visibility="Public">
+<contract archiveOpt="P3M" archiveReq="P1M" canActAsTemplate="true" duration="P2M" id="TransferTokenContract1" visibility="Public" xmlns="urn:ieee:iot:leg:sc:1.0">
 	<Transfer xmlns="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd">
 		<TokenID>
-			<ParameterReference parameter="TokenID"/>
+			<ParameterReference parameter="TokenID" />
 		</TokenID>
 		<Seller>
-			<RoleReference role="Seller"/>
+			<RoleReference role="Seller" />
 		</Seller>
 		<Buyer>
-			<RoleReference role="Buyer"/>
+			<RoleReference role="Buyer" />
 		</Buyer>
 		<TrustProvider>
-			<RoleReference role="TrustProvider"/>
+			<RoleReference role="TrustProvider" />
 		</TrustProvider>
 		<Value>
-			<ParameterReference parameter="Value"/>
+			<ParameterReference parameter="Value" />
 		</Value>
 		<Currency>
-			<ParameterReference parameter="Currency"/>
+			<ParameterReference parameter="Currency" />
 		</Currency>
 		<CommissionPercent>
-			<ParameterReference parameter="CommissionPercent"/>
+			<ParameterReference parameter="CommissionPercent" />
 		</CommissionPercent>
 		<OwnershipContract>
-			<ParameterReference parameter="OwnershipContract"/>
+			<ParameterReference parameter="OwnershipContract" />
 		</OwnershipContract>
 	</Transfer>
-	<role name="Seller" minCount="1" maxCount="1">
+	<role maxCount="1" minCount="1" name="Seller">
 		<description xml:lang="en">
 			<paragraph>
 				<text>This is the role of the part that owns the token, before the transfer.</text>
 			</paragraph>
 		</description>
 	</role>
-	<role name="Buyer" minCount="1" maxCount="1">
+	<role maxCount="1" minCount="1" name="Buyer">
 		<description xml:lang="en">
 			<paragraph>
 				<text>This is the role of the part that will become the new ower of the token, after a successful payment.</text>
 			</paragraph>
 		</description>
 	</role>
-	<role name="TrustProvider" minCount="1" maxCount="1">
+	<role maxCount="1" minCount="1" name="TrustProvider">
 		<description xml:lang="en">
 			<paragraph>
 				<text>This is the role of the trust provider that acts as the host for the token and approves its transfer.</text>
@@ -54,31 +47,31 @@
 		</description>
 	</role>
 	<parts>
-		<templateOnly/>
+		<templateOnly />
 	</parts>
 	<parameters>
 		<stringParameter name="TokenID" guide="Token ID (GUID)" regEx="[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}">
 			<description xml:lang="en">
 				<paragraph>
-					<text>The ID of the token to destroy.</text>
+					<text>The ID of the token to transfer.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
-		<numericalParameter name="Value" guide="Value of token" min="0">
+		<numericalParameter name="Value" guide="Value of token" min="0" minIncluded="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The agreed upon price of the token.</text>
 				</paragraph>
 			</description>
 		</numericalParameter>
-		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="\w{3}">
+		<stringParameter name="Currency" guide="Currency" regEx="\w{3}" minLength="3" maxLength="3">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The currency of the agreed upon price of the token.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
-		<numericalParameter name="CommissionPercent" guide="Commision (%)" min="0" max="100">
+		<numericalParameter name="CommissionPercent" guide="Commision (%)" min="0" minIncluded="true" max="100" maxIncluded="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The commission the Trust Provider gets for providing the sale, and transfer of the token.</text>
