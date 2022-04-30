@@ -520,6 +520,8 @@ namespace LegalLab.Models.Legal
 			Variables Variables = new Variables();
 			bool Ok = true;
 
+			Variables["Duration"] = this.contract.Duration;
+
 			foreach (ParameterInfo P in this.parametersByName.Values)
 				P.Parameter.Populate(Variables);
 
