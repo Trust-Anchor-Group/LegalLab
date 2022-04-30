@@ -77,7 +77,7 @@
 				</paragraph>
 			</description>
 		</numericalParameter>
-		<dateParameter name="Expires" guide="Expiry date" exp="Expires&gt;Now.Date">
+		<dateParameter name="Expires" guide="Expiry date" exp="Expires&gt;Now.Date and Expires&lt;Now.Date+Duration">
 			<description xml:lang="en">
 				<paragraph>
 					<text>When token expires.</text>
