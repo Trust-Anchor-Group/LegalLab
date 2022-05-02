@@ -52,8 +52,8 @@ namespace LegalLab
 		public MainWindow()
 		{
 			this.Visibility = Visibility.Hidden;
-			InitializeComponent();
 			Initialize();
+			InitializeComponent();
 		}
 
 		#region Initialization & Setup
@@ -72,7 +72,6 @@ namespace LegalLab
 						StartGuiTask = true;
 					}
 				}
-
 
 				appDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LegalLab");
 
