@@ -50,7 +50,7 @@
 		<templateOnly />
 	</parts>
 	<parameters>
-		<stringParameter name="TokenID" guide="Token ID (GUID)" regEx="[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}">
+		<stringParameter name="TokenID" guide="Token ID (GUID)" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The ID of the token to transfer.</text>

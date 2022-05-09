@@ -47,35 +47,35 @@
 		<templateOnly/>
 	</parts>
 	<parameters>
-		<stringParameter name="TokenID1" guide="Token ID 1 (GUID)" regEx="[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}">
+		<stringParameter name="TokenID1" guide="Token ID 1 (GUID)" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The ID of the token to create.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
-		<stringParameter name="TokenID2" guide="Token ID 2 (GUID)" regEx="[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}">
+		<stringParameter name="TokenID2" guide="Token ID 2 (GUID)" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The ID of the token to create.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
-		<stringParameter name="TokenID3" guide="Token ID 3 (GUID)" regEx="[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}">
+		<stringParameter name="TokenID3" guide="Token ID 3 (GUID)" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The ID of the token to create.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
-		<stringParameter name="TokenID4" guide="Token ID 4 (GUID)" regEx="[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}">
+		<stringParameter name="TokenID4" guide="Token ID 4 (GUID)" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The ID of the token to create.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
-		<stringParameter name="TokenID5" guide="Token ID 5 (GUID)" regEx="[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}">
+		<stringParameter name="TokenID5" guide="Token ID 5 (GUID)" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The ID of the token to create.</text>
