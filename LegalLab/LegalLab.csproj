@@ -22,7 +22,7 @@
     <PackageReference Include="EDaler" Version="2.1.0" />
     <PackageReference Include="NeuroFeatures" Version="1.1.4" />
     <PackageReference Include="SkiaSharp" Version="2.80.3" />
-    <PackageReference Include="Waher.Content" Version="2.3.1" />
+    <PackageReference Include="Waher.Content" Version="2.3.2" />
     <PackageReference Include="Waher.Content.Emoji" Version="2.0.0" />
     <PackageReference Include="Waher.Content.Html" Version="2.1.0" />
     <PackageReference Include="Waher.Content.Markdown" Version="2.1.6" />
@@ -34,7 +34,7 @@
     <PackageReference Include="Waher.Networking" Version="2.0.4" />
     <PackageReference Include="Waher.Networking.DNS" Version="2.0.1" />
     <PackageReference Include="Waher.Networking.PeerToPeer" Version="2.0.0" />
-    <PackageReference Include="Waher.Networking.XMPP" Version="2.0.2" />
+    <PackageReference Include="Waher.Networking.XMPP" Version="2.0.3" />
     <PackageReference Include="Waher.Networking.XMPP.Contracts" Version="2.2.2" />
     <PackageReference Include="Waher.Networking.XMPP.P2P" Version="2.0.1" />
     <PackageReference Include="Waher.Persistence" Version="1.6.3" />
