@@ -43,6 +43,10 @@ namespace LegalLab.Models.Tokens.Events
 				return new NoteTextDetail(NoteText);
 			else if (Event is NoteXml NoteXml)
 				return new NoteXmlDetail(NoteXml);
+			else if (Event is ExternalNoteText ExternalNoteText)
+				return new ExternalNoteTextDetail(ExternalNoteText);
+			else if (Event is ExternalNoteXml ExternalNoteXml)
+				return new ExternalNoteXmlDetail(ExternalNoteXml);
 			else if (Event is Transferred Transferred)
 				return new TransferredDetail(Transferred);
 			else
