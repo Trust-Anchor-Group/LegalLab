@@ -63,6 +63,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Specific", "Specific", "{E6
 		ExampleContracts\Tokens\Create\Specific\LimundoItemToken.xsd = ExampleContracts\Tokens\Create\Specific\LimundoItemToken.xsd
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StateMachines", "StateMachines", "{1B94CDD9-BA5A-4328-9F2E-C2B55334E587}"
+	ProjectSection(SolutionItems) = preProject
+		ExampleContracts\StateMachines\Calculator.xml = ExampleContracts\StateMachines\Calculator.xml
+		ExampleContracts\StateMachines\MicroLoan.xml = ExampleContracts\StateMachines\MicroLoan.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -88,6 +94,7 @@ Global
 		{34AB437E-CCCB-4C9E-B0D3-A0AA451EE5B1} = {FE86B209-349B-47FB-9A12-5BEAFE9F35DC}
 		{1CACA399-0F2F-4C13-8404-C76B93561759} = {FE86B209-349B-47FB-9A12-5BEAFE9F35DC}
 		{E65D2413-D0F0-47AF-98DC-6C6B5C458A03} = {4884851F-3B3B-4666-B245-BDE968DC48A8}
+		{1B94CDD9-BA5A-4328-9F2E-C2B55334E587} = {46E61E48-A9A5-4CB8-8B7A-712F716F6FF5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {82820A85-2566-4DAB-A5B4-BABDC2569097}

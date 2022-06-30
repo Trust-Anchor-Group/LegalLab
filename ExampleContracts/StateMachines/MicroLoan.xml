@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<contract xmlns="urn:ieee:iot:leg:sc:1.0"
+          id="CreateTokenContract1StateMachineMicroLoan"
+          archiveOpt="P3M"
+          archiveReq="P1M"
+          canActAsTemplate="true"
+          duration="P2Y"
+          visibility="Public">
+	<Create xmlns="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd">
+		<TokenID>
+			<Random />
+		</TokenID>
+		<Creator>
+			<RoleReference role="Creator"/>
+		</Creator>
+		<Owner>
+			<RoleReference role="Lender"/>
+		</Owner>
+		<Certifier>
+			<RoleReference role="Borrower"/>
+		</Certifier>
+		<TrustProvider>
+			<RoleReference role="TrustProvider"/>
+		</TrustProvider>
+		<Value>
+			<ParameterReference parameter="Amount"/>
+		</Value>
+		<Currency>
+			<ParameterReference parameter="Currency"/>
+		</Currency>
+		<CommissionPercent>
+			<ParameterReference parameter="CommissionPercent"/>
+		</CommissionPercent>
+		<Expires>
+			<ParameterReference parameter="Expires"/>
+		</Expires>
+		<CreatorCanDestroy>
+			<Boolean>false</Boolean>
+		</CreatorCanDestroy>
+		<OwnerCanDestroyBatch>
+			<Boolean>false</Boolean>
+		</OwnerCanDestroyBatch>
+		<OwnerCanDestroyIndividual>
+			<Boolean>true</Boolean>
+		</OwnerCanDestroyIndividual>
+		<CertifierCanDestroy>
+			<Boolean>false</Boolean>
+		</CertifierCanDestroy>
+		<Definition>
+			<StateMachine xmlns="https://paiwise.tagroot.io/Schema/StateMachines.xsd" startState="Setup">
+				<Variable id="Amount">
+					<TagReference tag="Amount"/>
+				</Variable>
+				<Variable id="Debt">
+					<TagReference tag="Amount"/>
+				</Variable>
+				<Variable id="InterestPerInstallment">
+					<TagReference tag="InterestPerInstallment"/>
+				</Variable>
+				<Variable id="Cost">
+					<TagReference tag="Cost"/>
+				</Variable>
+				<Variable id="Currency">
+					<TagReference tag="Currency"/>
+				</Variable>
+				<Variable id="DebtLimit">
+					<TagReference tag="DebtLimit"/>
+				</Variable>
+				<Variable id="InstallmentInterval">
+					<TagReference tag="InstallmentInterval"/>
+				</Variable>
+				<Variable id="InstallmentAmount">
+					<TagReference tag="InstallmentAmount"/>
+				</Variable>
+				<Variable id="Creator">
+					<TagReference tag="Creator"/>
+				</Variable>
+				<Variable id="Lender">
+					<TagReference tag="Lender"/>
+				</Variable>
+				<Variable id="Borrower">
+					<TagReference tag="Borrower"/>
+				</Variable>
+				<Variable id="LoanAgreement">
+					<TokenProperty>CreationContract</TokenProperty>
+				</Variable>
+				<Variable id="NrFailedPayments">
+					<Number>0</Number>
+				</Variable>
+				<State id="Setup">
+					<OnEnter actionRef="InitialPayments"/>
+					<OnEvent actionRef="PayInstallment" newState="Paying">
+						<OnDuration>{InstallmentInterval}</OnDuration>
+					</OnEvent>
+				</State>
+				<State id="Paying">
+					<OnEvent newState="Paid">
+						<OnCondition>
+							<![CDATA[
+							Debt<=0
+							]]>
+						</OnCondition>
+					</OnEvent>
+					<OnEvent actionRef="PayInstallment">
+						<OnDuration>{InstallmentInterval}</OnDuration>
+					</OnEvent>
+				</State>
+				<State id="Paid">
+					<OnEnter actionRef="Done"/>
+				</State>
+				<Action id="InitialPayments">
+					<LogEvent type="Debug" message="Starting."/>
+					<LogEvent type="Debug" message="Paying loan amount, from Lender to Borrower."/>
+					<Payment>
+						<From value="{Lender}"/>
+						<To value="{Borrower}"/>
+						<Amount value="{Amount}"/>
+						<Currency value="{Currency}"/>
+						<ValidDays value="3"/>
+						<Reference value="{LoanAgreement}"/>
+						<Contract value="{LoanAgreement}"/>
+					</Payment>
+					<TextNote>
+						<Content>
+							<Calc>
+								<![CDATA[
+								'Loan amount paid by lender to borrower: '+
+									Amount+' '+Currency+
+									'. Debt: '+Debt+' '+Currency+'.'
+								]]>
+							</Calc>
+						</Content>
+					</TextNote>
+					<LogEvent type="Debug" message="Borrower reimbursing creator."/>
+					<Payment>
+						<From value="{Borrower}"/>
+						<To value="{Creator}"/>
+						<Amount value="{Cost}"/>
+						<Currency value="{Currency}"/>
+						<ValidDays value="3"/>
+						<Reference value="{LoanAgreement}"/>
+						<Contract value="{LoanAgreement}"/>
+					</Payment>
+					<TextNote content="{'Cost reimbursement paid to creator: '+Cost+' '+Currency+'.'}"/>
+				</Action>
+				<Action id="PayInstallment">
+					<If condition="Debt&lt;DebtLimit">
+						<Then>
+							<LogEvent type="Debug" message="Adding interest."/>
+							<PersistVariable name="Debt">
+								<Value>
+									<Calc>
+										<![CDATA[
+										Debt:=Min(Debt*(100+InterestPerInstallment)/100,DebtLimit);
+										round(Debt*100)*0.01
+										]]>
+									</Calc>
+								</Value>
+							</PersistVariable>
+							<TextNote content="{'Interest added. Debt: '+Debt+' '+Currency+'.'}"/>
+							<LogEvent type="Debug" message="{'Current debt: '+Debt}"/>
+						</Then>
+					</If>
+					<Script>
+						<![CDATA[
+						Installment:=Min(Debt,InstallmentAmount);
+						Installment+=round(Debt*100)*0.01-Debt
+						]]>
+					</Script>
+					<If condition="Installment&gt;0">
+						<Then>
+							<Try>
+								<LogEvent type="Debug" message="Paying installment."/>
+								<Payment>
+									<From value="{Borrower}"/>
+									<To value="{Lender}"/>
+									<Amount value="{Installment}"/>
+									<Currency value="{Currency}"/>
+									<ValidDays value="3"/>
+									<Reference value="{LoanAgreement}"/>
+									<Contract value="{LoanAgreement}"/>
+								</Payment>
+								<PersistVariable name="Debt">
+									<Value>
+										<Calc>
+											<![CDATA[
+											Debt-=Installment;
+											round(Debt*100)*0.01
+											]]>
+										</Calc>
+									</Value>
+								</PersistVariable>
+								<TextNote content="{'Installment paid. Debt: '+Debt+' '+Currency+'.'}"/>
+								<LogEvent type="Debug" message="{'Current debt: '+Debt}"/>
+								<Catch exceptionVariable="ex">
+									<PersistVariable name="NrFailedPayments" value="{NrFailedPayments+1}"/>
+									<TextNote content="{ex.Message}"/>
+									<LogEvent type="Critical" message="{ex.Message}"/>
+								</Catch>
+							</Try>
+						</Then>
+						<Else>
+							<CallAction actionRef="Done"/>
+						</Else>
+					</If>
+				</Action>
+				<Action id="Done">
+					<TextNote content="Microloan completed."/>
+					<LogEvent type="Debug" message="Completed."/>
+					<End/>
+				</Action>
+			</StateMachine>
+		</Definition>
+		<Tag name="Amount">
+			<ParameterReference parameter="Amount"/>
+		</Tag>
+		<Tag name="Cost">
+			<ParameterReference parameter="Cost"/>
+		</Tag>
+		<Tag name="DebtLimit">
+			<ParameterReference parameter="DebtLimit"/>
+		</Tag>
+		<Tag name="InstallmentInterval">
+			<ParameterReference parameter="InstallmentInterval"/>
+		</Tag>
+		<Tag name="InstallmentAmount">
+			<ParameterReference parameter="InstallmentAmount"/>
+		</Tag>
+		<Tag name="Currency">
+			<ParameterReference parameter="Currency"/>
+		</Tag>
+		<Tag name="InterestPerInstallment">
+			<ParameterReference parameter="InterestPerInstallment"/>
+		</Tag>
+		<Tag name="Creator">
+			<RoleReference role="Creator"/>
+		</Tag>
+		<Tag name="Lender">
+			<RoleReference role="Lender"/>
+		</Tag>
+		<Tag name="Borrower">
+			<RoleReference role="Borrower"/>
+		</Tag>
+		<FriendlyName>
+			<String>Microloan</String>
+		</FriendlyName>
+		<Glyph contentType="image/png">iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAABFFJREFUeJztWU1IMlsYfrqTFmgLIb5yEURlLQo3YVZUCi1qFUFQUKt2QURWm7IgIkhqJ9IP1EIIWkWuIugPLIh0GVFUBC5SocCkEM2/uYvv3oPDNNM43Thwv3lgYM77d57zeI7nzEwBy7Is/mD8RZsAbSgC0CZAG4oAtAnQhiIAbQK0oQhAmwBtKALQJkAbigC0CdCGIgBtArShCECbAG0oAtAmQBuKALQJ0EahkCMYDGJpaQklJSV5F43H4+jr60NHRwfPNz8/j3g8jmw2i5qaGoyMjORdHwBSqRScTicODg5wfX2N19dXqNVqVFRUoLGxET09Pejv7/+6ECsAn8/HApB9LS4u8mo+PT3x4vJFJpNh29vbJfPY2dkRrSe4BL77uSCTyfBs4+PjPNvCwoLkmqenp2AYBufn55JzHh8fRf0FQh9G3t7ecHx8jOLiYo69tLQUZrOZtLe3t/Hr1y+k02liSyaTMBqNqKqq4nZWUAAA0Gg0iMVixC5FbK/XC6vVyrE1Nzdjbm4O3d3dYBiG2O/v77G7u4vZ2VlMT0/D4XAIF857Dv5mS65oNCopx+FwkBy73c5arVbS3t/fz6tPAOzt7a2kfgOBgHhdSVVEyITD4bxzYrEYe3R0RNoGg0E0d2BggJOfTCbl0P6cl6ykPAXIHWx1dfWndV5eXiT153K55FAWri0rKU8BGhoaSLzH4yF2u91O7ENDQ5/mer3eb+0aX+HHBYhGo6ID+GpwKysrxF9fXy+Hrih+/CRos9nI/dTUFM+fe1hyOp08fygUIvcGg0Fyv3V1dWhtbYXJZBIPlKMa8pgBubHpdJrn9/v9xM8wDM9vs9mIv7e3VxZHMfzoDFhdXSX3FouFs1f/C5PJBI1GA+D34eni4oLjLysrI/eBQOA/5yh4EBJN+udAAwDhcBjl5eWfxhUVFSGZTAIAlpeX0dbWhkQiwYnRarXY2trC5uYmAKCpqQk+n4/4Dw8P0dXVRdpS6eZyFM2RPKcEppfQEri8vJT9HPHx8SHY397eXt4cReOkDVm4uJAALS0tsgUYHR3l1LJYLHlvhVLjf2QJpNNpqFQq0na73UilUoJTkWEYPD8/Y2ZmhthyY6PRKHQ6HWmr1WrEYjEUFgo+zdNdAmNjY8RvNpsl19VqtSTP7XZzfGtra7yZMjg4yPr9fl4dj8dDdwnk+s/OziTXXV9fJ3k6nY7ndzqdspaU6Fgks8tNyikeDAY5PpfL9a2ja27uZ79uKBRia2trJQ++srJStD/hRSSCiYkJqFQqvL+/816ZJRIJTE5OIpvNcrYvqXC73bi6ukI2m8XDwwPvJKfX63F3d4dIJIKNjQ2cnJzg5uYGkUgEDMNAr9fDaDSis7MTw8PD5IwhBFl/gv8n/PFvhRUBaBOgDUUA2gRoQxGANgHaUASgTYA2FAFoE6ANRQDaBGhDEYA2AdpQBKBNgDYUAWgToA1FANoEaONve9o8PVvYS2AAAAAASUVORK5CYII=</Glyph>
+	</Create>
+	<role name="Creator" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The part that creates the </text>
+				<italic>
+					<text>microloan</text>
+				</italic>
+				<text> arrangement, including the </text>
+				<italic>
+					<text>microloan</text>
+				</italic>
+				<text> token and the corresponding state-machine that executes the </text>
+				<italic>
+					<text>microloan</text>
+				</italic>
+				<text>.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="Lender" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The part that lends money to the </text>
+				<bold>
+					<text>Borrower</text>
+				</bold>
+				<text>.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="Borrower" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The part that borrows money from the </text>
+				<bold>
+					<text>Lender</text>
+				</bold>
+				<text>.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="TrustProvider" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The part that acts as a host of the token and approves its creation.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<templateOnly/>
+	</parts>
+	<parameters>
+		<numericalParameter name="Amount" guide="Loan Amount" min="0" minIncluded="false">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The amount of money borrowed by the </text>
+					<bold>
+						<text>Borrower</text>
+					</bold>
+					<text> of the </text>
+					<bold>
+						<text>Lender</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="\w{3}">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The currency of the </text>
+					<italic>
+						<text>microloan</text>
+					</italic>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<durationParameter name="InstallmentInterval" guide="P[nY][nM][nD][T[nH][nM][nS]]" min="P0D" minIncluded="false">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The interval with which installments are paid and interest calculated.</text>
+				</paragraph>
+			</description>
+		</durationParameter>
+		<numericalParameter name="InterestPerInstallment" guide="Interest per Installment (%)" min="0" minIncluded="false">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The interest on the remaining amount of the loan, added every installment interval. Every time the installment interval elapses, the remaining amount on the loan will be incremented by this number of percent.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<numericalParameter name="InstallmentAmount" guide="Installment Amount" min="0" minIncluded="false">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Amount paid by the </text>
+					<bold>
+						<text>Borrower</text>
+					</bold>
+					<text> to the </text>
+					<bold>
+						<text>Lender</text>
+					</bold>
+					<text> each installment.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<numericalParameter name="DebtLimit" guide="Maximum Debt" exp="DebtLimit&gt;Amount">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The accumulated debt, in case of missing payments, cannot exceed this value.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<numericalParameter name="CommissionPercent" guide="Commision (%)" min="0" max="100">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The commission the Trust Provider gets for creating the token and managing the </text>
+					<italic>
+						<text>microloan</text>
+					</italic>
+					<text>. First paid by the </text>
+					<bold>
+						<text>Creator</text>
+					</bold>
+					<text> when creating the token, and then reimbursed by the </text>
+					<bold>
+						<text>Borrower</text>
+					</bold>
+					<text> to the </text>
+					<bold>
+						<text>Creator</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<calcParameter name="Cost" exp="Amount*CommissionPercent/100">
+			<description>
+				<paragraph>
+					<text>The cost of creating the </text>
+					<italic>
+						<text>microloan</text>
+					</italic>
+					<text> will be paid by the </text>
+					<bold>
+						<text>Borrower</text>
+					</bold>
+					<text> to the </text>
+					<bold>
+						<text>Creator</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+		<calcParameter name="RoI" exp="Debt:=Amount;p:=1+InterestPerInstallment/100;N:=0;S:=0;while Debt>0 do (Debt*=p;I:=Min(Debt,InstallmentAmount);I+=round(Debt*100)*0.01-Debt;I:=max(0,I);Debt-=I;Debt:=round(Debt*100)*0.01;S+=I;N++ > 365 ? Error('Cannot be over a year.'));round((S-Amount)*100)*0.01">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The estimated </text>
+					<italic>
+						<text>Return on Investment</text>
+					</italic>
+					<text> for the </text>
+					<bold>
+						<text>Lender</text>
+					</bold>
+					<text>, if payments are made regularly according to the agreement.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+		<calcParameter name="NrInstallments" exp="N">
+			<description>
+				<paragraph>
+					<text>Number of installments the </text>
+					<italic>
+						<text>microloan</text>
+					</italic>
+					<text> will be active, if payments are made regularly according to the agreement.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+		<calcParameter name="Expires" exp="NowUtc.AddDays(1)+InstallmentInterval*Max(NrInstallments,365)">
+			<description xml:lang="en">
+				<paragraph>
+					<text>When the </text>
+					<italic>
+						<text>microloan</text>
+					</italic>
+					<text> token expires, if not resolved before.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Microloan</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This contract creates a token representing a </text>
+					<italic>
+						<text>microloan</text>
+					</italic>
+					<text>.</text>
+				</paragraph>
+				<paragraph>
+					<text>A </text>
+					<bold>
+						<text>Borrower</text>
+					</bold>
+					<text> borrows a small amount of money (</text>
+					<parameter name="Amount" />
+					<text> </text>
+					<parameter name="Currency" />
+					<text>) from a </text>
+					<bold>
+						<text>Lender</text>
+					</bold>
+					<text>. This has a cost of </text>
+					<parameter name="Cost" />
+					<text> </text>
+					<parameter name="Currency" />
+					<text>, which the </text>
+					<bold>
+						<text>Creator</text>
+					</bold>
+					<text> pays as the contract is signed. When the contract is signed, the </text>
+					<bold>
+						<text>Lender</text>
+					</bold>
+					<text> transfers the amount to the </text>
+					<bold>
+						<text>Borrower</text>
+					</bold>
+					<text>, which immediately reimburses the </text>
+					<bold>
+						<text>Creator</text>
+					</bold>
+					<text> for its expenditure for creating the </text>
+					<italic>
+						<text>microloan</text>
+					</italic>
+					<text>.</text>
+				</paragraph>
+				<paragraph>
+					<text>Every installment (</text>
+					<parameter name="InstallmentInterval" />
+					<text>) which this </text>
+					<italic>
+						<text>microloan</text>
+					</italic>
+					<text> is active, the debt is incremented by </text>
+					<parameter name="InterestPerInstallment" />
+					<text>%. The </text>
+					<bold>
+						<text>Borrower</text>
+					</bold>
+					<text> also agrees to pay the </text>
+					<bold>
+						<text>Lender</text>
+					</bold>
+					<text> the amount of </text>
+					<parameter name="InstallmentAmount" />
+					<text> </text>
+					<parameter name="Currency" />
+					<text> each installment. The </text>
+					<italic>
+						<text>microloan</text>
+					</italic>
+					<text> is active until the debt is paid in full. This is estimated to occur after </text>
+					<parameter name="NrInstallments" />
+					<text> installments, if payments are made according to schedule. The estimated </text>
+					<italic>
+						<text>Return on Investment</text>
+					</italic>
+					<text> (RoI) for the </text>
+					<bold>
+						<text>Lender</text>
+					</bold>
+					<text> is </text>
+					<parameter name="RoI" />
+					<text> </text>
+					<parameter name="Currency" />
+					<text> at the end of the </text>
+					<italic>
+						<text>microloan</text>
+					</italic>
+					<text>.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Automatic payments</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>The parts of this contract agree that all payments defined in the agreement, shall be made automatically, with no more signatures required, than the signatures provided on this agreement.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Unability to pay installment amount</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>If the </text>
+							<bold>
+								<text>Borrower</text>
+							</bold>
+							<text> is unable to pay one or more installments, the debt will be incremented and transferred to the coming installments. The installment interest will be calculated on the accumulated debt. The accumulated debt cannot exceed </text>
+							<parameter name="DebtLimit"/>
+							<text> </text>
+							<parameter name="Currency"/>
+							<text> however.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Legality</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>By signing the contracts, the </text>
+							<bold>
+								<text>Borrower</text>
+							</bold>
+							<text> affirms that it is obliged to pay the </text>
+							<bold>
+								<text>Lender</text>
+							</bold>
+							<text> all its debt, and incurred interests, until the </text>
+							<italic>
+								<text>microloan</text>
+							</italic>
+							<text> has been repaid in full. This agreement is held to be valid under the laws of the country where the </text>
+							<bold>
+								<text>Lender</text>
+							</bold>
+							<text> resides.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Transfer of Ownership</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>The </text>
+							<bold>
+								<text>Lender</text>
+							</bold>
+							<text> may sell the rights of the </text>
+							<italic>
+								<text>microloan</text>
+							</italic>
+							<text> to any third party of its choosing. This is done by transferring ownership of the token corresponding to the </text>
+							<italic>
+								<text>microloan</text>
+							</italic>
+							<text>. The new owner will take the previous owner</text>
+							<text>’</text>
+							<text>s rights to payments made by the </text>
+							<bold>
+								<text>Borrower</text>
+							</bold>
+							<text>. The </text>
+							<bold>
+								<text>Borrower</text>
+							</bold>
+							<text> will continue its payments, as defined in this agreement, to the new owner.</text>
+						</paragraph>
+						<paragraph>
+							<text>The token can be transferred any number of times, as long as the token and the corresponding </text>
+							<italic>
+								<text>microloan</text>
+							</italic>
+							<text> is active.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>
