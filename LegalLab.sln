@@ -66,7 +66,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StateMachines", "StateMachines", "{1B94CDD9-BA5A-4328-9F2E-C2B55334E587}"
 	ProjectSection(SolutionItems) = preProject
 		ExampleContracts\StateMachines\Calculator.xml = ExampleContracts\StateMachines\Calculator.xml
+		ExampleContracts\StateMachines\CrowdFunding.xml = ExampleContracts\StateMachines\CrowdFunding.xml
 		ExampleContracts\StateMachines\MicroLoan.xml = ExampleContracts\StateMachines\MicroLoan.xml
+		ExampleContracts\StateMachines\ProjectEscrow.xml = ExampleContracts\StateMachines\ProjectEscrow.xml
 	EndProjectSection
 EndProject
 Global

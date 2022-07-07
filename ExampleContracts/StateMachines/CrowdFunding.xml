@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<contract xmlns="urn:ieee:iot:leg:sc:1.0"
+          id="CreateTokenContract1StateMachineMicroLoan"
+          archiveOpt="P3M"
+          archiveReq="P1M"
+          canActAsTemplate="true"
+          duration="P2Y"
+          visibility="Public">
+	<Create xmlns="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd">
+		<TokenID>
+			<Random />
+		</TokenID>
+		<TokenID>
+			<Random />
+		</TokenID>
+		<TokenID>
+			<Random />
+		</TokenID>
+		<TokenID>
+			<Random />
+		</TokenID>
+		<TokenID>
+			<Random />
+		</TokenID>
+		<Creator>
+			<RoleReference role="Creator"/>
+		</Creator>
+		<Owner>
+			<RoleReference role="ProjectOwner"/>
+		</Owner>
+		<Certifier>
+			<RoleReference role="EscrowAgent"/>
+		</Certifier>
+		<TrustProvider>
+			<RoleReference role="TrustProvider"/>
+		</TrustProvider>
+		<Value>
+			<ParameterReference parameter="Value"/>
+		</Value>
+		<Currency>
+			<ParameterReference parameter="Currency"/>
+		</Currency>
+		<CommissionPercent>
+			<ParameterReference parameter="CommissionPercent"/>
+		</CommissionPercent>
+		<Expires>
+			<ParameterReference parameter="Expires"/>
+		</Expires>
+		<CreatorCanDestroy>
+			<Boolean>false</Boolean>
+		</CreatorCanDestroy>
+		<OwnerCanDestroyBatch>
+			<Boolean>false</Boolean>
+		</OwnerCanDestroyBatch>
+		<OwnerCanDestroyIndividual>
+			<Boolean>false</Boolean>
+		</OwnerCanDestroyIndividual>
+		<CertifierCanDestroy>
+			<Boolean>true</Boolean>
+		</CertifierCanDestroy>
+		<Definition>
+			<StateMachine xmlns="https://paiwise.tagroot.io/Schema/StateMachines.xsd" startState="OpenForInvestment">
+				<SingletonMachineId tag="MachineID"/>
+				<Variable id="AvailableAmount">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="InvestedAmount">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="MaxIntervalAmount">
+					<TagReference tag="MaxIntervalAmount"/>
+				</Variable>
+				<Variable id="MaxInterval">
+					<TagReference tag="MaxInterval"/>
+				</Variable>
+				<Variable id="IntervalAmount">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="ProjectStart">
+					<TagReference tag="ProjectStart"/>
+				</Variable>
+				<Variable id="ThresholdAmount">
+					<TagReference tag="ThresholdAmount"/>
+				</Variable>
+				<Variable id="Currency">
+					<TagReference tag="Currency"/>
+				</Variable>
+				<Variable id="EscrowAgreement">
+					<TokenProperty>CreationContract</TokenProperty>
+				</Variable>
+				<Variable id="ProjectOwner">
+					<TagReference tag="ProjectOwner"/>
+				</Variable>
+				<Variable id="Investors">
+					<Calc>
+						<![CDATA[
+						{
+							"NrRecords":0
+						}
+						]]>
+					</Calc>
+				</Variable>
+				<Variable id="EscrowAgent">
+					<TagReference tag="EscrowAgent"/>
+				</Variable>
+				<State id="OpenForInvestment">
+					<OnEvent actionRef="CheckThreshold" newState="ProjectStarted" failureState="ThresholdNotReached">
+						<OnDateTime>{ProjectStart}</OnDateTime>
+					</OnEvent>
+					<OnEvent actionRef="CheckThreshold" newState="ProjectStarted" failureState="OpenForInvestment">
+						<OnExternalXmlNote localName="Start"
+										   namespace="https://lab.tagroot.io/Downloads/TestSchemaStateMachines.xsd"/>
+					</OnEvent>
+					<OnEvent actionRef="TokenSold">
+						<OnTransferred buyerVariable="Buyer"
+									   sellerVariable="Seller"
+									   contractVariable="Contract"
+									   currencyVariable="Currency"
+									   valueVariable="Value"
+									   amountVariable="Amount"/>
+					</OnEvent>
+				</State>
+				<State id="ThresholdNotReached">
+					<OnEnter actionRef="ReturnFunds"/>
+					<OnEvent newState="Done">
+						<OnDuration>PT10S</OnDuration>
+					</OnEvent>
+				</State>
+				<State id="ProjectStarted">
+					<OnEvent actionRef="ClearInterval">
+						<OnDuration>{MaxInterval}</OnDuration>
+					</OnEvent>
+					<OnEvent newState="Done">
+						<OnCondition>AvailableAmount&lt;=0</OnCondition>
+					</OnEvent>
+					<OnEvent actionRef="ReleaseFunds">
+						<OnExternalXmlNote localName="Release"
+										   namespace="https://lab.tagroot.io/Downloads/TestSchemaStateMachines.xsd"
+										   noteVariable="Note"
+										   sourceVariable="Source"/>
+					</OnEvent>
+					<OnEvent actionRef="TokenSold">
+						<OnTransferred buyerVariable="Buyer"
+									   sellerVariable="Seller"
+									   contractVariable="Contract"
+									   currencyVariable="Currency"
+									   valueVariable="Value"
+									   amountVariable="Amount"/>
+					</OnEvent>
+				</State>
+				<State id="Done">
+					<OnEnter actionRef="End"/>
+				</State>
+				<Action id="CheckThreshold">
+					<If condition="InvestedAmount&lt;ThresholdAmount">
+						<Then>
+							<TextNote content="Investment threashold not met."/>
+							<Error reason="Investment threashold not met."/>
+						</Then>
+						<Else>
+							<TextNote content="Investment threashold met."/>
+						</Else>
+					</If>
+				</Action>
+				<Action id="TokenSold">
+					<If condition="Seller=ProjectOwner and Buyer!=ProjectOwner">
+						<Then>
+							<Script>
+								<![CDATA[
+								RecAmount:=Amount;
+								if exists(Rec:=Investors[Buyer+Currency]) then
+									RecAmount+=Rec.Amount;
+								
+								Investors[Buyer+Currency]:=
+								{
+									"Investor":Buyer,
+									"Amount":RecAmount,
+									"Currency":Currency
+								};
+								Investors.NrRecords:=Investors.Count-1;
+								]]>
+							</Script>
+							<PersistVariable name="Investors" value="{Investors}"/>
+							<Payment amount="{Amount}"
+									 currency="{Currency}"
+									 from="{ProjectOwner}"
+									 to="{EscrowAgent}"
+									 validDays="3"
+									 reference="{EscrowAgreement}"
+									 contract="{EscrowAgreement}"/>
+							<PersistVariable name="AvailableAmount"
+											 value="{AvailableAmount+Amount}"/>
+							<PersistVariable name="InvestedAmount"
+											 value="{InvestedAmount+Amount}"/>
+							<TextNote content="{'Investment token sold for '+Value+' '+Currency+' (Investment: '+Amount+' '+Currency+', fees: '+(Value-Amount)+' '+Currency+')'}"/>
+						</Then>
+						<Else>
+							<If condition="Buyer=ProjectOwner and Seller!=ProjectOwner">
+								<Then>
+									<Script>
+										<![CDATA[
+										if exists(Rec:=Investors[Seller+Currecy]) then
+										(
+											Investors[Seller+Currecy]:=
+											{
+												"Investor":Seller,
+												"Amount":0,
+												"Currency":""
+											}
+										);
+										ReturnAmount:=min(Amount,AvailableAmount)
+										]]>
+									</Script>
+									<PersistVariable name="Investors" value="{Investors}"/>
+									<Payment amount="{ReturnAmount}"
+											 currency="{Currency}"
+											 from="{EscrowAgent}"
+											 to="{ProjectOwner}"
+											 validDays="3"
+											 reference="{EscrowAgreement}"
+											 contract="{EscrowAgreement}"/>
+									<PersistVariable name="AvailableAmount"
+													 value="{AvailableAmount-ReturnAmount}"/>
+									<PersistVariable name="InvestedAmount"
+													 value="{InvestedAmount-ReturnAmount}"/>
+									<TextNote content="{'Investment token bought back for '+Value+' '+Currency+' (Investment returned: '+ReturnAmount+' '+Currency+')'}"/>
+								</Then>
+							</If>
+						</Else>
+					</If>
+				</Action>
+				<Action id="ReturnFunds">
+					<ForEach variable="Rec" set="Investors.Values">
+						<If condition="exists(Rec.Amount) and Rec.Amount&gt;0">
+							<Then>
+								<Try>
+									<Payment amount="{Rec.Amount}"
+											 currency="{Rec.Currency}"
+											 from="{EscrowAgent}"
+											 to="{Rec.Investor}"
+											 validDays="3"
+											 reference="{EscrowAgreement}"
+											 contract="{EscrowAgreement}"/>
+									<Script>
+										<![CDATA[
+										ReturnAmount:=min(Rec.Amount,AvailableAmount);
+										Rec.Amount:=0;
+										Rec.Currency:=""
+										]]>
+									</Script>
+									<PersistVariable name="AvailableAmount" value="{AvailableAmount-Rec.Amount}"/>
+									<PersistVariable name="InvestedAmount" value="{InvestedAmount-Rec.Amount}"/>
+									<Catch exceptionVariable="ex">
+										<LogEvent object="{Rec.Investor}"
+												  message="{'Unable to return invested funds: '+Rec.Amount+' '+Rec.Currency+'. Error Reported: '+ex.Message}"
+												  type="Error"/>
+									</Catch>
+								</Try>
+							</Then>
+						</If>
+					</ForEach>
+					<PersistVariable name="Investors" value="{Investors}"/>
+					<TextNote content="Investment (minus fees) returned to token owners."/>
+				</Action>
+				<Action id="ReleaseFunds">
+					<Script>
+						<![CDATA[
+						ReleaseAmount:=Min(SelectXml(Note,'/default:Release'),AvailableAmount)
+						]]>
+					</Script>
+					<If condition="ReleaseAmount+IntervalAmount&gt;MaxIntervalAmount">
+						<Then>
+							<TextNote content="Request rejected. Request exceeds maximum amount for the current interval."/>
+						</Then>
+						<Else>
+							<Payment amount="{ReleaseAmount}"
+									 currency="{Currency}"
+									 from="{EscrowAgent}"
+									 to="{ProjectOwner}"
+									 validDays="3"
+									 reference="{EscrowAgreement}"
+									 contract="{EscrowAgreement}"/>
+							<PersistVariable name="AvailableAmount"
+											 value="{AvailableAmount-ReleaseAmount}"/>
+							<PersistVariable name="IntervalAmount"
+											 value="{IntervalAmount+ReleaseAmount}"/>
+							<TextNote content="{'Released funds: '+ReleaseAmount+' '+Currency}"/>
+						</Else>
+					</If>
+				</Action>
+				<Action id="ClearInterval">
+					<PersistVariable name="IntervalAmount" value="{0}"/>
+				</Action>
+				<Action id="End">
+					<End/>
+				</Action>
+			</StateMachine>
+		</Definition>
+		<Tag name="MaxIntervalAmount">
+			<ParameterReference parameter="MaxIntervalAmount"/>
+		</Tag>
+		<Tag name="MaxInterval">
+			<ParameterReference parameter="MaxInterval"/>
+		</Tag>
+		<Tag name="ProjectStart">
+			<ParameterReference parameter="ProjectStart"/>
+		</Tag>
+		<Tag name="ThresholdAmount">
+			<ParameterReference parameter="ThresholdAmount"/>
+		</Tag>
+		<Tag name="Currency">
+			<ParameterReference parameter="Currency"/>
+		</Tag>
+		<Tag name="ProjectOwner">
+			<RoleReference role="ProjectOwner"/>
+		</Tag>
+		<Tag name="EscrowAgent">
+			<RoleReference role="EscrowAgent"/>
+		</Tag>
+		<Tag name="MachineID">
+			<ParameterReference parameter="MachineID"/>
+		</Tag>
+		<FriendlyName>
+			<String>Project Escrow</String>
+		</FriendlyName>
+		<Glyph contentType="image/png">iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAABFFJREFUeJztWU1IMlsYfrqTFmgLIb5yEURlLQo3YVZUCi1qFUFQUKt2QURWm7IgIkhqJ9IP1EIIWkWuIugPLIh0GVFUBC5SocCkEM2/uYvv3oPDNNM43Thwv3lgYM77d57zeI7nzEwBy7Is/mD8RZsAbSgC0CZAG4oAtAnQhiIAbQK0oQhAmwBtKALQJkAbigC0CdCGIgBtArShCECbAG0oAtAmQBuKALQJ0EahkCMYDGJpaQklJSV5F43H4+jr60NHRwfPNz8/j3g8jmw2i5qaGoyMjORdHwBSqRScTicODg5wfX2N19dXqNVqVFRUoLGxET09Pejv7/+6ECsAn8/HApB9LS4u8mo+PT3x4vJFJpNh29vbJfPY2dkRrSe4BL77uSCTyfBs4+PjPNvCwoLkmqenp2AYBufn55JzHh8fRf0FQh9G3t7ecHx8jOLiYo69tLQUZrOZtLe3t/Hr1y+k02liSyaTMBqNqKqq4nZWUAAA0Gg0iMVixC5FbK/XC6vVyrE1Nzdjbm4O3d3dYBiG2O/v77G7u4vZ2VlMT0/D4XAIF857Dv5mS65oNCopx+FwkBy73c5arVbS3t/fz6tPAOzt7a2kfgOBgHhdSVVEyITD4bxzYrEYe3R0RNoGg0E0d2BggJOfTCbl0P6cl6ykPAXIHWx1dfWndV5eXiT153K55FAWri0rKU8BGhoaSLzH4yF2u91O7ENDQ5/mer3eb+0aX+HHBYhGo6ID+GpwKysrxF9fXy+Hrih+/CRos9nI/dTUFM+fe1hyOp08fygUIvcGg0Fyv3V1dWhtbYXJZBIPlKMa8pgBubHpdJrn9/v9xM8wDM9vs9mIv7e3VxZHMfzoDFhdXSX3FouFs1f/C5PJBI1GA+D34eni4oLjLysrI/eBQOA/5yh4EBJN+udAAwDhcBjl5eWfxhUVFSGZTAIAlpeX0dbWhkQiwYnRarXY2trC5uYmAKCpqQk+n4/4Dw8P0dXVRdpS6eZyFM2RPKcEppfQEri8vJT9HPHx8SHY397eXt4cReOkDVm4uJAALS0tsgUYHR3l1LJYLHlvhVLjf2QJpNNpqFQq0na73UilUoJTkWEYPD8/Y2ZmhthyY6PRKHQ6HWmr1WrEYjEUFgo+zdNdAmNjY8RvNpsl19VqtSTP7XZzfGtra7yZMjg4yPr9fl4dj8dDdwnk+s/OziTXXV9fJ3k6nY7ndzqdspaU6Fgks8tNyikeDAY5PpfL9a2ja27uZ79uKBRia2trJQ++srJStD/hRSSCiYkJqFQqvL+/816ZJRIJTE5OIpvNcrYvqXC73bi6ukI2m8XDwwPvJKfX63F3d4dIJIKNjQ2cnJzg5uYGkUgEDMNAr9fDaDSis7MTw8PD5IwhBFl/gv8n/PFvhRUBaBOgDUUA2gRoQxGANgHaUASgTYA2FAFoE6ANRQDaBGhDEYA2AdpQBKBNgDYUAWgToA1FANoEaONve9o8PVvYS2AAAAAASUVORK5CYII=</Glyph>
+	</Create>
+	<role name="Creator" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The part that creates the </text>
+				<italic>
+					<text>Project Escrow</text>
+				</italic>
+				<text> token and the corresponding state-machine that protects invested capital.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="ProjectOwner" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The owner of the project, who is legally responsible for execution of the project, and who gets access to invested capital in accordance with rules setup in the </text>
+				<italic>
+					<text>escrow</text>
+				</italic>
+				<text> arrangement.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="EscrowAgent" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The </text>
+				<italic>
+					<text>escrow agent</text>
+				</italic>
+				<text> is an independent party, responsible for releasing investe funds to the </text>
+				<italic>
+					<text>project owner</text>
+				</italic>
+				<text>, in according to this agreement. The </text>
+				<italic>
+					<text>escrow agent</text>
+				</italic>
+				<text> also acts as a </text>
+				<italic>
+					<text>certifier</text>
+				</italic>
+				<text> of the token and its legal framework.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="TrustProvider" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The part that acts as a host of the token and approves its creation.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<open/>
+	</parts>
+	<parameters>
+		<stringParameter name="MachineID" guide="State Machine ID (GUID)" regEx="[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The ID of the singleton state machine associated with the tokens.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<numericalParameter name="Value" guide="Value of token" min="0" minIncluded="false">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The initial value of the token.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="\w{3}">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The currency of the token.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<numericalParameter name="CommissionPercent" guide="Commision (%)" min="0" max="100">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The commission the Trust Provider gets for creating the token and managing the </text>
+					<italic>
+						<text>calculator</text>
+					</italic>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<dateParameter name="Expires" guide="Expiry date" exp="Expires&gt;Now.Date">
+			<description xml:lang="en">
+				<paragraph>
+					<text>When token expires.</text>
+				</paragraph>
+			</description>
+		</dateParameter>
+		<numericalParameter name="ThresholdAmount" guide="Threshold Amount" min="0" minIncluded="false">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Invested capital at the time of project start must reach this amount. If not, invested capital, minus commissions, will be returned to investors, and project closed. If threshold is reached, project is started, and invested capital is used in accordance with this agreement.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<numericalParameter name="MaxIntervalAmount" guide="Maximum Interval Amount" min="0" minIncluded="false">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The maximum amount of money that can be transferred to the project owner during the specified interval.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<durationParameter name="MaxInterval" guide="Interval" min="PT0D" minIncluded="false">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The interval over which the maximum amount limit is enforced.</text>
+				</paragraph>
+			</description>
+		</durationParameter>
+		<dateTimeParameter name="ProjectStart" guide="Project Start" exp="ProjectStart&gt;Now">
+			<description xml:lang="en">
+				<paragraph>
+					<text>When the project is scheduled to start.</text>
+				</paragraph>
+			</description>
+		</dateTimeParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Project Escrow agreement</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This contract creates a token representing a crowd-funded </text>
+					<italic>
+						<text>project</text>
+					</italic>
+					<text> with an escrow function. Invested capital is released to the </text>
+					<italic>
+						<text>project owner</text>
+					</italic>
+					<text> in a controlled manner by the </text>
+					<italic>
+						<text>escrow agent</text>
+					</italic>
+					<text> in accordance with this contract. If invested capital does not reach the </text>
+					<italic>
+						<text>threshold investment amount</text>
+					</italic>
+					<text> of </text>
+					<parameter name="ThresholdAmount"/>
+					<text> </text>
+					<parameter name="Currency"/>
+					<text>, the project is cancelled, and invested funds minus commission (</text>
+					<parameter name="CommissionPercent"/>
+					<text> %) is returned to the investor.</text>
+				</paragraph>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>
