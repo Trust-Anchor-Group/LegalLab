@@ -49,7 +49,7 @@ namespace LegalLab.Models.Tokens
 
 		private async Task NeuroFeaturesClient_TokenAdded(object Sender, TokenEventArgs e)
 		{
-			TokenModel Token = await TokenModel.CreateAsync(e.Token);
+			TokenModel Token = await TokenModel.CreateAsync(this.neuroFeaturesClient, e.Token);
 			Token.Selected += Token_Selected;
 			Token.Deselected += Token_Deselected;
 
@@ -281,7 +281,7 @@ namespace LegalLab.Models.Tokens
 			{
 				foreach (Token Token in e2.Tokens)
 				{
-					TokenModel TokenModel = await TokenModel.CreateAsync(Token);
+					TokenModel TokenModel = await TokenModel.CreateAsync(this.neuroFeaturesClient, Token);
 					TokenModel.Selected += Token_Selected;
 					TokenModel.Deselected += Token_Deselected;
 

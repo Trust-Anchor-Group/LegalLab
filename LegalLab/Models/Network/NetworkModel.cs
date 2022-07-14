@@ -6,6 +6,7 @@ using LegalLab.Models.Tokens;
 using LegalLab.Models.Wallet;
 using NeuroFeatures;
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.ServiceDiscovery;
 using Waher.Runtime.Inventory;
+using Waher.Runtime.Settings;
 
 namespace LegalLab.Models.Network
 {
@@ -44,6 +46,7 @@ namespace LegalLab.Models.Network
 		private readonly PersistedProperty<bool> connectOnStartup;
 		private readonly Property<string> password2;
 		private readonly Property<XmppState> state;
+		private readonly Property<bool> connected;
 
 		private readonly Command connect;
 		private readonly Command disconnect;
@@ -51,6 +54,7 @@ namespace LegalLab.Models.Network
 		private readonly ParametrizedCommand copySnifferItem;
 		private readonly ParametrizedCommand removeSnifferItem;
 		private readonly Command clearSniffer;
+		private readonly Command saveCredentials;
 
 		private XmppClient client;
 		private LegalModel legalModel;
@@ -78,13 +82,15 @@ namespace LegalLab.Models.Network
 
 			this.password2 = new Property<string>(nameof(this.Password2), string.Empty, this);
 			this.state = new Property<XmppState>(nameof(this.State), XmppState.Offline, this);
+			this.connected = new Property<bool>(nameof(this.Connected), false, this);
 
 			this.connect = new Command(this.CanExecuteConnect, this.ExecuteConnect);
 			this.disconnect = new Command(this.CanExecuteDisconnect, this.ExecuteDisconnect);
-			this.randomizePassword = new Command(this.ExecuteRandomizePassword);
+			this.randomizePassword = new Command(this.CanExecuteRandomizePassword, this.ExecuteRandomizePassword);
 			this.copySnifferItem = new ParametrizedCommand(this.CanExecuteCopy, this.ExecuteCopy);
 			this.removeSnifferItem = new ParametrizedCommand(this.CanExecuteRemove, this.ExecuteRemove);
 			this.clearSniffer = new Command(this.CanExecuteClearAll, this.ExecuteClearAll);
+			this.saveCredentials = new Command(this.CanExecuteSaveCredentials, this.ExecuteSaveCredentials);
 		}
 
 		/// <summary>
@@ -158,6 +164,7 @@ namespace LegalLab.Models.Network
 			{
 				this.createAccount.Value = value;
 				this.connect.RaiseCanExecuteChanged();
+				this.randomizePassword.RaiseCanExecuteChanged();
 			}
 		}
 
@@ -267,6 +274,22 @@ namespace LegalLab.Models.Network
 		}
 
 		/// <summary>
+		/// If the client is connected.
+		/// </summary>
+		public bool Connected
+		{
+			get => this.connected.Value;
+			set
+			{
+				this.connected.Value = value;
+				this.connect.RaiseCanExecuteChanged();
+				this.disconnect.RaiseCanExecuteChanged();
+				this.randomizePassword.RaiseCanExecuteChanged();
+				this.saveCredentials.RaiseCanExecuteChanged();
+			}
+		}
+
+		/// <summary>
 		/// Legal ID model
 		/// </summary>
 		public LegalModel Legal => this.legalModel;
@@ -351,6 +374,11 @@ namespace LegalLab.Models.Network
 			this.ApiKeySecret = MainWindow.currentInstance.NetworkTab.ApiKeySecret.Password;
 		}
 
+		private bool CanExecuteRandomizePassword()
+		{
+			return this.client is null && this.CreateAccount;
+		}
+
 		public Task ExecuteRandomizePassword()
 		{
 			using RandomNumberGenerator Rnd = RandomNumberGenerator.Create();
@@ -365,7 +393,7 @@ namespace LegalLab.Models.Network
 
 				return Task.CompletedTask;
 			});
-		
+
 			return Task.CompletedTask;
 		}
 
@@ -479,6 +507,8 @@ namespace LegalLab.Models.Network
 				switch (NewState)
 				{
 					case XmppState.Connected:
+						this.Connected = true;
+
 						MainWindow.MouseDefault();
 						this.client.OnConnectionError -= Client_OnConnectionError;
 
@@ -497,7 +527,7 @@ namespace LegalLab.Models.Network
 
 						if (this.legalModel is null || this.walletModel is null)
 						{
-							if (string.IsNullOrEmpty(this.LegalComponentJid) || 
+							if (string.IsNullOrEmpty(this.LegalComponentJid) ||
 								string.IsNullOrEmpty(this.EDalerComponentJid) ||
 								string.IsNullOrEmpty(this.NeuroFeaturesComponentJid))
 							{
@@ -513,7 +543,7 @@ namespace LegalLab.Models.Network
 										{
 											this.LegalComponentJid = Component.JID;
 										}
-										
+
 										if (e2.HasFeature(EDalerClient.NamespaceEDaler))
 											this.EDalerComponentJid = Component.JID;
 
@@ -551,6 +581,7 @@ namespace LegalLab.Models.Network
 
 					case XmppState.Error:
 					case XmppState.Offline:
+						this.Connected = false;
 						break;
 				}
 
@@ -590,8 +621,9 @@ namespace LegalLab.Models.Network
 			this.client = null;
 
 			this.State = XmppState.Offline;
+			this.Connected = false;
 			this.ConnectOnStartup = false;
-	
+
 			return Task.CompletedTask;
 		}
 
@@ -668,6 +700,57 @@ namespace LegalLab.Models.Network
 		{
 			MainWindow.currentInstance.NetworkTab.SnifferListView.Items.Clear();
 			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Save Credentials command
+		/// </summary>
+		public ICommand SaveCredentials => this.saveCredentials;
+
+		private bool CanExecuteSaveCredentials() => true;
+
+		private async Task ExecuteSaveCredentials()
+		{
+			string[] Accounts = (await RuntimeSettings.GetAsync("Credentials", string.Empty)).Split('|');
+			SortedDictionary<string, bool> Sorted = new SortedDictionary<string, bool>();
+
+			foreach (string Account in Accounts)
+				Sorted[Account] = true;
+
+			string Prefix = this.account.Value + "@" + this.xmppServer.Value;
+			Sorted[Prefix] = true;
+
+			Prefix = "Credentials." + Prefix + ".";
+
+			await RuntimeSettings.SetAsync(Prefix + "Password", this.password.Value);
+			await RuntimeSettings.SetAsync(Prefix + "PasswordMethod", this.passwordMethod.Value);
+			await RuntimeSettings.SetAsync(Prefix + "ApiKey", this.apiKey.Value);
+			await RuntimeSettings.SetAsync(Prefix + "ApiKeySecret", this.apiKeySecret.Value);
+			await RuntimeSettings.SetAsync(Prefix + "LegalComponentJid", this.legalComponentJid.Value);
+			await RuntimeSettings.SetAsync(Prefix + "EDalerComponentJid", this.eDalerComponentJid.Value);
+			await RuntimeSettings.SetAsync(Prefix + "NeuroFeaturesComponentJid", this.neuroFeaturesComponentJid.Value);
+			await RuntimeSettings.SetAsync(Prefix + "EDalerComponentJid", this.eDalerComponentJid.Value);
+			await RuntimeSettings.SetAsync(Prefix + "TrustServerCertificate", this.trustServerCertificate.Value);
+			await RuntimeSettings.SetAsync(Prefix + "AllowInsecureAlgorithms", this.allowInsecureAlgorithms.Value);
+			await RuntimeSettings.SetAsync(Prefix + "StorePasswordInsteadOfDigest", this.storePasswordInsteadOfDigest.Value);
+			await RuntimeSettings.SetAsync(Prefix + "ConnectOnStartup", this.connectOnStartup.Value);
+
+			StringBuilder sb = new StringBuilder();
+			bool First = true;
+
+			foreach (string Account in Sorted.Keys)
+			{
+				if (First)
+					First = false;
+				else
+					sb.Append('|');
+
+				sb.Append(Account);
+			}
+
+			await RuntimeSettings.SetAsync("Credentials", sb.ToString());
+
+			MainWindow.MessageBox("Credentials saved.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
 		}
 
 	}

@@ -30,7 +30,7 @@ namespace LegalLab.Models.Tokens
 			this.token = Token;
 		}
 
-		public static async Task<TokenModel> CreateAsync(Token Token)
+		public static async Task<TokenModel> CreateAsync(NeuroFeaturesClient Client, Token Token)
 		{
 			TokenModel Result = new TokenModel(Token);
 
@@ -96,6 +96,29 @@ namespace LegalLab.Models.Tokens
 
 			foreach (TokenTag Tag in Result.token.Tags)
 				Details.Add(new TokenDetail(Tag.Name, Tag.Value));
+
+			if (Result.token.HasStateMachine)
+			{
+				ReportEventArgs e = await Client.GenerateDescriptionAsync(Token.TokenId, ReportFormat.Xaml);
+				if (e.Ok)
+					Details.Add(new TokenDetail("State-Machine Description", e.ReportText.ParseSimple()));
+
+				e = await Client.GeneratePresentReportAsync(Token.TokenId, ReportFormat.Xaml);
+				if (e.Ok)
+					Details.Add(new TokenDetail("State-Machine Present State", e.ReportText.ParseSimple()));
+
+				e = await Client.GenerateHistoryReportAsync(Token.TokenId, ReportFormat.Xaml);
+				if (e.Ok)
+					Details.Add(new TokenDetail("State-Machine History", e.ReportText.ParseSimple()));
+
+				e = await Client.GenerateStateDiagramAsync(Token.TokenId, ReportFormat.Xaml);
+				if (e.Ok)
+					Details.Add(new TokenDetail("State-Machine State Diagram", e.ReportText.ParseSimple()));
+
+				e = await Client.GenerateProfilingReportAsync(Token.TokenId, ReportFormat.Xaml);
+				if (e.Ok)
+					Details.Add(new TokenDetail("State-Machine Profiling", e.ReportText.ParseSimple()));
+			}
 
 			Result.details = Details.ToArray();
 
