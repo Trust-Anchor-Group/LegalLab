@@ -1,10 +1,13 @@
-﻿using LegalLab.Models.Items;
+﻿using LegalLab.Extensions;
+using LegalLab.Models.Items;
 using NeuroFeatures;
 using NeuroFeatures.Tags;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using Waher.Content.Markdown;
 using Waher.Networking.XMPP.Contracts;
 
 namespace LegalLab.Models.Tokens
@@ -15,80 +18,95 @@ namespace LegalLab.Models.Tokens
 	public class TokenModel : SelectableItem
 	{
 		private readonly Token token;
-		private readonly TokenDetail[] details;
+		private TokenDetail[] details;
 		private BitmapImage glyph;
 
 		/// <summary>
 		/// Token model.
 		/// </summary>
 		/// <param name="Token">Neuro-Feature token</param>
-		public TokenModel(Token Token)
+		private TokenModel(Token Token)
 		{
 			this.token = Token;
+		}
+
+		public static async Task<TokenModel> CreateAsync(Token Token)
+		{
+			TokenModel Result = new TokenModel(Token);
 
 			List<TokenDetail> Details = new List<TokenDetail>()
 			{
-				new TokenDetail("Token ID", this.token.TokenId),
-				new TokenDetail("Token ID Method", this.token.TokenIdMethod),
-				new TokenDetail("Ordinal", this.token.Ordinal),
-				new TokenDetail("Batch Size", this.token.BatchSize),
-				new TokenDetail("Created", this.token.Created),
-				new TokenDetail("Updated", this.token.Updated),
-				new TokenDetail("Value", this.token.Value),
-				new TokenDetail("Currency", this.token.Currency),
-				new TokenDetail("Expires", this.token.Expires),
-				new TokenDetail("Archivig time (Required)", this.token.ArchiveRequired),
-				new TokenDetail("Archivig time (Optional)", this.token.ArchiveOptional),
-				new TokenDetail("Signature Timestamp", this.token.SignatureTimestamp),
-				new TokenDetail("Signature", Convert.ToBase64String(this.token.Signature)),
-				new TokenDetail("Definition Schema Digest", Convert.ToBase64String(this.token.DefinitionSchemaDigest)),
-				new TokenDetail("Definition Schema Hash Function", this.token.DefinitionSchemaHashFunction),
-				new TokenDetail("Creator Can Destroy", this.token.CreatorCanDestroy),
-				new TokenDetail("Owner Can Destroy Batch", this.token.OwnerCanDestroyBatch),
-				new TokenDetail("Owner Can Destroy Individual", this.token.OwnerCanDestroyIndividual),
-				new TokenDetail("Certifier Can Destroy", this.token.CertifierCanDestroy),
-				new TokenDetail("Friendly Name", this.token.FriendlyName),
-				new TokenDetail("Category", this.token.Category),
-				new TokenDetail("Glyph", Convert.ToBase64String(this.token.Glyph)),
-				new TokenDetail("Glyph Content Type", this.token.GlyphContentType),
-				new TokenDetail("Glyph Width", this.token.GlyphWidth),
-				new TokenDetail("Glyph Height", this.token.GlyphHeight),
-				new TokenDetail("Visibility", this.token.Visibility),
-				new TokenDetail("Creator", this.token.Creator),
-				new TokenDetail("CreatorJid", this.token.CreatorJid),
-				new TokenDetail("Owner", this.token.Owner),
-				new TokenDetail("OwnerJid", this.token.OwnerJid),
-				new TokenDetail("TrustProvider", this.token.TrustProvider),
-				new TokenDetail("TrustProviderJid", this.token.TrustProviderJid),
-				new TokenDetail("Reference", this.token.Reference),
-				new TokenDetail("Definition", this.token.Definition),
-				new TokenDetail("DefinitionNamespace", this.token.DefinitionNamespace),
-				new TokenDetail("CreationContract", this.token.CreationContract),
-				new TokenDetail("OwnershipContract", this.token.OwnershipContract)
+				new TokenDetail("Token ID", Result.token.TokenId),
+				new TokenDetail("Token ID Method", Result.token.TokenIdMethod),
+				new TokenDetail("Ordinal", Result.token.Ordinal),
+				new TokenDetail("Batch Size", Result.token.BatchSize),
+				new TokenDetail("Created", Result.token.Created),
+				new TokenDetail("Updated", Result.token.Updated),
+				new TokenDetail("Value", Result.token.Value),
+				new TokenDetail("Currency", Result.token.Currency),
+				new TokenDetail("Expires", Result.token.Expires),
+				new TokenDetail("Archivig time (Required)", Result.token.ArchiveRequired),
+				new TokenDetail("Archivig time (Optional)", Result.token.ArchiveOptional),
+				new TokenDetail("Signature Timestamp", Result.token.SignatureTimestamp),
+				new TokenDetail("Signature", Convert.ToBase64String(Result.token.Signature)),
+				new TokenDetail("Definition Schema Digest", Convert.ToBase64String(Result.token.DefinitionSchemaDigest)),
+				new TokenDetail("Definition Schema Hash Function", Result.token.DefinitionSchemaHashFunction),
+				new TokenDetail("Creator Can Destroy", Result.token.CreatorCanDestroy),
+				new TokenDetail("Owner Can Destroy Batch", Result.token.OwnerCanDestroyBatch),
+				new TokenDetail("Owner Can Destroy Individual", Result.token.OwnerCanDestroyIndividual),
+				new TokenDetail("Certifier Can Destroy", Result.token.CertifierCanDestroy),
+				new TokenDetail("Friendly Name", Result.token.FriendlyName),
+				new TokenDetail("Category", Result.token.Category),
+				new TokenDetail("Description", await MarkdownToXaml(Result.token.Description)),
+				new TokenDetail("Glyph", Convert.ToBase64String(Result.token.Glyph)),
+				new TokenDetail("Glyph Content Type", Result.token.GlyphContentType),
+				new TokenDetail("Glyph Width", Result.token.GlyphWidth),
+				new TokenDetail("Glyph Height", Result.token.GlyphHeight),
+				new TokenDetail("Visibility", Result.token.Visibility),
+				new TokenDetail("Creator", Result.token.Creator),
+				new TokenDetail("CreatorJid", Result.token.CreatorJid),
+				new TokenDetail("Owner", Result.token.Owner),
+				new TokenDetail("OwnerJid", Result.token.OwnerJid),
+				new TokenDetail("TrustProvider", Result.token.TrustProvider),
+				new TokenDetail("TrustProviderJid", Result.token.TrustProviderJid),
+				new TokenDetail("Reference", Result.token.Reference),
+				new TokenDetail("Definition", Result.token.Definition),
+				new TokenDetail("DefinitionNamespace", Result.token.DefinitionNamespace),
+				new TokenDetail("CreationContract", Result.token.CreationContract),
+				new TokenDetail("OwnershipContract", Result.token.OwnershipContract)
 			};
 
-			foreach (string s in this.token.Witness)
+			foreach (string s in Result.token.Witness)
 				Details.Add(new TokenDetail("Witness", s));
 
-			foreach (string s in this.token.CertifierJids)
+			foreach (string s in Result.token.CertifierJids)
 				Details.Add(new TokenDetail("CertifierJid", s));
 
-			foreach (string s in this.token.CertifierJids)
+			foreach (string s in Result.token.CertifierJids)
 				Details.Add(new TokenDetail("CertifierJid", s));
 
-			foreach (string s in this.token.Certifier)
+			foreach (string s in Result.token.Certifier)
 				Details.Add(new TokenDetail("Certifier", s));
 
-			foreach (string s in this.token.Valuator)
+			foreach (string s in Result.token.Valuator)
 				Details.Add(new TokenDetail("Valuator", s));
 
-			foreach (string s in this.token.Assessor)
+			foreach (string s in Result.token.Assessor)
 				Details.Add(new TokenDetail("Assessor", s));
 
-			foreach (TokenTag Tag in this.token.Tags)
+			foreach (TokenTag Tag in Result.token.Tags)
 				Details.Add(new TokenDetail(Tag.Name, Tag.Value));
 
-			this.details = Details.ToArray();
+			Result.details = Details.ToArray();
+
+			return Result;
+		}
+
+		private static async Task<object> MarkdownToXaml(string Markdown)
+		{
+			MarkdownDocument Doc = await MarkdownDocument.CreateAsync(Markdown);
+			string Xaml = await Doc.GenerateXAML();
+			return Xaml.ParseSimple();
 		}
 
 		/// <summary>
@@ -123,6 +141,11 @@ namespace LegalLab.Models.Tokens
 		/// Category of token
 		/// </summary>
 		public string Category => this.token.Category;
+
+		/// <summary>
+		/// Description of token
+		/// </summary>
+		public string Description => this.token.Description;
 
 		/// <summary>
 		/// ID of token

@@ -125,8 +125,8 @@
                         <GridViewColumn Header="Value" Width="800">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBox Text="{Binding Value, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                                             IsReadOnly="True" BorderThickness="0" Background="Transparent"/>
+                                    <ContentControl Content="{Binding Path=Value}" HorizontalAlignment="Left" 
+                                                    VerticalAlignment="Center" BorderThickness="0" Background="Transparent"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>

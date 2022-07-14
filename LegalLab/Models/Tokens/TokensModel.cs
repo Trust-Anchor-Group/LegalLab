@@ -47,9 +47,9 @@ namespace LegalLab.Models.Tokens
 			this.addXmlNote = new Command(this.CanExecuteAddNote, this.ExecuteAddXmlNote);
 		}
 
-		private Task NeuroFeaturesClient_TokenAdded(object Sender, TokenEventArgs e)
+		private async Task NeuroFeaturesClient_TokenAdded(object Sender, TokenEventArgs e)
 		{
-			TokenModel Token = new TokenModel(e.Token);
+			TokenModel Token = await TokenModel.CreateAsync(e.Token);
 			Token.Selected += Token_Selected;
 			Token.Deselected += Token_Deselected;
 
@@ -61,8 +61,6 @@ namespace LegalLab.Models.Tokens
 			this.RaisePropertyChanged(nameof(this.Tokens));
 
 			Task _ = this.LoadTotals();
-
-			return Task.CompletedTask;
 		}
 
 		private void Token_Deselected(object sender, EventArgs e)
@@ -281,14 +279,14 @@ namespace LegalLab.Models.Tokens
 			TokensEventArgs e2 = await this.neuroFeaturesClient.GetTokensAsync(Offset, c);
 			while (e2.Ok)
 			{
-				lock (this.tokens)
+				foreach (Token Token in e2.Tokens)
 				{
-					foreach (Token Token in e2.Tokens)
-					{
-						TokenModel TokenModel = new TokenModel(Token);
-						TokenModel.Selected += Token_Selected;
-						TokenModel.Deselected += Token_Deselected;
+					TokenModel TokenModel = await TokenModel.CreateAsync(Token);
+					TokenModel.Selected += Token_Selected;
+					TokenModel.Deselected += Token_Deselected;
 
+					lock (this.tokens)
+					{
 						this.tokens.Add(TokenModel);
 					}
 				}
