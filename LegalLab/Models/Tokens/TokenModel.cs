@@ -48,6 +48,7 @@ namespace LegalLab.Models.Tokens
 				new TokenDetail("Owner Can Destroy Individual", this.token.OwnerCanDestroyIndividual),
 				new TokenDetail("Certifier Can Destroy", this.token.CertifierCanDestroy),
 				new TokenDetail("Friendly Name", this.token.FriendlyName),
+				new TokenDetail("Category", this.token.Category),
 				new TokenDetail("Glyph", Convert.ToBase64String(this.token.Glyph)),
 				new TokenDetail("Glyph Content Type", this.token.GlyphContentType),
 				new TokenDetail("Glyph Width", this.token.GlyphWidth),
@@ -117,6 +118,11 @@ namespace LegalLab.Models.Tokens
 		/// Friendly Name of token
 		/// </summary>
 		public string FriendlyName => this.token.FriendlyName;
+
+		/// <summary>
+		/// Category of token
+		/// </summary>
+		public string Category => this.token.Category;
 
 		/// <summary>
 		/// ID of token
