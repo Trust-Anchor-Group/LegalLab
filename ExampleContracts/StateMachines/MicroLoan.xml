@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <contract xmlns="urn:ieee:iot:leg:sc:1.0"
-          id="CreateTokenContract1StateMachineMicroLoan"
+          id="CreateStateMachineMicroloan"
           archiveOpt="P3M"
           archiveReq="P1M"
           canActAsTemplate="true"
