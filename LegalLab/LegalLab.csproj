@@ -73,6 +73,9 @@
     <Compile Update="Dialogs\AddLanguage\AddLanguageDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Tabs\ReportTab.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Tabs\TokensTab.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -80,6 +83,10 @@
 
   <ItemGroup>
     <Page Update="Dialogs\AddLanguage\AddLanguageDialog.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Tabs\ReportTab.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

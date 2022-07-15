@@ -1,11 +1,14 @@
 ﻿using LegalLab.Extensions;
 using LegalLab.Models.Items;
+using LegalLab.Tabs;
 using NeuroFeatures;
 using NeuroFeatures.Tags;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Waher.Content.Markdown;
 using Waher.Networking.XMPP.Contracts;
@@ -17,22 +20,40 @@ namespace LegalLab.Models.Tokens
 	/// </summary>
 	public class TokenModel : SelectableItem
 	{
+		private readonly NeuroFeaturesClient client;
 		private readonly Token token;
 		private TokenDetail[] details;
 		private BitmapImage glyph;
 
+		private readonly Command viewPresentReport;
+		private readonly Command viewHistoryReport;
+		private readonly Command viewStateDiagramReport;
+		private readonly Command viewProfilingReport;
+
 		/// <summary>
 		/// Token model.
 		/// </summary>
+		/// <param name="Client">Client</param>
 		/// <param name="Token">Neuro-Feature token</param>
-		private TokenModel(Token Token)
+		private TokenModel(NeuroFeaturesClient Client, Token Token)
 		{
+			this.client = Client;
 			this.token = Token;
+
+			this.viewPresentReport = new Command(this.CanExecuteViewStateMachineReport, this.ExecuteViewPresentReport);
+			this.viewHistoryReport = new Command(this.CanExecuteViewStateMachineReport, this.ExecuteViewHistoryReport);
+			this.viewStateDiagramReport = new Command(this.CanExecuteViewStateMachineReport, this.ExecuteViewStateDiagramReport);
+			this.viewProfilingReport = new Command(this.CanExecuteViewStateMachineReport, this.ExecuteViewProfilingReport);
 		}
+
+		/// <summary>
+		/// Referenced token.
+		/// </summary>
+		public Token Token => this.token;
 
 		public static async Task<TokenModel> CreateAsync(NeuroFeaturesClient Client, Token Token)
 		{
-			TokenModel Result = new TokenModel(Token);
+			TokenModel Result = new TokenModel(Client, Token);
 
 			List<TokenDetail> Details = new List<TokenDetail>()
 			{
@@ -99,25 +120,29 @@ namespace LegalLab.Models.Tokens
 
 			if (Result.token.HasStateMachine)
 			{
-				ReportEventArgs e = await Client.GenerateDescriptionAsync(Token.TokenId, ReportFormat.Xaml);
-				if (e.Ok)
-					Details.Add(new TokenDetail("State-Machine Description", e.ReportText.ParseSimple()));
+				Details.Add(new TokenDetail("State-Machine Present State", new Button()
+				{
+					Command = Result.viewPresentReport,
+					Content = "View Report"
+				}));
 
-				e = await Client.GeneratePresentReportAsync(Token.TokenId, ReportFormat.Xaml);
-				if (e.Ok)
-					Details.Add(new TokenDetail("State-Machine Present State", e.ReportText.ParseSimple()));
+				Details.Add(new TokenDetail("State-Machine History", new Button()
+				{
+					Command = Result.viewHistoryReport,
+					Content = "View Report"
+				}));
 
-				e = await Client.GenerateHistoryReportAsync(Token.TokenId, ReportFormat.Xaml);
-				if (e.Ok)
-					Details.Add(new TokenDetail("State-Machine History", e.ReportText.ParseSimple()));
+				Details.Add(new TokenDetail("State-Machine State Diagram", new Button()
+				{
+					Command = Result.viewStateDiagramReport,
+					Content = "View Report"
+				}));
 
-				e = await Client.GenerateStateDiagramAsync(Token.TokenId, ReportFormat.Xaml);
-				if (e.Ok)
-					Details.Add(new TokenDetail("State-Machine State Diagram", e.ReportText.ParseSimple()));
-
-				e = await Client.GenerateProfilingReportAsync(Token.TokenId, ReportFormat.Xaml);
-				if (e.Ok)
-					Details.Add(new TokenDetail("State-Machine Profiling", e.ReportText.ParseSimple()));
+				Details.Add(new TokenDetail("State-Machine Profiling", new Button()
+				{
+					Command = Result.viewProfilingReport,
+					Content = "View Report"
+				}));
 			}
 
 			Result.details = Details.ToArray();
@@ -209,6 +234,96 @@ namespace LegalLab.Models.Tokens
 		/// Token details.
 		/// </summary>
 		public TokenDetail[] Details => this.details;
+
+		private bool CanExecuteViewStateMachineReport()
+		{
+			return this.token.HasStateMachine;
+		}
+
+		private async Task ExecuteViewPresentReport()
+		{
+			if (!string.IsNullOrEmpty(this.TokenId))
+			{
+				try
+				{
+					this.AddReport(
+						await this.client.GeneratePresentReportAsync(this.TokenId, ReportFormat.Xaml),
+						"Present");
+				}
+				catch (Exception ex)
+				{
+					MainWindow.ErrorBox(ex.Message);
+				}
+			}
+		}
+
+		private async Task ExecuteViewHistoryReport()
+		{
+			if (!string.IsNullOrEmpty(this.TokenId))
+			{
+				try
+				{
+					this.AddReport(
+						await this.client.GenerateHistoryReportAsync(this.TokenId, ReportFormat.Xaml),
+						"History");
+				}
+				catch (Exception ex)
+				{
+					MainWindow.ErrorBox(ex.Message);
+				}
+			}
+		}
+
+		private async Task ExecuteViewStateDiagramReport()
+		{
+			if (!string.IsNullOrEmpty(this.TokenId))
+			{
+				try
+				{
+					this.AddReport(
+						await this.client.GenerateStateDiagramAsync(this.TokenId, ReportFormat.Xaml),
+						"State Diagram");
+				}
+				catch (Exception ex)
+				{
+					MainWindow.ErrorBox(ex.Message);
+				}
+			}
+		}
+
+		private async Task ExecuteViewProfilingReport()
+		{
+			if (!string.IsNullOrEmpty(this.TokenId))
+			{
+				try
+				{
+					this.AddReport(
+						await this.client.GenerateProfilingReportAsync(this.TokenId, ReportFormat.Xaml),
+						"Profiling");
+				}
+				catch (Exception ex)
+				{
+					MainWindow.ErrorBox(ex.Message);
+				}
+			}
+		}
+
+		private void AddReport(ReportEventArgs e, string Title)
+		{
+			if (e.Ok)
+			{
+				object Xaml = e.ReportText.ParseSimple();
+				ReportTab Tab = new ReportTab();
+				Tab.ReportPanel.Children.Add((UIElement)Xaml);
+				MainWindow.currentInstance.TabControl.Items.Add(new TabItem()
+				{
+					Header = Title,
+					Content = Tab
+				});
+			}
+			else
+				MainWindow.ErrorBox(e.ErrorText);
+		}
 
 	}
 }
