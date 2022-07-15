@@ -244,6 +244,7 @@ namespace LegalLab.Models.Tokens
 		{
 			if (!string.IsNullOrEmpty(this.TokenId))
 			{
+				MainWindow.MouseHourglass();
 				try
 				{
 					this.AddReport(
@@ -254,6 +255,10 @@ namespace LegalLab.Models.Tokens
 				{
 					MainWindow.ErrorBox(ex.Message);
 				}
+				finally
+				{
+					MainWindow.MouseDefault();
+				}
 			}
 		}
 
@@ -261,6 +266,7 @@ namespace LegalLab.Models.Tokens
 		{
 			if (!string.IsNullOrEmpty(this.TokenId))
 			{
+				MainWindow.MouseHourglass();
 				try
 				{
 					this.AddReport(
@@ -271,6 +277,10 @@ namespace LegalLab.Models.Tokens
 				{
 					MainWindow.ErrorBox(ex.Message);
 				}
+				finally
+				{
+					MainWindow.MouseDefault();
+				}
 			}
 		}
 
@@ -278,6 +288,7 @@ namespace LegalLab.Models.Tokens
 		{
 			if (!string.IsNullOrEmpty(this.TokenId))
 			{
+				MainWindow.MouseHourglass();
 				try
 				{
 					this.AddReport(
@@ -288,6 +299,10 @@ namespace LegalLab.Models.Tokens
 				{
 					MainWindow.ErrorBox(ex.Message);
 				}
+				finally
+				{
+					MainWindow.MouseDefault();
+				}
 			}
 		}
 
@@ -295,6 +310,7 @@ namespace LegalLab.Models.Tokens
 		{
 			if (!string.IsNullOrEmpty(this.TokenId))
 			{
+				MainWindow.MouseHourglass();
 				try
 				{
 					this.AddReport(
@@ -305,6 +321,10 @@ namespace LegalLab.Models.Tokens
 				{
 					MainWindow.ErrorBox(ex.Message);
 				}
+				finally
+				{
+					MainWindow.MouseDefault();
+				}
 			}
 		}
 
@@ -313,13 +333,15 @@ namespace LegalLab.Models.Tokens
 			if (e.Ok)
 			{
 				object Xaml = e.ReportText.ParseSimple();
-				ReportTab Tab = new ReportTab();
-				Tab.ReportPanel.Children.Add((UIElement)Xaml);
-				MainWindow.currentInstance.TabControl.Items.Add(new TabItem()
-				{
-					Header = Title,
-					Content = Tab
-				});
+
+				ReportTab ReportTab = new ReportTab();
+				ReportTab.ReportPanel.Children.Add((UIElement)Xaml);
+
+				TabItem Tab = MainWindow.NewTab(Title);
+				Tab.Content = ReportTab;
+
+				MainWindow.currentInstance.TabControl.Items.Add(Tab);
+				MainWindow.currentInstance.TabControl.SelectedItem = Tab;
 			}
 			else
 				MainWindow.ErrorBox(e.ErrorText);
