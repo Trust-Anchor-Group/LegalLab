@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Graphics\symbol-delete-icon-gray.png" />
+    <None Remove="Graphics\symbol-delete-icon.png" />
     <None Remove="Models\Design\AvalonExtensions\SmartContractMarkdown.xshd" />
   </ItemGroup>
 
@@ -67,6 +69,11 @@
     <PackageReference Include="Waher.Security.ChaChaPoly" Version="1.0.1" />
     <PackageReference Include="Waher.Security.EllipticCurves" Version="1.0.9" />
     <PackageReference Include="Waher.Security.SHA3" Version="1.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Graphics\symbol-delete-icon-gray.png" />
+    <Resource Include="Graphics\symbol-delete-icon.png" />
   </ItemGroup>
 
   <ItemGroup>

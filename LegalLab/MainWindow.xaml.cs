@@ -12,7 +12,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using Waher.Events;
 using Waher.Events.Files;
 using Waher.Events.Persistence;
@@ -452,6 +454,83 @@ namespace LegalLab
 				MainWindow.ErrorBox(ex.Message);
 			}
 		}
+
+		#region Tab management
+
+		// Note: Copy from IoTGateway WPF Client project, with permission
+
+		internal static TabItem NewTab(string HeaderText)
+		{
+			return NewTab(HeaderText, out TextBlock _);
+		}
+
+		internal static TabItem NewTab(string HeaderText, out TextBlock HeaderLabel)
+		{
+			TabItem Result = new TabItem();
+			NewHeader(HeaderText, Result, out HeaderLabel);
+			return Result;
+		}
+
+		internal static void NewHeader(string HeaderText, TabItem Tab)
+		{
+			NewHeader(HeaderText, Tab, out TextBlock _);
+		}
+
+		internal static void NewHeader(string HeaderText, TabItem Tab, out TextBlock HeaderLabel)
+		{
+			StackPanel Header = new StackPanel()
+			{
+				Orientation = Orientation.Horizontal
+			};
+
+			Image CloseImage = new Image()
+			{
+				Source = new BitmapImage(new Uri("../Graphics/symbol-delete-icon-gray.png", UriKind.Relative)),
+				Width = 16,
+				Height = 16,
+				ToolTip = "Close tab"
+			};
+
+			HeaderLabel = new TextBlock()
+			{
+				Text = HeaderText,
+				Margin = new Thickness(0, 0, 5, 0)
+			};
+
+			Header.Children.Add(HeaderLabel);
+			Header.Children.Add(CloseImage);
+
+			CloseImage.MouseLeftButtonDown += CloseImage_MouseLeftButtonDown;
+			CloseImage.MouseEnter += CloseImage_MouseEnter;
+			CloseImage.MouseLeave += CloseImage_MouseLeave;
+			CloseImage.Tag = Tab;
+
+			Tab.Header = Header;
+		}
+
+		private static void CloseImage_MouseLeave(object sender, MouseEventArgs e)
+		{
+			if (sender is Image Image)
+				Image.Source = new BitmapImage(new Uri("../Graphics/symbol-delete-icon-gray.png", UriKind.Relative));
+		}
+
+		private static void CloseImage_MouseEnter(object sender, MouseEventArgs e)
+		{
+			if (sender is Image Image)
+				Image.Source = new BitmapImage(new Uri("../Graphics/symbol-delete-icon.png", UriKind.Relative));
+		}
+
+		private static void CloseImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			if ((sender as Image)?.Tag is TabItem Item)
+			{
+				MainWindow.currentInstance?.TabControl?.Items.Remove(Item);
+				if (Item.Content != null && Item.Content is IDisposable Disposable)
+					Disposable.Dispose();
+			}
+		}
+
+		#endregion
 
 		#endregion
 
