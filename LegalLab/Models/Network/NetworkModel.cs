@@ -30,6 +30,8 @@ namespace LegalLab.Models.Network
 	[Singleton]
 	public class NetworkModel : PersistedModel
 	{
+		private readonly PersistedProperty<string> savedAccounts;
+		private readonly PersistedProperty<string> selectedAccount;
 		private readonly PersistedProperty<string> xmppServer;
 		private readonly PersistedProperty<string> account;
 		private readonly PersistedProperty<string> password;
@@ -61,36 +63,126 @@ namespace LegalLab.Models.Network
 		private WalletModel walletModel;
 		private TokensModel tokensModel;
 
+		private bool loading = false;
+
+
 		public NetworkModel()
 			: base()
 		{
-			this.Add(this.xmppServer = new PersistedProperty<string>("XMPP", nameof(this.XmppServer), false, string.Empty, this));
-			this.Add(this.account = new PersistedProperty<string>("XMPP", nameof(this.Account), false, string.Empty, this));
-			this.Add(this.password = new PersistedProperty<string>("XMPP", nameof(this.Password), false, string.Empty, this));
-			this.Add(this.passwordMethod = new PersistedProperty<string>("XMPP", nameof(this.PasswordMethod), false, string.Empty, this));
-			this.Add(this.apiKey = new PersistedProperty<string>("XMPP", nameof(this.ApiKey), false, string.Empty, this));
-			this.Add(this.apiKeySecret = new PersistedProperty<string>("XMPP", nameof(this.ApiKeySecret), false, string.Empty, this));
-			this.Add(this.createAccount = new PersistedProperty<bool>("XMPP", nameof(this.CreateAccount), false, false, this));
-			this.Add(this.trustServerCertificate = new PersistedProperty<bool>("XMPP", nameof(this.TrustServerCertificate), false, false, this));
-			this.Add(this.allowInsecureAlgorithms = new PersistedProperty<bool>("XMPP", nameof(this.AllowInsecureAlgorithms), false, false, this));
-			this.Add(this.storePasswordInsteadOfDigest = new PersistedProperty<bool>("XMPP", nameof(this.StorePasswordInsteadOfDigest), false, false, this));
-			this.Add(this.connectOnStartup = new PersistedProperty<bool>("XMPP", nameof(this.ConnectOnStartup), false, false, this));
+			this.loading = true;
+			try
+			{
+				this.Add(this.savedAccounts = new PersistedProperty<string>("Accounts", nameof(this.SavedAccounts), true, string.Empty, this));
+				this.Add(this.selectedAccount = new PersistedProperty<string>("Accounts", nameof(this.SelectedAccount), true, string.Empty, this));
+				this.Add(this.xmppServer = new PersistedProperty<string>("XMPP", nameof(this.XmppServer), false, string.Empty, this));
+				this.Add(this.account = new PersistedProperty<string>("XMPP", nameof(this.Account), false, string.Empty, this));
+				this.Add(this.password = new PersistedProperty<string>("XMPP", nameof(this.Password), false, string.Empty, this));
+				this.Add(this.passwordMethod = new PersistedProperty<string>("XMPP", nameof(this.PasswordMethod), false, string.Empty, this));
+				this.Add(this.apiKey = new PersistedProperty<string>("XMPP", nameof(this.ApiKey), false, string.Empty, this));
+				this.Add(this.apiKeySecret = new PersistedProperty<string>("XMPP", nameof(this.ApiKeySecret), false, string.Empty, this));
+				this.Add(this.createAccount = new PersistedProperty<bool>("XMPP", nameof(this.CreateAccount), false, false, this));
+				this.Add(this.trustServerCertificate = new PersistedProperty<bool>("XMPP", nameof(this.TrustServerCertificate), false, false, this));
+				this.Add(this.allowInsecureAlgorithms = new PersistedProperty<bool>("XMPP", nameof(this.AllowInsecureAlgorithms), false, false, this));
+				this.Add(this.storePasswordInsteadOfDigest = new PersistedProperty<bool>("XMPP", nameof(this.StorePasswordInsteadOfDigest), false, false, this));
+				this.Add(this.connectOnStartup = new PersistedProperty<bool>("XMPP", nameof(this.ConnectOnStartup), false, false, this));
 
-			this.Add(this.legalComponentJid = new PersistedProperty<string>("XMPP", nameof(this.LegalComponentJid), true, string.Empty, this));
-			this.Add(this.eDalerComponentJid = new PersistedProperty<string>("XMPP", nameof(this.EDalerComponentJid), true, string.Empty, this));
-			this.Add(this.neuroFeaturesComponentJid = new PersistedProperty<string>("XMPP", nameof(this.NeuroFeaturesComponentJid), true, string.Empty, this));
+				this.Add(this.legalComponentJid = new PersistedProperty<string>("XMPP", nameof(this.LegalComponentJid), true, string.Empty, this));
+				this.Add(this.eDalerComponentJid = new PersistedProperty<string>("XMPP", nameof(this.EDalerComponentJid), true, string.Empty, this));
+				this.Add(this.neuroFeaturesComponentJid = new PersistedProperty<string>("XMPP", nameof(this.NeuroFeaturesComponentJid), true, string.Empty, this));
 
-			this.password2 = new Property<string>(nameof(this.Password2), string.Empty, this);
-			this.state = new Property<XmppState>(nameof(this.State), XmppState.Offline, this);
-			this.connected = new Property<bool>(nameof(this.Connected), false, this);
+				this.password2 = new Property<string>(nameof(this.Password2), string.Empty, this);
+				this.state = new Property<XmppState>(nameof(this.State), XmppState.Offline, this);
+				this.connected = new Property<bool>(nameof(this.Connected), false, this);
 
-			this.connect = new Command(this.CanExecuteConnect, this.ExecuteConnect);
-			this.disconnect = new Command(this.CanExecuteDisconnect, this.ExecuteDisconnect);
-			this.randomizePassword = new Command(this.CanExecuteRandomizePassword, this.ExecuteRandomizePassword);
-			this.copySnifferItem = new ParametrizedCommand(this.CanExecuteCopy, this.ExecuteCopy);
-			this.removeSnifferItem = new ParametrizedCommand(this.CanExecuteRemove, this.ExecuteRemove);
-			this.clearSniffer = new Command(this.CanExecuteClearAll, this.ExecuteClearAll);
-			this.saveCredentials = new Command(this.CanExecuteSaveCredentials, this.ExecuteSaveCredentials);
+				this.connect = new Command(this.CanExecuteConnect, this.ExecuteConnect);
+				this.disconnect = new Command(this.CanExecuteDisconnect, this.ExecuteDisconnect);
+				this.randomizePassword = new Command(this.CanExecuteRandomizePassword, this.ExecuteRandomizePassword);
+				this.copySnifferItem = new ParametrizedCommand(this.CanExecuteCopy, this.ExecuteCopy);
+				this.removeSnifferItem = new ParametrizedCommand(this.CanExecuteRemove, this.ExecuteRemove);
+				this.clearSniffer = new Command(this.CanExecuteClearAll, this.ExecuteClearAll);
+				this.saveCredentials = new Command(this.CanExecuteSaveCredentials, this.ExecuteSaveCredentials);
+			}
+			finally
+			{
+				this.loading = false;
+			}
+		}
+
+		/// <summary>
+		/// Saved accounts
+		/// </summary>
+		public string[] SavedAccounts
+		{
+			get
+			{
+				string s = this.savedAccounts.Value;
+				if (string.IsNullOrEmpty(s))
+					return new string[0];
+				else
+					return s.Split('|');
+			}
+
+			set
+			{
+				StringBuilder sb = new StringBuilder();
+				bool First = true;
+
+				foreach (string Item in value)
+				{
+					if (First)
+						First = false;
+					else
+						sb.Append('|');
+
+					sb.Append(Item);
+				}
+
+				this.savedAccounts.Value = sb.ToString();
+			}
+		}
+
+		/// <summary>
+		/// Selected account
+		/// </summary>
+		public string SelectedAccount
+		{
+			get => this.selectedAccount.Value;
+			set
+			{
+				this.selectedAccount.Value = value;
+
+				if (!this.loading)
+				{
+					int i = value.IndexOf('@');
+					if (i < 0)
+						return;
+
+					string Prefix = "Credentials." + value + ".";
+					bool Connect = this.Connected;
+
+					this.xmppServer.Value = value.Substring(0, i);
+					this.account.Value = value.Substring(i + 1);
+					this.password.Value = RuntimeSettings.Get(Prefix + "Password", string.Empty);
+					this.passwordMethod.Value = RuntimeSettings.Get(Prefix + "PasswordMethod", string.Empty);
+					this.apiKey.Value = RuntimeSettings.Get(Prefix + "ApiKey", string.Empty);
+					this.apiKeySecret.Value = RuntimeSettings.Get(Prefix + "ApiKeySecret", string.Empty);
+					this.legalComponentJid.Value = RuntimeSettings.Get(Prefix + "LegalComponentJid", string.Empty);
+					this.eDalerComponentJid.Value = RuntimeSettings.Get(Prefix + "EDalerComponentJid", string.Empty);
+					this.neuroFeaturesComponentJid.Value = RuntimeSettings.Get(Prefix + "NeuroFeaturesComponentJid", string.Empty);
+					this.eDalerComponentJid.Value = RuntimeSettings.Get(Prefix + "EDalerComponentJid", string.Empty);
+					this.trustServerCertificate.Value = RuntimeSettings.Get(Prefix + "TrustServerCertificate", false);
+					this.allowInsecureAlgorithms.Value = RuntimeSettings.Get(Prefix + "AllowInsecureAlgorithms", false);
+					this.storePasswordInsteadOfDigest.Value = RuntimeSettings.Get(Prefix + "StorePasswordInsteadOfDigest", false);
+					this.connectOnStartup.Value = RuntimeSettings.Get(Prefix + "ConnectOnStartup", false);
+					this.createAccount.Value = false;
+					this.password2.Value = string.Empty;
+
+					this.ExecuteDisconnect();
+
+					if (Connect)
+						Task.Run(async () => await this.ExecuteConnect());
+				}
+			}
 		}
 
 		/// <summary>
@@ -711,16 +803,15 @@ namespace LegalLab.Models.Network
 
 		private async Task ExecuteSaveCredentials()
 		{
-			string[] Accounts = (await RuntimeSettings.GetAsync("Credentials", string.Empty)).Split('|');
 			SortedDictionary<string, bool> Sorted = new SortedDictionary<string, bool>();
 
-			foreach (string Account in Accounts)
+			foreach (string Account in this.SavedAccounts)
 				Sorted[Account] = true;
 
-			string Prefix = this.account.Value + "@" + this.xmppServer.Value;
-			Sorted[Prefix] = true;
+			string Jid = this.account.Value + "@" + this.xmppServer.Value;
+			Sorted[Jid] = true;
 
-			Prefix = "Credentials." + Prefix + ".";
+			string Prefix = "Credentials." + Jid + ".";
 
 			await RuntimeSettings.SetAsync(Prefix + "Password", this.password.Value);
 			await RuntimeSettings.SetAsync(Prefix + "PasswordMethod", this.passwordMethod.Value);
@@ -735,20 +826,19 @@ namespace LegalLab.Models.Network
 			await RuntimeSettings.SetAsync(Prefix + "StorePasswordInsteadOfDigest", this.storePasswordInsteadOfDigest.Value);
 			await RuntimeSettings.SetAsync(Prefix + "ConnectOnStartup", this.connectOnStartup.Value);
 
-			StringBuilder sb = new StringBuilder();
-			bool First = true;
+			string[] Accounts = new string[Sorted.Count];
+			Sorted.Keys.CopyTo(Accounts, 0);
 
-			foreach (string Account in Sorted.Keys)
+			this.loading = true;
+			try
 			{
-				if (First)
-					First = false;
-				else
-					sb.Append('|');
-
-				sb.Append(Account);
+				this.SavedAccounts = Accounts;
+				this.SelectedAccount = Jid;
 			}
-
-			await RuntimeSettings.SetAsync("Credentials", sb.ToString());
+			finally
+			{
+				this.loading = false;
+			}
 
 			MainWindow.MessageBox("Credentials saved.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
 		}
