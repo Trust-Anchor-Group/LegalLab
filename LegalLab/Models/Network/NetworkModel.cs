@@ -57,6 +57,7 @@ namespace LegalLab.Models.Network
 		private readonly ParametrizedCommand removeSnifferItem;
 		private readonly Command clearSniffer;
 		private readonly Command saveCredentials;
+		private readonly Command deleteCredentials;
 		private readonly Command newAccount;
 
 		private XmppClient client;
@@ -102,6 +103,7 @@ namespace LegalLab.Models.Network
 				this.removeSnifferItem = new ParametrizedCommand(this.CanExecuteRemove, this.ExecuteRemove);
 				this.clearSniffer = new Command(this.CanExecuteClearAll, this.ExecuteClearAll);
 				this.saveCredentials = new Command(this.CanExecuteSaveCredentials, this.ExecuteSaveCredentials);
+				this.deleteCredentials = new Command(this.CanExecuteDeleteCredentials, this.ExecuteDeleteCredentials);
 				this.newAccount = new Command(this.ExecuteNewAccount);
 			}
 			finally
@@ -152,6 +154,8 @@ namespace LegalLab.Models.Network
 			set
 			{
 				this.selectedAccount.Value = value;
+
+				this.deleteCredentials.RaiseCanExecuteChanged();
 
 				if (!this.loading && !string.IsNullOrEmpty(value))
 				{
@@ -874,6 +878,56 @@ namespace LegalLab.Models.Network
 			this.Password2 = string.Empty;
 
 			await this.ExecuteClearAll();
+		}
+
+		/// <summary>
+		/// Delete Credentials command
+		/// </summary>
+		public ICommand DeleteCredentials => this.deleteCredentials;
+
+		private bool CanExecuteDeleteCredentials() => !string.IsNullOrEmpty(this.SelectedAccount);
+
+		private async Task ExecuteDeleteCredentials()
+		{
+			SortedDictionary<string, bool> Sorted = new SortedDictionary<string, bool>();
+
+			foreach (string Account in this.SavedAccounts)
+			{
+				if (Account != this.SelectedAccount)
+					Sorted[Account] = true;
+			}
+
+			string Jid = this.Account + "@" + this.XmppServer;
+			string Prefix = "Credentials." + Jid + ".";
+
+			await RuntimeSettings.DeleteAsync(Prefix + "Password");
+			await RuntimeSettings.DeleteAsync(Prefix + "PasswordMethod");
+			await RuntimeSettings.DeleteAsync(Prefix + "ApiKey");
+			await RuntimeSettings.DeleteAsync(Prefix + "ApiKeySecret");
+			await RuntimeSettings.DeleteAsync(Prefix + "LegalComponentJid");
+			await RuntimeSettings.DeleteAsync(Prefix + "EDalerComponentJid");
+			await RuntimeSettings.DeleteAsync(Prefix + "NeuroFeaturesComponentJid");
+			await RuntimeSettings.DeleteAsync(Prefix + "EDalerComponentJid");
+			await RuntimeSettings.DeleteAsync(Prefix + "TrustServerCertificate");
+			await RuntimeSettings.DeleteAsync(Prefix + "AllowInsecureAlgorithms");
+			await RuntimeSettings.DeleteAsync(Prefix + "StorePasswordInsteadOfDigest");
+			await RuntimeSettings.DeleteAsync(Prefix + "ConnectOnStartup");
+
+			string[] Accounts = new string[Sorted.Count];
+			Sorted.Keys.CopyTo(Accounts, 0);
+
+			this.loading = true;
+			try
+			{
+				this.SelectedAccount = string.Empty;
+				this.SavedAccounts = Accounts;
+			}
+			finally
+			{
+				this.loading = false;
+			}
+
+			MainWindow.MessageBox("Credentials deleted.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
 		}
 
 	}
