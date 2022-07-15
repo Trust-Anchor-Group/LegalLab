@@ -57,6 +57,7 @@ namespace LegalLab.Models.Network
 		private readonly ParametrizedCommand removeSnifferItem;
 		private readonly Command clearSniffer;
 		private readonly Command saveCredentials;
+		private readonly Command newAccount;
 
 		private XmppClient client;
 		private LegalModel legalModel;
@@ -101,6 +102,7 @@ namespace LegalLab.Models.Network
 				this.removeSnifferItem = new ParametrizedCommand(this.CanExecuteRemove, this.ExecuteRemove);
 				this.clearSniffer = new Command(this.CanExecuteClearAll, this.ExecuteClearAll);
 				this.saveCredentials = new Command(this.CanExecuteSaveCredentials, this.ExecuteSaveCredentials);
+				this.newAccount = new Command(this.ExecuteNewAccount);
 			}
 			finally
 			{
@@ -151,7 +153,7 @@ namespace LegalLab.Models.Network
 			{
 				this.selectedAccount.Value = value;
 
-				if (!this.loading)
+				if (!this.loading && !string.IsNullOrEmpty(value))
 				{
 					int i = value.IndexOf('@');
 					if (i < 0)
@@ -160,24 +162,25 @@ namespace LegalLab.Models.Network
 					string Prefix = "Credentials." + value + ".";
 					bool Connect = this.Connected;
 
-					this.xmppServer.Value = value.Substring(0, i);
-					this.account.Value = value.Substring(i + 1);
-					this.password.Value = RuntimeSettings.Get(Prefix + "Password", string.Empty);
-					this.passwordMethod.Value = RuntimeSettings.Get(Prefix + "PasswordMethod", string.Empty);
-					this.apiKey.Value = RuntimeSettings.Get(Prefix + "ApiKey", string.Empty);
-					this.apiKeySecret.Value = RuntimeSettings.Get(Prefix + "ApiKeySecret", string.Empty);
-					this.legalComponentJid.Value = RuntimeSettings.Get(Prefix + "LegalComponentJid", string.Empty);
-					this.eDalerComponentJid.Value = RuntimeSettings.Get(Prefix + "EDalerComponentJid", string.Empty);
-					this.neuroFeaturesComponentJid.Value = RuntimeSettings.Get(Prefix + "NeuroFeaturesComponentJid", string.Empty);
-					this.eDalerComponentJid.Value = RuntimeSettings.Get(Prefix + "EDalerComponentJid", string.Empty);
-					this.trustServerCertificate.Value = RuntimeSettings.Get(Prefix + "TrustServerCertificate", false);
-					this.allowInsecureAlgorithms.Value = RuntimeSettings.Get(Prefix + "AllowInsecureAlgorithms", false);
-					this.storePasswordInsteadOfDigest.Value = RuntimeSettings.Get(Prefix + "StorePasswordInsteadOfDigest", false);
-					this.connectOnStartup.Value = RuntimeSettings.Get(Prefix + "ConnectOnStartup", false);
-					this.createAccount.Value = false;
-					this.password2.Value = string.Empty;
+					this.Account = value.Substring(0, i);
+					this.XmppServer = value[(i + 1)..];
+					this.Password = RuntimeSettings.Get(Prefix + "Password", string.Empty);
+					this.PasswordMethod = RuntimeSettings.Get(Prefix + "PasswordMethod", string.Empty);
+					this.ApiKey = RuntimeSettings.Get(Prefix + "ApiKey", string.Empty);
+					this.ApiKeySecret = RuntimeSettings.Get(Prefix + "ApiKeySecret", string.Empty);
+					this.LegalComponentJid = RuntimeSettings.Get(Prefix + "LegalComponentJid", string.Empty);
+					this.EDalerComponentJid = RuntimeSettings.Get(Prefix + "EDalerComponentJid", string.Empty);
+					this.NeuroFeaturesComponentJid = RuntimeSettings.Get(Prefix + "NeuroFeaturesComponentJid", string.Empty);
+					this.EDalerComponentJid = RuntimeSettings.Get(Prefix + "EDalerComponentJid", string.Empty);
+					this.TrustServerCertificate = RuntimeSettings.Get(Prefix + "TrustServerCertificate", false);
+					this.AllowInsecureAlgorithms = RuntimeSettings.Get(Prefix + "AllowInsecureAlgorithms", false);
+					this.StorePasswordInsteadOfDigest = RuntimeSettings.Get(Prefix + "StorePasswordInsteadOfDigest", false);
+					this.ConnectOnStartup = RuntimeSettings.Get(Prefix + "ConnectOnStartup", false);
+					this.CreateAccount = false;
+					this.Password2 = string.Empty;
 
 					this.ExecuteDisconnect();
+					this.ExecuteClearAll();
 
 					if (Connect)
 						Task.Run(async () => await this.ExecuteConnect());
@@ -799,7 +802,7 @@ namespace LegalLab.Models.Network
 		/// </summary>
 		public ICommand SaveCredentials => this.saveCredentials;
 
-		private bool CanExecuteSaveCredentials() => true;
+		private bool CanExecuteSaveCredentials() => this.Connected;
 
 		private async Task ExecuteSaveCredentials()
 		{
@@ -808,23 +811,23 @@ namespace LegalLab.Models.Network
 			foreach (string Account in this.SavedAccounts)
 				Sorted[Account] = true;
 
-			string Jid = this.account.Value + "@" + this.xmppServer.Value;
+			string Jid = this.Account + "@" + this.XmppServer;
 			Sorted[Jid] = true;
 
 			string Prefix = "Credentials." + Jid + ".";
 
-			await RuntimeSettings.SetAsync(Prefix + "Password", this.password.Value);
-			await RuntimeSettings.SetAsync(Prefix + "PasswordMethod", this.passwordMethod.Value);
-			await RuntimeSettings.SetAsync(Prefix + "ApiKey", this.apiKey.Value);
-			await RuntimeSettings.SetAsync(Prefix + "ApiKeySecret", this.apiKeySecret.Value);
-			await RuntimeSettings.SetAsync(Prefix + "LegalComponentJid", this.legalComponentJid.Value);
-			await RuntimeSettings.SetAsync(Prefix + "EDalerComponentJid", this.eDalerComponentJid.Value);
-			await RuntimeSettings.SetAsync(Prefix + "NeuroFeaturesComponentJid", this.neuroFeaturesComponentJid.Value);
-			await RuntimeSettings.SetAsync(Prefix + "EDalerComponentJid", this.eDalerComponentJid.Value);
-			await RuntimeSettings.SetAsync(Prefix + "TrustServerCertificate", this.trustServerCertificate.Value);
-			await RuntimeSettings.SetAsync(Prefix + "AllowInsecureAlgorithms", this.allowInsecureAlgorithms.Value);
-			await RuntimeSettings.SetAsync(Prefix + "StorePasswordInsteadOfDigest", this.storePasswordInsteadOfDigest.Value);
-			await RuntimeSettings.SetAsync(Prefix + "ConnectOnStartup", this.connectOnStartup.Value);
+			await RuntimeSettings.SetAsync(Prefix + "Password", this.Password);
+			await RuntimeSettings.SetAsync(Prefix + "PasswordMethod", this.PasswordMethod);
+			await RuntimeSettings.SetAsync(Prefix + "ApiKey", this.ApiKey);
+			await RuntimeSettings.SetAsync(Prefix + "ApiKeySecret", this.ApiKeySecret);
+			await RuntimeSettings.SetAsync(Prefix + "LegalComponentJid", this.LegalComponentJid);
+			await RuntimeSettings.SetAsync(Prefix + "EDalerComponentJid", this.EDalerComponentJid);
+			await RuntimeSettings.SetAsync(Prefix + "NeuroFeaturesComponentJid", this.NeuroFeaturesComponentJid);
+			await RuntimeSettings.SetAsync(Prefix + "EDalerComponentJid", this.EDalerComponentJid);
+			await RuntimeSettings.SetAsync(Prefix + "TrustServerCertificate", this.TrustServerCertificate);
+			await RuntimeSettings.SetAsync(Prefix + "AllowInsecureAlgorithms", this.AllowInsecureAlgorithms);
+			await RuntimeSettings.SetAsync(Prefix + "StorePasswordInsteadOfDigest", this.StorePasswordInsteadOfDigest);
+			await RuntimeSettings.SetAsync(Prefix + "ConnectOnStartup", this.ConnectOnStartup);
 
 			string[] Accounts = new string[Sorted.Count];
 			Sorted.Keys.CopyTo(Accounts, 0);
@@ -841,6 +844,36 @@ namespace LegalLab.Models.Network
 			}
 
 			MainWindow.MessageBox("Credentials saved.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+		}
+
+		/// <summary>
+		/// New ACcount command
+		/// </summary>
+		public ICommand NewAccount => this.newAccount;
+
+		private async Task ExecuteNewAccount()
+		{
+			await this.ExecuteDisconnect();
+
+			this.SelectedAccount = string.Empty;
+			this.XmppServer = string.Empty;
+			this.Account = string.Empty;
+			this.Password = string.Empty;
+			this.PasswordMethod = string.Empty;
+			this.ApiKey = string.Empty;
+			this.ApiKeySecret = string.Empty;
+			this.LegalComponentJid = string.Empty;
+			this.EDalerComponentJid = string.Empty;
+			this.NeuroFeaturesComponentJid = string.Empty;
+			this.EDalerComponentJid = string.Empty;
+			this.TrustServerCertificate = false;
+			this.AllowInsecureAlgorithms = false;
+			this.StorePasswordInsteadOfDigest = false;
+			this.ConnectOnStartup = false;
+			this.CreateAccount = false;
+			this.Password2 = string.Empty;
+
+			await this.ExecuteClearAll();
 		}
 
 	}
