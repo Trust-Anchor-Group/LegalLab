@@ -209,6 +209,38 @@
 					<LogEvent type="Debug" message="Completed."/>
 					<End/>
 				</Action>
+				<ReportPresent>
+					<![CDATA[
+| Variable               | Value                      |
+|------------------------|----------------------------|
+| Amount                 | {{Amount}}                 |
+| Debt                   | {{Debt}}                   |
+| InterestPerInstallment | {{InterestPerInstallment}} |
+| Cost                   | {{Cost}}                   |
+| Currency               | {{Currency}}               |
+| DebtLimit              | {{DebtLimit}}              |
+| InstallmentInterval    | {{InstallmentInterval}}    |
+| InstallmentAmount      | {{InstallmentAmount}}      |
+| Creator                | {{Creator}}                |
+| Lender                 | {{Lender}}                 |
+| Borrower               | {{Borrower}}               |
+| LoanAgreement          | {{LoanAgreement}}          |
+| NrFailedPayments       | {{NrFailedPayments}}       |
+					]]>
+				</ReportPresent>
+				<ReportHistory>
+					<![CDATA[
+{{
+G:=plot2dline(Amount.Timestamp, Amount.Value, "Red")+
+plot2dline(Debt.Timestamp, Debt.Value, "Blue");
+
+G.Title:="Internal state over time";
+G.LabelX:="Time";
+G.LabelY:="Amount";
+G
+}}
+					]]>
+				</ReportHistory>
 			</StateMachine>
 		</Definition>
 		<Tag name="Amount">

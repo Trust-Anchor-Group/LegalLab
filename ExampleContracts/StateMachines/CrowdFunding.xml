@@ -294,6 +294,39 @@
 				<Action id="End">
 					<End/>
 				</Action>
+				<ReportPresent>
+					<![CDATA[
+| Variable            | Value                   |
+|---------------------|-------------------------|
+| AvailableAmount     | {{AvailableAmount}}     |
+| InvestedAmount      | {{InvestedAmount}}      |
+| MaxIntervalAmount   | {{MaxIntervalAmount}}   |
+| MaxInterval         | {{MaxInterval}}         |
+| IntervalAmount      | {{IntervalAmount}}      |
+| ProjectStart        | {{ProjectStart}}        |
+| ThresholdAmount     | {{ThresholdAmount}}     |
+| Currency            | {{Currency}}            |
+| EscrowAgreement     | {{EscrowAgreement}}     |
+| ProjectOwner        | {{ProjectOwner}}        |
+| Nr Investor Records | {{Investors.NrRecords}} |
+| EscrowAgent         | {{EscrowAgent}}         |
+					]]>
+				</ReportPresent>
+				<ReportHistory>
+					<![CDATA[
+{{
+G:=plot2dline(AvailableAmount.Timestamp, AvailableAmount.Value, "Red")+
+plot2dline(InvestedAmount.Timestamp, InvestedAmount.Value, "Blue")+
+plot2dline(IntervalAmount.Timestamp, IntervalAmount.Value, "Purple")+
+plot2dline(MaxIntervalAmount.Timestamp, MaxIntervalAmount.Value, "Black");
+
+G.Title:="Internal state over time";
+G.LabelX:="Time";
+G.LabelY:="Amount";
+G
+}}
+					]]>
+				</ReportHistory>
 			</StateMachine>
 		</Definition>
 		<Tag name="MaxIntervalAmount">

@@ -147,6 +147,27 @@
 				<Action id="End">
 					<End/>
 				</Action>
+				<ReportPresent>
+					<![CDATA[
+| Variable  | Value       |
+|-----------|-------------|
+| Current   | {{Current}} |
+| Stored    | {{Stored}}  |
+					]]>
+				</ReportPresent>
+				<ReportHistory>
+					<![CDATA[
+{{
+G:=plot2dline(Current.Timestamp, Current.Value, "Red")+
+plot2dline(Memory.Timestamp, Memory.Value, "Blue");
+
+G.Title:="Internal state over time";
+G.LabelX:="Time";
+G.LabelY:="Amount";
+G
+}}
+					]]>
+				</ReportHistory>
 			</StateMachine>
 		</Definition>
 		<FriendlyName>
