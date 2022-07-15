@@ -422,7 +422,7 @@ funds is done using external XML notes on the token.</String>
 		</description>
 	</role>
 	<parts>
-		<open/>
+		<templateOnly/>
 	</parts>
 	<parameters>
 		<stringParameter name="MachineID" guide="State Machine ID (GUID)" regEx="[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}">
@@ -478,7 +478,7 @@ funds is done using external XML notes on the token.</String>
 				</paragraph>
 			</description>
 		</numericalParameter>
-		<durationParameter name="MaxInterval" guide="Interval" min="PT0D" minIncluded="false">
+		<durationParameter name="MaxInterval" guide="Interval" min="P0D" minIncluded="false">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The interval over which the maximum amount limit is enforced.</text>
