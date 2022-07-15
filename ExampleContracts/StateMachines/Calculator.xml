@@ -159,7 +159,7 @@
 					<![CDATA[
 {{
 G:=plot2dline(Current.Timestamp, Current.Value, "Red")+
-plot2dline(Memory.Timestamp, Memory.Value, "Blue");
+plot2dline(Stored.Timestamp, Stored.Value, "Blue");
 
 G.Title:="Internal state over time";
 G.LabelX:="Time";
