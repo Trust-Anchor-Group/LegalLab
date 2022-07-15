@@ -468,7 +468,7 @@ into the token.</String>
 				</paragraph>
 			</description>
 		</calcParameter>
-		<calcParameter name="Expires" exp="NowUtc.AddDays(1)+InstallmentInterval*Max(NrInstallments,365)">
+		<calcParameter name="Expires" exp="NowUtc+Duration('P1D')+InstallmentInterval*Max(NrInstallments,365)">
 			<description xml:lang="en">
 				<paragraph>
 					<text>When the </text>
