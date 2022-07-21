@@ -1007,9 +1007,13 @@
 								<parameter name="OwnerCanDestroyIndividual" />
 							</item>
 						</bulletItems>
-						<paragraph>
-							<text>Commerce</text>
-						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Commerce</text>
+					</header>
+					<body>
 						<paragraph>
 							<text>Les identifiants peuvent être échangés librement avec d’autres utilisateurs jusqu’à l’expiration de l’identifiant.</text>
 						</paragraph>
@@ -1088,26 +1092,30 @@
 		</section>
 	</humanReadableText>
 	<humanReadableText xml:lang="pt">
-		<paragraph>
-			<text>Crie token de demonstração</text>
-		</paragraph>
-		<paragraph>
-			<text>Este contrato cria um único token de demonstração.</text>
-		</paragraph>
 		<section>
 			<header>
-				<text>Valor de início</text>
+				<text>Crie token de demonstração</text>
 			</header>
 			<body>
 				<paragraph>
-					<text>Quando o token é criado, o token é definido para o valor </text>
-					<parameter name="Value" />
-					<text> </text>
-					<parameter name="Currency" />
-					<text>. O provedor de confiança recebe uma comissão de </text>
-					<parameter name="CommissionPercent" />
-					<text>% desse valor quando o token é criado.</text>
+					<text>Este contrato cria um único token de demonstração.</text>
 				</paragraph>
+				<section>
+					<header>
+						<text>Valor de início</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Quando o token é criado, o token é definido para o valor </text>
+							<parameter name="Value" />
+							<text> </text>
+							<parameter name="Currency" />
+							<text>. O provedor de confiança recebe uma comissão de </text>
+							<parameter name="CommissionPercent" />
+							<text>% desse valor quando o token é criado.</text>
+						</paragraph>
+					</body>
+				</section>
 				<section>
 					<header>
 						<text>Duração</text>
@@ -1153,26 +1161,30 @@
 		</section>
 	</humanReadableText>
 	<humanReadableText xml:lang="ro">
-		<paragraph>
-			<text>Creați un simbol demo</text>
-		</paragraph>
-		<paragraph>
-			<text>Acest contract creează un singur simbol demo.</text>
-		</paragraph>
 		<section>
 			<header>
-				<text>Valoarea de start</text>
+				<text>Creați un simbol demo</text>
 			</header>
 			<body>
 				<paragraph>
-					<text>Când simbolul este creat, simbolul este setat la valoarea </text>
-					<parameter name="Value" />
-					<text> </text>
-					<parameter name="Currency" />
-					<text>. Furnizorul de încredere primește un comision de </text>
-					<parameter name="CommissionPercent" />
-					<text>% din această valoare atunci când simbolul este creat.</text>
+					<text>Acest contract creează un singur simbol demo.</text>
 				</paragraph>
+				<section>
+					<header>
+						<text>Valoarea de start</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Când simbolul este creat, simbolul este setat la valoarea </text>
+							<parameter name="Value" />
+							<text> </text>
+							<parameter name="Currency" />
+							<text>. Furnizorul de încredere primește un comision de </text>
+							<parameter name="CommissionPercent" />
+							<text>% din această valoare atunci când simbolul este creat.</text>
+						</paragraph>
+					</body>
+				</section>
 				<section>
 					<header>
 						<text>Durata</text>
@@ -1218,26 +1230,30 @@
 		</section>
 	</humanReadableText>
 	<humanReadableText xml:lang="ru">
-		<paragraph>
-			<text>Создание демонстрационного символа</text>
-		</paragraph>
-		<paragraph>
-			<text>Этот контракт создает один демонстрационный символ.</text>
-		</paragraph>
 		<section>
 			<header>
-				<text>Начальное значение</text>
+				<text>Создание демонстрационного символа</text>
 			</header>
 			<body>
 				<paragraph>
-					<text>При создании символа ему присваивается значение </text>
-					<parameter name="Value" />
-					<text> </text>
-					<parameter name="Currency" />
-					<text>. Доверенный поставщик получает комиссию в размере </text>
-					<parameter name="CommissionPercent" />
-					<text>% от этого значения при создании токена.</text>
+					<text>Этот контракт создает один демонстрационный символ.</text>
 				</paragraph>
+				<section>
+					<header>
+						<text>Начальное значение</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>При создании символа ему присваивается значение </text>
+							<parameter name="Value" />
+							<text> </text>
+							<parameter name="Currency" />
+							<text>. Доверенный поставщик получает комиссию в размере </text>
+							<parameter name="CommissionPercent" />
+							<text>% от этого значения при создании токена.</text>
+						</paragraph>
+					</body>
+				</section>
 				<section>
 					<header>
 						<text>Продолжительность</text>
@@ -1283,67 +1299,71 @@
 		</section>
 	</humanReadableText>
 	<humanReadableText xml:lang="sr">
-		<paragraph>
-			<text>Kreiranje demo simbola</text>
-		</paragraph>
-		<paragraph>
-			<text>Ovaj ugovor kreira jedan demo simbol.</text>
-		</paragraph>
 		<section>
 			<header>
-				<text>Početna vrednost</text>
+				<text>Kreiranje demo simbola</text>
 			</header>
 			<body>
 				<paragraph>
-					<text>Kada je simbol kreiran, on je postavljen na </text>
-					<parameter name="Value" />
-					<text> </text>
-					<parameter name="Currency" />
-					<text>. Pouzdani dobavljač dobija proviziju od </text>
-					<parameter name="CommissionPercent" />
-					<text>% ove vrednosti prilikom kreiranja simbola.</text>
+					<text>Ovaj ugovor kreira jedan demo simbol.</text>
 				</paragraph>
-			</body>
-		</section>
-		<section>
-			<header>
-				<text>Trajanje</text>
-			</header>
-			<body>
-				<paragraph>
-					<text>Rok ugovora je dva meseca. Datum isteka simbola je podešen na </text>
-					<parameter name="Expires" />
-				</paragraph>
-			</body>
-		</section>
-		<section>
-			<header>
-				<text>Prava</text>
-			</header>
-			<body>
-				<paragraph>
-					<text>Sledeće dozvole su kodirane u simbolu:</text>
-				</paragraph>
-				<bulletItems>
-					<item>
-						<text>Može li tvorac da uništi žeton? </text>
-						<parameter name="CreatorCanDestroy" />
-					</item>
-					<item>
-						<text>Može li držač da uništi žeton? </text>
-						<parameter name="OwnerCanDestroyIndividual" />
-					</item>
-				</bulletItems>
-			</body>
-		</section>
-		<section>
-			<header>
-				<text>Trgovanje</text>
-			</header>
-			<body>
-				<paragraph>
-					<text>Tokenima mogu slobodno da trguju drugi korisnici dok oznaka ne istekne.</text>
-				</paragraph>
+				<section>
+					<header>
+						<text>Početna vrednost</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Kada je simbol kreiran, on je postavljen na </text>
+							<parameter name="Value" />
+							<text> </text>
+							<parameter name="Currency" />
+							<text>. Pouzdani dobavljač dobija proviziju od </text>
+							<parameter name="CommissionPercent" />
+							<text>% ove vrednosti prilikom kreiranja simbola.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Trajanje</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Rok ugovora je dva meseca. Datum isteka simbola je podešen na </text>
+							<parameter name="Expires" />
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Prava</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Sledeće dozvole su kodirane u simbolu:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>Može li tvorac da uništi žeton? </text>
+								<parameter name="CreatorCanDestroy" />
+							</item>
+							<item>
+								<text>Može li držač da uništi žeton? </text>
+								<parameter name="OwnerCanDestroyIndividual" />
+							</item>
+						</bulletItems>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Trgovanje</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Tokenima mogu slobodno da trguju drugi korisnici dok oznaka ne istekne.</text>
+						</paragraph>
+					</body>
+				</section>
 			</body>
 		</section>
 	</humanReadableText>
