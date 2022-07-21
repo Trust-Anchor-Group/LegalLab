@@ -26,23 +26,188 @@
 		</OwnershipContract>
 	</Transfer>
 	<role maxCount="1" minCount="1" name="Seller">
+		<description xml:lang="da">
+			<paragraph>
+				<text>Dette er rollen for den del, der ejer tokenet, før overførslen.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="de">
+			<paragraph>
+				<text>Dies ist die Rolle des Teils, der das Token vor der Übertragung besitzt.</text>
+			</paragraph>
+		</description>
 		<description xml:lang="en">
 			<paragraph>
 				<text>This is the role of the part that owns the token, before the transfer.</text>
 			</paragraph>
 		</description>
+		<description xml:lang="es">
+			<paragraph>
+				<text>Esta es la función de la pieza que posee el ID antes de la transferencia.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="fi">
+			<paragraph>
+				<text>Tämä on sen osan rooli, joka omistaa tunnuksen ennen siirtoa.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="fr">
+			<paragraph>
+				<text>Il s’agit du rôle de la pièce propriétaire de l’ID avant le transfert.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="no">
+			<paragraph>
+				<text>Dette er rollen til delen som eier tokenet før overføringen.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="pt">
+			<paragraph>
+				<text>Esta é a função da peça que contém o ID antes da transferência.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="ro">
+			<paragraph>
+				<text>Aceasta este funcția parte care conține iD înainte de transfer.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="ru">
+			<paragraph>
+				<text>Это функция части, которая содержит идентификатор перед передачей.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="sr">
+			<paragraph>
+				<text>Ovo je funkcija dela koji sadrži identifikator pre prenosa.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="sv">
+			<paragraph>
+				<text>Det här är rollen för det avsnitt som äger token före migreringen.</text>
+			</paragraph>
+		</description>
 	</role>
 	<role maxCount="1" minCount="1" name="Buyer">
+		<description xml:lang="da">
+			<paragraph>
+				<text>Dette er rollen som den del, der bliver den nye skylder af tokenet, efter en vellykket betaling.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="de">
+			<paragraph>
+				<text>Dies ist die Rolle des Teils, der nach einer erfolgreichen Zahlung zum neuen Zahler des Tokens wird.</text>
+			</paragraph>
+		</description>
 		<description xml:lang="en">
 			<paragraph>
 				<text>This is the role of the part that will become the new ower of the token, after a successful payment.</text>
 			</paragraph>
 		</description>
+		<description xml:lang="es">
+			<paragraph>
+				<text>Este es el papel de la parte que se convierte en el nuevo pagador de la cuenta después del pago exitoso.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="fi">
+			<paragraph>
+				<text>Tämä on sen osan rooli, josta tulee tunnuksen uusi maksaja onnistuneen maksun jälkeen.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="fr">
+			<paragraph>
+				<text>C’est le rôle de la partie qui devient le nouveau payeur du compte après le paiement réussi.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="no">
+			<paragraph>
+				<text>Dette er rollen til den delen som blir den nye betaleren til tokenet etter en vellykket betaling.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="pt">
+			<paragraph>
+				<text>Esse é o papel do partido que se torna o novo pagador de contas após o pagamento bem-sucedido.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="ro">
+			<paragraph>
+				<text>Acesta este rolul unui partid care devine noul plătitor de cont după o plată reușită.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="ru">
+			<paragraph>
+				<text>Это роль стороны, которая становится новым плательщиком векселей после успешной оплаты.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="sr">
+			<paragraph>
+				<text>To je uloga stranke koja postaje novi platilac računa nakon uspešnog plaćanja.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="sv">
+			<paragraph>
+				<text>Detta är rollen för den del som blir den nya betalaren av token efter en lyckad betalning.</text>
+			</paragraph>
+		</description>
 	</role>
 	<role maxCount="1" minCount="1" name="TrustProvider">
+		<description xml:lang="da">
+			<paragraph>
+				<text>Dette er rollen som den tillidsudbyder, der fungerer som vært for tokenet og godkender overførslen.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="de">
+			<paragraph>
+				<text>Dies ist die Rolle des Vertrauensanbieters, der das Token hostet und die Übertragung genehmigt.</text>
+			</paragraph>
+		</description>
 		<description xml:lang="en">
 			<paragraph>
 				<text>This is the role of the trust provider that acts as the host for the token and approves its transfer.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="es">
+			<paragraph>
+				<text>Esta es la función del proveedor de servicios de confianza que hospeda el id y confía en la transferencia.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="fi">
+			<paragraph>
+				<text>Tämä on sen luottamuspalvelun tarjoajan rooli, joka isännöi tunnusta ja hyväksyy siirron.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="fr">
+			<paragraph>
+				<text>Il s’agit du rôle du fournisseur de services d’approbation qui héberge l’ID et approuve le transfert.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="no">
+			<paragraph>
+				<text>Dette er rollen til klareringsleverandøren som er vert for tokenet og godkjenner overføringen.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="pt">
+			<paragraph>
+				<text>Esse é o papel do provedor de serviços confiável que hospeda a id e confia na transferência.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="ro">
+			<paragraph>
+				<text>Acesta este rolul unui furnizor de servicii de încredere care găzduiește un identificator și are încredere în transfer.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="ru">
+			<paragraph>
+				<text>Это роль доверенного поставщика услуг, который размещает идентификатор и доверяет передаче.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="sr">
+			<paragraph>
+				<text>Ovo je uloga dobavljača pouzdanih usluga koji hostuje identifikator i ima poverenja u prenos.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="sv">
+			<paragraph>
+				<text>Det här är rollen för den förtroendeprovider som är värd för token och godkänner migreringen.</text>
 			</paragraph>
 		</description>
 	</role>
@@ -51,41 +216,390 @@
 	</parts>
 	<parameters>
 		<stringParameter name="TokenID" guide="Token ID (GUID)" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Id</text>
+					<text>’</text>
+					<text>et for det token, der skal overføres.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Die ID des zu übertragenden Tokens.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="en">
 				<paragraph>
 					<text>The ID of the token to transfer.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="no">
+				<paragraph>
+					<text>IDen til tokenet som skal overføres.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv" />
 		</stringParameter>
 		<numericalParameter name="Value" guide="Value of token" min="0" minIncluded="true">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Den aftalte pris på tokenet.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Der vereinbarte Preis des Tokens.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="en">
 				<paragraph>
 					<text>The agreed upon price of the token.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Precio acordado del token.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fi">
+				<paragraph>
+					<text>Tokenin sovittu hinta.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
+				<paragraph>
+					<text>Prix convenu du jeton.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="no">
+				<paragraph>
+					<text>Den avtalte prisen på tokenet.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Preço do token acordado.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ro">
+				<paragraph>
+					<text>Prețul tokenului convenit.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ru">
+				<paragraph>
+					<text>Цена согласованного токена.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sr">
+				<paragraph>
+					<text>Cena dogovorenog tokena.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Det överenskomna priset på token.</text>
+				</paragraph>
+			</description>
 		</numericalParameter>
 		<stringParameter name="Currency" guide="Currency" regEx="\w{3}" minLength="3" maxLength="3">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Valutaen for den aftalte pris på tokenet.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Die Währung des vereinbarten Preises des Tokens.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="en">
 				<paragraph>
 					<text>The currency of the agreed upon price of the token.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>La moneda del precio acordado del Token.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fi">
+				<paragraph>
+					<text>Tokenin sovitun hinnan valuutta.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
+				<paragraph>
+					<text>La devise du prix convenu du Token.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="no">
+				<paragraph>
+					<text>Valutaen for den avtalte prisen på tokenet.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>A moeda do preço acordado do Token.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ro">
+				<paragraph>
+					<text>Moneda prețului tokenului convenit.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ru">
+				<paragraph>
+					<text>Валюта согласованной цены токена.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sr">
+				<paragraph>
+					<text>Valuta dogovorene cene tokena.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Valutan för det överenskomna priset på token.</text>
+				</paragraph>
+			</description>
 		</stringParameter>
 		<numericalParameter name="CommissionPercent" guide="Commision (%)" min="0" minIncluded="true" max="100" maxIncluded="true">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Den provision, som tillidsudbyderen får for at levere salget og overførslen af tokenet.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Die Provision, die der Trust-Anbieter für die Bereitstellung des Verkaufs und der Übertragung des Tokens erhält.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="en">
 				<paragraph>
 					<text>The commission the Trust Provider gets for providing the sale, and transfer of the token.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Honorarios recibidos por el proveedor de servicios de fideicomiso por la provisión de la venta y transferencia de tokens.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fi">
+				<paragraph>
+					<text>Palkkio, jonka luottamuspalveluntarjoaja saa rahakkeiden myynnin ja siirron toimittamisesta.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
+				<paragraph>
+					<text>Les frais reçus par le fournisseur de services de confiance pour la fourniture de la vente et du transfert de jetons.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="no">
+				<paragraph>
+					<text>Provisjonen som klareringsleverandøren mottar for å levere salg og overføring av tokenet.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Taxas recebidas pelo provedor de serviços fiduciários para a prestação da venda e transferência de tokens.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ro">
+				<paragraph>
+					<text>Comisioanele primite de furnizorul de servicii fiduciare pentru asigurarea vânzării și transferului de jetoane.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ru">
+				<paragraph>
+					<text>Сборы, получаемые поставщиком фидуциарных услуг за обеспечение продажи и передачи токенов.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sr">
+				<paragraph>
+					<text>Naknade koje je dobio pružalac fiducijarne usluge za obezbeđivanje prodaje i prenosa tokena.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Provisionen som förtroendeleverantören får för att leverera försäljningen och överföringen av token.</text>
+				</paragraph>
+			</description>
 		</numericalParameter>
 		<stringParameter name="OwnershipContract" guide="Ownership Contract ID" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Id</text>
+					<text>’</text>
+					<text>et for den kontrakt, der viser den aktuelle ejer, er den nuværende ejer af tokenet.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Die ID des Vertrags, der anzeigt, dass der aktuelle Besitzer der aktuelle Besitzer des Tokens ist.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="en">
 				<paragraph>
 					<text>The ID of the contract that shows the current owner is the current owner of the token.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="no">
+				<paragraph>
+					<text>IDen til kontrakten som angir at gjeldende eier er gjeldende eier av tokenet.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv" />
 		</stringParameter>
 	</parameters>
+	<humanReadableText xml:lang="da">
+		<section>
+			<header>
+				<text>Overførsel af token</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Denne kontrakt overfører et token fra en ejer til en anden gennem en monetær transkation.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Betaling</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Når </text>
+							<italic>
+								<text>Sælger</text>
+							</italic>
+							<text> og </text>
+							<italic>
+								<text>Køber</text>
+							</italic>
+							<text> har underskrevet kontrakten, og </text>
+							<italic>
+								<text>Trust Provider</text>
+							</italic>
+							<text> har godkendt indholdet, verificeret underskrifterne og underskrevet kontrakten, sendes beløbet på </text>
+							<parameter name="Value" />
+							<text> </text>
+							<parameter name="Currency" />
+							<text> fra </text>
+							<italic>
+								<text>Køber</text>
+							</italic>
+							<text> til </text>
+							<italic>
+								<text>Sælger</text>
+							</italic>
+							<text>, minus en provision på </text>
+							<parameter name="CommissionPercent" />
+							<text> % betalt til </text>
+							<italic>
+								<text>Trust Provider</text>
+							</italic>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Overdragelse af ejerskab</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Når betalingerne er realiseret, overføres ejerskabet af tokenet fra </text>
+							<italic>
+								<text>Sælger</text>
+							</italic>
+							<text> (eller </text>
+							<italic>
+								<text>tidligere ejer</text>
+							</italic>
+							<text>) til </text>
+							<italic>
+								<text>Køber</text>
+							</italic>
+							<text> (som bliver den nye ejer).</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="de">
+		<section>
+			<header>
+				<text>Token-Übertragung</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Dieser Vertrag überträgt einen Token von einem Eigentümer auf einen anderen durch eine Geldtranskation.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Zahlung</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Sobald der </text>
+							<italic>
+								<text>Verkäufer</text>
+							</italic>
+							<text> und der </text>
+							<italic>
+								<text>Käufer</text>
+							</italic>
+							<text> den Vertrag unterzeichnet haben und der </text>
+							<italic>
+								<text>Trust Provider</text>
+							</italic>
+							<text> den Inhalt genehmigt, die Unterschriften überprüft und den Vertrag unterzeichnet hat, wird der Betrag der </text>
+							<parameter name="Value" />
+							<text> </text>
+							<parameter name="Currency" />
+							<text> vom </text>
+							<italic>
+								<text>Käufer</text>
+							</italic>
+							<text> an den </text>
+							<italic>
+								<text>Verkäufer</text>
+							</italic>
+							<text> gesendet, abzüglich einer Provision von </text>
+							<parameter name="CommissionPercent" />
+							<text>%, die an den </text>
+							<italic>
+								<text>Trust Provider</text>
+							</italic>
+							<text> gezahlt wird.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Eigentumsübergang</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Sobald die Zahlungen realisiert sind, wird das Eigentum an dem Token vom </text>
+							<italic>
+								<text>Verkäufer</text>
+							</italic>
+							<text> (oder </text>
+							<italic>
+								<text>Vorbesitzer</text>
+							</italic>
+							<text>) auf </text>
+							<italic>
+								<text>Käufer</text>
+							</italic>
+							<text> (der der neue Eigentümer wird) übertragen.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
 	<humanReadableText xml:lang="en">
 		<section>
 			<header>
@@ -95,6 +609,662 @@
 				<paragraph>
 					<text>This contract transfers a token from one owner to another, through a monetary transcation.</text>
 				</paragraph>
+				<section>
+					<header>
+						<text>Payment</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Once the </text>
+							<italic>
+								<text>Seller</text>
+							</italic>
+							<text> and </text>
+							<italic>
+								<text>Buyer</text>
+							</italic>
+							<text> has signed the contract, and the </text>
+							<italic>
+								<text>Trust Provider</text>
+							</italic>
+							<text> has approved the contents, verified the signatures and signed the contract, the amount of </text>
+							<parameter name="Value" />
+							<text> </text>
+							<parameter name="Currency" />
+							<text> is sent from the </text>
+							<italic>
+								<text>Buyer</text>
+							</italic>
+							<text> to the </text>
+							<italic>
+								<text>Seller</text>
+							</italic>
+							<text>, minus a commission of </text>
+							<parameter name="CommissionPercent" />
+							<text> % paid to the </text>
+							<italic>
+								<text>Trust Provider</text>
+							</italic>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Transfer of ownership</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Once the payments have been realized, the ownership of the token is transferred fromthe </text>
+							<italic>
+								<text>Seller</text>
+							</italic>
+							<text> (or </text>
+							<italic>
+								<text>previous owner</text>
+							</italic>
+							<text>) to the </text>
+							<italic>
+								<text>Buyer</text>
+							</italic>
+							<text> (who becomes the new owner).</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="es">
+		<section>
+			<header>
+				<text>Transferencia de tokens</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Este acuerdo transfiere el identificador de un propietario a otro a través de una transacción monetaria.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Pago</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Una vez que </text>
+							<italic>
+								<text>Vendedor</text>
+							</italic>
+							<text> y </text>
+							<italic>
+								<text>Comprador</text>
+							</italic>
+							<text> hayan firmado el acuerdo y el </text>
+							<italic>
+								<text>Proveedor de confianza</text>
+							</italic>
+							<text> haya aceptado el contenido, confirmado las firmas y firmado el contrato, </text>
+							<italic>
+								<text>El Comprador</text>
+							</italic>
+							<text> envía la </text>
+							<parameter name="Value" />
+							<text> </text>
+							<parameter name="Currency" />
+							<text> </text>
+							<italic>
+								<text>Al Vendedor</text>
+							</italic>
+							<text>, menos la comisión del </text>
+							<parameter name="CommissionPercent" />
+							<text>% pagada al </text>
+							<italic>
+								<text>Proveedor de servicios de confianza</text>
+							</italic>
+							<text>.</text>
+						</paragraph>
+						<paragraph>
+							<text>Transferencia de propiedad</text>
+						</paragraph>
+						<paragraph>
+							<text>Una vez que se realizan los pagos, la propiedad del ID se transfiere de </text>
+							<italic>
+								<text>el vendedor</text>
+							</italic>
+							<text> (o </text>
+							<italic>
+								<text>propietario anterior</text>
+							</italic>
+							<text>) </text>
+							<italic>
+								<text>al comprador</text>
+							</italic>
+							<text> (que se convierte en el nuevo propietario).</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="fi">
+		<section>
+			<header>
+				<text>Tokenin siirto</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Tämä sopimus siirtää tunnuksen omistajalta toiselle rahatapahtuman kautta.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Maksu</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Kun </text>
+							<italic>
+								<text>Myyjä</text>
+							</italic>
+							<text> ja </text>
+							<italic>
+								<text>Ostaja</text>
+							</italic>
+							<text> ovat allekirjoittaneet sopimuksen ja </text>
+							<italic>
+								<text>Trust-toimittaja</text>
+							</italic>
+							<text> on hyväksynyt sisällön, vahvistanut allekirjoitukset ja allekirjoittanut sopimuksen, </text>
+							<italic>
+								<text>Ostaja</text>
+							</italic>
+							<text> lähettää </text>
+							<parameter name="Value" />
+							<text> </text>
+							<parameter name="Currency" />
+							<text> </text>
+							<italic>
+								<text>Myyjälle</text>
+							</italic>
+							<text>, josta on vähennetty </text>
+							<italic>
+								<text>Luottamuspalveluntarjoajalle</text>
+							</italic>
+							<text> maksettu </text>
+							<parameter name="CommissionPercent" />
+							<text> prosentin provisio.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Omistusoikeuden siirto</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Kun maksut on toteutunut, tunnuksen omistusoikeus siirretään </text>
+							<italic>
+								<text>myyjältä</text>
+							</italic>
+							<text> (tai </text>
+							<italic>
+								<text>edelliseltä omistajalta</text>
+							</italic>
+							<text>) </text>
+							<italic>
+								<text>ostajalle</text>
+							</italic>
+							<text> (josta tulee uusi omistaja).</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="fr">
+		<section>
+			<header>
+				<text>Transfert de jetons</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Cet accord transfère l’identifiant d’un propriétaire à un autre par le biais d’une transaction monétaire.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Paiement</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Une fois que </text>
+							<italic>
+								<text>Vendeur</text>
+							</italic>
+							<text> et </text>
+							<italic>
+								<text>Acheteur</text>
+							</italic>
+							<text> ont signé l’accord et que le </text>
+							<italic>
+								<text>Fournisseur de confiance</text>
+							</italic>
+							<text> a accepté le contenu, confirmé les signatures et signé le contrat, </text>
+							<italic>
+								<text>L’Acheteur</text>
+							</italic>
+							<text> envoie le </text>
+							<parameter name="Value" />
+							<text> </text>
+							<parameter name="Currency" />
+							<text> </text>
+							<italic>
+								<text>Au Vendeur</text>
+							</italic>
+							<text>, moins la commission de </text>
+							<parameter name="CommissionPercent" />
+							<text>% versée au </text>
+							<italic>
+								<text>Fournisseur de services de confiance</text>
+							</italic>
+							<text>.</text>
+						</paragraph>
+						<paragraph>
+							<text>Transfert de propriété</text>
+						</paragraph>
+						<paragraph>
+							<text>Une fois les paiements effectués, la propriété de l’identifiant est transférée de </text>
+							<italic>
+								<text>le vendeur</text>
+							</italic>
+							<text> (ou </text>
+							<italic>
+								<text>le propriétaire précédent</text>
+							</italic>
+							<text>) </text>
+							<italic>
+								<text>à l’acheteur</text>
+							</italic>
+							<text> (qui devient le nouveau propriétaire).</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="no">
+		<section>
+			<header>
+				<text>Token overføring</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Denne kontrakten overfører et token fra en eier til en annen gjennom en pengetransaksjon.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Betaling</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Når </text>
+							<italic>
+								<text>Selger</text>
+							</italic>
+							<text> og </text>
+							<italic>
+								<text>Kjøper</text>
+							</italic>
+							<text> har signert kontrakten og </text>
+							<italic>
+								<text>Trust Provider</text>
+							</italic>
+							<text> har godkjent innholdet, bekreftet signaturene og signert kontrakten, vil </text>
+							<parameter name="Value" />
+							<text> </text>
+							<parameter name="Currency" />
+							<text> bli sendt fra </text>
+							<italic>
+								<text>Kjøper</text>
+							</italic>
+							<text> til </text>
+							<italic>
+								<text>Selger</text>
+							</italic>
+							<text>, minus en provisjon på </text>
+							<parameter name="CommissionPercent" />
+							<text>% betalt til </text>
+							<italic>
+								<text>Trust Provider</text>
+							</italic>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Overføring av eierskap</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Når betalingene er realisert, overføres eierskapet av tokenet fra </text>
+							<italic>
+								<text>selgeren</text>
+							</italic>
+							<text> (eller </text>
+							<italic>
+								<text>tidligere eier</text>
+							</italic>
+							<text>) til </text>
+							<italic>
+								<text>kjøper</text>
+							</italic>
+							<text> (som blir den nye eieren).</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="pt">
+		<paragraph>
+			<text>Transferência de token</text>
+		</paragraph>
+		<paragraph>
+			<text>Este acordo transfere o identificador de um proprietário para outro através de uma transação monetária.</text>
+		</paragraph>
+		<section>
+			<header>
+				<text>Pagamento</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Uma vez que </text>
+					<italic>
+						<text>Vendedor</text>
+					</italic>
+					<text> e </text>
+					<italic>
+						<text>Comprador</text>
+					</italic>
+					<text> assinaram o contrato e o </text>
+					<italic>
+						<text>Fornecedor Confiável</text>
+					</italic>
+					<text> aceitou o conteúdo, confirmou as assinaturas e assinou o contrato, </text>
+					<italic>
+						<text>O Comprador</text>
+					</italic>
+					<text> envia o </text>
+					<parameter name="Value" />
+					<text> </text>
+					<parameter name="Currency" />
+					<text> </text>
+					<italic>
+						<text>Ao Vendedor</text>
+					</italic>
+					<text>, menos a comissão de </text>
+					<parameter name="CommissionPercent" />
+					<text>% paga ao </text>
+					<italic>
+						<text>Provedor de Serviços Fiduciários</text>
+					</italic>
+					<text>.</text>
+				</paragraph>
+				<paragraph>
+					<text>Transferência de propriedade</text>
+				</paragraph>
+				<paragraph>
+					<text>Uma vez que os pagamentos são feitos, a propriedade do ID é transferida do </text>
+					<italic>
+						<text>o vendedor</text>
+					</italic>
+					<text> (ou </text>
+					<italic>
+						<text>proprietário anterior</text>
+					</italic>
+					<text>) </text>
+					<italic>
+						<text>para o comprador</text>
+					</italic>
+					<text> (que se torna o novo proprietário).</text>
+				</paragraph>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="ro">
+		<paragraph>
+			<text>Token Transfer</text>
+		</paragraph>
+		<paragraph>
+			<text>Acest contract transferă identificatorul de la un proprietar la altul printr-o tranzacție în numerar.</text>
+		</paragraph>
+		<section>
+			<header>
+				<text>Plata</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>După ce </text>
+					<italic>
+						<text>Vânzător</text>
+					</italic>
+					<text> și Client* au semnat contractul și </text>
+					<italic>
+						<text>Furnizor de încredere</text>
+					</italic>
+					<text> a acceptat conținutul, a verificat abonamentul și a semnat contractul, Clientul* trimite </text>
+					<parameter name="Value" />
+					<text> </text>
+					<parameter name="Currency" />
+					<text> vânzătorului, minus comisioanele </text>
+					<parameter name="CommissionPercent" />
+					<text>% plătite Furnizorului de servicii de încredere.</text>
+				</paragraph>
+				<paragraph>
+					<text>Transferul dreptului de proprietate</text>
+				</paragraph>
+				<paragraph>
+					<text>După plată, dreptul de proprietate asupra ID-ului se mută de la </text>
+					<italic>
+						<text>vânzător</text>
+					</italic>
+					<text> (sau </text>
+					<italic>
+						<text>proprietar anterior</text>
+					</italic>
+					<text>) </text>
+					<italic>
+						<text>la client</text>
+					</italic>
+					<text>(care devine noul proprietar).</text>
+				</paragraph>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="ru">
+		<paragraph>
+			<text>Передача токенов</text>
+		</paragraph>
+		<paragraph>
+			<text>Это соглашение передает идентификатор от одного владельца к другому посредством денежной транзакции.</text>
+		</paragraph>
+		<section>
+			<header>
+				<text>Оплата</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>После того, как </text>
+					<italic>
+						<text>Продавец</text>
+					</italic>
+					<text> и </text>
+					<italic>
+						<text>Покупатель</text>
+					</italic>
+					<text> подписали договор и </text>
+					<italic>
+						<text>Доверенный поставщик</text>
+					</italic>
+					<text> принял контент, подтвердил подписки и подписал договор, </text>
+					<italic>
+						<text>Покупатель</text>
+					</italic>
+					<text> отправляет </text>
+					<parameter name="Value" />
+					<text> </text>
+					<parameter name="Currency" />
+					<text> </text>
+					<italic>
+						<text>Продавцу</text>
+					</italic>
+					<text>, за вычетом комиссии </text>
+					<parameter name="CommissionPercent" />
+					<text>%, выплаченной </text>
+					<italic>
+						<text>Поставщику услуг доверия</text>
+					</italic>
+					<text>.</text>
+				</paragraph>
+				<paragraph>
+					<text>Передача права собственности</text>
+				</paragraph>
+				<paragraph>
+					<text>После оплаты право собственности на удостоверение личности переходит от </text>
+					<italic>
+						<text>продавца</text>
+					</italic>
+					<text> (или </text>
+					<italic>
+						<text>предыдущего владельца</text>
+					</italic>
+					<text>) </text>
+					<italic>
+						<text>к покупателю</text>
+					</italic>
+					<text> (который становится новым владельцем).</text>
+				</paragraph>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="sr">
+		<paragraph>
+			<text>Prenos tokena</text>
+		</paragraph>
+		<paragraph>
+			<text>Ovaj ugovor prenosi identifikator sa jednog vlasnika na drugog putem novčane transakcije.</text>
+		</paragraph>
+		<section>
+			<header>
+				<text>Plaćanje</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Nakon što su </text>
+					<italic>
+						<text>Prodavac</text>
+					</italic>
+					<text> i Kupac* potpisali ugovor i </text>
+					<italic>
+						<text>Pouzdani provajder</text>
+					</italic>
+					<text> prihvatio sadržaj, potvrdio pretplatu i potpisao ugovor, Kupac* šalje </text>
+					<parameter name="Value" />
+					<text> </text>
+					<parameter name="Currency" />
+					<text> Prodavcu, minus provizije </text>
+					<parameter name="CommissionPercent" />
+					<text>% isplaćene Dobavljaču usluga poverenja.</text>
+				</paragraph>
+				<paragraph>
+					<text>Prenos vlasništva</text>
+				</paragraph>
+				<paragraph>
+					<text>Nakon uplate, vlasništvo nad ID-om prelazi sa </text>
+					<italic>
+						<text>prodavca</text>
+					</italic>
+					<text> (ili </text>
+					<italic>
+						<text>prethodnog vlasnika</text>
+					</italic>
+					<text>) </text>
+					<italic>
+						<text>kupcu</text>
+					</italic>
+					<text>(koji postaje novi vlasnik).</text>
+				</paragraph>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="sv">
+		<section>
+			<header>
+				<text>Tokenöverföring</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Detta kontrakt överför en token från en ägare till en annan genom en penningtransaktion.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Betalning</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>När </text>
+							<italic>
+								<text>Säljare</text>
+							</italic>
+							<text> och </text>
+							<italic>
+								<text>Köpare</text>
+							</italic>
+							<text> har undertecknat kontraktet och </text>
+							<italic>
+								<text>Trust Provider</text>
+							</italic>
+							<text> har godkänt innehållet, bekräftat signaturerna och undertecknat kontraktet kommer </text>
+							<parameter name="Value" />
+							<text> </text>
+							<parameter name="Currency" />
+							<text> att skickas från </text>
+							<italic>
+								<text>Köpare</text>
+							</italic>
+							<text> till </text>
+							<italic>
+								<text>Säljare</text>
+							</italic>
+							<text>, minus en provision på </text>
+							<parameter name="CommissionPercent" />
+							<text>% som betalats till </text>
+							<italic>
+								<text>Trust Provider</text>
+							</italic>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Överföring av äganderätt</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>När betalningarna har realiserats överförs äganderätten till token från </text>
+							<italic>
+								<text>säljare</text>
+							</italic>
+							<text> (eller </text>
+							<italic>
+								<text>tidigare ägare</text>
+							</italic>
+							<text>) till </text>
+							<italic>
+								<text>köpare</text>
+							</italic>
+							<text> (som blir den nya ägaren).</text>
+						</paragraph>
+					</body>
+				</section>
 			</body>
 		</section>
 	</humanReadableText>

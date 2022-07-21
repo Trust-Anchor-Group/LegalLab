@@ -45,16 +45,126 @@
 		<Glyph contentType="image/png">iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAABFFJREFUeJztWU1IMlsYfrqTFmgLIb5yEURlLQo3YVZUCi1qFUFQUKt2QURWm7IgIkhqJ9IP1EIIWkWuIugPLIh0GVFUBC5SocCkEM2/uYvv3oPDNNM43Thwv3lgYM77d57zeI7nzEwBy7Is/mD8RZsAbSgC0CZAG4oAtAnQhiIAbQK0oQhAmwBtKALQJkAbigC0CdCGIgBtArShCECbAG0oAtAmQBuKALQJ0EahkCMYDGJpaQklJSV5F43H4+jr60NHRwfPNz8/j3g8jmw2i5qaGoyMjORdHwBSqRScTicODg5wfX2N19dXqNVqVFRUoLGxET09Pejv7/+6ECsAn8/HApB9LS4u8mo+PT3x4vJFJpNh29vbJfPY2dkRrSe4BL77uSCTyfBs4+PjPNvCwoLkmqenp2AYBufn55JzHh8fRf0FQh9G3t7ecHx8jOLiYo69tLQUZrOZtLe3t/Hr1y+k02liSyaTMBqNqKqq4nZWUAAA0Gg0iMVixC5FbK/XC6vVyrE1Nzdjbm4O3d3dYBiG2O/v77G7u4vZ2VlMT0/D4XAIF857Dv5mS65oNCopx+FwkBy73c5arVbS3t/fz6tPAOzt7a2kfgOBgHhdSVVEyITD4bxzYrEYe3R0RNoGg0E0d2BggJOfTCbl0P6cl6ykPAXIHWx1dfWndV5eXiT153K55FAWri0rKU8BGhoaSLzH4yF2u91O7ENDQ5/mer3eb+0aX+HHBYhGo6ID+GpwKysrxF9fXy+Hrih+/CRos9nI/dTUFM+fe1hyOp08fygUIvcGg0Fyv3V1dWhtbYXJZBIPlKMa8pgBubHpdJrn9/v9xM8wDM9vs9mIv7e3VxZHMfzoDFhdXSX3FouFs1f/C5PJBI1GA+D34eni4oLjLysrI/eBQOA/5yh4EBJN+udAAwDhcBjl5eWfxhUVFSGZTAIAlpeX0dbWhkQiwYnRarXY2trC5uYmAKCpqQk+n4/4Dw8P0dXVRdpS6eZyFM2RPKcEppfQEri8vJT9HPHx8SHY397eXt4cReOkDVm4uJAALS0tsgUYHR3l1LJYLHlvhVLjf2QJpNNpqFQq0na73UilUoJTkWEYPD8/Y2ZmhthyY6PRKHQ6HWmr1WrEYjEUFgo+zdNdAmNjY8RvNpsl19VqtSTP7XZzfGtra7yZMjg4yPr9fl4dj8dDdwnk+s/OziTXXV9fJ3k6nY7ndzqdspaU6Fgks8tNyikeDAY5PpfL9a2ja27uZ79uKBRia2trJQ++srJStD/hRSSCiYkJqFQqvL+/816ZJRIJTE5OIpvNcrYvqXC73bi6ukI2m8XDwwPvJKfX63F3d4dIJIKNjQ2cnJzg5uYGkUgEDMNAr9fDaDSis7MTw8PD5IwhBFl/gv8n/PFvhRUBaBOgDUUA2gRoQxGANgHaUASgTYA2FAFoE6ANRQDaBGhDEYA2AdpQBKBNgDYUAWgToA1FANoEaONve9o8PVvYS2AAAAAASUVORK5CYII=</Glyph>
 	</Create>
 	<role maxCount="1" minCount="1" name="Creator">
+		<description xml:lang="da">
+			<paragraph>
+				<text>Dette er rollen som den del, der fungerer som skaberen af det token, der oprettes.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="de">
+			<paragraph>
+				<text>Dies ist die Rolle des Teils, der als Ersteller des zu erstellenden Tokens fungiert.</text>
+			</paragraph>
+		</description>
 		<description xml:lang="en">
 			<paragraph>
 				<text>This is the role of the part that acts as the creator of the token being created.</text>
 			</paragraph>
 		</description>
+		<description xml:lang="es">
+			<paragraph>
+				<text>Este es el papel de la parte que actúa como creador del token que se va a crear.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="fi">
+			<paragraph>
+				<text>Tämä on sen osapuolen rooli, joka toimii luotavan tunnuksen luojana.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="fr">
+			<paragraph>
+				<text>C’est le rôle de la partie qui agit en tant que créateur de l’identifiant que vous créez.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="no">
+			<paragraph>
+				<text>Dette er rollen til den delen som fungerer som skaperen av tokenet som opprettes.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="pt">
+			<paragraph>
+				<text>Este é o papel da parte que atua como o criador do token que está sendo criado.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="ro">
+			<paragraph>
+				<text>Acesta este rolul partidului care acționează ca creator al simbolului creat.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="ru">
+			<paragraph>
+				<text>Это роль стороны, выступающей в качестве создателя созданного символа.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="sr">
+			<paragraph>
+				<text>To je uloga stranke koja deluje kao tvorac stvorenog simbola.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="sv">
+			<paragraph>
+				<text>Detta är rollen för den del som fungerar som skapare av token som skapas.</text>
+			</paragraph>
+		</description>
 	</role>
 	<role maxCount="1" minCount="1" name="TrustProvider">
+		<description xml:lang="da">
+			<paragraph>
+				<text>Dette er rollen som den tillidsudbyder, der er vært for tokenet og godkender dets oprettelse.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="de">
+			<paragraph>
+				<text>Dies ist die Rolle des Vertrauensanbieters, der das Token hostet und seine Erstellung genehmigt.</text>
+			</paragraph>
+		</description>
 		<description xml:lang="en">
 			<paragraph>
 				<text>This is the role of the trust provider that acts will host the token and approve its creation.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="es">
+			<paragraph>
+				<text>Esta es la función del proveedor de confianza que hospeda el token y aprueba su creación.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="fi">
+			<paragraph>
+				<text>Tämä on sen luotetun palveluntarjoajan rooli, joka isännöi tunnusta ja hyväksyy sen luomisen.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="fr">
+			<paragraph>
+				<text>C’est le rôle du fournisseur de confiance qui héberge l’emblème et accepte sa création.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="no">
+			<paragraph>
+				<text>Dette er rollen til klareringsleverandøren som er vert for tokenet og godkjenner opprettelsen.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="pt">
+			<paragraph>
+				<text>Esse é o papel do provedor de confiança que hospeda o token e aprova sua criação.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="ro">
+			<paragraph>
+				<text>Acesta este rolul furnizorului de încredere care găzduiește simbolul și aprobă crearea acestuia.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="ru">
+			<paragraph>
+				<text>Это роль доверенного поставщика, который размещает маркер и утверждает его создание.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="sr">
+			<paragraph>
+				<text>Ovo je uloga pouzdanog dobavljača usluga koji hostuje simbol i odobrava njegovo kreiranje.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="sv">
+			<paragraph>
+				<text>Det här är rollen för den förtroendeprovider som agerar som värd för token och godkänner att den skapas.</text>
 			</paragraph>
 		</description>
 	</role>
@@ -63,64 +173,1246 @@
 	</parts>
 	<parameters>
 		<numericalParameter name="Value" guide="Value of token" min="0" minIncluded="true">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Den oprindelige værdi af tokenet.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Der Anfangswert des Tokens.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="en">
 				<paragraph>
 					<text>The initial value of the token.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Valor inicial del token.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fi">
+				<paragraph>
+					<text>Tunnuksen alkuperäinen arvo.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
+				<paragraph>
+					<text>Valeur d’origine de l’id.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="no">
+				<paragraph>
+					<text>Den opprinnelige verdien for tokenet.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>O valor original do token.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ro">
+				<paragraph>
+					<text>Valoarea originală a simbolului.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ru">
+				<paragraph>
+					<text>Исходное значение символа.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sr">
+				<paragraph>
+					<text>Originalna vrednost simbola.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Det ursprungliga värdet för token.</text>
+				</paragraph>
+			</description>
 		</numericalParameter>
 		<stringParameter name="Currency" guide="Currency" regEx="\w{3}" minLength="3" maxLength="3">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Tokenets oprindelige valuta.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Die ursprüngliche Währung des Tokens.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="en">
 				<paragraph>
 					<text>The initial currency of the token.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>La moneda original del token.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fi">
+				<paragraph>
+					<text>Tunnuksen alkuperäinen valuutta.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
+				<paragraph>
+					<text>Devise d’origine du jeton.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="no">
+				<paragraph>
+					<text>Den opprinnelige valutaen for tokenet.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>A moeda original do token.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ro">
+				<paragraph>
+					<text>Moneda originală a tokenului.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ru">
+				<paragraph>
+					<text>Исходная валюта токена.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sr">
+				<paragraph>
+					<text>Izvorna valuta simbola.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Tokens ursprungliga valuta.</text>
+				</paragraph>
+			</description>
 		</stringParameter>
-		<numericalParameter name="CommissionPercent" guide="Commision (%)" min="0" minIncluded="true" max="100" maxIncluded="true">
+		<numericalParameter name="CommissionPercent" guide="Commission (%)" min="0" minIncluded="true" max="100" maxIncluded="true">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Den provision, som tillidsudbyderen modtager for at oprette tokenet.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Die Provision, die der Vertrauensanbieter für die Erstellung des Tokens erhält.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="en">
 				<paragraph>
 					<text>The commission the Trust Provider gets for creating the tokens.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>La comisión que recibe el proveedor de confianza por crear el token.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fi">
+				<paragraph>
+					<text>Palkkio, jonka luotettu palveluntarjoaja saa tunnuksen luomisesta.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
+				<paragraph>
+					<text>Récompense qu’un fournisseur de services de confiance reçoit pour la création d’un identifiant.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="no">
+				<paragraph>
+					<text>Provisjonen som klareringsleverandøren mottar for å opprette tokenet.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>A comissão que o provedor de confiança recebe para criar o token.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ro">
+				<paragraph>
+					<text>Comisionul pe care furnizorul de încredere îl primește pentru a crea simbolul.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ru">
+				<paragraph>
+					<text>Комиссия, которую доверенный поставщик получает за создание символа.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sr">
+				<paragraph>
+					<text>Komisija koju pouzdani dobavljač dobija za kreiranje simbola.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Provisionen som förtroendeprovidern får för att skapa token.</text>
+				</paragraph>
+			</description>
 		</numericalParameter>
 		<dateParameter name="Expires" guide="Expiry date" exp="Expires&gt;Now.Date and Expires&lt;Now.Date+Duration">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Når tokenet udløber.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Wenn das Token abläuft.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="en">
 				<paragraph>
 					<text>When token expires.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Cuando el token expira.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fi">
+				<paragraph>
+					<text>Kun tunnus vanhenee.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
+				<paragraph>
+					<text>Lorsque l’ID expire.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="no">
+				<paragraph>
+					<text>Når tokenet utløper.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Quando o token expirar.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ro">
+				<paragraph>
+					<text>Când simbolul expiră.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ru">
+				<paragraph>
+					<text>Когда срок действия символа истекает.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sr">
+				<paragraph>
+					<text>Kada simbol istekne.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>När token upphör att gälla.</text>
+				</paragraph>
+			</description>
 		</dateParameter>
 		<booleanParameter name="CreatorCanDestroy" value="false" guide="Creator can destroy token?">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Hvis skaberen får lov til at ødelægge tokenet.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Wenn der Ersteller das Token zerstören darf.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="en">
 				<paragraph>
 					<text>If the creator is allowed to destroy the token.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Si el creador puede destruir el token.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fi">
+				<paragraph>
+					<text>Voiko luoja tuhota tunnuksen.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
+				<paragraph>
+					<text>Le Créateur peut-il détruire l’emblème ?</text>
+				</paragraph>
+			</description>
+			<description xml:lang="no">
+				<paragraph>
+					<text>Hvis oppretteren har lov til å ødelegge tokenet.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Se o criador puder destruir o token.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ro">
+				<paragraph>
+					<text>Dacă creatorul poate distruge simbolul.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ru">
+				<paragraph>
+					<text>Если создатель может уничтожить символ.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sr">
+				<paragraph>
+					<text>Ako tvorac moћe da uniљti simbol.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Om skaparen får förstöra token.</text>
+				</paragraph>
+			</description>
 		</booleanParameter>
 		<booleanParameter name="OwnerCanDestroyIndividual" value="false" guide="Owner can destroy individual token?">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Hvis den nuværende ejer har lov til at ødelægge det enkelte token.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Wenn der aktuelle Besitzer das einzelne Token zerstören darf.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="en">
 				<paragraph>
 					<text>If the current owner is allowed to destroy the individual token.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Si el propietario actual puede destruir el token único.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fi">
+				<paragraph>
+					<text>Pystyykö nykyinen omistaja tuhoamaan yksilöllisen tunnuksen.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
+				<paragraph>
+					<text>Si le propriétaire actuel peut détruire l’identifiant unique.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="no">
+				<paragraph>
+					<text>Hvis gjeldende eier har tillatelse til å ødelegge det ene tokenet.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Se o proprietário atual tiver permissão para destruir um token.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ro">
+				<paragraph>
+					<text>Dacă proprietarul curent are permisiunea de a distruge un simbol.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ru">
+				<paragraph>
+					<text>Если у текущего владельца есть разрешение на уничтожение символа.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sr">
+				<paragraph>
+					<text>Ako trenutni vlasnik ima dozvolu da uništi simbol.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Om den nuvarande ägaren får förstöra den enskilda token.</text>
+				</paragraph>
+			</description>
 		</booleanParameter>
 		<stringParameter name="FriendlyName" guide="Friendly Name" minLength="1">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Et venligt navn til tokenet.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Ein Anzeigename für das Token.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="en">
 				<paragraph>
 					<text>A friendly name for the token.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Un nombre para mostrar para el token.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fi">
+				<paragraph>
+					<text>Tunnuksen näyttönimi.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
+				<paragraph>
+					<text>Nom complet de l’ID.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="no">
+				<paragraph>
+					<text>Et egendefinert navn for tokenet.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Um nome amigável para o token.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ro">
+				<paragraph>
+					<text>Un nume prietenos pentru token.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ru">
+				<paragraph>
+					<text>Понятное имя маркера.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sr">
+				<paragraph>
+					<text>Prijateljsko ime simbola.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Ett eget namn för token.</text>
+				</paragraph>
+			</description>
 		</stringParameter>
 	</parameters>
+	<humanReadableText xml:lang="da">
+		<section>
+			<header>
+				<text>Opret demo-token</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Denne kontrakt opretter et simpelt demo-token.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Indledende værdi</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Når tokenet oprettes, indstilles tokenet til den værdi, </text>
+							<parameter name="Value" />
+							<text> </text>
+							<parameter name="Currency" />
+							<text>. Tillidsudbyderen tager en provision på </text>
+							<parameter name="CommissionPercent" />
+							<text>% af denne værdi, når tokenet oprettes.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Varighed</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Kontraktens løbetid er fastsat til to måneder. Tokenets udløbsdato er indstillet til </text>
+							<parameter name="Expires" />
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Privilegier</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Følgende tilladelser er kodet i tokenet:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>Skaberen kan ødelægge tokenet? </text>
+								<parameter name="CreatorCanDestroy" />
+							</item>
+							<item>
+								<text>Ejeren kan ødelægge tokenet? </text>
+								<parameter name="OwnerCanDestroyIndividual" />
+							</item>
+						</bulletItems>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Handel</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Tokens kan handles frit med andre brugere, indtil tokenet udløber.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="de">
+		<section>
+			<header>
+				<text>Demo-Token erstellen</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Dieser Vertrag erstellt ein einfaches Demo-Token.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Anfangswert</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Wenn das Token erstellt wird, wird das Token auf den Wert </text>
+							<parameter name="Value" />
+							<text> </text>
+							<parameter name="Currency" />
+							<text> festgelegt. Der Vertrauensanbieter nimmt eine Provision von </text>
+							<parameter name="CommissionPercent" />
+							<text>% dieses Wertes, wenn das Token erstellt wird.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Dauer</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Die Vertragslaufzeit beträgt zwei Monate. Das Ablaufdatum des Tokens ist auf </text>
+							<parameter name="Expires" />
+							<text> festgelegt</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Privilegien</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Die folgenden Berechtigungen sind im Token codiert:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>Der Ersteller kann das Token zerstören? </text>
+								<parameter name="CreatorCanDestroy" />
+							</item>
+							<item>
+								<text>Der Besitzer kann das Token zerstören? </text>
+								<parameter name="OwnerCanDestroyIndividual" />
+							</item>
+						</bulletItems>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Handel</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Token können frei mit anderen Benutzern gehandelt werden, bis der Token abläuft.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
 	<humanReadableText xml:lang="en">
 		<section>
 			<header>
-				<text>Create token</text>
+				<text>Create demo token</text>
 			</header>
 			<body>
 				<paragraph>
 					<text>This contract creates a simple demo token.</text>
 				</paragraph>
+				<section>
+					<header>
+						<text>Initial Value</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>When token is created, the token is set to a value of </text>
+							<parameter name="Value" />
+							<text> </text>
+							<parameter name="Currency" />
+							<text>. The Trust Provider takes a commission of </text>
+							<parameter name="CommissionPercent" />
+							<text> % of this value upon creation of the token.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Duration</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>The duration of the contract is set to two months. The expiration date of the token is set to </text>
+							<parameter name="Expires" />
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Privileges</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>The following privileges are encoded into the token:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>Creator can destroy token? </text>
+								<parameter name="CreatorCanDestroy" />
+							</item>
+							<item>
+								<text>Owner can destroy token? </text>
+								<parameter name="OwnerCanDestroyIndividual" />
+							</item>
+						</bulletItems>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Trade</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>The token can be freely traded with other users, until token expires.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="es">
+		<section>
+			<header>
+				<text>Crear tokens de demostración</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Este contrato crea un token de demostración simple.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Valor inicial</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Cuando se crea el token, el token se establece en el valor </text>
+							<parameter name="Value" />
+							<text> </text>
+							<parameter name="Currency" />
+							<text>. El proveedor de confianza recibe una comisión del </text>
+							<parameter name="CommissionPercent" />
+							<text>% de este valor cuando se crea el token.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Duración</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>El plazo del contrato es de dos meses. La fecha de caducidad del token se establece en </text>
+							<parameter name="Expires" />
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Privilegios</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Los siguientes permisos están codificados en el token:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>¿El creador puede destruir el token? </text>
+								<parameter name="CreatorCanDestroy" />
+							</item>
+							<item>
+								<text>¿El propietario puede destruir el token? </text>
+								<parameter name="OwnerCanDestroyIndividual" />
+							</item>
+						</bulletItems>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Trading</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Los tokens se pueden intercambiar libremente con otros usuarios hasta que caduque el token.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="fi">
+		<section>
+			<header>
+				<text>Luo demotunnuksia</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Tämä sopimus luo yksinkertaisen demotunnuksen.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Alkuarvo</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Kun tunnus on luotu, tunnukseksi asetetaan arvo </text>
+							<parameter name="Value" />
+							<text> </text>
+							<parameter name="Currency" />
+							<text>. Luotettu palveluntarjoaja saa palkkion, joka on </text>
+							<parameter name="CommissionPercent" />
+							<text>% tästä arvosta, kun tunnus luodaan.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Kesto</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Sopimuksen voimassaoloaika on kaksi kuukautta. Tunnuksen vanhentumispäiväksi on määritetty </text>
+							<parameter name="Expires" />
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Oikeudet</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Seuraavat käyttöoikeudet koodataan tunnukseen:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>Voiko luoja tuhota tunnuksen? </text>
+								<parameter name="CreatorCanDestroy" />
+							</item>
+							<item>
+								<text>Voiko omistaja tuhota tunnuksen? </text>
+								<parameter name="OwnerCanDestroyIndividual" />
+							</item>
+						</bulletItems>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Kaupankäynti</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Tunnuksia voidaan vaihtaa vapaasti muiden käyttäjien kanssa, kunnes tunnus vanhenee.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="fr">
+		<section>
+			<header>
+				<text>Créer des ID de démonstration</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Cet accord crée un ID de démonstration simple.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Valeur initiale</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Une fois l’ID créé, il est défini sur </text>
+							<parameter name="Value" />
+							<text> </text>
+							<parameter name="Currency" />
+							<text>. Le fournisseur de services de confiance reçoit une récompense de </text>
+							<parameter name="CommissionPercent" />
+							<text> % de cette valeur lors de la création de l’ID.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Durée</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>La durée du contrat est de deux mois. La date d’expiration du jeton est définie sur </text>
+							<parameter name="Expires" />
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Autorisations</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Les autorisations suivantes sont codées dans le jeton :</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>Le créateur peut-il détruire l’emblème ? </text>
+								<parameter name="CreatorCanDestroy" />
+							</item>
+							<item>
+								<text>Le propriétaire peut-il détruire le logo? </text>
+								<parameter name="OwnerCanDestroyIndividual" />
+							</item>
+						</bulletItems>
+						<paragraph>
+							<text>Commerce</text>
+						</paragraph>
+						<paragraph>
+							<text>Les identifiants peuvent être échangés librement avec d’autres utilisateurs jusqu’à l’expiration de l’identifiant.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="no">
+		<section>
+			<header>
+				<text>Lag demo token</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Denne kontrakten oppretter et enkelt demotoken.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Startverdi</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Når tokenet opprettes, settes tokenet til verdien </text>
+							<parameter name="Value" />
+							<text> </text>
+							<parameter name="Currency" />
+							<text>. Klareringsleverandøren tar en provisjon på </text>
+							<parameter name="CommissionPercent" />
+							<text> % av denne verdien når tokenet opprettes.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Varighet</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Kontraktsperioden er satt til to måneder. Tokenets utløpsdato er satt til </text>
+							<parameter name="Expires" />
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Rettigheter</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Følgende tillatelser er kodet i tokenet:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>Skaperen kan ødelegge tokenet? </text>
+								<parameter name="CreatorCanDestroy" />
+							</item>
+							<item>
+								<text>Eieren kan ødelegge tokenet? </text>
+								<parameter name="OwnerCanDestroyIndividual" />
+							</item>
+						</bulletItems>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Handel</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Tokens kan handles fritt med andre brukere til tokenet utløper.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="pt">
+		<paragraph>
+			<text>Crie token de demonstração</text>
+		</paragraph>
+		<paragraph>
+			<text>Este contrato cria um único token de demonstração.</text>
+		</paragraph>
+		<section>
+			<header>
+				<text>Valor de início</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Quando o token é criado, o token é definido para o valor </text>
+					<parameter name="Value" />
+					<text> </text>
+					<parameter name="Currency" />
+					<text>. O provedor de confiança recebe uma comissão de </text>
+					<parameter name="CommissionPercent" />
+					<text>% desse valor quando o token é criado.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Duração</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>O prazo do contrato é de dois meses. A data de validade do token está definida para </text>
+							<parameter name="Expires" />
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Direitos</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>As seguintes permissões são codificadas no token:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>Criador pode destruir o token? </text>
+								<parameter name="CreatorCanDestroy" />
+							</item>
+							<item>
+								<text>O dono pode destruir o token? </text>
+								<parameter name="OwnerCanDestroyIndividual" />
+							</item>
+						</bulletItems>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Comércio</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Os tokens podem ser negociados livremente com outros usuários até que o token expire.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="ro">
+		<paragraph>
+			<text>Creați un simbol demo</text>
+		</paragraph>
+		<paragraph>
+			<text>Acest contract creează un singur simbol demo.</text>
+		</paragraph>
+		<section>
+			<header>
+				<text>Valoarea de start</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Când simbolul este creat, simbolul este setat la valoarea </text>
+					<parameter name="Value" />
+					<text> </text>
+					<parameter name="Currency" />
+					<text>. Furnizorul de încredere primește un comision de </text>
+					<parameter name="CommissionPercent" />
+					<text>% din această valoare atunci când simbolul este creat.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Durata</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Durata contractului este de două luni. Data de expirare a tokenului este setată la </text>
+							<parameter name="Expires" />
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Drepturi</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Următoarele permisiuni sunt codificate în simbol:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>Creatorul poate distruge token-ul? </text>
+								<parameter name="CreatorCanDestroy" />
+							</item>
+							<item>
+								<text>Proprietarul poate distruge token-ul? </text>
+								<parameter name="OwnerCanDestroyIndividual" />
+							</item>
+						</bulletItems>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Comerț</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Token-urile pot fi tranzacționate liber altor utilizatori până la expirarea token-ului.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="ru">
+		<paragraph>
+			<text>Создание демонстрационного символа</text>
+		</paragraph>
+		<paragraph>
+			<text>Этот контракт создает один демонстрационный символ.</text>
+		</paragraph>
+		<section>
+			<header>
+				<text>Начальное значение</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>При создании символа ему присваивается значение </text>
+					<parameter name="Value" />
+					<text> </text>
+					<parameter name="Currency" />
+					<text>. Доверенный поставщик получает комиссию в размере </text>
+					<parameter name="CommissionPercent" />
+					<text>% от этого значения при создании токена.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Продолжительность</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Срок действия договора составляет два месяца. Дата истечения срока действия токена установлена на </text>
+							<parameter name="Expires" />
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Права</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>В маркере закодированы следующие разрешения:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>Может ли создатель уничтожить токен? </text>
+								<parameter name="CreatorCanDestroy" />
+							</item>
+							<item>
+								<text>Может ли владелец уничтожить токен? </text>
+								<parameter name="OwnerCanDestroyIndividual" />
+							</item>
+						</bulletItems>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Торговля</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Токены могут свободно торговаться другим пользователям до истечения срока действия токена.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="sr">
+		<paragraph>
+			<text>Kreiranje demo simbola</text>
+		</paragraph>
+		<paragraph>
+			<text>Ovaj ugovor kreira jedan demo simbol.</text>
+		</paragraph>
+		<section>
+			<header>
+				<text>Početna vrednost</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Kada je simbol kreiran, on je postavljen na </text>
+					<parameter name="Value" />
+					<text> </text>
+					<parameter name="Currency" />
+					<text>. Pouzdani dobavljač dobija proviziju od </text>
+					<parameter name="CommissionPercent" />
+					<text>% ove vrednosti prilikom kreiranja simbola.</text>
+				</paragraph>
+			</body>
+		</section>
+		<section>
+			<header>
+				<text>Trajanje</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Rok ugovora je dva meseca. Datum isteka simbola je podešen na </text>
+					<parameter name="Expires" />
+				</paragraph>
+			</body>
+		</section>
+		<section>
+			<header>
+				<text>Prava</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Sledeće dozvole su kodirane u simbolu:</text>
+				</paragraph>
+				<bulletItems>
+					<item>
+						<text>Može li tvorac da uništi žeton? </text>
+						<parameter name="CreatorCanDestroy" />
+					</item>
+					<item>
+						<text>Može li držač da uništi žeton? </text>
+						<parameter name="OwnerCanDestroyIndividual" />
+					</item>
+				</bulletItems>
+			</body>
+		</section>
+		<section>
+			<header>
+				<text>Trgovanje</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Tokenima mogu slobodno da trguju drugi korisnici dok oznaka ne istekne.</text>
+				</paragraph>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="sv">
+		<section>
+			<header>
+				<text>Skapa demotoken</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Detta kontrakt skapar en enkel demotoken.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Initialt värde</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>När token skapas anges token till värdet </text>
+							<parameter name="Value" />
+							<text> </text>
+							<parameter name="Currency" />
+							<text>. Trustleverantören tar en provision på </text>
+							<parameter name="CommissionPercent" />
+							<text> % av detta värde när token skapas.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Varaktighet</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Kontraktets löptid är satt till två månader. Förfallodatumet för token är inställt på </text>
+							<parameter name="Expires" />
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Privilegier</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Följande behörigheter kodas in i token:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>Skaparen kan förstöra token? </text>
+								<parameter name="CreatorCanDestroy" />
+							</item>
+							<item>
+								<text>Ägaren kan förstöra token? </text>
+								<parameter name="OwnerCanDestroyIndividual" />
+							</item>
+						</bulletItems>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Handel</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Token kan handlas fritt med andra användare tills token löper ut.</text>
+						</paragraph>
+					</body>
+				</section>
 			</body>
 		</section>
 	</humanReadableText>
