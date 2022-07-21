@@ -20,16 +20,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Syntax", "Syntax", "{A151F6
 		ExampleContracts\Syntax\Markdown.xml = ExampleContracts\Syntax\Markdown.xml
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Buying Services", "Buying Services", "{C0BD025A-D93B-4E43-9383-904927669BF5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Buying", "Buying", "{C0BD025A-D93B-4E43-9383-904927669BF5}"
 	ProjectSection(SolutionItems) = preProject
-		ExampleContracts\Marketplace\Buying Services\BuyService.xml = ExampleContracts\Marketplace\Buying Services\BuyService.xml
-		ExampleContracts\Marketplace\Buying Services\OfferService.xml = ExampleContracts\Marketplace\Buying Services\OfferService.xml
+		ExampleContracts\Marketplace\Buying\BuyService.xml = ExampleContracts\Marketplace\Buying\BuyService.xml
+		ExampleContracts\Marketplace\Buying\OfferService.xml = ExampleContracts\Marketplace\Buying\OfferService.xml
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Selling Items", "Selling Items", "{C6C5ED1C-B116-4183-9C51-E65AD2CA37D4}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Selling", "Selling", "{C6C5ED1C-B116-4183-9C51-E65AD2CA37D4}"
 	ProjectSection(SolutionItems) = preProject
-		ExampleContracts\Marketplace\Selling Items\OfferItem.xml = ExampleContracts\Marketplace\Selling Items\OfferItem.xml
-		ExampleContracts\Marketplace\Selling Items\SellItem.xml = ExampleContracts\Marketplace\Selling Items\SellItem.xml
+		ExampleContracts\Marketplace\Selling\OfferItem.xml = ExampleContracts\Marketplace\Selling\OfferItem.xml
+		ExampleContracts\Marketplace\Selling\SellItem.xml = ExampleContracts\Marketplace\Selling\SellItem.xml
+		ExampleContracts\Marketplace\Selling\SellToken.xml = ExampleContracts\Marketplace\Selling\SellToken.xml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tokens", "Tokens", "{FE86B209-349B-47FB-9A12-5BEAFE9F35DC}"

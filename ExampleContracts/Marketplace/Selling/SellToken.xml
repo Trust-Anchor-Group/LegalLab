@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<contract xmlns="urn:ieee:iot:leg:sc:1.0"
+          id="SellItemExample"
+          archiveOpt="P3M"
+          archiveReq="P1M"
+          canActAsTemplate="true"
+          duration="P1M"
+          visibility="PublicSearchable">
+	<ForSale xmlns="https://paiwise.tagroot.io/Schema/Marketplace.xsd">
+		<Description>
+			<Type>
+				<Uri>https://paiwise.tagroot.io/Schema/StateMachines.xsd</Uri>
+			</Type>
+			<Class>
+				<Uri>https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd</Uri>
+			</Class>
+			<Node>
+				<String>TokensForSale</String>
+			</Node>
+			<Tag name="TokenID">
+				<ParameterReference parameter="TokenID"/>
+			</Tag>
+		</Description>
+		<Price>
+			<AskingPrice>
+				<ParameterReference parameter="AskingPrice"/>
+			</AskingPrice>
+			<RejectPrice>
+				<ParameterReference parameter="RejectPrice"/>
+			</RejectPrice>
+			<AcceptPrice>
+				<ParameterReference parameter="AcceptPrice"/>
+			</AcceptPrice>
+			<CommissionPercent>
+				<ParameterReference parameter="CommissionPercent"/>
+			</CommissionPercent>
+			<Currency>
+				<ParameterReference parameter="Currency"/>
+			</Currency>
+		</Price>
+		<AvailableDays>
+			<ParameterReference parameter="AvailableDays"/>
+		</AvailableDays>
+	</ForSale>
+	<role name="Seller" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This role represents the seller of the token. The seller must also be the owner of the token.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="Auctioneer" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This role represents the auctioneer that brokers the sale of the token.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<open/>
+	</parts>
+	<parameters>
+		<stringParameter name="TokenID" guide="Token ID (GUID@DOMAIN)" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The ID of the token for sale.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<numericalParameter name="AskingPrice" guide="Asking Price" min="0">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The asking price of the sale, as requested by the seller.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<numericalParameter name="RejectPrice" guide="Rejection Price" min="0" exp="RejectPrice&lt;=AskingPrice">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Bids will automatically be rejected below this limit.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<numericalParameter name="AcceptPrice" guide="Accept Price" min="0" exp="AcceptPrice&gt;=AskingPrice">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Bids will automatically be accepted if at or above this limit.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<numericalParameter name="CommissionPercent" guide="Commission (%)" min="0" max="100">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Commission, in percent, of the selling price, that is paid to the auctioneer.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="\w{3}">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Currency of instant payments.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<numericalParameter name="AvailableDays" guide="Offer availability (days)" min="0" minIncluded="false">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Number of days the token will be available in the marketplace.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>For Sale - Token (Example)</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This contract defines an auction consignment for the sale of a token.</text>
+				</paragraph>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>
