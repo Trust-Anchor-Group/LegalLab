@@ -1,15 +1,8 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<contract xmlns="urn:ieee:iot:leg:sc:1.0"
-          id="SellItemExample"
-          archiveOpt="P3M"
-          archiveReq="P1M"
-          canActAsTemplate="true"
-          duration="P1M"
-          visibility="PublicSearchable">
+<contract archiveOpt="P3M" archiveReq="P1M" canActAsTemplate="true" duration="P1M" id="SellItemExample" visibility="PublicSearchable" xmlns="urn:ieee:iot:leg:sc:1.0">
 	<ForSale xmlns="https://paiwise.tagroot.io/Schema/Marketplace.xsd">
 		<Description>
 			<Type>
-				<Uri>https://paiwise.tagroot.io/Schema/StateMachines.xsd</Uri>
+				<ParameterReference parameter="Category" />
 			</Type>
 			<Class>
 				<Uri>https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd</Uri>
@@ -18,107 +11,3330 @@
 				<String>TokensForSale</String>
 			</Node>
 			<Tag name="TokenID">
-				<ParameterReference parameter="TokenID"/>
+				<ParameterReference parameter="TokenID" />
+			</Tag>
+			<Tag name="FriendlyName">
+				<ParameterReference parameter="FriendlyName" />
 			</Tag>
 		</Description>
 		<Price>
 			<AskingPrice>
-				<ParameterReference parameter="AskingPrice"/>
+				<ParameterReference parameter="AskingPrice" />
 			</AskingPrice>
 			<RejectPrice>
-				<ParameterReference parameter="RejectPrice"/>
+				<ParameterReference parameter="RejectPrice" />
 			</RejectPrice>
 			<AcceptPrice>
-				<ParameterReference parameter="AcceptPrice"/>
+				<ParameterReference parameter="AcceptPrice" />
 			</AcceptPrice>
 			<CommissionPercent>
-				<ParameterReference parameter="CommissionPercent"/>
+				<ParameterReference parameter="CommissionPercent" />
 			</CommissionPercent>
 			<Currency>
-				<ParameterReference parameter="Currency"/>
+				<ParameterReference parameter="Currency" />
 			</Currency>
 		</Price>
 		<AvailableDays>
-			<ParameterReference parameter="AvailableDays"/>
+			<ParameterReference parameter="AvailableDays" />
 		</AvailableDays>
 	</ForSale>
-	<role name="Seller" minCount="1" maxCount="1">
+	<role maxCount="1" minCount="1" name="Seller">
+		<description xml:lang="da">
+			<paragraph>
+				<text>Denne rolle repræsenterer sælgeren af tokenet. Sælgeren skal også være ejer af tokenet.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="de">
+			<paragraph>
+				<text>Diese Rolle stellt den Verkäufer der ID dar. Der Verkäufer muss auch der Eigentümer des Ausweises sein.</text>
+			</paragraph>
+		</description>
 		<description xml:lang="en">
 			<paragraph>
 				<text>This role represents the seller of the token. The seller must also be the owner of the token.</text>
 			</paragraph>
 		</description>
+		<description xml:lang="es">
+			<paragraph>
+				<text>Este rol representa al vendedor del ID. El vendedor también debe ser el propietario de la tarjeta.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="fi">
+			<paragraph>
+				<text>Tämä rooli edustaa tunnuksen myyjää. Myyjän on myös oltava tunnuksen omistaja.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="fr">
+			<paragraph>
+				<text>Ce rôle représente le vendeur de l’ID. Le vendeur doit également être le propriétaire de la carte.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="no">
+			<paragraph>
+				<text>Denne rollen representerer selgeren av tokenet. Selgeren må også være eier av tokenet.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="pt">
+			<paragraph>
+				<text>Esse papel representa o vendedor do token. O vendedor também deve ser o proprietário do token.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="ro">
+			<paragraph>
+				<text>Acest rol reprezintă vânzătorul token-ului. Vânzătorul trebuie să fie, de asemenea, proprietarul token-ului.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="ru">
+			<paragraph>
+				<text>Эта роль представляет продавца токена. Продавец также должен быть владельцем токена.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="sr">
+			<paragraph>
+				<text>Ova uloga predstavlja prodavca tokena. Prodavac takođe mora biti vlasnik simbola.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="sv">
+			<paragraph>
+				<text>Den här rollen representerar tokensäljaren. Säljaren måste också äga symbolen.</text>
+			</paragraph>
+		</description>
 	</role>
-	<role name="Auctioneer" minCount="1" maxCount="1">
+	<role maxCount="1" minCount="1" name="Auctioneer">
+		<description xml:lang="da">
+			<paragraph>
+				<text>Denne rolle repræsenterer den auktionær, der formidler salget af tokenet.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="de">
+			<paragraph>
+				<text>Diese Rolle repräsentiert den Auktionator, der den Verkauf des Logos erleichtert.</text>
+			</paragraph>
+		</description>
 		<description xml:lang="en">
 			<paragraph>
 				<text>This role represents the auctioneer that brokers the sale of the token.</text>
 			</paragraph>
 		</description>
+		<description xml:lang="es">
+			<paragraph>
+				<text>Este rol representa al subastador que facilita la venta del logotipo.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="fi">
+			<paragraph>
+				<text>Tämä rooli edustaa huutokaupanpitäjää, joka helpottaa tunnuksen myyntiä.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="fr">
+			<paragraph>
+				<text>Ce rôle représente le commissaire-priseur qui facilite la vente du logo.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="no">
+			<paragraph>
+				<text>Denne rollen representerer auksjonariusen som forenkler salget av tokenet.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="pt">
+			<paragraph>
+				<text>Esse papel representa o leiloeiro que facilita a venda do logotipo.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="ro">
+			<paragraph>
+				<text>Această lucrare reprezintă adjudecătorul care facilitează vânzarea logo-ului.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="ru">
+			<paragraph>
+				<text>Эту работу представляет аукционист, который способствует продаже логотипа.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="sr">
+			<paragraph>
+				<text>Ovo delo predstavlja aukcionaš koji promoviše prodaju logotipa.</text>
+			</paragraph>
+		</description>
+		<description xml:lang="sv">
+			<paragraph>
+				<text>Denna roll representerar auktionsförrättaren som underlättar försäljningen av logotypen.</text>
+			</paragraph>
+		</description>
 	</role>
 	<parts>
-		<open/>
+		<templateOnly />
 	</parts>
 	<parameters>
 		<stringParameter name="TokenID" guide="Token ID (GUID@DOMAIN)" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Id’et for det token, der er til salg.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Identifizierung der zu verkaufenden ID.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="en">
 				<paragraph>
 					<text>The ID of the token for sale.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Identificación del DNI a la venta.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fi">
+				<paragraph>
+					<text>Myytävän tunnuksen tunnus.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
+				<paragraph>
+					<text>Identification de la pièce d’identité à vendre.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="no">
+				<paragraph>
+					<text>IDen til tokenet som er til salgs.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Identificação av DNI para venda.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ro">
+				<paragraph>
+					<text>Id av DNI de vânzare.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ru">
+				<paragraph>
+					<text>Id av DNI на продажу.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sr">
+				<paragraph>
+					<text>Id av DNI na prodaju.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Identifiering av DNI till salu.</text>
+				</paragraph>
+			</description>
 		</stringParameter>
-		<numericalParameter name="AskingPrice" guide="Asking Price" min="0">
+		<stringParameter name="Category" guide="Category" minLength="1">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Kategorien af token, der sælges</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Verkaufte Token-Klasse</text>
+				</paragraph>
+			</description>
+			<description xml:lang="en">
+				<paragraph>
+					<text>The category of token being sold</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Clase de token vendida</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fi">
+				<paragraph>
+					<text>Myyty token-luokka</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
+				<paragraph>
+					<text>Classe de jeton vendue</text>
+				</paragraph>
+			</description>
+			<description xml:lang="no">
+				<paragraph>
+					<text>Kategorien token solgt</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Classe token vendido</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ro">
+				<paragraph>
+					<text>Clasa token vândută</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ru">
+				<paragraph>
+					<text>Класс токенов продан</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sr">
+				<paragraph>
+					<text>Prodata klasa tokena</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Tokenklass såld</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="FriendlyName" minLength="1">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Et venligt navn til tokenet</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Anzeigename des Tokens</text>
+				</paragraph>
+			</description>
+			<description xml:lang="en">
+				<paragraph>
+					<text>A friendly name for the token</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Nombre para mostrar del token</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fi">
+				<paragraph>
+					<text>Tunnuksen ystävällinen nimi</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
+				<paragraph>
+					<text>Nom complet du jeton</text>
+				</paragraph>
+			</description>
+			<description xml:lang="no">
+				<paragraph>
+					<text>Et egendefinert navn for tokenet</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Nome de exibição de token</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ro">
+				<paragraph>
+					<text>Nume afișat simbol</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ru">
+				<paragraph>
+					<text>Отображаемое имя символа</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sr">
+				<paragraph>
+					<text>Ime za prikaz simbola</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Visningsnamn för token</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<numericalParameter name="AskingPrice" guide="Asking Price" min="0" minIncluded="true">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Udbudsprisen for salget, som ønsket af sælgeren.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Verkaufspreiseingabe vom Verkäufer angefordert.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="en">
 				<paragraph>
 					<text>The asking price of the sale, as requested by the seller.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Entrada del precio de venta solicitado por el vendedor.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fi">
+				<paragraph>
+					<text>Myyjän pyytämä myynnin hintamerkintä.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
+				<paragraph>
+					<text>Entrée de prix de vente demandée par le vendeur.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="no">
+				<paragraph>
+					<text>Prisantydningen for salget, som forespurt av selgeren.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Registro do preço de venda solicitado pelo vendedor.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ro">
+				<paragraph>
+					<text>Înregistrarea prețului de vânzare solicitat de vânzător.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ru">
+				<paragraph>
+					<text>Регистрация цены продажи, запрошенной продавцом.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sr">
+				<paragraph>
+					<text>Zapisnik o prodajnoj ceni koju je tražio prodavac.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Registrering av försäljningspriset som begärts av säljaren.</text>
+				</paragraph>
+			</description>
 		</numericalParameter>
-		<numericalParameter name="RejectPrice" guide="Rejection Price" min="0" exp="RejectPrice&lt;=AskingPrice">
+		<numericalParameter name="RejectPrice" guide="Rejection Price" exp="RejectPrice&lt;=AskingPrice" min="0" minIncluded="true">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Bud vil automatisk blive afvist under denne grænse.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Angebote werden unterhalb dieser Grenze automatisch abgelehnt.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="en">
 				<paragraph>
 					<text>Bids will automatically be rejected below this limit.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Las pujas se rechazan automáticamente por debajo de este límite.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fi">
+				<paragraph>
+					<text>Tarjoukset hylätään automaattisesti tämän rajan alapuolella.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
+				<paragraph>
+					<text>Les offres sont automatiquement rejetées en dessous de cette limite.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="no">
+				<paragraph>
+					<text>Bud blir automatisk avvist under denne grensen.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Os lances são automaticamente rejeitados abaixo desse limite.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ro">
+				<paragraph>
+					<text>Ofertele sunt respinse automat sub această limită.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ru">
+				<paragraph>
+					<text>Тендеры автоматически отклоняются ниже этого предела.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sr">
+				<paragraph>
+					<text>Tenderi se automatski odbijaju ispod ove granice.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Bud avvisas automatiskt under denna gräns.</text>
+				</paragraph>
+			</description>
 		</numericalParameter>
-		<numericalParameter name="AcceptPrice" guide="Accept Price" min="0" exp="AcceptPrice&gt;=AskingPrice">
+		<numericalParameter name="AcceptPrice" guide="Accept Price" exp="AcceptPrice&gt;=AskingPrice" min="0" minIncluded="true">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Bud accepteres automatisk, hvis de ligger på eller over denne grænse.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Angebote werden automatisch angenommen, wenn sie über oder über dieser Grenze liegen.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="en">
 				<paragraph>
 					<text>Bids will automatically be accepted if at or above this limit.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Las ofertas se aceptan automáticamente si están por encima o por encima de este límite.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fi">
+				<paragraph>
+					<text>Tarjoukset hyväksytään automaattisesti, jos ne ovat tämän rajan tai sen yläpuolella.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
+				<paragraph>
+					<text>Les offres sont automatiquement acceptées si elles sont supérieures ou supérieures à cette limite.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="no">
+				<paragraph>
+					<text>Bud godtas automatisk hvis de er på eller over denne grensen.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>As ofertas são automaticamente aceitas se estiverem acima ou acima desse limite.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ro">
+				<paragraph>
+					<text>Ofertele sunt acceptate automat dacă depășesc sau depășesc această limită.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ru">
+				<paragraph>
+					<text>Предложения принимаются автоматически, если они превышают или превышают этот лимит.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sr">
+				<paragraph>
+					<text>Ponude se prihvataju automatski ako premaše ili premaše ovo ograničenje.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Erbjudanden accepteras automatiskt om de är över eller över denna gräns.</text>
+				</paragraph>
+			</description>
 		</numericalParameter>
-		<numericalParameter name="CommissionPercent" guide="Commission (%)" min="0" max="100">
+		<numericalParameter name="CommissionPercent" guide="Commission (%)" min="0" minIncluded="true" max="100" maxIncluded="true">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Provision, i procent, af den salgspris, der betales til auktionarius.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Provision als Prozentsatz des an den Versteigerer gezahlten Verkaufspreises.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="en">
 				<paragraph>
 					<text>Commission, in percent, of the selling price, that is paid to the auctioneer.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Comisión como porcentaje del precio de venta pagado al subastador.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fi">
+				<paragraph>
+					<text>Provisio prosentteina huutokaupanpitäjälle maksetusta myyntihinnasta.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
+				<paragraph>
+					<text>Commission en pourcentage du prix de vente payé au commissaire-priseur.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="no">
+				<paragraph>
+					<text>Provisjon, i prosent, av salgsprisen som er betalt til auksjonarius.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Comissão como porcentagem do preço de venda pago ao leiloeiro.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ro">
+				<paragraph>
+					<text>comision ca procent din prețul de vânzare plătit adjudecătorului.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ru">
+				<paragraph>
+					<text>комиссия в процентах от продажной цены, уплаченной аукционисту.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sr">
+				<paragraph>
+					<text>proviziju u procentima od prodajne cene plaćene aukcionašu.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Provision i procent av det försäljningspris som betalats till auktionsförrättaren.</text>
+				</paragraph>
+			</description>
 		</numericalParameter>
-		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="\w{3}">
+		<stringParameter name="Currency" guide="Currency" regEx="\w{3}" minLength="3" maxLength="3">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Valuta for straksbetalinger.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Währung für sofortige Zahlungen.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="en">
 				<paragraph>
 					<text>Currency of instant payments.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Moneda para pagos instantáneos.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fi">
+				<paragraph>
+					<text>Valuutta välittömiin maksuihin.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
+				<paragraph>
+					<text>Devise pour les paiements instantanés.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="no">
+				<paragraph>
+					<text>Valuta for øyeblikkelige betalinger.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>Moeda para pagamentos instantâneos.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ro">
+				<paragraph>
+					<text>Moneda pentru plăți instant.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ru">
+				<paragraph>
+					<text>Валюта для мгновенных платежей.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sr">
+				<paragraph>
+					<text>Valuta za instant plaćanja.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Valuta för omedelbara betalningar.</text>
+				</paragraph>
+			</description>
 		</stringParameter>
 		<numericalParameter name="AvailableDays" guide="Offer availability (days)" min="0" minIncluded="false">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Antal dage, hvor tokenet vil være tilgængeligt på markedspladsen.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Die Anzahl der Tage, an denen das Token auf dem Markt verfügbar ist.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="en">
 				<paragraph>
 					<text>Number of days the token will be available in the marketplace.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>El número de días que el token está disponible en el mercado.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fi">
+				<paragraph>
+					<text>Päivien määrä, jolloin token on saatavilla torilla.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
+				<paragraph>
+					<text>Le nombre de jours pendant lesquels le jeton est disponible sur le marché.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="no">
+				<paragraph>
+					<text>Antall dager tokenet vil være tilgjengelig på markedsplassen.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="pt">
+				<paragraph>
+					<text>O número de dias que o token está disponível no mercado.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ro">
+				<paragraph>
+					<text>Numărul de zile în care token-ul este disponibil pe piață.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ru">
+				<paragraph>
+					<text>Количество дней, в течение которых токен доступен на рынке.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sr">
+				<paragraph>
+					<text>Broj dana tokom kojih je token dostupan na tržištu.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Antalet dagar som token är tillgänglig på marknaden.</text>
+				</paragraph>
+			</description>
 		</numericalParameter>
 	</parameters>
-	<humanReadableText xml:lang="en">
+	<humanReadableText xml:lang="da">
 		<section>
 			<header>
-				<text>For Sale - Token (Example)</text>
+				<text>Anmodning om tilbud - Salg af token</text>
 			</header>
 			<body>
 				<paragraph>
-					<text>This contract defines an auction consignment for the sale of a token.</text>
+					<text>Denne kontrakt definerer en auktionsforsendelse af tjenesten ved at sælge et token. Tildelingen af en køber til denne sending forhandles af en onlineauktion, der forvaltes af </text>
+					<italic>
+						<text>TAG Marketplace</text>
+					</italic>
+					<text>™. Dokumentet definerer reglerne for automatisk behandling og matchning af potentielle købere til denne anmodning om tilbud.</text>
 				</paragraph>
+				<section>
+					<header>
+						<text>Indledning</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Denne kontrakt definerer anmodningen om at sælge et token ved hjælp af auktionstjenesten </text>
+							<italic>
+								<text>TAG Marketplace ™</text>
+							</italic>
+							<text>. </text>
+							<bold>
+								<text>Sælger</text>
+							</bold>
+							<text> har bedt </text>
+							<bold>
+								<text>Auktionarius</text>
+							</bold>
+							<text> om at finde det bedste match mellem tilbud fra potentielle </text>
+							<italic>
+								<text>Købere</text>
+							</italic>
+							<text> til denne Anmodning om Tilbud. </text>
+							<bold>
+								<text>Auktionarius</text>
+							</bold>
+							<text> matcher indgående bud fra potentielle </text>
+							<italic>
+								<text>Købere</text>
+							</italic>
+							<text>, indtil den bedste kandidat er fundet, det første acceptable bud er modtaget, eller auktionen udløber på grund af manglende tilstrækkelig interesse.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Manifest</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Salget af tokenet af </text>
+							<bold>
+								<text>Sælger</text>
+							</bold>
+							<text> vedrører et token af kategori </text>
+							<bold>
+								<parameter name="Category" />
+							</bold>
+							<text>, venligt navn </text>
+							<bold>
+								<parameter name="FriendlyName" />
+							</bold>
+							<text> og Token ID </text>
+							<bold>
+								<parameter name="TokenID" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Overdragelse af ejerskab</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Efter udvælgelse af det bedste tilbud og en vellykket behandling af betalinger, herunder provisioner, overføres ejerskabet af tokenet først til </text>
+							<bold>
+								<text>Auktionarius</text>
+							</bold>
+							<text> og derefter til </text>
+							<bold>
+								<text>Køber</text>
+							</bold>
+							<text>, der vinder auktionen.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Auktionsforsendelse</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Ved underskrivelsen af denne kontrakt overdrager </text>
+							<bold>
+								<text>Sælger</text>
+							</bold>
+							<text> opgaven med at finde en køber, der ønsker at byt det tilbudte token, der er angivet i </text>
+							<italic>
+								<text>Manifest</text>
+							</italic>
+							<text> ovenfor, til </text>
+							<bold>
+								<text>Auktionarius</text>
+							</bold>
+							<text> med en indledende </text>
+							<italic>
+								<text>forespørgselspris</text>
+							</italic>
+							<text> på </text>
+							<bold>
+								<parameter name="AskingPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. </text>
+							<bold>
+								<text>Auktionarius</text>
+							</bold>
+							<text> offentliggør oplysninger om </text>
+							<italic>
+								<text>Anmodning om bud</text>
+							</italic>
+							<text> til potentielle </text>
+							<italic>
+								<text>Købere</text>
+							</italic>
+							<text>, der kan afgive </text>
+							<italic>
+								<text>Tilbud</text>
+							</italic>
+							<text> i løbet af </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> dage fra underskrivelsen af aftalen, eller indtil det første </text>
+							<italic>
+								<text>acceptable</text>
+							</italic>
+							<text> bud på </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> er modtaget. Ethvert bud under </text>
+							<bold>
+								<parameter name="RejectPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> vil automatisk blive afvist. Oplysninger om det bedste bud vil også blive præsenteret.</text>
+						</paragraph>
+						<paragraph>
+							<text>Sendingen afsluttes ved udgangen af </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> dage fra underskrivelsen af aftalen, eller når det første </text>
+							<italic>
+								<text>acceptable</text>
+							</italic>
+							<text> bud på </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> er modtaget. Hvis der ikke foreligger bud, når auktionen udløber, afsluttes sendingen, uden at der behandles betalinger. Ellers foretages der to betalinger:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>En øjeblikkelig betaling, der repræsenterer den aftalte pris for det bedste eller første accepterede bud, vil blive foretaget fra </text>
+								<bold>
+									<text>Køber</text>
+								</bold>
+								<text> til </text>
+								<bold>
+									<text>Auktionarius</text>
+								</bold>
+								<text>.</text>
+							</item>
+							<item>
+								<text>En øjeblikkelig betaling, der repræsenterer den aftalte pris for det bedste eller første accepterede bud minus den aftalte provision, som en procentdel af prisen (</text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text>), vil blive foretaget fra </text>
+								<bold>
+									<text>Auktionarius</text>
+								</bold>
+								<text> til </text>
+								<bold>
+									<text>Sælger</text>
+								</bold>
+								<text>. </text>
+								<bold>
+									<text>Auktionarius</text>
+								</bold>
+								<text> beholder sine </text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text> som betaling for sine tjenester.</text>
+							</item>
+						</bulletItems>
+						<paragraph>
+							<text>Alle betalinger foretages ved hjælp af </text>
+							<italic>
+								<text>eDaler</text>
+							</italic>
+							<text>®. En køber uden midler i sin </text>
+							<italic>
+								<text>wallet</text>
+							</italic>
+							<text> vil få sit tilbud ugyldiggjort, og salgsopgaven annulleret.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="de">
+		<section>
+			<header>
+				<text>Angebotsanfrage - Id sales</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Diese Vereinbarung definiert die Auktionsübertragung des Dienstes durch den Verkauf des Kontos. Die Übergabe des Käufers an diese Sendung wird in einer Online-Auktion ausgehandelt, die von </text>
+					<italic>
+						<text>TAG Marketplace</text>
+					</italic>
+					<text> ™ verwaltet wird. Das Dokument definiert die Regeln für die automatische Bearbeitung und Integration potenzieller Käufer in diese Ausschreibung.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Einführung</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Diese Vereinbarung legt die Anfrage fest, die ID auf dem Auktionsdienst </text>
+							<italic>
+								<text>TAG Marketplace ™ </text>
+							</italic>
+							<text> zu verkaufen. </text>
+							<bold>
+								<text>Verkäufer</text>
+							</bold>
+							<text> hat </text>
+							<bold>
+								<text>Auktionator</text>
+							</bold>
+							<text> gebeten, die beste Übereinstimmung zwischen potenziellen </text>
+							<italic>
+								<text>Käufern</text>
+							</italic>
+							<text> Geboten für diese Ausschreibung zu finden. </text>
+							<bold>
+								<text>Der Auktionator</text>
+							</bold>
+							<text> entspricht eingehenden Geboten potenzieller </text>
+							<italic>
+								<text>Käufer</text>
+							</italic>
+							<text>, bis der beste Kandidat gefunden ist, das erste zulässige Gebot eingeht oder die Auktion mangels ausreichenden Interesses endet.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Manifest</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Der Verkauf der ID </text>
+							<bold>
+								<text>an den Verkäufer</text>
+							</bold>
+							<text> bezieht sich auf das </text>
+							<bold>
+								<parameter name="Category" />
+							</bold>
+							<text> Klassentoken, den Anzeigenamen </text>
+							<bold>
+								<parameter name="FriendlyName" />
+							</bold>
+							<text> und die Token-ID </text>
+							<bold>
+								<parameter name="TokenID" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+						<paragraph>
+							<text>Eigentumsübertragung</text>
+						</paragraph>
+						<paragraph>
+							<text>Sobald Sie das beste Gebot ausgewählt und die Gebühren, einschließlich der Gebühren, verarbeitet haben, wird das Eigentum an dem Token zuerst auf den </text>
+							<bold>
+								<text>Auktionator</text>
+							</bold>
+							<text> und dann auf den </text>
+							<bold>
+								<text>Käufer</text>
+							</bold>
+							<text> übertragen, der die Auktion gewinnt.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Auktionsversand</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Wenn Sie diese Vereinbarung unterzeichnen, weist Sie der </text>
+							<bold>
+								<text>Verkäufer</text>
+							</bold>
+							<text> an, einen Käufer zu finden, der die im obigen </text>
+							<italic>
+								<text>Manifest</text>
+							</italic>
+							<text> angegebene angebotene ID in den </text>
+							<bold>
+								<text>Auktionator</text>
+							</bold>
+							<text> ändern möchte, dessen ursprünglicher </text>
+							<italic>
+								<text>Wunschpreis</text>
+							</italic>
+							<text> </text>
+							<bold>
+								<parameter name="AskingPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> ist. </text>
+							<bold>
+								<text>Der Auktionator</text>
+							</bold>
+							<text> veröffentlicht Informationen </text>
+							<italic>
+								<text>Angebotsanfrage</text>
+							</italic>
+							<text> an potenzielle </text>
+							<italic>
+								<text>Käufer</text>
+							</italic>
+							<text>, die </text>
+							<italic>
+								<text>Gebote</text>
+							</italic>
+							<text> </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> innerhalb eines Tages nach Vertragsunterzeichnung oder Erhalt des ersten </text>
+							<bold>
+								<text>akzeptablen</text>
+							</bold>
+							<text> Gebots </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> abgeben können. Alle Zitate unter </text>
+							<bold>
+								<parameter name="RejectPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> werden automatisch abgelehnt. Informationen über das beste Angebot werden ebenfalls zur Verfügung gestellt.</text>
+						</paragraph>
+						<paragraph>
+							<text>Die Sendung wird </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> Tage nach Vertragsunterzeichnung beendet oder wenn das erste </text>
+							<bold>
+								<text>akzeptable</text>
+							</bold>
+							<text> Angebot </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> eingegangen ist. Sind am Ende der Auktion keine Gebote abgegeben worden, wird die Überweisung ohne Bearbeitung der Gebühren beendet. Andernfalls werden zwei Zahlungen geleistet:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>Eine sofortige Zahlung, die dem vereinbarten Preis für das beste oder erste angenommene Gebot entspricht, erfolgt </text>
+								<bold>
+									<text>Käufer</text>
+								</bold>
+								<text> - </text>
+								<bold>
+									<text>Auktionator</text>
+								</bold>
+								<text>.</text>
+							</item>
+							<item>
+								<text>Die direkte Zahlung, die dem vereinbarten Preis für das beste oder erste angenommene Gebot abzüglich des vereinbarten Honorars als Prozentsatz des Preises entspricht (</text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text>) ist vom </text>
+								<bold>
+									<text>Versteigerer</text>
+								</bold>
+								<text> an den Verkäufer zu leisten. </text>
+								<bold>
+									<text>Der Auktionator</text>
+								</bold>
+								<text> betrachtet </text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text> als Bezahlung für seine Dienstleistungen.</text>
+							</item>
+						</bulletItems>
+						<paragraph>
+							<text>Alle Zahlungen erfolgen über </text>
+							<italic>
+								<text>eDaler</text>
+							</italic>
+							<text>®</text>
+							<text>. Für einen Käufer, der kein Guthaben </text>
+							<italic>
+								<text>in der Brieftasche</text>
+							</italic>
+							<text> hat, wird das Angebot storniert und der Kundenauftrag wird storniert.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Request for Tenders - Sale of Token</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This contract defines an auction consignment of the service of selling a token. The assignment of a buyer to this consignment is negotiated by an online auction managed by </text>
+					<italic>
+						<text>TAG Marketplace</text>
+					</italic>
+					<text>™. The document defines the rules for the automatic processing and matching of prospective buyers to this request for tenders.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Introduction</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>This contract defines the request to sell a token using the </text>
+							<italic>
+								<text>TAG Marketplace</text>
+							</italic>
+							<text>™ auctioning service. The </text>
+							<bold>
+								<text>Seller</text>
+							</bold>
+							<text> have asked the </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text> to find the best match among offers from prospective </text>
+							<italic>
+								<text>Buyers</text>
+							</italic>
+							<text> to this Request for Tenders. The </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text> matches incoming bids from potential </text>
+							<italic>
+								<text>Buyers</text>
+							</italic>
+							<text>, until the best candidate is found, the first acceptable bid has been received, or the auction expires due to lack of sufficient interest.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Manifest</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>The sale of the token by the </text>
+							<bold>
+								<text>Seller</text>
+							</bold>
+							<text> relates to one token of category </text>
+							<bold>
+								<parameter name="Category" />
+							</bold>
+							<text>, friendly name </text>
+							<bold>
+								<parameter name="FriendlyName" />
+							</bold>
+							<text> and Token ID </text>
+							<bold>
+								<parameter name="TokenID" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Transfer of Ownership</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Upon selection of best offer, and successful processing of payments, including commissions, the ownership of the token will be first transferred to the </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text>, and then to the </text>
+							<bold>
+								<text>Buyer</text>
+							</bold>
+							<text> winning the auction.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Auction Consignment</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Upon the signature of this contract, the </text>
+							<bold>
+								<text>Seller</text>
+							</bold>
+							<text> consigns to the </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text> the task of finding a buyer that wants to byt the offered token specified in the </text>
+							<italic>
+								<text>Manifest</text>
+							</italic>
+							<text> above, with an initial </text>
+							<italic>
+								<text>asking price</text>
+							</italic>
+							<text> of </text>
+							<bold>
+								<parameter name="AskingPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. The </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text> publishes information about the </text>
+							<italic>
+								<text>Request for Tenders</text>
+							</italic>
+							<text> to prospective </text>
+							<italic>
+								<text>Buyers</text>
+							</italic>
+							<text> who can make </text>
+							<italic>
+								<text>Offers</text>
+							</italic>
+							<text> for the duration of </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> days from the signature of the agreement, or until the first </text>
+							<italic>
+								<text>acceptable</text>
+							</italic>
+							<text> bid of </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> is received. Any bid below </text>
+							<bold>
+								<parameter name="RejectPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> will be automatically rejected. Information of the best bid will also be presented.</text>
+						</paragraph>
+						<paragraph>
+							<text>The consignment concludes at the end of </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> days from the signature of the agreement, or when the first </text>
+							<italic>
+								<text>acceptable</text>
+							</italic>
+							<text> bid of </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> is received. If no bids are available when the auction expires, the consignment concludes without any payments being processed. Otherwise, two payments will be made:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>An instant payment representing the agreed upon price for the best or first accepted bid will be made from the </text>
+								<bold>
+									<text>Buyer</text>
+								</bold>
+								<text> to the </text>
+								<bold>
+									<text>Auctioneer</text>
+								</bold>
+								<text>.</text>
+							</item>
+							<item>
+								<text>An instant payment representing the agreed upon price for the best or first accepted bid minus the agreed upon commission, as a percentage of the price (</text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text>), will be made from the </text>
+								<bold>
+									<text>Auctioneer</text>
+								</bold>
+								<text> to the </text>
+								<bold>
+									<text>Seller</text>
+								</bold>
+								<text>. The </text>
+								<bold>
+									<text>Auctioneer</text>
+								</bold>
+								<text> keeps its </text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text> as payment for its services.</text>
+							</item>
+						</bulletItems>
+						<paragraph>
+							<text>All payments will be made using </text>
+							<italic>
+								<text>eDaler</text>
+							</italic>
+							<text>®. A buyer without funds in their </text>
+							<italic>
+								<text>wallet</text>
+							</italic>
+							<text> will have their offer invalidated, and the sale assignment cancelled.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="es">
+		<section>
+			<header>
+				<text>Solicite un presupuesto - Id sales</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Este Acuerdo define la transferencia del Servicio a subasta mediante la venta de la Cuenta. La transferencia del comprador a este envío se negociará como parte de una subasta en línea gestionada por </text>
+					<italic>
+						<text>TAG Marketplace ™ </text>
+					</italic>
+					<text>. El documento define las reglas para el procesamiento automático y la integración de los compradores potenciales en esta licitación.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Introducción</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Este acuerdo especifica la solicitud de vender el ID en el servicio de subasta </text>
+							<italic>
+								<text>TAG Marketplace ™</text>
+							</italic>
+							<text>. </text>
+							<bold>
+								<text>El vendedor</text>
+							</bold>
+							<text> pidió a </text>
+							<bold>
+								<text>Subastador</text>
+							</bold>
+							<text> que encontrara la mejor coincidencia entre las posibles subastas de </text>
+							<italic>
+								<text>compradores</text>
+							</italic>
+							<text> para esta licitación. </text>
+							<bold>
+								<text>Subastador</text>
+							</bold>
+							<text> corresponde a las ofertas entrantes de potenciales </text>
+							<italic>
+								<text>compradores</text>
+							</italic>
+							<text> hasta que se encuentre el mejor candidato, se reciba la primera oferta elegible o la subasta finalice debido a la falta de interés suficiente.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Manifiesto</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Vender el ID </text>
+							<bold>
+								<text>al vendedor</text>
+							</bold>
+							<text> se refiere al token de clase </text>
+							<bold>
+								<parameter name="Category" />
+							</bold>
+							<text>, el nombre para mostrar </text>
+							<bold>
+								<parameter name="FriendlyName" />
+							</bold>
+							<text> y el ID de token </text>
+							<bold>
+								<parameter name="TokenID" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+						<paragraph>
+							<text>Transferencia de propiedad</text>
+						</paragraph>
+						<paragraph>
+							<text>Una vez que haya seleccionado la mejor oferta y procesado las tarifas, incluidas las tarifas, la propiedad del token se transferirá primero al </text>
+							<bold>
+								<text>subastador</text>
+							</bold>
+							<text> y luego al </text>
+							<bold>
+								<text>comprador</text>
+							</bold>
+							<text> que gane la subasta.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Envío en subasta</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Cuando usted firma este Acuerdo, el </text>
+							<bold>
+								<text>Vendedor</text>
+							</bold>
+							<text> le pide que encuentre un comprador que desee cambiar el ID OFRECIDO especificado en el </text>
+							<italic>
+								<text>Manifiesto</text>
+							</italic>
+							<text> anterior al </text>
+							<bold>
+								<text>Subastador</text>
+							</bold>
+							<text> cuyo </text>
+							<bold>
+								<text>precio deseado</text>
+							</bold>
+							<text> original sea </text>
+							<bold>
+								<parameter name="AskingPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. </text>
+							<bold>
+								<text>El subastador</text>
+							</bold>
+							<text> publica información *solicitud de cotización a potenciales </text>
+							<italic>
+								<text>compradores</text>
+							</italic>
+							<text> que pueden presentar </text>
+							<italic>
+								<text>ofertas</text>
+							</italic>
+							<text> </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> dentro de un día de la firma del contrato o de recibir el primer </text>
+							<bold>
+								<text>aceptable</text>
+							</bold>
+							<text> </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. Todas las citas en </text>
+							<bold>
+								<parameter name="RejectPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> se rechazan automáticamente. También se proporcionará información sobre la mejor oferta.</text>
+						</paragraph>
+						<paragraph>
+							<text>El envío se rescindirá </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> días después de la firma del contrato o cuando se haya recibido la primera oferta </text>
+							<bold>
+								<text>aceptable</text>
+							</bold>
+							<text> </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. Si no se ha presentado ninguna oferta al final de la subasta, la transferencia se cancelará sin procesar la tarifa. De lo contrario, se realizarán dos pagos:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>El pago inmediato igual al precio acordado para la mejor o primera oferta aceptada se realizará </text>
+								<bold>
+									<text>Comprador</text>
+								</bold>
+								<text> - </text>
+								<bold>
+									<text>Subastador</text>
+								</bold>
+								<text>.</text>
+							</item>
+							<item>
+								<text>El pago directo correspondiente al precio acordado para la mejor o primera oferta aceptada menos la tarifa acordada como porcentaje del precio (</text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text>) debe ser realizado por el </text>
+								<bold>
+									<text>Subastador</text>
+								</bold>
+								<text> al Vendedor. </text>
+								<bold>
+									<text>El subastador</text>
+								</bold>
+								<text> considera </text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text> como pago por sus servicios.</text>
+							</item>
+						</bulletItems>
+						<paragraph>
+							<text>Todos los pagos se realizan a través de </text>
+							<italic>
+								<text>eDaler</text>
+							</italic>
+							<text>®. Para un comprador que no tiene un saldo </text>
+							<italic>
+								<text>en la billetera</text>
+							</italic>
+							<text>, la oferta se cancelará y el pedido del cliente se cancelará.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="fi">
+		<section>
+			<header>
+				<text>Tarjouspyyntö - Tunnuksen myynti</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Tämä sopimus määrittää palvelun huutokauppalähetyksen myymällä tunnuksen. Ostajan siirrosta tähän lähetykseen neuvotellaan verkkohuutokaupassa, jota hallinnoi </text>
+					<italic>
+						<text>TAG Marketplace</text>
+					</italic>
+					<text>™. Asiakirjassa määritellään säännöt, jotka koskevat potentiaalisten ostajien automaattista käsittelyä ja yhdistämistä tähän tarjouspyyntöön.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Esittely</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Tämä sopimus määrittää pyynnön myydä tunnus huutokauppapalvelussa </text>
+							<italic>
+								<text>TAG Marketplace ™ </text>
+							</italic>
+							<text>. </text>
+							<bold>
+								<text>Myyjä</text>
+							</bold>
+							<text> on pyytänyt </text>
+							<bold>
+								<text>Huutokaupanpitäjää</text>
+							</bold>
+							<text> löytämään parhaan ottelun potentiaalisten </text>
+							<italic>
+								<text>ostajien</text>
+							</italic>
+							<text> tarjousten välillä tälle tarjouspyynnölle. </text>
+							<bold>
+								<text>Huutokaupanpitäjä</text>
+							</bold>
+							<text> vastaa potentiaalisten </text>
+							<italic>
+								<text>ostajien</text>
+							</italic>
+							<text> saapuvia tarjouksia, kunnes paras ehdokas löytyy, ensimmäinen hyväksyttävä tarjous vastaanotetaan tai huutokauppa päättyy riittävän kiinnostuksen puutteen vuoksi.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Manifesti</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Tunnuksen myynti </text>
+							<bold>
+								<text>Myyjälle</text>
+							</bold>
+							<text> liittyy </text>
+							<bold>
+								<parameter name="Category" />
+							</bold>
+							<text>-luokan tokeniin, ystävälliseen nimeen </text>
+							<bold>
+								<parameter name="FriendlyName" />
+							</bold>
+							<text> ja token-tunnukseen </text>
+							<bold>
+								<parameter name="TokenID" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Omistusoikeuden siirto</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Kun olet valinnut parhaan tarjouksen ja käsitellyt maksut, mukaan lukien palkkiot, tunnuksen omistusoikeus siirretään ensin </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text> ja sitten </text>
+							<bold>
+								<text>Ostajalle</text>
+							</bold>
+							<text>, joka voittaa huutokaupan.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Huutokaupan toimitus</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Kun allekirjoitat tämän sopimuksen, </text>
+							<bold>
+								<text>Myyjä</text>
+							</bold>
+							<text> antaa tehtäväksi löytää ostaja, joka haluaa vaihtaa yllä olevassa </text>
+							<italic>
+								<text>Manifestissa</text>
+							</italic>
+							<text> määritetyn tarjotun tunnuksen </text>
+							<bold>
+								<text>Huutokaupanpitäjälle</text>
+							</bold>
+							<text>, jonka alkuperäinen </text>
+							<italic>
+								<text>pyyntöhinta</text>
+							</italic>
+							<text> on </text>
+							<bold>
+								<parameter name="AskingPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. </text>
+							<bold>
+								<text>Huutokaupanpitäjä</text>
+							</bold>
+							<text> julkaisee tietoja </text>
+							<italic>
+								<text>Tarjouspyynnöstä</text>
+							</italic>
+							<text> potentiaalisille </text>
+							<italic>
+								<text>Ostajille</text>
+							</italic>
+							<text>, jotka voivat lähettää </text>
+							<italic>
+								<text>Tarjoukset</text>
+							</italic>
+							<text> </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> päivän kuluessa sopimuksen allekirjoittamisesta tai ensimmäisen </text>
+							<bold>
+								<text>hyväksyttävän</text>
+							</bold>
+							<text> tarjouksen </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> vastaanottamisesta. Kaikki </text>
+							<bold>
+								<parameter name="RejectPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> alla olevat tarjoukset hylätään automaattisesti. Lisäksi esitetään tietoja parhaasta tarjouksesta.</text>
+						</paragraph>
+						<paragraph>
+							<text>Lähetys lopetetaan </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> päivän kuluttua sopimuksen allekirjoittamisesta tai kun ensimmäinen </text>
+							<bold>
+								<text>hyväksyttävä</text>
+							</bold>
+							<text> tarjous </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> on vastaanotettu. Jos huutokaupan lopussa ei ole tehty tarjouksia, siirto on lopetettava ilman maksujen käsittelyä. Muussa tapauksessa suoritetaan kaksi maksua:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>Välitön maksu, joka edustaa sovittua hintaa parhaasta tai ensimmäisestä hyväksytystä tarjouksesta, suoritetaan </text>
+								<bold>
+									<text>Ostaja</text>
+								</bold>
+								<text> - </text>
+								<bold>
+									<text>Huutokaupanpitäjä</text>
+								</bold>
+								<text>.</text>
+							</item>
+							<item>
+								<text>Välitön maksu, joka edustaa sovittua hintaa parhaasta tai ensimmäisestä hyväksytystä tarjouksesta vähennettynä sovitulla palkkiolla prosentteina hinnasta (</text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text>), suoritetaan </text>
+								<bold>
+									<text>Huutokaupanpitäjästä</text>
+								</bold>
+								<text> </text>
+								<bold>
+									<text>Myyjään</text>
+								</bold>
+								<text>. </text>
+								<bold>
+									<text>Huutokaupanpitäjä</text>
+								</bold>
+								<text> pitää </text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text> maksuna palveluistaan.</text>
+							</item>
+						</bulletItems>
+						<paragraph>
+							<text>Kaikki maksut suoritetaan käyttäen </text>
+							<italic>
+								<text>eDaler</text>
+							</italic>
+							<text>®. Ostajalla, jolla ei ole varoja </text>
+							<italic>
+								<text>lompakossa</text>
+							</italic>
+							<text>, tarjous mitätöidään ja myyntitilaus peruutetaan.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="fr">
+		<section>
+			<header>
+				<text>Demander un devis - Id sales</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Le présent Contrat définit le transfert aux enchères du Service par la vente du Compte. Le transfert de l’acheteur à cet envoi sera négocié dans le cadre d’une vente aux enchères en ligne gérée par </text>
+					<italic>
+						<text>TAG Marketplace ™</text>
+					</italic>
+					<text>. Le document définit les règles pour le traitement automatique et l’intégration des acheteurs potentiels dans cet appel d’offres.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Introduction</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Cet accord spécifie la demande de vente de l’ID sur le service d’enchères </text>
+							<italic>
+								<text>TAG Marketplace ™</text>
+							</italic>
+							<text>. </text>
+							<bold>
+								<text>Vendeur</text>
+							</bold>
+							<text> a demandé à </text>
+							<bold>
+								<text>Commissaire-priseur</text>
+							</bold>
+							<text> de trouver la meilleure correspondance entre les enchères </text>
+							<italic>
+								<text>acheteurs</text>
+							</italic>
+							<text> potentielles pour cet appel d’offres. </text>
+							<bold>
+								<text>Le commissaire-priseur</text>
+							</bold>
+							<text> correspond aux offres entrantes des </text>
+							<italic>
+								<text>acheteurs</text>
+							</italic>
+							<text> potentiels jusqu’à ce que le meilleur candidat soit trouvé, que la première enchère admissible soit reçue ou que l’enchère se termine faute d’intérêt suffisant.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Manifeste</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>La vente de l’ID </text>
+							<bold>
+								<text>au vendeur</text>
+							</bold>
+							<text> fait référence au jeton de classe </text>
+							<bold>
+								<parameter name="Category" />
+							</bold>
+							<text>, au nom d’affichage </text>
+							<bold>
+								<parameter name="FriendlyName" />
+							</bold>
+							<text> et à l’ID de jeton </text>
+							<bold>
+								<parameter name="TokenID" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+						<paragraph>
+							<text>Transfert de propriété</text>
+						</paragraph>
+						<paragraph>
+							<text>Une fois que vous avez sélectionné la meilleure enchère et traité les frais, y compris les frais, la propriété du jeton sera d’abord transférée au </text>
+							<bold>
+								<text>commissaire-priseur</text>
+							</bold>
+							<text> puis à l’</text>
+							<bold>
+								<text>acheteur</text>
+							</bold>
+							<text> qui remporte l’enchère.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Expédition aux enchères</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Lorsque vous signez le présent Contrat, le </text>
+							<bold>
+								<text>Vendeur</text>
+							</bold>
+							<text> vous demande de trouver un acheteur qui souhaite modifier l’ID OFFERT spécifié dans le </text>
+							<italic>
+								<text>Manifeste</text>
+							</italic>
+							<text> ci-dessus au </text>
+							<bold>
+								<text>Commissaire-priseur</text>
+							</bold>
+							<text> dont le </text>
+							<italic>
+								<text>prix souhaité</text>
+							</italic>
+							<text> original est </text>
+							<bold>
+								<parameter name="AskingPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. </text>
+							<bold>
+								<text>Le commissaire-priseur</text>
+							</bold>
+							<text> publie des informations </text>
+							<italic>
+								<text>demande de devis</text>
+							</italic>
+							<text> aux </text>
+							<italic>
+								<text>acheteurs</text>
+							</italic>
+							<text> potentiels qui peuvent soumettre </text>
+							<italic>
+								<text>soumissions</text>
+							</italic>
+							<text> </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> dans un délai d’un jour à compter de la signature du contrat ou de la réception de la première offre </text>
+							<bold>
+								<text>acceptable</text>
+							</bold>
+							<text> </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. Toutes les citations sous </text>
+							<bold>
+								<parameter name="RejectPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> sont automatiquement rejetées. Des informations sur la meilleure offre seront également fournies.</text>
+						</paragraph>
+						<paragraph>
+							<text>L’envoi sera résilié </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> jours après la signature du contrat ou lorsque la première offre </text>
+							<bold>
+								<text>acceptable</text>
+							</bold>
+							<text> </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> aura été reçue. Si aucune offre n’a été soumise à la fin de l’enchère, le transfert sera résilié sans traitement des frais. Dans le cas contraire, deux paiements seront effectués :</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>Un paiement immédiat égal au prix convenu pour la meilleure ou la première enchère acceptée sera effectué </text>
+								<bold>
+									<text>Acheteur</text>
+								</bold>
+								<text> - </text>
+								<bold>
+									<text>Commissaire-priseur</text>
+								</bold>
+								<text>.</text>
+							</item>
+							<item>
+								<text>Le paiement direct correspondant au prix convenu pour la meilleure ou la première offre acceptée moins les frais convenus en pourcentage du prix (</text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text>) doit être effectué par le </text>
+								<bold>
+									<text>Commissaire-priseur</text>
+								</bold>
+								<text> au Vendeur. </text>
+								<bold>
+									<text>Le commissaire-priseur</text>
+								</bold>
+								<text> considère </text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text> comme paiement de ses services.</text>
+							</item>
+						</bulletItems>
+						<paragraph>
+							<text>Tous les paiements sont effectués via </text>
+							<italic>
+								<text>eDaler</text>
+							</italic>
+							<text>®. Pour un acheteur qui n’a pas de solde </text>
+							<italic>
+								<text>dans le portefeuille</text>
+							</italic>
+							<text>, l’offre sera annulée et la commande du client sera annulée.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="no">
+		<section>
+			<header>
+				<text>Forespørsel om tilbud - Salg av token</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Denne kontrakten definerer en auksjonsforsendelse av tjenesten ved å selge et token. Overdragelsen av en kjøper til denne forsendelsen skal forhandles frem av en nettauksjon administrert av </text>
+					<italic>
+						<text>TAG Marketplace</text>
+					</italic>
+					<text>™. Dokumentet definerer reglene for automatisk behandling og samsvar av potensielle kjøpere med denne tilbudsforespørselen.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Introduksjon</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Denne kontrakten definerer forespørselen om å selge et token ved hjelp av auksjonstjenesten </text>
+							<italic>
+								<text>TAG Marketplace ™ </text>
+							</italic>
+							<text>. </text>
+							<bold>
+								<text>Selger</text>
+							</bold>
+							<text> har bedt </text>
+							<bold>
+								<text>Auksjonarius</text>
+							</bold>
+							<text> om å finne den beste matchen mellom tilbud fra potensielle </text>
+							<italic>
+								<text>Kjøpere</text>
+							</italic>
+							<text> for denne tilbudsforespørselen. </text>
+							<bold>
+								<text>Auctioneer</text>
+							</bold>
+							<text> matcher innkommende bud fra potensielle </text>
+							<italic>
+								<text>Kjøpere</text>
+							</italic>
+							<text> til den beste kandidaten blir funnet, det første akseptable budet mottas, eller auksjonen utløper på grunn av mangel på tilstrekkelig interesse.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Manifest</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Salget av tokenet til </text>
+							<bold>
+								<text>Selger</text>
+							</bold>
+							<text> er relatert til et token i kategorien </text>
+							<bold>
+								<parameter name="Category" />
+							</bold>
+							<text>, egendefinert navn </text>
+							<bold>
+								<parameter name="FriendlyName" />
+							</bold>
+							<text> og token-ID </text>
+							<bold>
+								<parameter name="TokenID" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Overføring av eierskap</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Etter å ha valgt det beste tilbudet og behandlet betalinger, inkludert provisjoner, overføres eierskapet av tokenet først til </text>
+							<bold>
+								<text>Auksjonarius</text>
+							</bold>
+							<text> og deretter til </text>
+							<bold>
+								<text>Kjøper</text>
+							</bold>
+							<text> som vinner auksjonen.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Auksjon Frakt</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Når du signerer denne kontrakten, betror </text>
+							<bold>
+								<text>Selger</text>
+							</bold>
+							<text> oppgaven med å finne en kjøper som ønsker å bytte det tilbudte tokenet som er angitt i </text>
+							<italic>
+								<text>Manifest</text>
+							</italic>
+							<text> ovenfor til </text>
+							<bold>
+								<text>Auksjonarius</text>
+							</bold>
+							<text> med en innledende </text>
+							<italic>
+								<text>Forespørselspris</text>
+							</italic>
+							<text> på </text>
+							<bold>
+								<parameter name="AskingPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. </text>
+							<bold>
+								<text>Auksjonarius</text>
+							</bold>
+							<text> publiserer informasjon om </text>
+							<italic>
+								<text>Budforespørsel</text>
+							</italic>
+							<text> til potensielle </text>
+							<italic>
+								<text>Kjøpere</text>
+							</italic>
+							<text> som kan sende inn </text>
+							<italic>
+								<text>Tilbud</text>
+							</italic>
+							<text> innen </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> dager etter signeringen av avtalen eller til det første </text>
+							<italic>
+								<text>akseptable</text>
+							</italic>
+							<text> budet på </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> mottas. Alle bud under </text>
+							<bold>
+								<parameter name="RejectPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> blir automatisk avvist. Informasjon om det beste budet vil også bli presentert.</text>
+						</paragraph>
+						<paragraph>
+							<text>Forsendelsen skal sies opp ved utgangen av </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> dager etter signering av avtalen eller når det første </text>
+							<italic>
+								<text>akseptable</text>
+							</italic>
+							<text> budet på </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> er mottatt. I mangel av bud på slutten av auksjonen skal forsendelsen sies opp uten at betalinger behandles. Ellers vil to betalinger bli gjort:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>En umiddelbar betaling som representerer den avtalte prisen for det beste eller første aksepterte budet, vil bli gjort fra </text>
+								<bold>
+									<text>Kjøper</text>
+								</bold>
+								<text> til </text>
+								<bold>
+									<text>Auksjonarius</text>
+								</bold>
+								<text>.</text>
+							</item>
+							<item>
+								<text>En øyeblikkelig betaling som representerer den avtalte prisen for det beste eller første aksepterte budet minus den avtalte provisjonen, som en prosentandel av prisen (</text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text>), vil bli gjort fra </text>
+								<bold>
+									<text>Auksjonarius</text>
+								</bold>
+								<text> til </text>
+								<bold>
+									<text>Selger</text>
+								</bold>
+								<text>. </text>
+								<bold>
+									<text>Auctioneer</text>
+								</bold>
+								<text> beholder sin </text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text> som betaling for sine tjenester.</text>
+							</item>
+						</bulletItems>
+						<paragraph>
+							<text>Alle betalinger gjøres ved hjelp av </text>
+							<italic>
+								<text>eDaler</text>
+							</italic>
+							<text>®. En kjøper uten midler i </text>
+							<italic>
+								<text>lommeboken</text>
+							</italic>
+							<text> vil få tilbudet ugyldiggjort og salgsoppdraget kansellert.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="pt">
+		<bulletItems>
+			<item>
+				<text>Solicitar uma cotação - Venda de 10</text>
+			</item>
+		</bulletItems>
+		<paragraph>
+			<text>Este Contrato define a transferência do Serviço para leilão através da venda da Conta. A transferência do comprador para esta remessa será negociada como parte de um leilão online gerenciado pela </text>
+			<italic>
+				<text>TAG Marketplace ™ </text>
+			</italic>
+			<text>. O documento define as regras para o processamento automático e integração de potenciais compradores nesta licitação.</text>
+		</paragraph>
+		<section>
+			<header>
+				<text>Introdução</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Este contrato especifica a solicitação de venda do ID no serviço de leilão </text>
+					<italic>
+						<text>TAG Marketplace ™ </text>
+					</italic>
+					<text>. </text>
+					<bold>
+						<text>O vendedor</text>
+					</bold>
+					<text> pediu </text>
+					<bold>
+						<text>Leiloeiro</text>
+					</bold>
+					<text> para encontrar o melhor match entre os possíveis leilões de </text>
+					<italic>
+						<text>comprador</text>
+					</italic>
+					<text> para esta oferta. </text>
+					<bold>
+						<text>Leiloeiro</text>
+					</bold>
+					<text> representa lances recebidos de potenciais </text>
+					<italic>
+						<text>compradores</text>
+					</italic>
+					<text> até que o melhor candidato seja encontrado, o primeiro lance qualificado seja recebido ou o leilão termine por falta de interesse.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Manifesto</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>O ID de vendas </text>
+							<bold>
+								<text>to seller</text>
+							</bold>
+							<text> refere-se ao token de classe </text>
+							<bold>
+								<parameter name="Category" />
+							</bold>
+							<text>, nome de exibição </text>
+							<bold>
+								<parameter name="FriendlyName" />
+							</bold>
+							<text>, e o token ID </text>
+							<bold>
+								<parameter name="TokenID" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+						<paragraph>
+							<text>Transferência de propriedade</text>
+						</paragraph>
+						<paragraph>
+							<text>Uma vez selecionado o melhor lance e processado as taxas, incluindo taxas, a propriedade do token será transferida primeiro para o leiloeiro </text>
+							<bold>
+								<text> e depois para o comprador </text>
+							</bold>
+							<text> que ganhar o leilão.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Envio de leilões</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Ao assinar este Contrato, o </text>
+							<bold>
+								<text>Seller</text>
+							</bold>
+							<text> pede que você encontre um Comprador que deseja alterar o ID oferecido no </text>
+							<italic>
+								<text>Manifest</text>
+							</italic>
+							<text> acima para o </text>
+							<bold>
+								<text>Leiloeiro</text>
+							</bold>
+							<text> cujo preço original </text>
+							<bold>
+								<text>desejado</text>
+							</bold>
+							<text> é </text>
+							<bold>
+								<parameter name="AskingPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. </text>
+							<bold>
+								<text>O leiloeiro</text>
+							</bold>
+							<text> publica informações </text>
+							<italic>
+								<text>RFQ</text>
+							</italic>
+							<text> para potenciais </text>
+							<italic>
+								<text>compradores</text>
+							</italic>
+							<text> que podem enviar </text>
+							<italic>
+								<text>bid</text>
+							</italic>
+							<text> </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> dentro de um dia após a assinatura do contrato ou recebimento do primeiro </text>
+							<bold>
+								<text>aceitável</text>
+							</bold>
+							<text> </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. Todas as nomeações em </text>
+							<bold>
+								<parameter name="RejectPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> são automaticamente rejeitadas. Informações sobre a melhor oferta também serão fornecidas.</text>
+						</paragraph>
+						<paragraph>
+							<text>A remessa será encerrada </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> dias após a assinatura do contrato ou quando a primeira oferta </text>
+							<bold>
+								<text>aceitável</text>
+							</bold>
+							<text> </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> foi recebida. Se nenhuma oferta for submetida ao final do leilão, a transferência será cancelada sem o processamento da taxa. Caso contrário, dois pagamentos serão feitos:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>O pagamento imediato correspondente ao preço acordado para a melhor ou primeira oferta aceita será feito </text>
+								<bold>
+									<text>Comprador</text>
+								</bold>
+								<text> - </text>
+								<bold>
+									<text>Leiloeiro</text>
+								</bold>
+								<text>.</text>
+							</item>
+							<item>
+								<text>O pagamento direto igual ao preço acordado para a melhor ou primeira oferta aceita menos a taxa acordada como porcentagem do preço (</text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text>) deve ser feito pelo </text>
+								<bold>
+									<text>Leiloeiro</text>
+								</bold>
+								<text> ao Vendedor. </text>
+								<bold>
+									<text>O leiloeiro</text>
+								</bold>
+								<text> considera </text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text> como pagamento por seus serviços.</text>
+							</item>
+						</bulletItems>
+						<paragraph>
+							<text>Todos os pagamentos são feitos via </text>
+							<italic>
+								<text>eDaler</text>
+							</italic>
+							<text>®. Para um comprador que não tem saldo </text>
+							<italic>
+								<text>em sua carteira</text>
+							</italic>
+							<text>, a oferta será cancelada e o pedido do cliente será cancelado.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="ro">
+		<bulletItems>
+			<item>
+				<text>Cerere de o cotatie - Vanzare de 10</text>
+			</item>
+		</bulletItems>
+		<paragraph>
+			<text>Prezentul Acord definește transferul Serviciului spre licitație prin vânzarea Contului. Transferul cumpărătorului la această expediere va fi negociat în cadrul unei licitații online gestionate de </text>
+			<italic>
+				<text>TAG Marketplace ™</text>
+			</italic>
+			<text>. Documentul definește regulile de procesare automată și integrare a potențialilor cumpărători în această ofertă.</text>
+		</paragraph>
+		<section>
+			<header>
+				<text>Introducere</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Acest acord specifică solicitarea de vânzare ID în serviciul de licitație </text>
+					<italic>
+						<text>TAG Marketplace ™ </text>
+					</italic>
+					<text>. </text>
+					<bold>
+						<text>Vânzătorul</text>
+					</bold>
+					<text> a cerut </text>
+					<bold>
+						<text>Adjudecător</text>
+					</bold>
+					<text> să găsească cea mai bună potrivire între posibilele licitații </text>
+					<italic>
+						<text>cumpărător</text>
+					</italic>
+					<text> pentru această ofertă. </text>
+					<bold>
+						<text>Adjudecător</text>
+					</bold>
+					<text> reprezintă ofertele primite de la potențialii </text>
+					<italic>
+						<text>cumpărători</text>
+					</italic>
+					<text> până la găsirea celui mai bun candidat, se primește prima ofertă eligibilă sau se încheie licitația din lipsă de interes.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Manifestul</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>ID-ul de vânzări </text>
+							<bold>
+								<text>către vânzător</text>
+							</bold>
+							<text> se referă la simbolul clasei </text>
+							<bold>
+								<parameter name="Category" />
+							</bold>
+							<text>, numele afișat </text>
+							<bold>
+								<parameter name="FriendlyName" />
+							</bold>
+							<text>, iar simbolul ID </text>
+							<bold>
+								<parameter name="TokenID" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+						<paragraph>
+							<text>Transferul dreptului de proprietate</text>
+						</paragraph>
+						<paragraph>
+							<text>Odată selectată cea mai bună ofertă și taxele, inclusiv taxele, dreptul de proprietate asupra token-ului vor fi transferate mai întâi adjudecătorului</text>
+							<bold>
+								<text> și apoi cumpărătorului</text>
+							</bold>
+							<text> care câștigă licitația.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Depunerea licitației</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Prin semnarea acestui Acord, </text>
+							<bold>
+								<text>Vânzător</text>
+							</bold>
+							<text> vă solicită să găsiți un Cumpărător care dorește să schimbe ID-ul oferit în </text>
+							<italic>
+								<text>Manifest</text>
+							</italic>
+							<text> de mai sus pentru </text>
+							<bold>
+								<text>Adjudecător</text>
+							</bold>
+							<text> al cărui preț inițial </text>
+							<bold>
+								<text>dorit</text>
+							</bold>
+							<text> este </text>
+							<bold>
+								<parameter name="AskingPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. </text>
+							<bold>
+								<text>Adjudecatarul</text>
+							</bold>
+							<text> publică informații </text>
+							<italic>
+								<text>RFQ</text>
+							</italic>
+							<text> pentru potențialii </text>
+							<italic>
+								<text>cumpărători</text>
+							</italic>
+							<text> care pot trimite </text>
+							<italic>
+								<text>bid</text>
+							</italic>
+							<text> </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> în termen de o zi de la semnarea contractului sau de la primirea primului </text>
+							<bold>
+								<text>acceptabil</text>
+							</bold>
+							<text> </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. Toate nominalizările din </text>
+							<bold>
+								<parameter name="RejectPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> sunt respinse automat. De asemenea, vor fi furnizate informații cu privire la cea mai bună ofertă.</text>
+						</paragraph>
+						<paragraph>
+							<text>Expedierea va fi reziliată </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> la câteva zile după semnarea contractului sau când a fost primită prima ofertă </text>
+							<bold>
+								<text>acceptable</text>
+							</bold>
+							<text> </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. În cazul în care nu se depune nicio ofertă la sfârșitul licitației, transferul va fi anulat fără procesarea taxei. În caz contrar, se vor efectua două plăți:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>Plata imediată corespunzătoare prețului convenit pentru cea mai bună sau prima ofertă acceptată se va face </text>
+								<bold>
+									<text>Cumpărător</text>
+								</bold>
+								<text> - </text>
+								<bold>
+									<text>Adjudecător</text>
+								</bold>
+								<text>.</text>
+							</item>
+							<item>
+								<text>Plata directă egală cu prețul convenit pentru cea mai bună sau prima ofertă acceptă minus rata convenită ca procent din prețul (</text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text>) trebuie efectuată de </text>
+								<bold>
+									<text>Adjudecător</text>
+								</bold>
+								<text> vânzătorului. </text>
+								<bold>
+									<text>Adjudecatarul</text>
+								</bold>
+								<text> consideră </text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text> ca plată pentru serviciile sale.</text>
+							</item>
+						</bulletItems>
+						<paragraph>
+							<text>Toate plățile sunt efectuate prin intermediul </text>
+							<italic>
+								<text>eDaler</text>
+							</italic>
+							<text>®. Pentru un cumpărător care nu are un sold </text>
+							<italic>
+								<text>în portofel</text>
+							</italic>
+							<text>, oferta va fi anulată, iar comanda clientului va fi anulată.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="ru">
+		<bulletItems>
+			<item>
+				<text>Запросить коммерческое предложение - Продажа 10</text>
+			</item>
+		</bulletItems>
+		<paragraph>
+			<text>Настоящее Соглашение определяет передачу Сервиса на аукцион путем продажи Аккаунта. Переход покупателя к этой партии будет обсуждаться на онлайн-аукционе, управляемом </text>
+			<italic>
+				<text>TAG Marketplace ™ </text>
+			</italic>
+			<text>. Документ определяет правила автоматической обработки и интеграции потенциальных покупателей в данное предложение.</text>
+		</paragraph>
+		<section>
+			<header>
+				<text>Введение</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>В настоящем соглашении указывается запрос на продажу в аукционном сервисе </text>
+					<italic>
+						<text>TAG Marketplace ™</text>
+					</italic>
+					<text>. </text>
+					<bold>
+						<text>Продавец</text>
+					</bold>
+					<text> попросил </text>
+					<bold>
+						<text>Аукциониста</text>
+					</bold>
+					<text> найти наилучшее соответствие между возможными аукционами </text>
+					<italic>
+						<text>покупателя</text>
+					</italic>
+					<text> для этой ставки. </text>
+					<bold>
+						<text>Аукционист</text>
+					</bold>
+					<text> представляет заявки, полученные от потенциальных </text>
+					<italic>
+						<text>покупателей</text>
+					</italic>
+					<text> до тех пор, пока не будет найден лучший кандидат, не будет получена первая приемлемая ставка или аукцион не будет завершен из-за отсутствия интереса.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Манифест</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Идентификатор продажи </text>
+							<bold>
+								<text>продавцу</text>
+							</bold>
+							<text> относится к символу класса </text>
+							<bold>
+								<parameter name="Category" />
+							</bold>
+							<text>, отображаемому имени </text>
+							<bold>
+								<parameter name="FriendlyName" />
+							</bold>
+							<text> и символу ID </text>
+							<bold>
+								<parameter name="TokenID" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+						<paragraph>
+							<text>Передача права собственности</text>
+						</paragraph>
+						<paragraph>
+							<text>Как только будет выбрана лучшая ставка и сборы, включая налоги, право собственности на токен будет передано сначала аукционисту</text>
+							<bold>
+								<text>, а затем покупателю</text>
+							</bold>
+							<text>, который выиграет аукцион.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Подача тендера</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Подписывая настоящее Соглашение, </text>
+							<bold>
+								<text>Продавец</text>
+							</bold>
+							<text> просит Вас найти Покупателя, который желает изменить идентификатор, предложенный в </text>
+							<italic>
+								<text>Манифесте</text>
+							</italic>
+							<text> выше, на </text>
+							<bold>
+								<text>Аукциониста</text>
+							</bold>
+							<text>, чья первоначальная цена </text>
+							<bold>
+								<text>желаемая</text>
+							</bold>
+							<text> составляет </text>
+							<bold>
+								<parameter name="AskingPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. </text>
+							<bold>
+								<text>Победитель тендера</text>
+							</bold>
+							<text> публикует информацию </text>
+							<italic>
+								<text>RFQ</text>
+							</italic>
+							<text> для потенциальных </text>
+							<italic>
+								<text>покупателей</text>
+							</italic>
+							<text>, которые могут отправить </text>
+							<italic>
+								<text>bid</text>
+							</italic>
+							<text> </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> в течение одного дня с момента подписания договора или получения первого </text>
+							<bold>
+								<text>приемлемого</text>
+							</bold>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. Все номинации в </text>
+							<bold>
+								<parameter name="RejectPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> автоматически отклоняются. Также будет предоставлена информация о лучшем предложении.</text>
+						</paragraph>
+						<paragraph>
+							<text>Отгрузка будет прекращена </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> через несколько дней после подписания договора или после получения первого предложения </text>
+							<bold>
+								<text>приемлемого</text>
+							</bold>
+							<text> </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> Если в конце аукциона не будет подано предложение, передача будет отменена без обработки комиссии. В противном случае будут произведены два платежа:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>Немедленная оплата, соответствующая согласованной цене за лучшее или первое принятое предложение, будет произведена </text>
+								<bold>
+									<text>Покупатель</text>
+								</bold>
+								<text> - </text>
+								<bold>
+									<text>Аукционист</text>
+								</bold>
+								<text>.</text>
+							</item>
+							<item>
+								<text>Прямая оплата, равная согласованной цене за лучшее или первое предложение, принимается за вычетом согласованной ставки в процентах от цены (</text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text>) должна быть произведена </text>
+								<bold>
+									<text>Аукционистом</text>
+								</bold>
+								<text> продавцу. </text>
+								<bold>
+									<text>Победивший участник тендера</text>
+								</bold>
+								<text> считает </text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text> оплатой за свои услуги.</text>
+							</item>
+						</bulletItems>
+						<paragraph>
+							<text>Все платежи осуществляются через </text>
+							<italic>
+								<text>eDaler</text>
+							</italic>
+							<text>®. Для покупателя, у которого нет баланса </text>
+							<italic>
+								<text>в кошельке</text>
+							</italic>
+							<text>, предложение будет отменено, а заказ клиента будет отменен.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="sr">
+		<bulletItems>
+			<item>
+				<text>Zahtev za ponudu - Prodaja 10</text>
+			</item>
+		</bulletItems>
+		<paragraph>
+			<text>Ovaj Ugovor određuje prenos Usluge na aukciju prodajom Poslovnog kontakta. O prelasku kupca na ovu grupu govoriće se na onlajn aukciji kojom upravlja </text>
+			<italic>
+				<text>TAG Marketplace ™</text>
+			</italic>
+			<text>. Dokument definiše pravila za automatsku obradu i integraciju potencijalnih kupaca u ovu ponudu.</text>
+		</paragraph>
+		<section>
+			<header>
+				<text>Predstavljanje</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Ovaj ugovor navodi zahtev za prodaju u aukcijskoj usluzi </text>
+					<italic>
+						<text>TAG Marketplace ™</text>
+					</italic>
+					<text>. Prodavac je zatražio od aukciona da pronađe najbolje podudaranje između mogućih aukcija kupca za ovu ponudu. </text>
+					<bold>
+						<text>Aukcionaš</text>
+					</bold>
+					<text> podnosi ponude dobijene od potencijalnih kupaca dok se ne nađe najbolji kandidat, dobija se prva podobna ponuda ili aukcija nije završena zbog nezainteresovanosti.</text>
+				</paragraph>
+			</body>
+		</section>
+		<section>
+			<header>
+				<text>Manifest</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>ID prodaje se odnosi na </text>
+					<parameter name="Category" />
+					<text> klase, ime </text>
+					<parameter name="FriendlyName" />
+					<text> i ID </text>
+					<parameter name="TokenID" />
+					<text>.</text>
+				</paragraph>
+				<paragraph>
+					<text>Prenos vlasništva</text>
+				</paragraph>
+				<paragraph>
+					<text>Kada budu izabrane najbolje ponude i naknade, uključujući poreze, vlasništvo nad tokenom će se preneti prvo na aukciju </text>
+					<bold>
+						<text>a zatim na kupca</text>
+					</bold>
+					<text> koji pobedi na aukciji.</text>
+				</paragraph>
+			</body>
+		</section>
+		<section>
+			<header>
+				<text>Podnošenje tendera</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Potpisivanjem ovog Ugovora, </text>
+					<bold>
+						<text>Prodavac</text>
+					</bold>
+					<text> traži da pronađete Kupca koji želi da promeni navedeni identifikator u </text>
+					<italic>
+						<text>Manifest</text>
+					</italic>
+					<text> iznad u </text>
+					<bold>
+						<text>Aukcionaš</text>
+					</bold>
+					<text> čija je originalna cena </text>
+					<bold>
+						<text>željena</text>
+					</bold>
+					<text> </text>
+					<bold>
+						<parameter name="AskingPrice" />
+						<text> </text>
+						<parameter name="Currency" />
+					</bold>
+					<text>. </text>
+					<bold>
+						<text>Pobednik tendera</text>
+					</bold>
+					<text> objavljuje informacije </text>
+					<italic>
+						<text>RFQ</text>
+					</italic>
+					<text> za potencijalne </text>
+					<italic>
+						<text>kupce</text>
+					</italic>
+					<text>, koji mogu da pošalju </text>
+					<italic>
+						<text>bid</text>
+					</italic>
+					<text> </text>
+					<bold>
+						<parameter name="AvailableDays" />
+					</bold>
+					<text> u roku od jednog dana od dana potpisivanja ugovora ili prijema prvog </text>
+					<bold>
+						<text>prihvatljivog</text>
+					</bold>
+					<text> </text>
+					<bold>
+						<parameter name="AcceptPrice" />
+						<text> </text>
+						<parameter name="Currency" />
+					</bold>
+					<text> Sve nominacije u </text>
+					<bold>
+						<parameter name="RejectPrice" />
+						<text> </text>
+						<parameter name="Currency" />
+					</bold>
+					<text> se automatski odbijaju. Takođe će biti pružene informacije o najboljoj ponudi.</text>
+				</paragraph>
+				<paragraph>
+					<text>Isporuka će biti prekinuta </text>
+					<bold>
+						<parameter name="AvailableDays" />
+					</bold>
+					<text> nekoliko dana nakon potpisivanja ugovora ili nakon prijema prve ponude od </text>
+					<bold>
+						<text>prihvatljive</text>
+					</bold>
+					<text> </text>
+					<bold>
+						<parameter name="AcceptPrice" />
+						<text> </text>
+						<parameter name="Currency" />
+					</bold>
+					<text>. Ako se na kraju aukcije ne dostavi ponuda, prenos će biti otkazan bez obrade provizije. U suprotnom, biće izvršene dve uplate:</text>
+				</paragraph>
+				<bulletItems>
+					<item>
+						<text>Neposrednu uplatu koja odgovara dogovorenoj ceni za najbolju ili prvu prihvaćenu ponudu daće </text>
+						<bold>
+							<text>Kupac</text>
+						</bold>
+						<text> - </text>
+						<bold>
+							<text>Aukcionalac</text>
+						</bold>
+					</item>
+					<item>
+						<text>Direktna uplata jednaka dogovorenoj ceni za najbolju ili prvu ponudu je prihvaćena u odnosu na dogovorenu stopu u procentima od cene (</text>
+						<bold>
+							<parameter name="CommissionPercent" />
+							<text> %</text>
+						</bold>
+						<text>) koju prodavac treba da uplati. </text>
+						<bold>
+							<text>Pobednik ponuđača</text>
+						</bold>
+						<text> smatra da je </text>
+						<bold>
+							<parameter name="CommissionPercent" />
+							<text> %</text>
+						</bold>
+						<text> plaćanje za svoje usluge.</text>
+					</item>
+				</bulletItems>
+				<paragraph>
+					<text>Sve uplate se izvršene preko </text>
+					<italic>
+						<text>eDaler</text>
+					</italic>
+					<text>®. Za kupca koji nema saldo </text>
+					<italic>
+						<text>u novčaniku</text>
+					</italic>
+					<text>, ponuda će biti otkazana i porudžbina kupca će biti otkazana.</text>
+				</paragraph>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="sv">
+		<section>
+			<header>
+				<text>Begär en offert - Id-försäljning</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Detta Avtal definierar överföringen av Tjänsten till auktion genom försäljning av Kontot. Köparens överföring till denna försändelse kommer att förhandlas fram som en del av en onlineauktion som hanteras av </text>
+					<italic>
+						<text>TAG Marketplace™</text>
+					</italic>
+					<text>. Dokumentet definierar reglerna för automatisk behandling och integration av potentiella köpare i detta anbud.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Introduktion</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Detta avtal anger begäran om att sälja ID:t på auktionstjänsten </text>
+							<italic>
+								<text>TAG Marketplace™</text>
+							</italic>
+							<text>. </text>
+							<bold>
+								<text>Säljaren</text>
+							</bold>
+							<text> bad </text>
+							<bold>
+								<text>Auktionsförrättaren</text>
+							</bold>
+							<text> att hitta den bästa matchningen bland möjliga auktioner av </text>
+							<italic>
+								<text>köpare</text>
+							</italic>
+							<text> för detta anbud. </text>
+							<bold>
+								<text>Auktionsförrättare</text>
+							</bold>
+							<text> motsvarar inkommande bud från potentiella </text>
+							<italic>
+								<text>köpare</text>
+							</italic>
+							<text> tills den bästa kandidaten hittas, det första kvalificerade budet tas emot eller auktionen avslutas på grund av bristande intresse.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Manifest</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Försäljnings-ID </text>
+							<bold>
+								<text>till säljare</text>
+							</bold>
+							<text> refererar till klasstoken </text>
+							<bold>
+								<parameter name="Category" />
+							</bold>
+							<text>, visningsnamn </text>
+							<bold>
+								<parameter name="FriendlyName" />
+							</bold>
+							<text> och token-ID </text>
+							<bold>
+								<parameter name="TokenID" />
+							</bold>
+							<text>.</text>
+						</paragraph>
+						<paragraph>
+							<text>Överföring av äganderätt</text>
+						</paragraph>
+						<paragraph>
+							<text>När du har valt det bästa budet och behandlat avgifterna, inklusive avgifter, kommer äganderätten till token att överföras först till </text>
+							<bold>
+								<text>auktionsförrättaren</text>
+							</bold>
+							<text> och sedan till </text>
+							<bold>
+								<text>köparen</text>
+							</bold>
+							<text> som vinner auktionen.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Auktionsfrakt</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>När du undertecknar detta Avtal ber </text>
+							<bold>
+								<text>Säljaren</text>
+							</bold>
+							<text> dig att hitta en köpare som vill ändra det ERBJUDNA ID som anges i </text>
+							<italic>
+								<text>Manifestet</text>
+							</italic>
+							<text> ovan till </text>
+							<bold>
+								<text>Auktionsförrättaren</text>
+							</bold>
+							<text> vars ursprungliga </text>
+							<bold>
+								<text>önskade pris</text>
+							</bold>
+							<text> är </text>
+							<bold>
+								<parameter name="AskingPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. </text>
+							<bold>
+								<text>Auktionsförrättaren</text>
+							</bold>
+							<text> publicerar information </text>
+							<italic>
+								<text>anbudsförfrågan</text>
+							</italic>
+							<text> till potentiella </text>
+							<italic>
+								<text>köpare</text>
+							</italic>
+							<text> som kan lämna </text>
+							<italic>
+								<text>bud</text>
+							</italic>
+							<text> </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> inom en dag efter undertecknandet av kontraktet eller mottagandet av det första </text>
+							<bold>
+								<text>godtagbara</text>
+							</bold>
+							<text> </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text>. Alla avtalade tider i </text>
+							<bold>
+								<parameter name="RejectPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> avvisas automatiskt. Information om det bästa erbjudandet kommer också att tillhandahållas.</text>
+						</paragraph>
+						<paragraph>
+							<text>Försändelsen kommer att avslutas </text>
+							<bold>
+								<parameter name="AvailableDays" />
+							</bold>
+							<text> dagar efter undertecknandet av kontraktet eller när det första </text>
+							<bold>
+								<text>acceptabla</text>
+							</bold>
+							<text> </text>
+							<bold>
+								<parameter name="AcceptPrice" />
+								<text> </text>
+								<parameter name="Currency" />
+							</bold>
+							<text> erbjudandet har mottagits. Om inget bud har lämnats i slutet av auktionen kommer överföringen att annulleras utan att avgiften behandlas. Annars kommer två betalningar att göras:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<text>Omedelbar betalning motsvarande det överenskomna priset för det bästa eller först accepterade erbjudandet kommer att göras </text>
+								<bold>
+									<text>Köpare</text>
+								</bold>
+								<text> - </text>
+								<bold>
+									<text>Auktionsförrättare</text>
+								</bold>
+								<text>.</text>
+							</item>
+							<item>
+								<text>Direkt betalning motsvarande det överenskomna priset för det bästa eller först accepterade erbjudandet minus den överenskomna kursen i procent av priset (</text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text>) måste göras av </text>
+								<bold>
+									<text>Auktionsförrättaren</text>
+								</bold>
+								<text> till Säljaren. </text>
+								<bold>
+									<text>Auktionsförrättaren</text>
+								</bold>
+								<text> betraktar </text>
+								<bold>
+									<parameter name="CommissionPercent" />
+									<text> %</text>
+								</bold>
+								<text> som betalning för sina tjänster.</text>
+							</item>
+						</bulletItems>
+						<paragraph>
+							<text>Alla betalningar sker via </text>
+							<italic>
+								<text>eDaler</text>
+							</italic>
+							<text>®. För en köpare som inte har ett saldo </text>
+							<italic>
+								<text>i plånboken</text>
+							</italic>
+							<text> kommer erbjudandet att annulleras och kundens beställning kommer att annulleras.</text>
+						</paragraph>
+					</body>
+				</section>
 			</body>
 		</section>
 	</humanReadableText>
