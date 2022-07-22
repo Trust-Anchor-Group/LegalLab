@@ -628,7 +628,7 @@
 							<parameter name="Currency" />
 							<text>. Tillidsudbyderen tager en provision på </text>
 							<parameter name="CommissionPercent" />
-							<text>% af denne værdi, når tokenet oprettes.</text>
+							<text> % af denne værdi, når tokenet oprettes.</text>
 						</paragraph>
 					</body>
 				</section>
@@ -697,7 +697,7 @@
 							<parameter name="Currency" />
 							<text> festgelegt. Der Vertrauensanbieter nimmt eine Provision von </text>
 							<parameter name="CommissionPercent" />
-							<text>% dieses Wertes, wenn das Token erstellt wird.</text>
+							<text> % dieses Wertes, wenn das Token erstellt wird.</text>
 						</paragraph>
 					</body>
 				</section>
@@ -836,7 +836,7 @@
 							<parameter name="Currency" />
 							<text>. El proveedor de confianza recibe una comisión del </text>
 							<parameter name="CommissionPercent" />
-							<text>% de este valor cuando se crea el token.</text>
+							<text> % de este valor cuando se crea el token.</text>
 						</paragraph>
 					</body>
 				</section>
@@ -905,7 +905,7 @@
 							<parameter name="Currency" />
 							<text>. Luotettu palveluntarjoaja saa palkkion, joka on </text>
 							<parameter name="CommissionPercent" />
-							<text>% tästä arvosta, kun tunnus luodaan.</text>
+							<text> % tästä arvosta, kun tunnus luodaan.</text>
 						</paragraph>
 					</body>
 				</section>
@@ -1112,7 +1112,7 @@
 							<parameter name="Currency" />
 							<text>. O provedor de confiança recebe uma comissão de </text>
 							<parameter name="CommissionPercent" />
-							<text>% desse valor quando o token é criado.</text>
+							<text> % desse valor quando o token é criado.</text>
 						</paragraph>
 					</body>
 				</section>
@@ -1181,7 +1181,7 @@
 							<parameter name="Currency" />
 							<text>. Furnizorul de încredere primește un comision de </text>
 							<parameter name="CommissionPercent" />
-							<text>% din această valoare atunci când simbolul este creat.</text>
+							<text> % din această valoare atunci când simbolul este creat.</text>
 						</paragraph>
 					</body>
 				</section>
@@ -1250,7 +1250,7 @@
 							<parameter name="Currency" />
 							<text>. Доверенный поставщик получает комиссию в размере </text>
 							<parameter name="CommissionPercent" />
-							<text>% от этого значения при создании токена.</text>
+							<text> % от этого значения при создании токена.</text>
 						</paragraph>
 					</body>
 				</section>
@@ -1319,7 +1319,7 @@
 							<parameter name="Currency" />
 							<text>. Pouzdani dobavljač dobija proviziju od </text>
 							<parameter name="CommissionPercent" />
-							<text>% ove vrednosti prilikom kreiranja simbola.</text>
+							<text> % ove vrednosti prilikom kreiranja simbola.</text>
 						</paragraph>
 					</body>
 				</section>

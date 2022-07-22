@@ -231,7 +231,17 @@
 					<text>The ID of the token to transfer.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Identificador del token que se va a transferir.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="fi">
+				<paragraph>
+					<text>Identificador del token que se va a transferir.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
 				<paragraph>
 					<text>Identificador del token que se va a transferir.</text>
 				</paragraph>
@@ -259,6 +269,11 @@
 			<description xml:lang="sr">
 				<paragraph>
 					<text>Identifikator znaka koji treba preneti.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Identifierare för det tecken som ska överföras.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
@@ -464,7 +479,17 @@
 					<text>The ID of the contract that shows the current owner is the current owner of the token.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>El identificador del contrato que muestra que el propietario actual es el propietario actual del token.</text>
+				</paragraph>
+			</description>
 			<description xml:lang="fi">
+				<paragraph>
+					<text>El identificador del contrato que muestra que el propietario actual es el propietario actual del token.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
 				<paragraph>
 					<text>El identificador del contrato que muestra que el propietario actual es el propietario actual del token.</text>
 				</paragraph>
@@ -490,6 +515,11 @@
 				</paragraph>
 			</description>
 			<description xml:lang="sr">
+				<paragraph>
+					<text>El identificador del contrato que muestra que el propietario real es el propietario real del token.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
 				<paragraph>
 					<text>El identificador del contrato que muestra que el propietario real es el propietario real del token.</text>
 				</paragraph>
@@ -611,7 +641,7 @@
 							</italic>
 							<text> gesendet, abzüglich einer Provision von </text>
 							<parameter name="CommissionPercent" />
-							<text>%, die an den </text>
+							<text> %, die an den </text>
 							<italic>
 								<text>Trust Provider</text>
 							</italic>
@@ -759,7 +789,7 @@
 							</italic>
 							<text>, menos la comisión del </text>
 							<parameter name="CommissionPercent" />
-							<text>% pagada al </text>
+							<text> % pagada al </text>
 							<italic>
 								<text>Proveedor de servicios de confianza</text>
 							</italic>
@@ -833,7 +863,7 @@
 							</italic>
 							<text> maksettu </text>
 							<parameter name="CommissionPercent" />
-							<text> prosentin provisio.</text>
+							<text> % provisio.</text>
 						</paragraph>
 					</body>
 				</section>
@@ -903,7 +933,7 @@
 							</italic>
 							<text>, moins la commission de </text>
 							<parameter name="CommissionPercent" />
-							<text>% versée au </text>
+							<text> % versée au </text>
 							<italic>
 								<text>Fournisseur de services de confiance</text>
 							</italic>
@@ -973,7 +1003,7 @@
 							</italic>
 							<text>, minus en provisjon på </text>
 							<parameter name="CommissionPercent" />
-							<text>% betalt til </text>
+							<text> % betalt til </text>
 							<italic>
 								<text>Trust Provider</text>
 							</italic>
@@ -1047,7 +1077,7 @@
 							</italic>
 							<text>, menos a comissão de </text>
 							<parameter name="CommissionPercent" />
-							<text>% paga ao </text>
+							<text> % paga ao </text>
 							<italic>
 								<text>Provedor de Serviços Fiduciários</text>
 							</italic>
@@ -1109,7 +1139,7 @@
 							<parameter name="Currency" />
 							<text> vânzătorului, minus comisioanele </text>
 							<parameter name="CommissionPercent" />
-							<text>% plătite Furnizorului de servicii de încredere.</text>
+							<text> % plătite Furnizorului de servicii de încredere.</text>
 						</paragraph>
 					</body>
 				</section>
@@ -1179,7 +1209,7 @@
 							</italic>
 							<text>, за вычетом комиссии </text>
 							<parameter name="CommissionPercent" />
-							<text>%, выплаченной </text>
+							<text> %, выплаченной </text>
 							<italic>
 								<text>Поставщику услуг доверия</text>
 							</italic>
@@ -1241,7 +1271,7 @@
 							<parameter name="Currency" />
 							<text> Prodavcu, minus provizije </text>
 							<parameter name="CommissionPercent" />
-							<text>% isplaćene Dobavljaču usluga poverenja.</text>
+							<text> % isplaćene Dobavljaču usluga poverenja.</text>
 						</paragraph>
 					</body>
 				</section>
@@ -1311,7 +1341,7 @@
 							</italic>
 							<text>, minus en provision på </text>
 							<parameter name="CommissionPercent" />
-							<text>% som betalats till </text>
+							<text> % som betalats till </text>
 							<italic>
 								<text>Trust Provider</text>
 							</italic>
