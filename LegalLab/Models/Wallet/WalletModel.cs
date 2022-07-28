@@ -16,6 +16,7 @@ namespace LegalLab.Models.Wallet
 	public class WalletModel : PersistedModel, IDisposable
 	{
 		private readonly Property<double> amount;
+		private readonly Property<double> reserved;
 		private readonly Property<string> currency;
 		private readonly Property<DateTime> timestamp;
 		private readonly Property<string> uri;
@@ -38,6 +39,7 @@ namespace LegalLab.Models.Wallet
 			: base()
 		{
 			this.amount = new Property<double>(nameof(this.Amount), 0, this);
+			this.reserved = new Property<double>(nameof(this.Reserved), 0, this);
 			this.currency = new Property<string>(nameof(this.Currency), string.Empty, this);
 			this.timestamp = new Property<DateTime>(nameof(this.Timestamp), DateTime.MinValue, this);
 			this.uri = new Property<string>(nameof(this.Uri), string.Empty, this);
@@ -97,6 +99,15 @@ namespace LegalLab.Models.Wallet
 		}
 
 		/// <summary>
+		/// Reserved amount
+		/// </summary>
+		public double Reserved
+		{
+			get => this.reserved.Value;
+			set => this.reserved.Value = value;
+		}
+
+		/// <summary>
 		/// Balance currency
 		/// </summary>
 		public string Currency
@@ -138,6 +149,7 @@ namespace LegalLab.Models.Wallet
 				this.balance = value;
 
 				this.Amount = (double)this.balance.Amount;
+				this.Reserved = (double)this.balance.Reserved;
 				this.Currency = this.balance.Currency;
 				this.Timestamp = this.balance.Timestamp;
 			}

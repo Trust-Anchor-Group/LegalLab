@@ -47,6 +47,11 @@ namespace LegalLab.Models.Wallet
 		public decimal Balance => this.@event.Balance;
 
 		/// <summary>
+		/// Reserved amount
+		/// </summary>
+		public decimal Reserved => this.@event.Reserved;
+
+		/// <summary>
 		/// Encrypted message
 		/// </summary>
 		public byte[] EncryptedMessage => this.@event.EncryptedMessage;

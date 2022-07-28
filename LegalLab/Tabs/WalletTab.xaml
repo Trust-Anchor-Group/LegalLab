@@ -11,6 +11,8 @@
             <StackPanel Orientation="Vertical" Width="250" Margin="10">
                 <Label Padding="0">Balance:</Label>
                 <TextBox Text="{Binding Amount, Converter={conv:MoneyToString}}" IsReadOnly="True"/>
+                <Label Padding="0">Reserved:</Label>
+                <TextBox Text="{Binding Reserved, Converter={conv:MoneyToString}}" IsReadOnly="True"/>
                 <Label Padding="0,10,0,0">Currency:</Label>
                 <TextBox Text="{Binding Currency}" IsReadOnly="True"/>
                 <Label Padding="0,10,0,0">Timestamp:</Label>
@@ -23,6 +25,7 @@
         <StackPanel DockPanel.Dock="Bottom" Visibility="{Binding SelectedItem, Converter={conv:VisibleIfNotNull}}">
             <Grid Margin="10" DataContext="{Binding SelectedItem}" Visibility="{Binding SelectedItem, Converter={conv:VisibleIfNotNull}}">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
@@ -41,11 +44,13 @@
                 <Label Grid.Column="0" Grid.Row="4" Padding="0,10,0,0">Remote party:</Label>
                 <TextBox Grid.Column="0" Grid.Row="5" Margin="0,0,10,0" Text="{Binding Remote, Mode=OneWay}" IsReadOnly="True"/>
                 <Label Grid.Column="1" Grid.Row="0" Padding="0">Change:</Label>
-                <TextBox Grid.Column="1" Grid.Row="1" Width="100" HorizontalAlignment="Left" Text="{Binding Change, Mode=OneWay, Converter={conv:MoneyToString}}" IsReadOnly="True"/>
+                <TextBox Grid.Column="1" Grid.Row="1" Margin="0,0,10,0" Text="{Binding Change, Mode=OneWay, Converter={conv:MoneyToString}}" IsReadOnly="True"/>
                 <Label Grid.Column="1" Grid.Row="2" Padding="0,10,0,0">Balance:</Label>
-                <TextBox Grid.Column="1" Grid.Row="3" Width="100" HorizontalAlignment="Left" Text="{Binding Balance, Mode=OneWay, Converter={conv:MoneyToString}}" IsReadOnly="True"/>
-                <Label Grid.Column="1" Grid.Row="4" Padding="0,10,0,0">Message:</Label>
-                <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Message, Mode=OneWay}" IsReadOnly="True"/>
+                <TextBox Grid.Column="1" Grid.Row="3" Margin="0,0,10,0" Text="{Binding Balance, Mode=OneWay, Converter={conv:MoneyToString}}" IsReadOnly="True"/>
+                <Label Grid.Column="2" Grid.Row="2" Padding="0,10,0,0">Reserved:</Label>
+                <TextBox Grid.Column="2" Grid.Row="3" Text="{Binding Reserved, Mode=OneWay, Converter={conv:MoneyToString}}" IsReadOnly="True"/>
+                <Label Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="4" Padding="0,10,0,0">Message:</Label>
+                <TextBox Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="5" Text="{Binding Message, Mode=OneWay}" IsReadOnly="True"/>
             </Grid>
         </StackPanel>
         <ListView HorizontalAlignment="Stretch" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible" 
@@ -72,6 +77,13 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Balance, Converter={conv:MoneyToString}}" HorizontalAlignment="Right"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Reserved" Width="75">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Reserved, Converter={conv:MoneyToString}}" HorizontalAlignment="Right"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
