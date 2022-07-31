@@ -1,15 +1,23 @@
-﻿using System.Windows.Controls;
+﻿using LegalLab.Models.Tokens.Reports;
+using System.Windows.Controls;
 
 namespace LegalLab.Tabs
 {
 	/// <summary>
-	/// Interaction logic for ScriptTab.xaml
+	/// Interaction logic for ReportTab.xaml
 	/// </summary>
 	public partial class ReportTab : UserControl
 	{
-		public ReportTab()
+		public ReportTab(TokenReport Report)
 		{
+			this.Report = Report;
+
 			InitializeComponent();
 		}
+
+		/// <summary>
+		/// Reference to underlying report model.
+		/// </summary>
+		public TokenReport Report { get; }
 	}
 }

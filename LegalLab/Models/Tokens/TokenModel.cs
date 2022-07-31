@@ -1,15 +1,13 @@
 ﻿using LegalLab.Extensions;
 using LegalLab.Models.Items;
+using LegalLab.Models.Tokens.Reports;
 using LegalLab.Tabs;
 using NeuroFeatures;
 using NeuroFeatures.Tags;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Waher.Content.Markdown;
@@ -245,202 +243,36 @@ namespace LegalLab.Models.Tokens
 		private async Task ExecuteViewPresentReport()
 		{
 			if (!string.IsNullOrEmpty(this.TokenId))
-			{
-				MainWindow.MouseHourglass();
-				try
-				{
-					this.AddReport(
-						await this.client.GeneratePresentReportAsync(this.TokenId, ReportFormat.Xaml),
-						"Present");
-				}
-				catch (Exception ex)
-				{
-					MainWindow.ErrorBox(ex.Message);
-				}
-				finally
-				{
-					MainWindow.MouseDefault();
-				}
-			}
+				await this.AddReport(new TokenPresentReport(this.client, this.TokenId));
 		}
 
 		private async Task ExecuteViewHistoryReport()
 		{
 			if (!string.IsNullOrEmpty(this.TokenId))
-			{
-				MainWindow.MouseHourglass();
-				try
-				{
-					this.AddReport(
-						await this.client.GenerateHistoryReportAsync(this.TokenId, ReportFormat.Xaml),
-						"History");
-				}
-				catch (Exception ex)
-				{
-					MainWindow.ErrorBox(ex.Message);
-				}
-				finally
-				{
-					MainWindow.MouseDefault();
-				}
-			}
+				await this.AddReport(new TokenHistoryReport(this.client, this.TokenId));
 		}
 
 		private async Task ExecuteViewStateDiagramReport()
 		{
 			if (!string.IsNullOrEmpty(this.TokenId))
-			{
-				MainWindow.MouseHourglass();
-				try
-				{
-					this.AddReport(
-						await this.client.GenerateStateDiagramAsync(this.TokenId, ReportFormat.Xaml),
-						"State Diagram");
-				}
-				catch (Exception ex)
-				{
-					MainWindow.ErrorBox(ex.Message);
-				}
-				finally
-				{
-					MainWindow.MouseDefault();
-				}
-			}
+				await this.AddReport(new TokenStateDiagramReport(this.client, this.TokenId));
 		}
 
 		private async Task ExecuteViewProfilingReport()
 		{
 			if (!string.IsNullOrEmpty(this.TokenId))
-			{
-				MainWindow.MouseHourglass();
-				try
-				{
-					this.AddReport(
-						await this.client.GenerateProfilingReportAsync(this.TokenId, ReportFormat.Xaml),
-						"Profiling");
-				}
-				catch (Exception ex)
-				{
-					MainWindow.ErrorBox(ex.Message);
-				}
-				finally
-				{
-					MainWindow.MouseDefault();
-				}
-			}
+				await this.AddReport(new TokenProfilingReport(this.client, this.TokenId));
 		}
 
-		private class DynamicImageRef
+		private async Task AddReport(TokenReport Report)
 		{
-			public string Border;
-			public string Width;
-			public string Height;
-			public string Alt;
-			public string ContentType;
-			public string Base64;
-		}
-
-		private void AddReport(ReportEventArgs e, string Title)
-		{
-			if (e.Ok)
+			MainWindow.MouseHourglass();
+			try
 			{
-				List<DynamicImageRef> DynamicImages = new List<DynamicImageRef>();
-				string Xaml = e.ReportText;
-				StringBuilder sb = new StringBuilder();
-				int i = 0;
-				int c = Xaml.Length;
+				ReportTab ReportTab = new ReportTab(Report);
+				string Title = await Report.GetTitle();
 
-				while (i < c)
-				{
-					Match M = dynamicImage.Match(Xaml, i);
-					if (!M.Success)
-					{
-						sb.Append(Xaml.Substring(i, c - i));
-						i = c;
-					}
-					else
-					{
-						sb.Append(Xaml.Substring(i, M.Index));
-						i = M.Index + M.Length;
-
-						sb.Append("<Image Name=\"DynamicImage");
-						sb.Append(DynamicImages.Count.ToString());
-						sb.Append("\"/>");
-
-						DynamicImages.Add(new DynamicImageRef()
-						{
-							Border = M.Groups["Border"].Value,
-							Width = M.Groups["Width"].Value,
-							Height = M.Groups["Height"].Value,
-							ContentType = M.Groups["ContentType"].Value,
-							Base64 = M.Groups["Base64"].Value,
-							Alt = M.Groups["Alt"].Value
-						});
-					}
-				}
-
-				object Parsed = sb.ToString().ParseSimple();
-
-				if (Parsed is IContentHost Host)
-				{
-					LinkedList<IContentHost> ToProcess = new LinkedList<IContentHost>();
-					LinkedList<Image> Images = new LinkedList<Image>();
-					ToProcess.AddLast(Host);
-
-					while (!(ToProcess.First is null))
-					{
-						Host = ToProcess.First.Value;
-						ToProcess.RemoveFirst();
-
-						IEnumerator<IInputElement> e2 = Host.HostedElements;
-						while (e2.MoveNext())
-						{
-							if (e2.Current is IContentHost Host2)
-								ToProcess.AddLast(Host2);
-							else if (e2.Current is Image Image)
-								Images.AddLast(Image);
-						}
-					}
-
-					foreach (Image Image in Images)
-					{
-						if (Image.Name.StartsWith("DynamicImage") &&
-							int.TryParse(Image.Name.Substring(12), out int Nr) &&
-							Nr >= 0 && Nr < DynamicImages.Count)
-						{
-							DynamicImageRef Ref = DynamicImages[Nr];
-
-							if (int.TryParse(Ref.Border, out int Border))
-								Image.Margin = new Thickness(Border);
-
-							if (int.TryParse(Ref.Width, out int Width))
-								Image.Width = Width;
-
-							if (int.TryParse(Ref.Height, out int Height))
-								Image.Height = Height;
-
-							if (!string.IsNullOrEmpty(Ref.Alt))
-								Image.ToolTip = Ref.Alt;
-
-							byte[] Bin = Convert.FromBase64String(Ref.Base64);
-
-							using (MemoryStream ms = new MemoryStream(Bin))
-							{
-								BitmapImage BitmapImage = new BitmapImage();
-								BitmapImage.BeginInit();
-								BitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-								BitmapImage.StreamSource = ms;
-								BitmapImage.EndInit();
-
-								Image.Source = BitmapImage;
-							}
-						}
-					}
-
-				}
-
-				ReportTab ReportTab = new ReportTab();
-				ReportTab.ReportPanel.Children.Add((UIElement)Parsed);
+				await Report.GenerateReport(ReportTab);
 
 				TabItem Tab = MainWindow.NewTab(Title);
 				Tab.Content = ReportTab;
@@ -448,11 +280,15 @@ namespace LegalLab.Models.Tokens
 				MainWindow.currentInstance.TabControl.Items.Add(Tab);
 				MainWindow.currentInstance.TabControl.SelectedItem = Tab;
 			}
-			else
-				MainWindow.ErrorBox(e.ErrorText);
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
+			finally
+			{
+				MainWindow.MouseDefault();
+			}
 		}
-
-		private static readonly Regex dynamicImage = new Regex("<!--<img(\\s+((border=[\"'](?'Border'\\d+)[\"'])|(width=[\"'](?'Width'\\d+)[\"'])|(height=[\"'](?'Height'\\d+)[\"'])|(alt=[\"'](?'Alt'[^\"']*)[\"'])|(src=[\"']data:(?'ContentType'\\w+\\/\\w+);base64,(?'Base64'[A-Za-z0-9+-\\/_=]+)[\"'])))*\\s*\\/>-->", RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled);
 
 	}
 }

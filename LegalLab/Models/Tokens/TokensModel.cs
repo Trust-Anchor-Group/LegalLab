@@ -1,8 +1,10 @@
 ﻿using LegalLab.Models.Tokens.Events;
+using LegalLab.Tabs;
 using NeuroFeatures;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Waher.Content.Xml;
 using Waher.Events;
@@ -42,6 +44,9 @@ namespace LegalLab.Models.Tokens
 
 			this.neuroFeaturesClient.TokenAdded += NeuroFeaturesClient_TokenAdded;
 			this.neuroFeaturesClient.TokenRemoved += NeuroFeaturesClient_TokenRemoved;
+
+			this.neuroFeaturesClient.StateUpdated += NeuroFeaturesClient_StateUpdated;
+			this.neuroFeaturesClient.VariablesUpdated += NeuroFeaturesClient_VariablesUpdated;
 
 			this.addTextNote = new Command(this.CanExecuteAddNote, this.ExecuteAddTextNote);
 			this.addXmlNote = new Command(this.CanExecuteAddNote, this.ExecuteAddXmlNote);
@@ -301,6 +306,54 @@ namespace LegalLab.Models.Tokens
 			}
 
 			await base.Start();
+		}
+
+		private async Task NeuroFeaturesClient_VariablesUpdated(object Sender, VariablesUpdatedEventArgs e)
+		{
+			try
+			{
+				foreach (object Control in MainWindow.currentInstance.TabControl.Items)
+				{
+					if (!(Control is TabItem Tab))
+						continue;
+
+					if (!(Tab.Content is ReportTab ReportTab))
+						continue;
+
+					if (ReportTab.Report.TokenId != e.TokenId)
+						continue;
+
+					await ReportTab.Report.OnVariablesUpdated(Sender, e);
+				}
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
+		}
+
+		private async Task NeuroFeaturesClient_StateUpdated(object Sender, NewStateEventArgs e)
+		{
+			try
+			{
+				foreach (object Control in MainWindow.currentInstance.TabControl.Items)
+				{
+					if (!(Control is TabItem Tab))
+						continue;
+
+					if (!(Tab.Content is ReportTab ReportTab))
+						continue;
+
+					if (ReportTab.Report.TokenId != e.TokenId)
+						continue;
+
+					await ReportTab.Report.OnNewState(Sender, e);
+				}
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
 		}
 
 	}
