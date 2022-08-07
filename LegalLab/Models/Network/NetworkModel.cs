@@ -158,38 +158,41 @@ namespace LegalLab.Models.Network
 				this.deleteCredentials.RaiseCanExecuteChanged();
 
 				if (!this.loading && !string.IsNullOrEmpty(value))
-				{
-					int i = value.IndexOf('@');
-					if (i < 0)
-						return;
-
-					string Prefix = "Credentials." + value + ".";
-					bool Connect = this.Connected;
-
-					this.Account = value.Substring(0, i);
-					this.XmppServer = value[(i + 1)..];
-					this.Password = RuntimeSettings.Get(Prefix + "Password", string.Empty);
-					this.PasswordMethod = RuntimeSettings.Get(Prefix + "PasswordMethod", string.Empty);
-					this.ApiKey = RuntimeSettings.Get(Prefix + "ApiKey", string.Empty);
-					this.ApiKeySecret = RuntimeSettings.Get(Prefix + "ApiKeySecret", string.Empty);
-					this.LegalComponentJid = RuntimeSettings.Get(Prefix + "LegalComponentJid", string.Empty);
-					this.EDalerComponentJid = RuntimeSettings.Get(Prefix + "EDalerComponentJid", string.Empty);
-					this.NeuroFeaturesComponentJid = RuntimeSettings.Get(Prefix + "NeuroFeaturesComponentJid", string.Empty);
-					this.EDalerComponentJid = RuntimeSettings.Get(Prefix + "EDalerComponentJid", string.Empty);
-					this.TrustServerCertificate = RuntimeSettings.Get(Prefix + "TrustServerCertificate", false);
-					this.AllowInsecureAlgorithms = RuntimeSettings.Get(Prefix + "AllowInsecureAlgorithms", false);
-					this.StorePasswordInsteadOfDigest = RuntimeSettings.Get(Prefix + "StorePasswordInsteadOfDigest", false);
-					this.ConnectOnStartup = RuntimeSettings.Get(Prefix + "ConnectOnStartup", false);
-					this.CreateAccount = false;
-					this.Password2 = string.Empty;
-
-					this.ExecuteDisconnect();
-					this.ExecuteClearAll();
-
-					if (Connect)
-						Task.Run(async () => await this.ExecuteConnect());
-				}
+					Task.Run(() => MainWindow.UpdateGui(async () => await this.LoadCredentials(value)));
 			}
+		}
+
+		private async Task LoadCredentials(string Account)
+		{
+			int i = Account.IndexOf('@');
+			if (i < 0)
+				return;
+
+			string Prefix = "Credentials." + Account + ".";
+			bool Connect = this.Connected;
+
+			this.Account = Account.Substring(0, i);
+			this.XmppServer = Account[(i + 1)..];
+			this.Password = await RuntimeSettings.GetAsync(Prefix + "Password", string.Empty);
+			this.PasswordMethod = await RuntimeSettings.GetAsync(Prefix + "PasswordMethod", string.Empty);
+			this.ApiKey = await RuntimeSettings.GetAsync(Prefix + "ApiKey", string.Empty);
+			this.ApiKeySecret = await RuntimeSettings.GetAsync(Prefix + "ApiKeySecret", string.Empty);
+			this.LegalComponentJid = await RuntimeSettings.GetAsync(Prefix + "LegalComponentJid", string.Empty);
+			this.EDalerComponentJid = await RuntimeSettings.GetAsync(Prefix + "EDalerComponentJid", string.Empty);
+			this.NeuroFeaturesComponentJid = await RuntimeSettings.GetAsync(Prefix + "NeuroFeaturesComponentJid", string.Empty);
+			this.EDalerComponentJid = await RuntimeSettings.GetAsync(Prefix + "EDalerComponentJid", string.Empty);
+			this.TrustServerCertificate = await RuntimeSettings.GetAsync(Prefix + "TrustServerCertificate", false);
+			this.AllowInsecureAlgorithms = await RuntimeSettings.GetAsync(Prefix + "AllowInsecureAlgorithms", false);
+			this.StorePasswordInsteadOfDigest = await RuntimeSettings.GetAsync(Prefix + "StorePasswordInsteadOfDigest", false);
+			this.ConnectOnStartup = await RuntimeSettings.GetAsync(Prefix + "ConnectOnStartup", false);
+			this.CreateAccount = false;
+			this.Password2 = string.Empty;
+
+			await this.ExecuteDisconnect();
+			await this.ExecuteClearAll();
+
+			if (Connect)
+				await this.ExecuteConnect();
 		}
 
 		/// <summary>
