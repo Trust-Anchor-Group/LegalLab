@@ -59,6 +59,7 @@ namespace LegalLab.Models.Tokens
 			{
 				new TokenDetail("Token ID", Result.token.TokenId),
 				new TokenDetail("Token ID Method", Result.token.TokenIdMethod),
+				new TokenDetail("Short ID", Result.token.ShortId),
 				new TokenDetail("Ordinal", Result.token.Ordinal),
 				new TokenDetail("Batch Size", Result.token.BatchSize),
 				new TokenDetail("Created", Result.token.Created),
