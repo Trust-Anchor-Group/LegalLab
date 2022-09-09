@@ -90,6 +90,11 @@ namespace LegalLab.Models.Wallet
 		}
 
 		/// <summary>
+		/// eDaler client.
+		/// </summary>
+		public EDalerClient EDaler => this.eDalerClient;
+
+		/// <summary>
 		/// Balance amount
 		/// </summary>
 		public double Amount

@@ -627,7 +627,9 @@ namespace LegalLab.Models.Network
 
 						await this.Save();
 
-						if (this.legalModel is null || this.walletModel is null)
+						if (this.legalModel is null || this.legalModel.Contracts.ComponentAddress != this.LegalComponentJid || 
+							this.walletModel is null || this.walletModel.EDaler.ComponentAddress != this.EDalerComponentJid ||
+							this.tokensModel is null || this.tokensModel.NeuroFeaturesClient.ComponentAddress != this.NeuroFeaturesComponentJid)
 						{
 							if (string.IsNullOrEmpty(this.LegalComponentJid) ||
 								string.IsNullOrEmpty(this.EDalerComponentJid) ||
@@ -657,22 +659,33 @@ namespace LegalLab.Models.Network
 
 							if (!string.IsNullOrEmpty(this.LegalComponentJid))
 							{
-								if (this.legalModel is null)
+								if (this.legalModel is null || this.legalModel.Contracts.ComponentAddress != this.LegalComponentJid)
 								{
+									this.legalModel?.Dispose();
+									this.legalModel = null;
+
 									this.legalModel = new LegalModel(this.client, this.LegalComponentJid);
 									await this.legalModel.Load();
 									await this.legalModel.Start();
 								}
 
-								if (!string.IsNullOrEmpty(this.EDalerComponentJid) && this.walletModel is null)
+								if (!string.IsNullOrEmpty(this.EDalerComponentJid) && 
+									(this.walletModel is null || this.walletModel.EDaler.ComponentAddress != this.EDalerComponentJid))
 								{
+									this.walletModel?.Dispose();
+									this.walletModel = null;
+
 									this.walletModel = new WalletModel(this.client, this.legalModel.Contracts, this.EDalerComponentJid);
 									await this.walletModel.Load();
 									await this.walletModel.Start();
 								}
 
-								if (!string.IsNullOrEmpty(this.NeuroFeaturesComponentJid) && this.tokensModel is null)
+								if (!string.IsNullOrEmpty(this.NeuroFeaturesComponentJid) && 
+									(this.tokensModel is null || this.tokensModel.NeuroFeaturesClient.ComponentAddress != this.NeuroFeaturesComponentJid))
 								{
+									this.tokensModel?.Dispose();
+									this.tokensModel = null;
+
 									this.tokensModel = new TokensModel(this.client, this.legalModel.Contracts, this.NeuroFeaturesComponentJid);
 									await this.tokensModel.Load();
 									await this.tokensModel.Start();

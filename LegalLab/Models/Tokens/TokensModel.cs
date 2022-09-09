@@ -141,6 +141,11 @@ namespace LegalLab.Models.Tokens
 		}
 
 		/// <summary>
+		/// Neuro-Features client
+		/// </summary>
+		public NeuroFeaturesClient NeuroFeaturesClient => this.neuroFeaturesClient;
+
+		/// <summary>
 		/// Account events
 		/// </summary>
 		public IEnumerable<TokenModel> Tokens
