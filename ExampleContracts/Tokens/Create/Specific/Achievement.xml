@@ -127,6 +127,20 @@
 					<text>Reference: </text>
 					<parameter name="Reference" />
 				</paragraph>
+				<section>
+					<header>
+						<text>Commission</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>The commission and creation fees for this token is paid for by the </text>
+							<italic>
+								<text>Creator</text>
+							</italic>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
 			</body>
 		</section>
 	</humanReadableText>
