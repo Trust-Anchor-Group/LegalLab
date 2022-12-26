@@ -21,6 +21,7 @@
 		<CommissionPercent>
 			<ParameterReference parameter="CommissionPercent" />
 		</CommissionPercent>
+		<CommissionPaidBy>Creator</CommissionPaidBy>
 		<Expires>
 			<Date>2100-01-01</Date>
 		</Expires>
@@ -116,8 +117,10 @@
 					<bold>
 						<text>Achievement</text>
 					</bold>
-					<text>, awarded </text>
-					<parameter name="Recipient" />
+					<text>, awarded to the </text>
+					<italic>
+						<text>Recipient</text>
+					</italic>
 					<text>.</text>
 				</paragraph>
 				<paragraph>
