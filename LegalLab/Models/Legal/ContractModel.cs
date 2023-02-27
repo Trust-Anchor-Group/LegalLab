@@ -185,8 +185,8 @@ namespace LegalLab.Models.Legal
 		/// <inheritdoc/>
 		public override Task Start()
 		{
-			this.contracts.ContractUpdated += Contracts_ContractUpdated;
-			this.contracts.ContractSigned += Contracts_ContractSigned;
+			this.contracts.ContractUpdated += this.Contracts_ContractUpdated;
+			this.contracts.ContractSigned += this.Contracts_ContractSigned;
 
 			return base.Start();
 		}
@@ -194,8 +194,8 @@ namespace LegalLab.Models.Legal
 		/// <inheritdoc/>
 		public override Task Stop()
 		{
-			this.contracts.ContractUpdated -= Contracts_ContractUpdated;
-			this.contracts.ContractSigned -= Contracts_ContractSigned;
+			this.contracts.ContractUpdated -= this.Contracts_ContractUpdated;
+			this.contracts.ContractSigned -= this.Contracts_ContractSigned;
 
 			return base.Stop();
 		}
@@ -371,8 +371,8 @@ namespace LegalLab.Models.Legal
 						Margin = new Thickness(0, 10, 0, 0)
 					};
 
-					CheckBox.Checked += Parameter_CheckedChanged;
-					CheckBox.Unchecked += Parameter_CheckedChanged;
+					CheckBox.Checked += this.Parameter_CheckedChanged;
+					CheckBox.Unchecked += this.Parameter_CheckedChanged;
 
 					this.parametersByName[Parameter.Name] = ParameterInfo = new BooleanParameterInfo(this.contract, BP, CheckBox, null, this.parameters);
 
@@ -393,7 +393,7 @@ namespace LegalLab.Models.Legal
 						ToolTip = await Parameter.ToSimpleXAML(this.contract.DefaultLanguage, this.contract)
 					};
 
-					TextBox.TextChanged += Parameter_TextChanged;
+					TextBox.TextChanged += this.Parameter_TextChanged;
 
 					if (Parameter is NumericalParameter NP)
 					{
@@ -445,7 +445,7 @@ namespace LegalLab.Models.Legal
 			this.Parameters = ParameterList.ToArray();
 
 			await this.ValidateParameters();
-			await PopulateHumanReadableText();
+			await this.PopulateHumanReadableText();
 
 			AdditionalCommands.DataContext = this;
 			AdditionalCommands.Visibility = Visibility.Visible;
@@ -462,7 +462,7 @@ namespace LegalLab.Models.Legal
 				ParameterInfo.Value = CheckBox.IsChecked;
 
 				await this.ValidateParameters();
-				await PopulateHumanReadableText();
+				await this.PopulateHumanReadableText();
 			}
 			catch (Exception ex)
 			{
@@ -507,7 +507,7 @@ namespace LegalLab.Models.Legal
 					TextBox.Background = Brushes.Salmon;
 				}
 
-				await PopulateHumanReadableText();
+				await this.PopulateHumanReadableText();
 			}
 			catch (Exception ex)
 			{
