@@ -62,52 +62,52 @@
 						<OnExternalTextNote noteVariable="Note"/>
 					</OnEvent>
 					<OnEvent actionRef="Add">
-						<OnXmlNote localName="Add" namespace="https://lab.tagroot.io/Downloads/TestSchemaStateMachines.xsd" noteVariable="Note"/>
+						<OnXmlNote localName="Add" namespace="https://lab.tagroot.io/Downloads/Calculator.xsd" noteVariable="Note"/>
 					</OnEvent>
 					<OnEvent actionRef="Add">
-						<OnExternalXmlNote localName="Add" namespace="https://lab.tagroot.io/Downloads/TestSchemaStateMachines.xsd" noteVariable="Note"/>
+						<OnExternalXmlNote localName="Add" namespace="https://lab.tagroot.io/Downloads/Calculator.xsd" noteVariable="Note"/>
 					</OnEvent>
 					<OnEvent actionRef="Subtract">
-						<OnXmlNote localName="Subtract" namespace="https://lab.tagroot.io/Downloads/TestSchemaStateMachines.xsd" noteVariable="Note"/>
+						<OnXmlNote localName="Subtract" namespace="https://lab.tagroot.io/Downloads/Calculator.xsd" noteVariable="Note"/>
 					</OnEvent>
 					<OnEvent actionRef="Subtract">
-						<OnExternalXmlNote localName="Subtract" namespace="https://lab.tagroot.io/Downloads/TestSchemaStateMachines.xsd" noteVariable="Note"/>
+						<OnExternalXmlNote localName="Subtract" namespace="https://lab.tagroot.io/Downloads/Calculator.xsd" noteVariable="Note"/>
 					</OnEvent>
 					<OnEvent actionRef="Multiply">
-						<OnXmlNote localName="Multiply" namespace="https://lab.tagroot.io/Downloads/TestSchemaStateMachines.xsd" noteVariable="Note"/>
+						<OnXmlNote localName="Multiply" namespace="https://lab.tagroot.io/Downloads/Calculator.xsd" noteVariable="Note"/>
 					</OnEvent>
 					<OnEvent actionRef="Multiply">
-						<OnExternalXmlNote localName="Multiply" namespace="https://lab.tagroot.io/Downloads/TestSchemaStateMachines.xsd" noteVariable="Note"/>
+						<OnExternalXmlNote localName="Multiply" namespace="https://lab.tagroot.io/Downloads/Calculator.xsd" noteVariable="Note"/>
 					</OnEvent>
 					<OnEvent actionRef="Divide">
-						<OnXmlNote localName="Divide" namespace="https://lab.tagroot.io/Downloads/TestSchemaStateMachines.xsd" noteVariable="Note"/>
+						<OnXmlNote localName="Divide" namespace="https://lab.tagroot.io/Downloads/Calculator.xsd" noteVariable="Note"/>
 					</OnEvent>
 					<OnEvent actionRef="Divide">
-						<OnExternalXmlNote localName="Divide" namespace="https://lab.tagroot.io/Downloads/TestSchemaStateMachines.xsd" noteVariable="Note"/>
+						<OnExternalXmlNote localName="Divide" namespace="https://lab.tagroot.io/Downloads/Calculator.xsd" noteVariable="Note"/>
 					</OnEvent>
 					<OnEvent actionRef="Clear">
-						<OnXmlNote localName="Clear" namespace="https://lab.tagroot.io/Downloads/TestSchemaStateMachines.xsd"/>
+						<OnXmlNote localName="Clear" namespace="https://lab.tagroot.io/Downloads/Calculator.xsd"/>
 					</OnEvent>
 					<OnEvent actionRef="Clear">
-						<OnExternalXmlNote localName="Clear" namespace="https://lab.tagroot.io/Downloads/TestSchemaStateMachines.xsd"/>
+						<OnExternalXmlNote localName="Clear" namespace="https://lab.tagroot.io/Downloads/Calculator.xsd"/>
 					</OnEvent>
 					<OnEvent actionRef="Memory">
-						<OnXmlNote localName="Memory" namespace="https://lab.tagroot.io/Downloads/TestSchemaStateMachines.xsd"/>
+						<OnXmlNote localName="Memory" namespace="https://lab.tagroot.io/Downloads/Calculator.xsd"/>
 					</OnEvent>
 					<OnEvent actionRef="Memory">
-						<OnExternalXmlNote localName="Memory" namespace="https://lab.tagroot.io/Downloads/TestSchemaStateMachines.xsd"/>
+						<OnExternalXmlNote localName="Memory" namespace="https://lab.tagroot.io/Downloads/Calculator.xsd"/>
 					</OnEvent>
 					<OnEvent actionRef="Recall">
-						<OnXmlNote localName="Recall" namespace="https://lab.tagroot.io/Downloads/TestSchemaStateMachines.xsd"/>
+						<OnXmlNote localName="Recall" namespace="https://lab.tagroot.io/Downloads/Calculator.xsd"/>
 					</OnEvent>
 					<OnEvent actionRef="Recall">
-						<OnExternalXmlNote localName="Recall" namespace="https://lab.tagroot.io/Downloads/TestSchemaStateMachines.xsd"/>
+						<OnExternalXmlNote localName="Recall" namespace="https://lab.tagroot.io/Downloads/Calculator.xsd"/>
 					</OnEvent>
 					<OnEvent newState="Done">
-						<OnXmlNote localName="Done" namespace="https://lab.tagroot.io/Downloads/TestSchemaStateMachines.xsd"/>
+						<OnXmlNote localName="Done" namespace="https://lab.tagroot.io/Downloads/Calculator.xsd"/>
 					</OnEvent>
 					<OnEvent newState="Done">
-						<OnExternalXmlNote localName="Done" namespace="https://lab.tagroot.io/Downloads/TestSchemaStateMachines.xsd"/>
+						<OnExternalXmlNote localName="Done" namespace="https://lab.tagroot.io/Downloads/Calculator.xsd"/>
 					</OnEvent>
 				</State>
 				<State id="Done">

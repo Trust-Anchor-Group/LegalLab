@@ -109,7 +109,7 @@
 					</OnEvent>
 					<OnEvent actionRef="CheckThreshold" newState="ProjectStarted" failureState="OpenForInvestment">
 						<OnExternalXmlNote localName="Start"
-										   namespace="https://lab.tagroot.io/Downloads/TestSchemaStateMachines.xsd"/>
+										   namespace="https://lab.tagroot.io/Downloads/CrowdFunding.xsd"/>
 					</OnEvent>
 					<OnEvent actionRef="TokenSold">
 						<OnTransferred buyerVariable="Buyer"
@@ -135,7 +135,7 @@
 					</OnEvent>
 					<OnEvent actionRef="ReleaseFunds">
 						<OnExternalXmlNote localName="Release"
-										   namespace="https://lab.tagroot.io/Downloads/TestSchemaStateMachines.xsd"
+										   namespace="https://lab.tagroot.io/Downloads/CrowdFunding.xsd"
 										   noteVariable="Note"
 										   sourceVariable="Source"/>
 					</OnEvent>
