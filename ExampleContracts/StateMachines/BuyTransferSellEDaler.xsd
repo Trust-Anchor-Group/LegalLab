@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="BuyTransferSellEDaler"
+    targetNamespace="https://lab.tagroot.io/Downloads/BuyTransferSellEDaler.xsd"
+    elementFormDefault="qualified"
+    xmlns="https://lab.tagroot.io/Downloads/BuyTransferSellEDaler.xsd"
+    xmlns:mstns="https://lab.tagroot.io/Downloads/BuyTransferSellEDaler.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<!-- Test schema used in example contract. -->
+	<!-- Note: Schema is made available via download using the namespace URL. -->
+
+	<xs:element name="BuyEDaler" type="Amount"/>
+	<xs:element name="TransferEDaler" type="Amount"/>
+	<xs:element name="SellEDaler" type="Amount"/>
+
+	<xs:complexType name="Amount">
+		<xs:attribute name="amount" type="xs:decimal" use="required"/>
+	</xs:complexType>
+</xs:schema>

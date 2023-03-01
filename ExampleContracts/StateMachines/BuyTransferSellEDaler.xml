@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<contract xmlns="urn:ieee:iot:leg:sc:1.0"
+          id="BuyTransferSellEDaler"
+          archiveOpt="P3M"
+          archiveReq="P1M"
+          canActAsTemplate="true"
+          duration="P2Y"
+          visibility="Public">
+	<Create xmlns="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd">
+		<TokenID>
+			<Random />
+		</TokenID>
+		<Creator>
+			<RoleReference role="Creator"/>
+		</Creator>
+		<Owner>
+			<RoleReference role="Seller"/>
+		</Owner>
+		<TrustProvider>
+			<RoleReference role="TrustProvider"/>
+		</TrustProvider>
+		<Value>
+			<ParameterReference parameter="Value"/>
+		</Value>
+		<Currency>
+			<ParameterReference parameter="Currency"/>
+		</Currency>
+		<CommissionPercent>
+			<ParameterReference parameter="CommissionPercent"/>
+		</CommissionPercent>
+		<Expires>
+			<ParameterReference parameter="Expires"/>
+		</Expires>
+		<CreatorCanDestroy>
+			<Boolean>false</Boolean>
+		</CreatorCanDestroy>
+		<OwnerCanDestroyIndividual>
+			<Boolean>true</Boolean>
+		</OwnerCanDestroyIndividual>
+		<Definition>
+			<StateMachine xmlns="https://paiwise.tagroot.io/Schema/StateMachines.xsd" startState="Active">
+				<Variable id="AmountBought" value="{0}"/>
+				<Variable id="AmountTransferred" value="{0}"/>
+				<Variable id="AmountSold" value="{0}"/>
+				<Variable id="TotalAmount" value="{Value}"/>
+				<Variable id="TokenId">
+					<TokenProperty>TokenId</TokenProperty>
+				</Variable>
+				<Variable id="ContractId">
+					<TokenProperty>CreationContract</TokenProperty>
+				</Variable>
+				<Variable id="Currency">
+					<TagReference tag="Currency"/>
+				</Variable>
+				<Variable id="Buyer">
+					<TagReference tag="Buyer"/>
+				</Variable>
+				<Variable id="Seller">
+					<TagReference tag="Seller"/>
+				</Variable>
+				<State id="Active">
+					<OnEnter actionRef="Setup"/>
+					<OnEvent actionRef="BuyEDaler">
+						<OnExternalXmlNote localName="BuyEDaler"
+															 namespace="https://lab.tagroot.io/Downloads/BuyTransferSellEDaler.xsd"
+															 noteVariable="Note" 
+															 sourceVariable="Source"/>
+					</OnEvent>
+					<OnEvent actionRef="TransferEDaler">
+						<OnExternalXmlNote localName="TransferEDaler"
+															 namespace="https://lab.tagroot.io/Downloads/BuyTransferSellEDaler.xsd"
+															 noteVariable="Note" 
+															 sourceVariable="Source"/>
+					</OnEvent>
+					<OnEvent actionRef="SellEDaler">
+						<OnXmlNote localName="SellEDaler"
+											 namespace="https://lab.tagroot.io/Downloads/BuyTransferSellEDaler.xsd"
+											 noteVariable="Note"/>
+					</OnEvent>
+					<OnEvent newState="Done">
+						<OnCondition>AmountSold&gt;=TotalAmount</OnCondition>
+					</OnEvent>
+				</State>
+				<State id="Done">
+					<OnEnter actionRef="End"/>
+				</State>
+				<Action id="Setup">
+					<AuthorizeSource source="{Buyer}"/>
+				</Action>
+				<Action id="BuyEDaler">
+					<If condition="Source=Buyer">
+						<Then>
+							<Try>
+								<BuyEDaler amount="{Amount:=Num(SelectXml(Note,'/default:BuyEDaler/@amount'))}"
+													 contract="{ContractId}"
+													 currency="{Currency}"
+													 reference="{Reference:='nfeat:'+TokenId}"
+													 serviceId="wspay"
+													 serviceProvider="Paiwise.Internal.BuyEDalerPaymentService"
+													 to="{Buyer}"/>
+								<PersistVariable name="AmountBought" value="{AmountBought+Amount}"/>
+								<LogEvent message="eDaler bought."
+													object="Reference"
+													actor="{Source}"
+													type="Informational"
+													level="Minor"
+													eventId="Example"
+													module="BuyTransferSellEDaler"/>
+								<TextNote content="{Amount+' '+Currency+' of eDaler bought. Total eDaler bought: '+AmountBought+' '+Currency+'.'}"/>
+								<Catch exceptionVariable="ex">
+									<TextNote content="{'Unable to perform action. The following error was reported: '+ex.Message}"/>
+								</Catch>
+							</Try>
+						</Then>
+						<Else>
+							<LogEvent message="XML note ignored."
+												object="Reference"
+												actor="{Source}"
+												type="Warning"
+												level="Minor"
+												eventId="Example"
+												module="BuyTransferSellEDaler"/>
+								<TextNote content="XML note ignored."/>
+						</Else>
+					</If>
+				</Action>
+				<Action id="TransferEDaler">
+					<If condition="Source=Buyer">
+						<Then>
+							<Try>
+								<Payment amount="{Amount:=Num(SelectXml(Note,'/default:TransferEDaler/@amount'))}"
+												 contract="{ContractId}"
+												 currency="{Currency}"
+												 reference="{Reference:='nfeat:'+TokenId}"
+												 from="{Buyer}"
+												 to="{Seller}" 
+												 validDays="3"/>
+								<PersistVariable name="AmountTransferred" value="{AmountTransferred+Amount}"/>
+								<LogEvent message="eDaler transferred."
+													object="Reference"
+													actor="{Source}"
+													type="Informational"
+													level="Minor"
+													eventId="Example"
+													module="BuyTransferSellEDaler"/>
+								<TextNote content="{Amount+' '+Currency+' of eDaler transferred. Total eDaler transferred: '+AmountTransferred+' '+Currency+'.'}"/>
+								<Catch exceptionVariable="ex">
+									<TextNote content="{'Unable to perform action. The following error was reported: '+ex.Message}"/>
+								</Catch>
+							</Try>
+						</Then>
+						<Else>
+							<LogEvent message="XML note ignored."
+												object="Reference"
+												actor="{Source}"
+												type="Warning"
+												level="Minor"
+												eventId="Example"
+												module="BuyTransferSellEDaler"/>
+								<TextNote content="XML note ignored."/>
+						</Else>
+					</If>
+				</Action>
+				<Action id="SellEDaler">
+					<Try>
+						<SellEDaler amount="{Amount:=Num(SelectXml(Note,'/default:SellEDaler/@amount'))}"
+												contract="{ContractId}"
+												currency="{Currency}"
+												reference="{Reference:='nfeat:'+TokenId}"
+												serviceId="ledpay"
+												serviceProvider="Paiwise.Internal.SellEDalerPaymentService"
+												from="{Seller}"/>
+						<PersistVariable name="AmountSold" value="{AmountSold+Amount}"/>
+						<LogEvent message="eDaler sold."
+											object="Reference"
+											actor="{Source}"
+											type="Informational"
+											level="Minor"
+											eventId="Example"
+											module="BuyTransferSellEDaler"/>
+						<TextNote content="{Amount+' '+Currency+' of eDaler sold. Total eDaler sold: '+AmountSold+' '+Currency+'.'}"/>
+						<Catch exceptionVariable="ex">
+							<TextNote content="{'Unable to perform action. The following error was reported: '+ex.Message}"/>
+						</Catch>
+					</Try>
+				</Action>
+				<Action id="End">
+					<End/>
+				</Action>
+				<ReportPresent>
+					<![CDATA[
+| Variable          | Value                 |
+|-------------------|-----------------------|
+| TotalAmount       | {{TotalAmount}}       |
+| AmountBought      | {{AmountBought}}      |
+| AmountTransferred | {{AmountTransferred}} |
+| AmountSold        | {{AmountSold}}        |
+					]]>
+				</ReportPresent>
+				<ReportHistory>
+					<![CDATA[
+{{
+G:=plot2dline(AmountBought.Timestamp, AmountBought.Value, "Red")+
+plot2dline(AmountTransferred.Timestamp, AmountTransferred.Value, "Blue")+
+plot2dline(AmountSold.Timestamp, AmountSold.Value, "Purple")+
+plot2dline(TotalAmount.Timestamp, TotalAmount.Value, "Black");
+
+G.Title:="Internal state over time";
+G.LabelX:="Time";
+G.LabelY:="Amount";
+G
+}}
+					]]>
+				</ReportHistory>
+			</StateMachine>
+		</Definition>
+		<Tag name="Value">
+			<ParameterReference parameter="Value"/>
+		</Tag>
+		<Tag name="Currency">
+			<ParameterReference parameter="Currency"/>
+		</Tag>
+		<Tag name="Buyer">
+			<RoleReference role="Buyer"/>
+		</Tag>
+		<Tag name="Seller">
+			<RoleReference role="Seller"/>
+		</Tag>
+		<FriendlyName>
+			<String>Buy/Transfer/Sell eDaler</String>
+		</FriendlyName>
+		<Category>
+			<String>Example</String>
+		</Category>
+		<Description>
+			<String>Example token used to demonstrate how to buy, transfer and sell eDaler(R) using a *state machine* and
+*XML notes*. The *Seller*, will sell eDaler(R) that it receives from the *Buyer*, who in turn buys eDaler(R). The
+*state-machine* is active, until the token expires, or until an amount equal to the initial value of the token has been
+sold. All actions are triggered by using *XML notes*. The *Seller* is the initial owner of the token, and will therefore
+add normal *XML notes* to its token. The *Buyer* is approved as an external source to the token, and can therefore add
+*External XML notes* to the token.</String>
+		</Description>
+		<Glyph contentType="image/png">iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAABFFJREFUeJztWU1IMlsYfrqTFmgLIb5yEURlLQo3YVZUCi1qFUFQUKt2QURWm7IgIkhqJ9IP1EIIWkWuIugPLIh0GVFUBC5SocCkEM2/uYvv3oPDNNM43Thwv3lgYM77d57zeI7nzEwBy7Is/mD8RZsAbSgC0CZAG4oAtAnQhiIAbQK0oQhAmwBtKALQJkAbigC0CdCGIgBtArShCECbAG0oAtAmQBuKALQJ0EahkCMYDGJpaQklJSV5F43H4+jr60NHRwfPNz8/j3g8jmw2i5qaGoyMjORdHwBSqRScTicODg5wfX2N19dXqNVqVFRUoLGxET09Pejv7/+6ECsAn8/HApB9LS4u8mo+PT3x4vJFJpNh29vbJfPY2dkRrSe4BL77uSCTyfBs4+PjPNvCwoLkmqenp2AYBufn55JzHh8fRf0FQh9G3t7ecHx8jOLiYo69tLQUZrOZtLe3t/Hr1y+k02liSyaTMBqNqKqq4nZWUAAA0Gg0iMVixC5FbK/XC6vVyrE1Nzdjbm4O3d3dYBiG2O/v77G7u4vZ2VlMT0/D4XAIF857Dv5mS65oNCopx+FwkBy73c5arVbS3t/fz6tPAOzt7a2kfgOBgHhdSVVEyITD4bxzYrEYe3R0RNoGg0E0d2BggJOfTCbl0P6cl6ykPAXIHWx1dfWndV5eXiT153K55FAWri0rKU8BGhoaSLzH4yF2u91O7ENDQ5/mer3eb+0aX+HHBYhGo6ID+GpwKysrxF9fXy+Hrih+/CRos9nI/dTUFM+fe1hyOp08fygUIvcGg0Fyv3V1dWhtbYXJZBIPlKMa8pgBubHpdJrn9/v9xM8wDM9vs9mIv7e3VxZHMfzoDFhdXSX3FouFs1f/C5PJBI1GA+D34eni4oLjLysrI/eBQOA/5yh4EBJN+udAAwDhcBjl5eWfxhUVFSGZTAIAlpeX0dbWhkQiwYnRarXY2trC5uYmAKCpqQk+n4/4Dw8P0dXVRdpS6eZyFM2RPKcEppfQEri8vJT9HPHx8SHY397eXt4cReOkDVm4uJAALS0tsgUYHR3l1LJYLHlvhVLjf2QJpNNpqFQq0na73UilUoJTkWEYPD8/Y2ZmhthyY6PRKHQ6HWmr1WrEYjEUFgo+zdNdAmNjY8RvNpsl19VqtSTP7XZzfGtra7yZMjg4yPr9fl4dj8dDdwnk+s/OziTXXV9fJ3k6nY7ndzqdspaU6Fgks8tNyikeDAY5PpfL9a2ja27uZ79uKBRia2trJQ++srJStD/hRSSCiYkJqFQqvL+/816ZJRIJTE5OIpvNcrYvqXC73bi6ukI2m8XDwwPvJKfX63F3d4dIJIKNjQ2cnJzg5uYGkUgEDMNAr9fDaDSis7MTw8PD5IwhBFl/gv8n/PFvhRUBaBOgDUUA2gRoQxGANgHaUASgTYA2FAFoE6ANRQDaBGhDEYA2AdpQBKBNgDYUAWgToA1FANoEaONve9o8PVvYS2AAAAAASUVORK5CYII=</Glyph>
+	</Create>
+	<role name="Creator" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The part that creates the </text>
+				<italic>
+					<text>Buy/Transfer/Sell</text>
+				</italic>
+				<text> token and the corresponding state-machine that acts on the XML notes added to the tokens accordingly.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="Buyer" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The part that will buy eDaler in this example, and transfer it to the</text>
+				<italic>
+					<text>Seller</text>
+				</italic>
+				<text>.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="Seller" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The part that will receive eDaler in this example, from the </text>
+				<italic>
+					<text>Buyer</text>
+				</italic>
+				<text>, and sell it back. The </text>
+				<italic>
+					<text>Seller</text>
+				</italic>
+				<text> will also be the initial owner of the token.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="TrustProvider" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The part that acts as a host of the token and approves its creation.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<templateOnly/>
+	</parts>
+	<parameters>
+		<numericalParameter name="Value" guide="Value of token" min="0" minIncluded="false">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The initial value of the token.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="\w{3}">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The currency of the token.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<numericalParameter name="CommissionPercent" guide="Commision (%)" min="0" max="100">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The commission the Trust Provider gets for creating the token and managing the </text>
+					<italic>
+						<text>calculator</text>
+					</italic>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<dateParameter name="Expires" guide="Expiry date" exp="Expires&gt;Now.Date">
+			<description xml:lang="en">
+				<paragraph>
+					<text>When token expires.</text>
+				</paragraph>
+			</description>
+		</dateParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>eDaler buy/transfer/sell agreement</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This contract creates a token that illustrates how to buy, transfer and sell eDaler® using a </text>
+					<italic>
+						<text>state-machine</text>
+					</italic>
+					<text>. The </text>
+					<italic>
+						<text>Seller</text>
+					</italic>
+					<text> commits to sell </text>
+					<bold>
+						<parameter name="Value" />
+						<text> </text>
+						<parameter name="Currency" />
+					</bold>
+					<text> eDaler®, before the token expires. The </text>
+					<italic>
+						<text>Buyer</text>
+					</italic>
+					<text> on the other hand is tasked with buying the same amount of eDaler®, and transferring it to the </text>
+					<italic>
+						<text>Seller</text>
+					</italic>
+					<text>.</text>
+				</paragraph>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>

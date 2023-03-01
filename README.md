@@ -57,6 +57,10 @@ TAG technologies.
 	The buyer of the token invests into the project, and the escrow feature allows the machine to control how funds are released to the 
 	project, for the duration of the project.
 
+	* [BuyTransferSellEDaler.xml](ExampleContracts/StateMachines/BuyTransferSellEDaler.xml) shows how you can buy, transfer and
+	sell eDaler automatically from a state-machine, based on XML-notes added to the token by the parties of the contract. This
+	can be used to automate payment events between participants, without the need for them to be online.
+
 * [Syntax](ExampleContracts/Syntax) contains examples related to the syntax of different aspects of smart contracts.
 
 	* [Syntax.xml](ExampleContracts/Syntax/Markdown.xml) describes the Markdown syntax available for designing human-readable text in
