@@ -85,6 +85,11 @@
 															 noteVariable="Note" 
 															 sourceVariable="Source"/>
 					</OnEvent>
+					<OnEvent actionRef="TransferEDalerSeller">
+						<OnXmlNote localName="TransferEDaler"
+											 namespace="https://lab.tagroot.io/Downloads/BuyTransferSellEDaler.xsd"
+											 noteVariable="Note"/>
+					</OnEvent>
 					<OnEvent actionRef="SellEDaler">
 						<OnXmlNote localName="SellEDaler"
 											 namespace="https://lab.tagroot.io/Downloads/BuyTransferSellEDaler.xsd"
@@ -176,6 +181,9 @@
 								<TextNote content="XML note ignored."/>
 						</Else>
 					</If>
+				</Action>
+				<Action id="TransferEDalerSeller">
+					<CallAction actionRef="TransferEDaler" beforeActionScript="Source:=Seller"/>
 				</Action>
 				<Action id="SellEDaler">
 					<Try>
