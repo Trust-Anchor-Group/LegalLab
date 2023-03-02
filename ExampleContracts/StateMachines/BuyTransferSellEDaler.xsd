@@ -9,11 +9,24 @@
 	<!-- Test schema used in example contract. -->
 	<!-- Note: Schema is made available via download using the namespace URL. -->
 
-	<xs:element name="BuyEDaler" type="Amount"/>
-	<xs:element name="TransferEDaler" type="Amount"/>
-	<xs:element name="SellEDaler" type="Amount"/>
-
-	<xs:complexType name="Amount">
-		<xs:attribute name="amount" type="xs:decimal" use="required"/>
-	</xs:complexType>
+	<xs:element name="BuyEDaler">
+		<xs:complexType>
+			<xs:attribute name="amount" type="xs:decimal" use="required"/>
+			<xs:attribute name="bank" type="xs:string" use="required"/>
+			<xs:attribute name="account" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="TransferEDaler">
+		<xs:complexType>
+			<xs:attribute name="amount" type="xs:decimal" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="SellEDaler">
+		<xs:complexType>
+			<xs:attribute name="amount" type="xs:decimal" use="required"/>
+			<xs:attribute name="bankAccount" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
 </xs:schema>
