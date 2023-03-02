@@ -114,7 +114,7 @@
 													 currency="{Currency}"
 													 reference="{Reference:='nfeat:'+TokenId}"
 													 serviceId="wspay"
-													 serviceProvider="Paiwise.Internal.BuyEDalerPaymentService"
+													 serviceProvider="Paiwise.Internal.PaiwisePaymentServices"
 													 to="{Buyer}">
 									<Parameter key="bank" value="{SelectXml(Note,'/default:BuyEDaler/@bank')}"/>
 									<Parameter key="account" value="{SelectXml(Note,'/default:BuyEDaler/@account')}"/>
@@ -195,7 +195,7 @@
 												currency="{Currency}"
 												reference="{Reference:='nfeat:'+TokenId}"
 												serviceId="ledpay"
-												serviceProvider="Paiwise.Internal.SellEDalerPaymentService"
+												serviceProvider="Paiwise.Internal.PaiwisePaymentServices"
 												from="{Seller}">
 							<Parameter key="bankAccount" value="{SelectXml(Note,'/default:SellEDaler/@bankAccount')}"/>
 						</SellEDaler>
