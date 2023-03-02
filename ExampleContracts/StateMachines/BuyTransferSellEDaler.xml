@@ -55,7 +55,7 @@
 					<TokenProperty>TokenId</TokenProperty>
 				</Variable>
 				<Variable id="ContractId">
-					<TokenProperty>CreationContract</TokenProperty>
+					<TokenProperty>OwnershipContract</TokenProperty>
 				</Variable>
 				<Variable id="Currency">
 					<TagReference tag="Currency"/>
@@ -116,8 +116,8 @@
 													 serviceId="wspay"
 													 serviceProvider="Paiwise.Internal.PaiwisePaymentServices"
 													 to="{Buyer}">
-									<Parameter key="bank" value="{SelectXml(Note,'/default:BuyEDaler/@bank')}"/>
-									<Parameter key="account" value="{SelectXml(Note,'/default:BuyEDaler/@account')}"/>
+									<Parameter key="bank" value="{SelectXmlStr(Note,'/default:BuyEDaler/@bank')}"/>
+									<Parameter key="account" value="{SelectXmlStr(Note,'/default:BuyEDaler/@account')}"/>
 								</BuyEDaler>
 								<PersistVariable name="AmountBought" value="{AmountBought+Amount}"/>
 								<LogEvent message="eDaler bought."
@@ -197,7 +197,7 @@
 												serviceId="ledpay"
 												serviceProvider="Paiwise.Internal.PaiwisePaymentServices"
 												from="{Seller}">
-							<Parameter key="bankAccount" value="{SelectXml(Note,'/default:SellEDaler/@bankAccount')}"/>
+							<Parameter key="bankAccount" value="{SelectXmlStr(Note,'/default:SellEDaler/@bankAccount')}"/>
 						</SellEDaler>
 						<PersistVariable name="AmountSold" value="{AmountSold+Amount}"/>
 						<LogEvent message="eDaler sold."
