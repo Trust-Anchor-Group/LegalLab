@@ -17,10 +17,15 @@
                 <TextBox Text="{Binding Currency}" IsReadOnly="True"/>
                 <Label Padding="0,10,0,0">Timestamp:</Label>
                 <TextBox Text="{Binding Timestamp, Converter={conv:DateTimeToString}}" IsReadOnly="True"/>
-                <Label Padding="0,30,0,0">e-Daler URI:</Label>
+				<Frame Height="1" BorderThickness="1" BorderBrush="Black" Margin="20"/>
+				<Label Padding="0">e-Daler URI:</Label>
                 <TextBox Text="{Binding Uri, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Height="100" VerticalScrollBarVisibility="Auto"/>
-                <Button Margin="10,10,10,0" Command="{Binding Send}">Send</Button>
-            </StackPanel>
+                <Button Margin="10,10,10,0" Command="{Binding SendUri}">Send URI</Button>
+				<Frame Height="1" BorderThickness="1" BorderBrush="Black" Margin="20"/>
+				<Button Margin="10,0,10,0" Command="{Binding TransferEDaler}">Transfer eDaler®</Button>
+				<Button Margin="10,10,10,0" Command="{Binding BuyEDaler}">Buy eDaler®</Button>
+				<Button Margin="10,10,10,0" Command="{Binding SellEDaler}">Sell eDaler®</Button>
+			</StackPanel>
         </ScrollViewer>
         <StackPanel DockPanel.Dock="Bottom" Visibility="{Binding SelectedItem, Converter={conv:VisibleIfNotNull}}">
             <Grid Margin="10" DataContext="{Binding SelectedItem}" Visibility="{Binding SelectedItem, Converter={conv:VisibleIfNotNull}}">

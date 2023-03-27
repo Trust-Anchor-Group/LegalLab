@@ -1,6 +1,8 @@
 ﻿using EDaler;
 using EDaler.Uris;
 using EDaler.Uris.Incomplete;
+using LegalLab.Dialogs.AddLanguage;
+using LegalLab.Dialogs.TransferEDaler;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -25,7 +27,10 @@ namespace LegalLab.Models.Wallet
 
 		private readonly List<AccountEventWrapper> events = new List<AccountEventWrapper>();
 
-		private readonly Command send;
+		private readonly Command sendUri;
+		private readonly Command transferEDaler;
+		private readonly Command buyEDaler;
+		private readonly Command sellEDaler;
 
 		private readonly EDalerClient eDalerClient;
 		private Balance balance = null;
@@ -46,10 +51,13 @@ namespace LegalLab.Models.Wallet
 			this.timestamp = new Property<DateTime>(nameof(this.Timestamp), DateTime.MinValue, this);
 			this.uri = new Property<string>(nameof(this.Uri), string.Empty, this);
 
-			this.send = new Command(this.CanExecuteSend, this.ExecuteSend);
+			this.sendUri = new Command(this.CanExecuteSendUri, this.ExecuteSendUri);
+			this.transferEDaler = new Command(this.CanTransferEDaler, this.ExecuteTransferEDaler);
+			this.buyEDaler = new Command(this.CanBuyEDaler, this.ExecuteBuyEDaler);
+			this.sellEDaler = new Command(this.CanSellEDaler, this.ExecuteSellEDaler);
 
 			this.eDalerClient = new EDalerClient(Client, Contracts, ComponentJid);
-			this.eDalerClient.BalanceUpdated += EDalerClient_BalanceUpdated;
+			this.eDalerClient.BalanceUpdated += this.EDalerClient_BalanceUpdated;
 		}
 
 		private Task EDalerClient_BalanceUpdated(object Sender, BalanceEventArgs e)
@@ -57,8 +65,8 @@ namespace LegalLab.Models.Wallet
 			this.Balance = e.Balance;
 
 			AccountEventWrapper Item = new AccountEventWrapper(e.Balance.Event);
-			Item.Selected += Item_Selected;
-			Item.Deselected += Item_Deselected;
+			Item.Selected += this.Item_Selected;
+			Item.Deselected += this.Item_Deselected;
 
 			lock (this.events)
 			{
@@ -141,7 +149,7 @@ namespace LegalLab.Models.Wallet
 			set
 			{
 				this.uri.Value = value;
-				this.send.RaiseCanExecuteChanged();
+				this.sendUri.RaiseCanExecuteChanged();
 			}
 		}
 
@@ -186,16 +194,16 @@ namespace LegalLab.Models.Wallet
 		}
 
 		/// <summary>
-		/// Apply command
+		/// Command for sending URI to server.
 		/// </summary>
-		public ICommand Send => this.send;
+		public ICommand SendUri => this.sendUri;
 
-		private bool CanExecuteSend()
+		private bool CanExecuteSendUri()
 		{
 			return this.eDalerClient.Client.State == XmppState.Connected && !string.IsNullOrEmpty(this.Uri);
 		}
 
-		private async Task ExecuteSend()
+		private async Task ExecuteSendUri()
 		{
 			try
 			{
@@ -221,6 +229,59 @@ namespace LegalLab.Models.Wallet
 			}
 		}
 
+		/// <summary>
+		/// Command for transferring eDaler.
+		/// </summary>
+		public ICommand TransferEDaler => this.transferEDaler;
+
+		private bool CanTransferEDaler()
+		{
+			return this.eDalerClient.Client.State == XmppState.Connected;
+		}
+
+		private async Task ExecuteTransferEDaler()
+		{
+			TransferEDalerDialog Dialog = new TransferEDalerDialog();
+			TransferEDalerModel Model = new TransferEDalerModel(Dialog);
+
+			bool? Result = Dialog.ShowDialog();
+			if (!Result.HasValue || !Result.Value)
+				return;
+
+			this.Uri = await this.eDalerClient.CreateFullPaymentUri(Model.Recipient, Model.Amount,
+				Model.AmountExtra > 0 ? Model.AmountExtra : (decimal?)null, Model.Currency, 3, Model.Message);
+		}
+
+		/// <summary>
+		/// Command for buying eDaler.
+		/// </summary>
+		public ICommand BuyEDaler => this.buyEDaler;
+
+		private bool CanBuyEDaler()
+		{
+			return this.eDalerClient.Client.State == XmppState.Connected;
+		}
+
+		private async Task ExecuteBuyEDaler()
+		{
+			// TODO
+		}
+
+		/// <summary>
+		/// Command for selling eDaler.
+		/// </summary>
+		public ICommand SellEDaler => this.sellEDaler;
+
+		private bool CanSellEDaler()
+		{
+			return this.eDalerClient.Client.State == XmppState.Connected;
+		}
+
+		private async Task ExecuteSellEDaler()
+		{
+			// TODO
+		}
+
 		/// <inheritdoc/>
 		public override async Task Start()
 		{
@@ -239,8 +300,8 @@ namespace LegalLab.Models.Wallet
 				foreach (AccountEvent Event in Events)
 				{
 					AccountEventWrapper Item = new AccountEventWrapper(Event);
-					Item.Selected += Item_Selected;
-					Item.Deselected += Item_Deselected;
+					Item.Selected += this.Item_Selected;
+					Item.Deselected += this.Item_Deselected;
 
 					this.events.Add(Item);
 				}

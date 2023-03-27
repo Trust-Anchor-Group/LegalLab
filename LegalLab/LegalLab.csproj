@@ -77,6 +77,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Dialogs\TransferEDaler\TransferEDalerDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Dialogs\AddLanguage\AddLanguageDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -89,6 +92,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Dialogs\TransferEDaler\TransferEDalerDialog.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
     <Page Update="Dialogs\AddLanguage\AddLanguageDialog.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
