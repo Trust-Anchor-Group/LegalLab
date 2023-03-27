@@ -1,4 +1,6 @@
 ﻿using EDaler;
+using EDaler.Uris;
+using EDaler.Uris.Incomplete;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -197,6 +199,19 @@ namespace LegalLab.Models.Wallet
 		{
 			try
 			{
+				if (!EDalerUri.TryParse(this.Uri, out EDalerUri Uri))
+					throw new Exception("Invalid eDaler URI.");
+
+				if (Uri is EDalerIncompletePaymentUri IncompleteUri)
+				{
+					this.Uri = await this.eDalerClient.CreateFullPaymentUri(
+						IncompleteUri.To,
+						IncompleteUri.Amount,
+						IncompleteUri.AmountExtra,
+						IncompleteUri.Currency,
+						(int)IncompleteUri.Expires.Subtract(DateTime.Today.AddDays(-1)).TotalDays);
+				}
+
 				await this.eDalerClient.SendEDalerUriAsync(this.Uri);
 				this.Uri = string.Empty;
 			}
