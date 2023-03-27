@@ -103,14 +103,14 @@ namespace LegalLab.Models.Design
 			this.humanReadableMarkdown = new DelayedActionProperty<string>(nameof(this.HumanReadableMarkdown), TimeSpan.FromSeconds(1), true, string.Empty, this);
 			this.humanReadable = new Property<object>(nameof(this.HumanReadable), null, this);
 
-			this.roles.PropertyChanged += Roles_PropertyChanged;
-			this.parameters.PropertyChanged += Parameters_PropertyChanged;
-			this.parts.PropertyChanged += Parts_PropertyChanged;
+			this.roles.PropertyChanged += this.Roles_PropertyChanged;
+			this.parameters.PropertyChanged += this.Parameters_PropertyChanged;
+			this.parts.PropertyChanged += this.Parts_PropertyChanged;
 
-			this.Add(this.microsoftTranslatorKey = new PersistedProperty<string>("Design", nameof(MicrosoftTranslatorKey), true, string.Empty, this));
+			this.Add(this.microsoftTranslatorKey = new PersistedProperty<string>("Design", nameof(this.MicrosoftTranslatorKey), true, string.Empty, this));
 
-			this.machineReadable.OnAction += NormalizeMachineReadableXml;
-			this.humanReadableMarkdown.OnAction += RenderHumanReadableMarkdown;
+			this.machineReadable.OnAction += this.NormalizeMachineReadableXml;
+			this.humanReadableMarkdown.OnAction += this.RenderHumanReadableMarkdown;
 
 			this.addRole = new Command(this.ExecuteAddRole);
 			this.addPart = new Command(this.ExecuteAddPart);
@@ -864,7 +864,7 @@ namespace LegalLab.Models.Design
 			};
 			ValueControl.SetBinding(TextBox.TextProperty, Binding);
 			ValueControl.SetBinding(TextBox.TextProperty, "Value");
-			ValueControl.TextChanged += Parameter_TextChanged;
+			ValueControl.TextChanged += this.Parameter_TextChanged;
 
 			TextBox MinControl = new TextBox();
 			Binding = new Binding("Value")
@@ -873,7 +873,7 @@ namespace LegalLab.Models.Design
 			};
 			MinControl.SetBinding(TextBox.TextProperty, Binding);
 			MinControl.SetBinding(TextBox.TextProperty, "Min");
-			MinControl.TextChanged += Parameter_MinTextChanged;
+			MinControl.TextChanged += this.Parameter_MinTextChanged;
 
 			TextBox MaxControl = new TextBox();
 			Binding = new Binding("Value")
@@ -882,17 +882,17 @@ namespace LegalLab.Models.Design
 			};
 			MaxControl.SetBinding(TextBox.TextProperty, Binding);
 			MaxControl.SetBinding(TextBox.TextProperty, "Max");
-			MaxControl.TextChanged += Parameter_MaxTextChanged;
+			MaxControl.TextChanged += this.Parameter_MaxTextChanged;
 
 			CheckBox MinIncludedControl = new CheckBox();
 			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
-			MinIncludedControl.Checked += Parameter_MinIncludedCheckedChanged;
-			MinIncludedControl.Unchecked += Parameter_MinIncludedCheckedChanged;
+			MinIncludedControl.Checked += this.Parameter_MinIncludedCheckedChanged;
+			MinIncludedControl.Unchecked += this.Parameter_MinIncludedCheckedChanged;
 
 			CheckBox MaxIncludedControl = new CheckBox();
 			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
-			MaxIncludedControl.Checked += Parameter_MaxIncludedCheckedChanged;
-			MaxIncludedControl.Unchecked += Parameter_MaxIncludedCheckedChanged;
+			MaxIncludedControl.Checked += this.Parameter_MaxIncludedCheckedChanged;
+			MaxIncludedControl.Unchecked += this.Parameter_MaxIncludedCheckedChanged;
 
 			ParameterInfo ParameterInfo = new NumericalParameterInfo(this.contract, NP, ValueControl, MinControl, MinIncludedControl,
 				MaxControl, MaxIncludedControl, this, this.parameters);
@@ -938,37 +938,37 @@ namespace LegalLab.Models.Design
 		{
 			TextBox ValueControl = new TextBox();
 			ValueControl.SetBinding(TextBox.TextProperty, "Value");
-			ValueControl.TextChanged += Parameter_TextChanged;
+			ValueControl.TextChanged += this.Parameter_TextChanged;
 
 			TextBox MinControl = new TextBox();
 			MinControl.SetBinding(TextBox.TextProperty, "Min");
-			MinControl.TextChanged += Parameter_MinTextChanged;
+			MinControl.TextChanged += this.Parameter_MinTextChanged;
 
 			TextBox MaxControl = new TextBox();
 			MaxControl.SetBinding(TextBox.TextProperty, "Max");
-			MaxControl.TextChanged += Parameter_MaxTextChanged;
+			MaxControl.TextChanged += this.Parameter_MaxTextChanged;
 
 			CheckBox MinIncludedControl = new CheckBox();
 			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
-			MinIncludedControl.Checked += Parameter_MinIncludedCheckedChanged;
-			MinIncludedControl.Unchecked += Parameter_MinIncludedCheckedChanged;
+			MinIncludedControl.Checked += this.Parameter_MinIncludedCheckedChanged;
+			MinIncludedControl.Unchecked += this.Parameter_MinIncludedCheckedChanged;
 
 			CheckBox MaxIncludedControl = new CheckBox();
 			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
-			MaxIncludedControl.Checked += Parameter_MaxIncludedCheckedChanged;
-			MaxIncludedControl.Unchecked += Parameter_MaxIncludedCheckedChanged;
+			MaxIncludedControl.Checked += this.Parameter_MaxIncludedCheckedChanged;
+			MaxIncludedControl.Unchecked += this.Parameter_MaxIncludedCheckedChanged;
 
 			TextBox MinLengthControl = new TextBox();
 			MinLengthControl.SetBinding(TextBox.TextProperty, "MinLength");
-			MinLengthControl.TextChanged += Parameter_MinLengthTextChanged;
+			MinLengthControl.TextChanged += this.Parameter_MinLengthTextChanged;
 
 			TextBox MaxLengthControl = new TextBox();
 			MaxLengthControl.SetBinding(TextBox.TextProperty, "MaxLength");
-			MaxLengthControl.TextChanged += Parameter_MaxLengthTextChanged;
+			MaxLengthControl.TextChanged += this.Parameter_MaxLengthTextChanged;
 
 			TextBox RegExControl = new TextBox();
 			RegExControl.SetBinding(TextBox.TextProperty, "RegEx");
-			RegExControl.TextChanged += Parameter_RegExTextChanged;
+			RegExControl.TextChanged += this.Parameter_RegExTextChanged;
 
 			ParameterInfo ParameterInfo = new StringParameterInfo(this.contract, SP, ValueControl, MinControl, MinIncludedControl,
 				MaxControl, MaxIncludedControl, MinLengthControl, MaxLengthControl, RegExControl, this, this.parameters);
@@ -1175,8 +1175,8 @@ namespace LegalLab.Models.Design
 			};
 
 			CheckBox.SetBinding(CheckBox.IsCheckedProperty, "Value");
-			CheckBox.Checked += Parameter_CheckedChanged;
-			CheckBox.Unchecked += Parameter_CheckedChanged;
+			CheckBox.Checked += this.Parameter_CheckedChanged;
+			CheckBox.Unchecked += this.Parameter_CheckedChanged;
 
 			ParameterInfo ParameterInfo = new BooleanParameterInfo(this.contract, BP, CheckBox, this, this.parameters);
 			CheckBox.Tag = ParameterInfo;
@@ -1270,7 +1270,7 @@ namespace LegalLab.Models.Design
 				Converter = new DateToXmlString()
 			};
 			ValueControl.SetBinding(TextBox.TextProperty, Binding);
-			ValueControl.TextChanged += Parameter_TextChanged;
+			ValueControl.TextChanged += this.Parameter_TextChanged;
 
 			TextBox MinControl = new TextBox();
 			Binding = new Binding("Min")
@@ -1278,7 +1278,7 @@ namespace LegalLab.Models.Design
 				Converter = new DateToXmlString()
 			};
 			MinControl.SetBinding(TextBox.TextProperty, Binding);
-			MinControl.TextChanged += Parameter_MinTextChanged;
+			MinControl.TextChanged += this.Parameter_MinTextChanged;
 
 			TextBox MaxControl = new TextBox();
 			Binding = new Binding("Max")
@@ -1286,17 +1286,17 @@ namespace LegalLab.Models.Design
 				Converter = new DateToXmlString()
 			};
 			MaxControl.SetBinding(TextBox.TextProperty, Binding);
-			MaxControl.TextChanged += Parameter_MaxTextChanged;
+			MaxControl.TextChanged += this.Parameter_MaxTextChanged;
 
 			CheckBox MinIncludedControl = new CheckBox();
 			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
-			MinIncludedControl.Checked += Parameter_MinIncludedCheckedChanged;
-			MinIncludedControl.Unchecked += Parameter_MinIncludedCheckedChanged;
+			MinIncludedControl.Checked += this.Parameter_MinIncludedCheckedChanged;
+			MinIncludedControl.Unchecked += this.Parameter_MinIncludedCheckedChanged;
 
 			CheckBox MaxIncludedControl = new CheckBox();
 			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
-			MaxIncludedControl.Checked += Parameter_MaxIncludedCheckedChanged;
-			MaxIncludedControl.Unchecked += Parameter_MaxIncludedCheckedChanged;
+			MaxIncludedControl.Checked += this.Parameter_MaxIncludedCheckedChanged;
+			MaxIncludedControl.Unchecked += this.Parameter_MaxIncludedCheckedChanged;
 
 			ParameterInfo ParameterInfo = new DateParameterInfo(this.contract, DP, ValueControl, MinControl, MinIncludedControl,
 				MaxControl, MaxIncludedControl, this, this.parameters);
@@ -1343,7 +1343,7 @@ namespace LegalLab.Models.Design
 				Converter = new DateTimeToXmlString()
 			};
 			ValueControl.SetBinding(TextBox.TextProperty, Binding);
-			ValueControl.TextChanged += Parameter_TextChanged;
+			ValueControl.TextChanged += this.Parameter_TextChanged;
 
 			TextBox MinControl = new TextBox();
 			Binding = new Binding("Min")
@@ -1351,7 +1351,7 @@ namespace LegalLab.Models.Design
 				Converter = new DateTimeToXmlString()
 			};
 			MinControl.SetBinding(TextBox.TextProperty, Binding);
-			MinControl.TextChanged += Parameter_MinTextChanged;
+			MinControl.TextChanged += this.Parameter_MinTextChanged;
 
 			TextBox MaxControl = new TextBox();
 			Binding = new Binding("Max")
@@ -1359,17 +1359,17 @@ namespace LegalLab.Models.Design
 				Converter = new DateTimeToXmlString()
 			};
 			MaxControl.SetBinding(TextBox.TextProperty, Binding);
-			MaxControl.TextChanged += Parameter_MaxTextChanged;
+			MaxControl.TextChanged += this.Parameter_MaxTextChanged;
 
 			CheckBox MinIncludedControl = new CheckBox();
 			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
-			MinIncludedControl.Checked += Parameter_MinIncludedCheckedChanged;
-			MinIncludedControl.Unchecked += Parameter_MinIncludedCheckedChanged;
+			MinIncludedControl.Checked += this.Parameter_MinIncludedCheckedChanged;
+			MinIncludedControl.Unchecked += this.Parameter_MinIncludedCheckedChanged;
 
 			CheckBox MaxIncludedControl = new CheckBox();
 			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
-			MaxIncludedControl.Checked += Parameter_MaxIncludedCheckedChanged;
-			MaxIncludedControl.Unchecked += Parameter_MaxIncludedCheckedChanged;
+			MaxIncludedControl.Checked += this.Parameter_MaxIncludedCheckedChanged;
+			MaxIncludedControl.Unchecked += this.Parameter_MaxIncludedCheckedChanged;
 
 			ParameterInfo ParameterInfo = new DateTimeParameterInfo(this.contract, DP, ValueControl, MinControl, MinIncludedControl,
 				MaxControl, MaxIncludedControl, this, this.parameters);
@@ -1416,7 +1416,7 @@ namespace LegalLab.Models.Design
 				Converter = new TimeToXmlString()
 			};
 			ValueControl.SetBinding(TextBox.TextProperty, Binding);
-			ValueControl.TextChanged += Parameter_TextChanged;
+			ValueControl.TextChanged += this.Parameter_TextChanged;
 
 			TextBox MinControl = new TextBox();
 			Binding = new Binding("Min")
@@ -1424,7 +1424,7 @@ namespace LegalLab.Models.Design
 				Converter = new TimeToXmlString()
 			};
 			MinControl.SetBinding(TextBox.TextProperty, Binding);
-			MinControl.TextChanged += Parameter_MinTextChanged;
+			MinControl.TextChanged += this.Parameter_MinTextChanged;
 
 			TextBox MaxControl = new TextBox();
 			Binding = new Binding("Min")
@@ -1432,17 +1432,17 @@ namespace LegalLab.Models.Design
 				Converter = new TimeToXmlString()
 			};
 			MaxControl.SetBinding(TextBox.TextProperty, Binding);
-			MaxControl.TextChanged += Parameter_MaxTextChanged;
+			MaxControl.TextChanged += this.Parameter_MaxTextChanged;
 
 			CheckBox MinIncludedControl = new CheckBox();
 			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
-			MinIncludedControl.Checked += Parameter_MinIncludedCheckedChanged;
-			MinIncludedControl.Unchecked += Parameter_MinIncludedCheckedChanged;
+			MinIncludedControl.Checked += this.Parameter_MinIncludedCheckedChanged;
+			MinIncludedControl.Unchecked += this.Parameter_MinIncludedCheckedChanged;
 
 			CheckBox MaxIncludedControl = new CheckBox();
 			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
-			MaxIncludedControl.Checked += Parameter_MaxIncludedCheckedChanged;
-			MaxIncludedControl.Unchecked += Parameter_MaxIncludedCheckedChanged;
+			MaxIncludedControl.Checked += this.Parameter_MaxIncludedCheckedChanged;
+			MaxIncludedControl.Unchecked += this.Parameter_MaxIncludedCheckedChanged;
 
 			ParameterInfo ParameterInfo = new TimeParameterInfo(this.contract, DP, ValueControl, MinControl, MinIncludedControl,
 				MaxControl, MaxIncludedControl, this, this.parameters);
@@ -1489,7 +1489,7 @@ namespace LegalLab.Models.Design
 				Converter = new DurationToXmlString()
 			};
 			ValueControl.SetBinding(TextBox.TextProperty, Binding);
-			ValueControl.TextChanged += Parameter_TextChanged;
+			ValueControl.TextChanged += this.Parameter_TextChanged;
 
 			TextBox MinControl = new TextBox();
 			Binding = new Binding("Min")
@@ -1497,7 +1497,7 @@ namespace LegalLab.Models.Design
 				Converter = new DurationToXmlString()
 			};
 			MinControl.SetBinding(TextBox.TextProperty, Binding);
-			MinControl.TextChanged += Parameter_MinTextChanged;
+			MinControl.TextChanged += this.Parameter_MinTextChanged;
 
 			TextBox MaxControl = new TextBox();
 			Binding = new Binding("Max")
@@ -1505,17 +1505,17 @@ namespace LegalLab.Models.Design
 				Converter = new DurationToXmlString()
 			};
 			MaxControl.SetBinding(TextBox.TextProperty, Binding);
-			MaxControl.TextChanged += Parameter_MaxTextChanged;
+			MaxControl.TextChanged += this.Parameter_MaxTextChanged;
 
 			CheckBox MinIncludedControl = new CheckBox();
 			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
-			MinIncludedControl.Checked += Parameter_MinIncludedCheckedChanged;
-			MinIncludedControl.Unchecked += Parameter_MinIncludedCheckedChanged;
+			MinIncludedControl.Checked += this.Parameter_MinIncludedCheckedChanged;
+			MinIncludedControl.Unchecked += this.Parameter_MinIncludedCheckedChanged;
 
 			CheckBox MaxIncludedControl = new CheckBox();
 			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
-			MaxIncludedControl.Checked += Parameter_MaxIncludedCheckedChanged;
-			MaxIncludedControl.Unchecked += Parameter_MaxIncludedCheckedChanged;
+			MaxIncludedControl.Checked += this.Parameter_MaxIncludedCheckedChanged;
+			MaxIncludedControl.Unchecked += this.Parameter_MaxIncludedCheckedChanged;
 
 			ParameterInfo ParameterInfo = new DurationParameterInfo(this.contract, DP, ValueControl, MinControl, MinIncludedControl,
 				MaxControl, MaxIncludedControl, this, this.parameters);
@@ -1672,9 +1672,8 @@ namespace LegalLab.Models.Design
 				Doc.Load(Dialog.FileName);
 
 				ParsedContract Parsed = await Waher.Networking.XMPP.Contracts.Contract.Parse(Doc);
-				Contract Contract = Parsed.Contract;
-				if (Contract is null)
-					throw new InvalidOperationException("Not a valid Smart Contract file.");
+				Contract Contract = Parsed.Contract 
+					?? throw new InvalidOperationException("Not a valid Smart Contract file.");
 
 				if (!Contract.CanActAsTemplate)
 					throw new InvalidOperationException("Contract is not a template.");

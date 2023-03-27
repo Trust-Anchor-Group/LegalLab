@@ -18,7 +18,7 @@ namespace LegalLab.Dialogs.AddLanguage
 
 		public AddLanguageModel(AddLanguageDialog Dialog)
 		{
-			this.selectedLanguage = new Property<string>(nameof(SelectedLanguage), string.Empty, this);
+			this.selectedLanguage = new Property<string>(nameof(this.SelectedLanguage), string.Empty, this);
 
 			this.dialog = Dialog;
 			this.dialog.DataContext = this;
