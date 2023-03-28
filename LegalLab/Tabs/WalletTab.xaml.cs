@@ -10,7 +10,7 @@ namespace LegalLab.Tabs
 	{
 		public WalletTab()
 		{
-			InitializeComponent();
+			this.InitializeComponent();
 		}
 	}
 }

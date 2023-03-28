@@ -22,7 +22,7 @@ namespace LegalLab.Tabs
 		public DesignTab()
 		{
 			this.model = Types.InstantiateDefault<DesignModel>(false);
-			this.model.PropertyChanged += Model_PropertyChanged;
+			this.model.PropertyChanged += this.Model_PropertyChanged;
 
 			// Register AvalonEdit Syntax Highlighting for Smart Contract Markdown documents:
 
@@ -32,7 +32,7 @@ namespace LegalLab.Tabs
 			IHighlightingDefinition Def = HighlightingLoader.Load(r, HighlightingManager.Instance);
 			HighlightingManager.Instance.RegisterHighlighting(Def.Name, new string[0], Def);
 
-			InitializeComponent();
+			this.InitializeComponent();
 		}
 
 		private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)

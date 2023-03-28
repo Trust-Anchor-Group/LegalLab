@@ -10,7 +10,7 @@ namespace LegalLab.Dialogs.AddLanguage
 	{
 		public AddLanguageDialog()
 		{
-			InitializeComponent();
+			this.InitializeComponent();
 		}
 	}
 }

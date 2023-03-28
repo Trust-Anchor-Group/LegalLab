@@ -10,7 +10,7 @@ namespace LegalLab.Tabs
 	{
 		public LegalIdTab()
 		{
-			InitializeComponent();
+			this.InitializeComponent();
 		}
 	}
 }

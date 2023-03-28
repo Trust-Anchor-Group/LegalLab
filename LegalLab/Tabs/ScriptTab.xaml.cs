@@ -17,7 +17,7 @@ namespace LegalLab.Tabs
 
 		public ScriptTab()
 		{
-			InitializeComponent();
+			this.InitializeComponent();
 		}
 
 		protected override async void OnInitialized(EventArgs e)

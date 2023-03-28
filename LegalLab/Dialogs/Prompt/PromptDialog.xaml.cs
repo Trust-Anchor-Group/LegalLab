@@ -10,7 +10,7 @@ namespace LegalLab.Dialogs.Prompt
 	{
 		public PromptDialog()
 		{
-			InitializeComponent();
+			this.InitializeComponent();
 		}
 	}
 }

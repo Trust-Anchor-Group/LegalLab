@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace LegalLab.Tabs
 {
@@ -10,7 +9,7 @@ namespace LegalLab.Tabs
 	{
 		public ContractsTab()
 		{
-			InitializeComponent();
+			this.InitializeComponent();
 		}
 	}
 }

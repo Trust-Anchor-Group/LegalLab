@@ -10,7 +10,7 @@ namespace LegalLab.Tabs
 	{
 		public EventsTab()
 		{
-			InitializeComponent();
+			this.InitializeComponent();
 		}
 	}
 }

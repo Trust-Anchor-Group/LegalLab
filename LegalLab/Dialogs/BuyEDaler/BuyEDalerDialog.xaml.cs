@@ -9,7 +9,7 @@ namespace LegalLab.Dialogs.BuyEDaler
 	{
 		public BuyEDalerDialog()
 		{
-			InitializeComponent();
+			this.InitializeComponent();
 		}
 	}
 }

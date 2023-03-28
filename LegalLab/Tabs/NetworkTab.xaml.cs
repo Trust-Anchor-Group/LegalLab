@@ -10,7 +10,7 @@ namespace LegalLab.Tabs
 	{
 		public NetworkTab()
 		{
-			InitializeComponent();
+			this.InitializeComponent();
 		}
 	}
 }

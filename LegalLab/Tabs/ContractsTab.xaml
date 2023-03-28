@@ -11,7 +11,8 @@
         <ScrollViewer DockPanel.Dock="Left">
             <StackPanel Name="ContractCommands" Orientation="Vertical" Width="250" Margin="10">
                 <Label>Template:</Label>
-                <ComboBox ItemsSource="{Binding Templates}" DisplayMemberPath="TemplateName" SelectedValuePath="TemplateName" SelectedValue="{Binding ContractTemplateName}"/>
+                <ComboBox ItemsSource="{Binding Templates}" DisplayMemberPath="TemplateName" SelectedValuePath="TemplateName" 
+						  SelectedValue="{Binding ContractTemplateName}"/>
                 <StackPanel Name="CreateParameters"/>
                 <StackPanel Name="CreateCommands" Visibility="Hidden">
                     <Button Margin="0,10,0,0" Command="{Binding CreateContract}" IsEnabled="{Binding ParametersOk}">Create Contract</Button>

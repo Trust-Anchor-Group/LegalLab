@@ -12,7 +12,7 @@ namespace LegalLab.Tabs
 		{
 			this.Report = Report;
 
-			InitializeComponent();
+			this.InitializeComponent();
 		}
 
 		/// <summary>

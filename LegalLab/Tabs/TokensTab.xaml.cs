@@ -9,7 +9,7 @@ namespace LegalLab.Tabs
 	{
 		public TokensTab()
 		{
-			InitializeComponent();
+			this.InitializeComponent();
 		}
 	}
 }
