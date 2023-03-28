@@ -72,7 +72,11 @@ namespace LegalLab.Models.Wallet
 			this.eDalerClient = new EDalerClient(Client, Contracts, ComponentJid);
 			this.eDalerClient.BalanceUpdated += this.EDalerClient_BalanceUpdated;
 			this.eDalerClient.BuyEDalerClientUrlReceived += this.EDalerClient_BuyEDalerClientUrlReceived;
+			this.eDalerClient.BuyEDalerCompleted += this.EDalerClient_BuyEDalerCompleted;
+			this.eDalerClient.BuyEDalerError += this.EDalerClient_BuyEDalerError;
 			this.eDalerClient.SellEDalerClientUrlReceived += this.EDalerClient_SellEDalerClientUrlReceived;
+			this.eDalerClient.SellEDalerCompleted += this.EDalerClient_SellEDalerCompleted;
+			this.eDalerClient.SellEDalerError += this.EDalerClient_SellEDalerError;
 		}
 
 		private Task EDalerClient_BalanceUpdated(object Sender, BalanceEventArgs e)
@@ -378,6 +382,18 @@ namespace LegalLab.Models.Wallet
 			return Task.CompletedTask;
 		}
 
+		private Task EDalerClient_BuyEDalerCompleted(object Sender, PaymentCompletedEventArgs e)
+		{
+			MainWindow.SuccessBox("Successfully bought " + e.Amount.ToString() + " " + e.Currency + " eDaler®.");
+			return Task.CompletedTask;
+		}
+
+		private Task EDalerClient_BuyEDalerError(object Sender, PaymentErrorEventArgs e)
+		{
+			MainWindow.ErrorBox("Unable to buy eDaler®: " + e.Message);
+			return Task.CompletedTask;
+		}
+
 		/// <summary>
 		/// Command for selling eDaler.
 		/// </summary>
@@ -473,6 +489,18 @@ namespace LegalLab.Models.Wallet
 
 			Process.Start(StartInfo);
 
+			return Task.CompletedTask;
+		}
+
+		private Task EDalerClient_SellEDalerCompleted(object Sender, PaymentCompletedEventArgs e)
+		{
+			MainWindow.SuccessBox("Successfully sold " + e.Amount.ToString() + " " + e.Currency + " eDaler®.");
+			return Task.CompletedTask;
+		}
+
+		private Task EDalerClient_SellEDalerError(object Sender, PaymentErrorEventArgs e)
+		{
+			MainWindow.ErrorBox("Unable to sell eDaler®: " + e.Message);
 			return Task.CompletedTask;
 		}
 
