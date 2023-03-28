@@ -394,7 +394,14 @@ namespace LegalLab.Models.Wallet
 
 		private Task EDalerClient_SellEDalerClientUrlReceived(object Sender, SellEDalerClientUrlEventArgs e)
 		{
-			System.Diagnostics.Process.Start(e.ClientUrl);
+			ProcessStartInfo StartInfo = new ProcessStartInfo
+			{
+				FileName = e.ClientUrl,
+				UseShellExecute = true
+			};
+
+			Process.Start(StartInfo);
+
 			return Task.CompletedTask;
 		}
 
