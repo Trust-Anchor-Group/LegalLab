@@ -17,7 +17,6 @@ using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
-using Waher.Script.Constants;
 
 namespace LegalLab.Models.Wallet
 {
@@ -27,8 +26,10 @@ namespace LegalLab.Models.Wallet
 	[Singleton]
 	public class WalletModel : PersistedModel, IDisposable
 	{
-		private readonly Property<double> amount;
-		private readonly Property<double> reserved;
+		private readonly Property<decimal> amount;
+		private readonly Property<decimal> reserved;
+		private readonly Property<decimal> pending;
+		private readonly Property<decimal> available;
 		private readonly Property<string> currency;
 		private readonly Property<DateTime> timestamp;
 		private readonly Property<string> uri;
@@ -56,8 +57,10 @@ namespace LegalLab.Models.Wallet
 		public WalletModel(XmppClient Client, ContractsClient Contracts, string ComponentJid, NetworkModel Network)
 			: base()
 		{
-			this.amount = new Property<double>(nameof(this.Amount), 0, this);
-			this.reserved = new Property<double>(nameof(this.Reserved), 0, this);
+			this.amount = new Property<decimal>(nameof(this.Amount), 0, this);
+			this.pending = new Property<decimal>(nameof(this.Pending), 0, this);
+			this.available = new Property<decimal>(nameof(this.Available), 0, this);
+			this.reserved = new Property<decimal>(nameof(this.Reserved), 0, this);
 			this.currency = new Property<string>(nameof(this.Currency), string.Empty, this);
 			this.timestamp = new Property<DateTime>(nameof(this.Timestamp), DateTime.MinValue, this);
 			this.uri = new Property<string>(nameof(this.Uri), string.Empty, this);
@@ -80,9 +83,9 @@ namespace LegalLab.Models.Wallet
 			this.eDalerClient.SellEDalerError += this.EDalerClient_SellEDalerError;
 		}
 
-		private Task EDalerClient_BalanceUpdated(object Sender, BalanceEventArgs e)
+		private async Task EDalerClient_BalanceUpdated(object Sender, BalanceEventArgs e)
 		{
-			this.Balance = e.Balance;
+			await this.SetBalance(e.Balance);
 
 			AccountEventWrapper Item = new AccountEventWrapper(e.Balance.Event);
 			Item.Selected += this.Item_Selected;
@@ -94,8 +97,6 @@ namespace LegalLab.Models.Wallet
 			}
 
 			this.RaisePropertyChanged(nameof(this.Events));
-
-			return Task.CompletedTask;
 		}
 
 		private void Item_Deselected(object sender, EventArgs e)
@@ -127,7 +128,7 @@ namespace LegalLab.Models.Wallet
 		/// <summary>
 		/// Balance amount
 		/// </summary>
-		public double Amount
+		public decimal Amount
 		{
 			get => this.amount.Value;
 			set => this.amount.Value = value;
@@ -136,10 +137,28 @@ namespace LegalLab.Models.Wallet
 		/// <summary>
 		/// Reserved amount
 		/// </summary>
-		public double Reserved
+		public decimal Reserved
 		{
 			get => this.reserved.Value;
 			set => this.reserved.Value = value;
+		}
+
+		/// <summary>
+		/// Pending amount
+		/// </summary>
+		public decimal Pending
+		{
+			get => this.pending.Value;
+			set => this.pending.Value = value;
+		}
+
+		/// <summary>
+		/// Available amount
+		/// </summary>
+		public decimal Available
+		{
+			get => this.available.Value;
+			set => this.available.Value = value;
 		}
 
 		/// <summary>
@@ -176,18 +195,29 @@ namespace LegalLab.Models.Wallet
 		/// <summary>
 		/// Latest balance
 		/// </summary>
-		public Balance Balance
-		{
-			get => this.balance;
-			set
-			{
-				this.balance = value;
+		public Balance Balance => this.balance;
 
-				this.Amount = (double)this.balance.Amount;
-				this.Reserved = (double)this.balance.Reserved;
-				this.Currency = this.balance.Currency;
-				this.Timestamp = this.balance.Timestamp;
-			}
+		/// <summary>
+		/// Sets the balance of the wallet.
+		/// </summary>
+		/// <param name="Balance">Balance</param>
+		public Task SetBalance(Balance Balance)
+		{
+			this.balance = Balance;
+			return this.UpdateAmounts();
+		}
+
+		private async Task UpdateAmounts()
+		{ 
+			this.Amount = this.balance.Amount;
+			this.Reserved = this.balance.Reserved;
+			this.Currency = this.balance.Currency;
+			this.Timestamp = this.balance.Timestamp;
+
+			(decimal Pending, _, _) = await this.eDalerClient.GetPendingPayments();
+
+			this.Pending = Pending;
+			this.Available = this.Amount - this.Reserved - this.Pending;
 		}
 
 		/// <summary>
@@ -278,6 +308,8 @@ namespace LegalLab.Models.Wallet
 
 				this.Uri = await this.eDalerClient.CreateFullPaymentUri(Model.Recipient, Model.Amount,
 					Model.AmountExtra > 0 ? Model.AmountExtra : (decimal?)null, Model.Currency, 3, Model.Message);
+
+				await this.UpdateAmounts();
 			}
 			catch (Exception ex)
 			{
@@ -511,7 +543,7 @@ namespace LegalLab.Models.Wallet
 				return Task.CompletedTask;
 			});
 
-			this.Balance = await this.eDalerClient.GetBalanceAsync();
+			await this.SetBalance(await this.eDalerClient.GetBalanceAsync());
 
 			(AccountEvent[] Events, bool More) = await this.eDalerClient.GetAccountEventsAsync(50);
 

@@ -13,7 +13,11 @@
                 <TextBox Text="{Binding Amount, Converter={conv:MoneyToString}}" IsReadOnly="True"/>
                 <Label Padding="0,10,0,0">Reserved:</Label>
                 <TextBox Text="{Binding Reserved, Converter={conv:MoneyToString}}" IsReadOnly="True"/>
-                <Label Padding="0,10,0,0">Currency:</Label>
+				<Label Padding="0,10,0,0">Pending: (i.e Offline payments)</Label>
+				<TextBox Text="{Binding Pending, Converter={conv:MoneyToString}}" IsReadOnly="True"/>
+				<Label Padding="0,10,0,0">Available:</Label>
+				<TextBox Text="{Binding Available, Converter={conv:MoneyToString}}" IsReadOnly="True"/>
+				<Label Padding="0,10,0,0">Currency:</Label>
                 <TextBox Text="{Binding Currency}" IsReadOnly="True"/>
                 <Label Padding="0,10,0,0">Timestamp:</Label>
                 <TextBox Text="{Binding Timestamp, Converter={conv:DateTimeToString}}" IsReadOnly="True"/>
