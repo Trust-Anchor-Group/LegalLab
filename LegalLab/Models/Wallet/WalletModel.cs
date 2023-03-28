@@ -1,8 +1,9 @@
 ﻿using EDaler;
 using EDaler.Uris;
 using EDaler.Uris.Incomplete;
-using LegalLab.Dialogs.AddLanguage;
+using LegalLab.Dialogs.BuyEDaler;
 using LegalLab.Dialogs.TransferEDaler;
+using NeuroFeatures;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -32,7 +33,9 @@ namespace LegalLab.Models.Wallet
 		private readonly Command buyEDaler;
 		private readonly Command sellEDaler;
 
+		private readonly ContractsClient contractsClient;
 		private readonly EDalerClient eDalerClient;
+		private readonly NeuroFeaturesClient neuroFeaturesClient;
 		private Balance balance = null;
 		private AccountEventWrapper selectedItem = null;
 
@@ -56,8 +59,14 @@ namespace LegalLab.Models.Wallet
 			this.buyEDaler = new Command(this.CanBuyEDaler, this.ExecuteBuyEDaler);
 			this.sellEDaler = new Command(this.CanSellEDaler, this.ExecuteSellEDaler);
 
+			this.contractsClient = Contracts;
+
 			this.eDalerClient = new EDalerClient(Client, Contracts, ComponentJid);
 			this.eDalerClient.BalanceUpdated += this.EDalerClient_BalanceUpdated;
+			this.eDalerClient.BuyEDalerClientUrlReceived += this.EDalerClient_BuyEDalerClientUrlReceived;
+			this.eDalerClient.SellEDalerClientUrlReceived += this.EDalerClient_SellEDalerClientUrlReceived;
+
+			this.neuroFeaturesClient = new NeuroFeaturesClient(Client, Contracts, ComponentJid);
 		}
 
 		private Task EDalerClient_BalanceUpdated(object Sender, BalanceEventArgs e)
@@ -97,6 +106,7 @@ namespace LegalLab.Models.Wallet
 		public void Dispose()
 		{
 			this.eDalerClient.Dispose();
+			this.neuroFeaturesClient.Dispose();
 		}
 
 		/// <summary>
@@ -241,15 +251,34 @@ namespace LegalLab.Models.Wallet
 
 		private async Task ExecuteTransferEDaler()
 		{
-			TransferEDalerDialog Dialog = new TransferEDalerDialog();
-			TransferEDalerModel Model = new TransferEDalerModel(Dialog);
+			try
+			{
+				CreationAttributesEventArgs DefaultArgs;
 
-			bool? Result = Dialog.ShowDialog();
-			if (!Result.HasValue || !Result.Value)
-				return;
+				MainWindow.MouseHourglass();
+				try
+				{
+					DefaultArgs = await this.neuroFeaturesClient.GetCreationAttributesAsync();
+				}
+				finally
+				{
+					MainWindow.MouseDefault();
+				}
 
-			this.Uri = await this.eDalerClient.CreateFullPaymentUri(Model.Recipient, Model.Amount,
-				Model.AmountExtra > 0 ? Model.AmountExtra : (decimal?)null, Model.Currency, 3, Model.Message);
+				TransferEDalerDialog Dialog = new TransferEDalerDialog();
+				TransferEDalerModel Model = new TransferEDalerModel(Dialog, DefaultArgs.Currency);
+
+				bool? Result = Dialog.ShowDialog();
+				if (!Result.HasValue || !Result.Value)
+					return;
+
+				this.Uri = await this.eDalerClient.CreateFullPaymentUri(Model.Recipient, Model.Amount,
+					Model.AmountExtra > 0 ? Model.AmountExtra : (decimal?)null, Model.Currency, 3, Model.Message);
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
 		}
 
 		/// <summary>
@@ -264,7 +293,67 @@ namespace LegalLab.Models.Wallet
 
 		private async Task ExecuteBuyEDaler()
 		{
-			// TODO
+			try
+			{
+				IBuyEDalerServiceProvider[] Providers;
+				CreationAttributesEventArgs DefaultArgs;
+
+				MainWindow.MouseHourglass();
+				try
+				{
+					Providers = await this.eDalerClient.GetServiceProvidersForBuyingEDalerAsync();
+					DefaultArgs = await this.neuroFeaturesClient.GetCreationAttributesAsync();
+				}
+				finally
+				{
+					MainWindow.MouseDefault();
+				}
+
+				BuyEDalerDialog Dialog = new BuyEDalerDialog();
+				BuyEDalerModel Model = new BuyEDalerModel(Dialog, Providers, DefaultArgs.Currency);
+
+				bool? Result = Dialog.ShowDialog();
+				if (!Result.HasValue || !Result.Value)
+					return;
+
+				if (!(Dialog.ServiceProvider.SelectedItem is ServiceProviderModel ServiceProviderModel) ||
+					!(ServiceProviderModel.ServiceProvider is IBuyEDalerServiceProvider ServiceProvider))
+				{
+					throw new Exception("Cannot buy eDaler® using that service provider.");
+				}
+
+				if (string.IsNullOrEmpty(ServiceProvider.BuyEDalerTemplateContractId))
+				{
+					await this.eDalerClient.InitiateBuyEDalerAsync(ServiceProvider.Id, ServiceProvider.Type,
+						Model.Amount, Model.Currency);
+
+					// Server will ask client to open web URL via event.
+				}
+				else
+				{
+					MainWindow.MouseHourglass();
+					try
+					{
+						Contract Contract = await this.contractsClient.GetContractAsync(ServiceProvider.BuyEDalerTemplateContractId);
+
+
+					}
+					finally
+					{
+						MainWindow.MouseDefault();
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
+		}
+
+		private Task EDalerClient_BuyEDalerClientUrlReceived(object Sender, BuyEDalerClientUrlEventArgs e)
+		{
+			System.Diagnostics.Process.Start(e.ClientUrl);
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -280,6 +369,12 @@ namespace LegalLab.Models.Wallet
 		private async Task ExecuteSellEDaler()
 		{
 			// TODO
+		}
+
+		private Task EDalerClient_SellEDalerClientUrlReceived(object Sender, SellEDalerClientUrlEventArgs e)
+		{
+			System.Diagnostics.Process.Start(e.ClientUrl);
+			return Task.CompletedTask;
 		}
 
 		/// <inheritdoc/>
