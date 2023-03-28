@@ -17,6 +17,7 @@ using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
+using Waher.Script.Constants;
 
 namespace LegalLab.Models.Wallet
 {
@@ -371,15 +372,19 @@ namespace LegalLab.Models.Wallet
 
 		private Task EDalerClient_BuyEDalerClientUrlReceived(object Sender, BuyEDalerClientUrlEventArgs e)
 		{
+			this.OpenUrl(e.ClientUrl);
+			return Task.CompletedTask;
+		}
+
+		private void OpenUrl(string Url)
+		{
 			ProcessStartInfo StartInfo = new ProcessStartInfo
 			{
-				FileName = e.ClientUrl,
+				FileName = Url,
 				UseShellExecute = true
 			};
 
 			Process.Start(StartInfo);
-
-			return Task.CompletedTask;
 		}
 
 		private Task EDalerClient_BuyEDalerCompleted(object Sender, PaymentCompletedEventArgs e)
@@ -481,14 +486,7 @@ namespace LegalLab.Models.Wallet
 
 		private Task EDalerClient_SellEDalerClientUrlReceived(object Sender, SellEDalerClientUrlEventArgs e)
 		{
-			ProcessStartInfo StartInfo = new ProcessStartInfo
-			{
-				FileName = e.ClientUrl,
-				UseShellExecute = true
-			};
-
-			Process.Start(StartInfo);
-
+			this.OpenUrl(e.ClientUrl);
 			return Task.CompletedTask;
 		}
 
