@@ -171,7 +171,7 @@ namespace LegalLab.Models.Network
 			string Prefix = "Credentials." + Account + ".";
 			bool Connect = this.Connected;
 
-			this.Account = Account.Substring(0, i);
+			this.Account = Account[..i];
 			this.XmppServer = Account[(i + 1)..];
 			this.Password = await RuntimeSettings.GetAsync(Prefix + "Password", string.Empty);
 			this.PasswordMethod = await RuntimeSettings.GetAsync(Prefix + "PasswordMethod", string.Empty);
@@ -399,12 +399,12 @@ namespace LegalLab.Models.Network
 		/// <summary>
 		/// Wallet model
 		/// </summary>
-		public WalletModel Wallet => this.Wallet;
+		public WalletModel Wallet => this.walletModel;
 
 		/// <summary>
 		/// Tokens model
 		/// </summary>
-		public TokensModel Tokens => this.Tokens;
+		public TokensModel Tokens => this.tokensModel;
 
 		/// <summary>
 		/// Starts the model.
@@ -546,7 +546,7 @@ namespace LegalLab.Models.Network
 				}
 
 				ListViewSniffer Sniffer = new ListViewSniffer(MainWindow.currentInstance.NetworkTab.SnifferListView, 1000);
-				Sniffer.SelectionChanged += Sniffer_SelectionChanged;
+				Sniffer.SelectionChanged += this.Sniffer_SelectionChanged;
 
 				if (string.IsNullOrEmpty(this.PasswordMethod))
 					this.client = new XmppClient(Host, Port, this.Account, this.Password, "en", typeof(MainWindow).Assembly, Sniffer);
@@ -567,9 +567,9 @@ namespace LegalLab.Models.Network
 					this.client.AllowScramSHA1 = false;
 				}
 
-				this.client.OnStateChanged += Client_OnStateChanged;
-				this.client.OnConnectionError += Client_OnConnectionError;
-				this.client.OnChatMessage += Client_OnChatMessage;
+				this.client.OnStateChanged += this.Client_OnStateChanged;
+				this.client.OnConnectionError += this.Client_OnConnectionError;
+				this.client.OnChatMessage += this.Client_OnChatMessage;
 
 				this.client.Connect(this.XmppServer);
 			}
@@ -612,14 +612,14 @@ namespace LegalLab.Models.Network
 						this.Connected = true;
 
 						MainWindow.MouseDefault();
-						this.client.OnConnectionError -= Client_OnConnectionError;
+						this.client.OnConnectionError -= this.Client_OnConnectionError;
 
 						this.ConnectOnStartup = true;
 						this.CreateAccount = false;
 						this.ApiKey = string.Empty;
 						this.ApiKeySecret = string.Empty;
 
-						if (string.IsNullOrEmpty(PasswordMethod) && !this.StorePasswordInsteadOfDigest)
+						if (string.IsNullOrEmpty(this.PasswordMethod) && !this.StorePasswordInsteadOfDigest)
 						{
 							this.Password = this.client.PasswordHash;
 							this.PasswordMethod = this.client.PasswordHashMethod;
@@ -675,7 +675,7 @@ namespace LegalLab.Models.Network
 									this.walletModel?.Dispose();
 									this.walletModel = null;
 
-									this.walletModel = new WalletModel(this.client, this.legalModel.Contracts, this.EDalerComponentJid);
+									this.walletModel = new WalletModel(this.client, this.legalModel.Contracts, this.EDalerComponentJid, this);
 									await this.walletModel.Load();
 									await this.walletModel.Start();
 								}

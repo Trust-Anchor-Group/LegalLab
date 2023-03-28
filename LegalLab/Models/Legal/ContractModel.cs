@@ -13,9 +13,11 @@ using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Xml;
+using Waher.Content;
 using Waher.Events;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Persistence;
 using Waher.Runtime.Settings;
 using Waher.Script;
 
@@ -346,8 +348,11 @@ namespace LegalLab.Models.Legal
 		/// <summary>
 		/// Populates a <see cref="StackPanel"/> with parameter controls.
 		/// </summary>
-		/// <param name="Parameters">StackPanel to populate</param>
-		public async Task PopulateParameters(StackPanel Parameters, StackPanel AdditionalCommands)
+		/// <param name="Parameters">StackPanel to populate with parameters</param>
+		/// <param name="AdditionalCommands">StackPanel to populate with additional commends.</param>
+		/// <param name="PresetValues">Optional preset values. Can be null.</param>
+		public async Task PopulateParameters(StackPanel Parameters, StackPanel AdditionalCommands, 
+			Dictionary<CaseInsensitiveString, object> PresetValues)
 		{
 			List<ParameterInfo> ParameterList = new List<ParameterInfo>();
 			ParameterInfo ParameterInfo;
@@ -371,6 +376,12 @@ namespace LegalLab.Models.Legal
 						Margin = new Thickness(0, 10, 0, 0)
 					};
 
+					if ((PresetValues?.TryGetValue(Parameter.Name, out object PresetValue) ?? false) && PresetValue is bool b)
+					{
+						BP.Value = b;
+						CheckBox.IsChecked = b;
+					}
+
 					CheckBox.Checked += this.Parameter_CheckedChanged;
 					CheckBox.Unchecked += this.Parameter_CheckedChanged;
 
@@ -393,35 +404,58 @@ namespace LegalLab.Models.Legal
 						ToolTip = await Parameter.ToSimpleXAML(this.contract.DefaultLanguage, this.contract)
 					};
 
+					if (PresetValues?.TryGetValue(Parameter.Name, out object PresetValue) ?? false)
+						TextBox.Text = PresetValue?.ToString() ?? string.Empty;
+					else
+						PresetValue = null;
+
 					TextBox.TextChanged += this.Parameter_TextChanged;
 
 					if (Parameter is NumericalParameter NP)
 					{
+						if (PresetValue is decimal d)
+							NP.Value = d;
+
 						this.parametersByName[Parameter.Name] = ParameterInfo = new NumericalParameterInfo(this.contract, NP, TextBox,
 							null, null, null, null, null, this.parameters);
 					}
 					else if (Parameter is StringParameter SP)
 					{
+						if (PresetValue is string s)
+							SP.Value = s;
+
 						this.parametersByName[Parameter.Name] = ParameterInfo = new StringParameterInfo(this.contract, SP, TextBox,
 							null, null, null, null, null, null, null, null, this.parameters);
 					}
 					else if (Parameter is DateParameter DP)
 					{
+						if (PresetValue is DateTime TP)
+							DP.Value = TP;
+
 						this.parametersByName[Parameter.Name] = ParameterInfo = new DateParameterInfo(this.contract, DP, TextBox,
 							null, null, null, null, null, this.parameters);
 					}
 					else if (Parameter is DateTimeParameter DTP)
 					{
+						if (PresetValue is DateTime TP)
+							DTP.Value = TP;
+
 						this.parametersByName[Parameter.Name] = ParameterInfo = new DateTimeParameterInfo(this.contract, DTP, TextBox,
 							null, null, null, null, null, this.parameters);
 					}
 					else if (Parameter is TimeParameter TP)
 					{
+						if (PresetValue is TimeSpan TS)
+							TP.Value = TS;
+
 						this.parametersByName[Parameter.Name] = ParameterInfo = new TimeParameterInfo(this.contract, TP, TextBox,
 							null, null, null, null, null, this.parameters);
 					}
 					else if (Parameter is DurationParameter DrP)
 					{
+						if (PresetValue is Waher.Content.Duration D)
+							DrP.Value = D;
+
 						this.parametersByName[Parameter.Name] = ParameterInfo = new DurationParameterInfo(this.contract, DrP, TextBox,
 							null, null, null, null, null, this.parameters);
 					}

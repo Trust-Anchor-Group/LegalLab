@@ -3,14 +3,19 @@ using EDaler.Uris;
 using EDaler.Uris.Incomplete;
 using LegalLab.Dialogs.BuyEDaler;
 using LegalLab.Dialogs.TransferEDaler;
+using LegalLab.Models.Network;
 using NeuroFeatures;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Persistence;
 using Waher.Runtime.Inventory;
+using Waher.Runtime.Settings;
 
 namespace LegalLab.Models.Wallet
 {
@@ -35,7 +40,7 @@ namespace LegalLab.Models.Wallet
 
 		private readonly ContractsClient contractsClient;
 		private readonly EDalerClient eDalerClient;
-		private readonly NeuroFeaturesClient neuroFeaturesClient;
+		private readonly NetworkModel networkModel;
 		private Balance balance = null;
 		private AccountEventWrapper selectedItem = null;
 
@@ -45,7 +50,8 @@ namespace LegalLab.Models.Wallet
 		/// <param name="Client">XMPP Client</param>
 		/// <param name="Contracts">Contracts Client</param>
 		/// <param name="ComponentJid">Component JID</param>
-		public WalletModel(XmppClient Client, ContractsClient Contracts, string ComponentJid)
+		/// <param name="Network">Network model</param>
+		public WalletModel(XmppClient Client, ContractsClient Contracts, string ComponentJid, NetworkModel Network)
 			: base()
 		{
 			this.amount = new Property<double>(nameof(this.Amount), 0, this);
@@ -60,13 +66,12 @@ namespace LegalLab.Models.Wallet
 			this.sellEDaler = new Command(this.CanSellEDaler, this.ExecuteSellEDaler);
 
 			this.contractsClient = Contracts;
+			this.networkModel = Network;
 
 			this.eDalerClient = new EDalerClient(Client, Contracts, ComponentJid);
 			this.eDalerClient.BalanceUpdated += this.EDalerClient_BalanceUpdated;
 			this.eDalerClient.BuyEDalerClientUrlReceived += this.EDalerClient_BuyEDalerClientUrlReceived;
 			this.eDalerClient.SellEDalerClientUrlReceived += this.EDalerClient_SellEDalerClientUrlReceived;
-
-			this.neuroFeaturesClient = new NeuroFeaturesClient(Client, Contracts, ComponentJid);
 		}
 
 		private Task EDalerClient_BalanceUpdated(object Sender, BalanceEventArgs e)
@@ -106,7 +111,6 @@ namespace LegalLab.Models.Wallet
 		public void Dispose()
 		{
 			this.eDalerClient.Dispose();
-			this.neuroFeaturesClient.Dispose();
 		}
 
 		/// <summary>
@@ -253,17 +257,11 @@ namespace LegalLab.Models.Wallet
 		{
 			try
 			{
-				CreationAttributesEventArgs DefaultArgs;
-
 				MainWindow.MouseHourglass();
-				try
-				{
-					DefaultArgs = await this.neuroFeaturesClient.GetCreationAttributesAsync();
-				}
-				finally
-				{
-					MainWindow.MouseDefault();
-				}
+
+				CreationAttributesEventArgs DefaultArgs = await this.networkModel.Tokens.NeuroFeaturesClient.GetCreationAttributesAsync();
+
+				MainWindow.MouseDefault();
 
 				TransferEDalerDialog Dialog = new TransferEDalerDialog();
 				TransferEDalerModel Model = new TransferEDalerModel(Dialog, DefaultArgs.Currency);
@@ -295,19 +293,12 @@ namespace LegalLab.Models.Wallet
 		{
 			try
 			{
-				IBuyEDalerServiceProvider[] Providers;
-				CreationAttributesEventArgs DefaultArgs;
-
 				MainWindow.MouseHourglass();
-				try
-				{
-					Providers = await this.eDalerClient.GetServiceProvidersForBuyingEDalerAsync();
-					DefaultArgs = await this.neuroFeaturesClient.GetCreationAttributesAsync();
-				}
-				finally
-				{
-					MainWindow.MouseDefault();
-				}
+
+				IBuyEDalerServiceProvider[] Providers = await this.eDalerClient.GetServiceProvidersForBuyingEDalerAsync();
+				CreationAttributesEventArgs DefaultArgs = await this.networkModel.Tokens.NeuroFeaturesClient.GetCreationAttributesAsync();
+
+				MainWindow.MouseDefault();
 
 				BuyEDalerDialog Dialog = new BuyEDalerDialog();
 				BuyEDalerModel Model = new BuyEDalerModel(Dialog, Providers, DefaultArgs.Currency);
@@ -332,16 +323,39 @@ namespace LegalLab.Models.Wallet
 				else
 				{
 					MainWindow.MouseHourglass();
-					try
+
+					string TemplateName = "Buy eDaler from " + ServiceProvider.Name;
+					string Key = "Contract.Template." + TemplateName;
+					string StoredId = await RuntimeSettings.GetAsync(Key, string.Empty);
+
+					if (StoredId != ServiceProvider.BuyEDalerTemplateContractId)
 					{
 						Contract Contract = await this.contractsClient.GetContractAsync(ServiceProvider.BuyEDalerTemplateContractId);
+						if (!Contract.CanActAsTemplate)
+							throw new Exception("Contract referenced by service provider is not a template.");
 
-
+						await RuntimeSettings.SetAsync(Key, Contract.ContractId);
+						this.networkModel.Legal.ContractTemplateAdded(TemplateName, Contract);
 					}
-					finally
+
+					Dictionary<CaseInsensitiveString, object> PresetValues = new Dictionary<CaseInsensitiveString, object>()
 					{
-						MainWindow.MouseDefault();
+						{ "Amount", Model.Amount },
+						{ "Currency", Model.Currency }
+					};
+
+					await this.networkModel.Legal.SetContractTemplateName(TemplateName, PresetValues);
+
+					foreach (TabItem Item in MainWindow.currentInstance.TabControl.Items)
+					{
+						if (Item.Content == MainWindow.currentInstance.ContractsTab)
+						{
+							MainWindow.currentInstance.TabControl.SelectedItem = Item;
+							break;
+						}
 					}
+
+					MainWindow.MouseDefault();
 				}
 			}
 			catch (Exception ex)
@@ -352,7 +366,14 @@ namespace LegalLab.Models.Wallet
 
 		private Task EDalerClient_BuyEDalerClientUrlReceived(object Sender, BuyEDalerClientUrlEventArgs e)
 		{
-			System.Diagnostics.Process.Start(e.ClientUrl);
+			ProcessStartInfo StartInfo = new ProcessStartInfo
+			{
+				FileName = e.ClientUrl,
+				UseShellExecute = true
+			};
+
+			Process.Start(StartInfo);
+
 			return Task.CompletedTask;
 		}
 

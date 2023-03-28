@@ -8,8 +8,10 @@ using System.Windows;
 using System.Windows.Input;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Persistence;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
+using Waher.Script.Units.DerivedQuantities;
 
 namespace LegalLab.Models.Legal
 {
@@ -64,13 +66,13 @@ namespace LegalLab.Models.Legal
 
 			this.template = new Property<Contract>(nameof(this.Template), null, this);
 			this.templates = new Property<TemplateReferenceModel[]>(nameof(this.Templates), new TemplateReferenceModel[0], this);
-			this.contractTemplateName = new Property<string>(nameof(ContractTemplateName), string.Empty, this);
+			this.contractTemplateName = new Property<string>(nameof(this.ContractTemplateName), string.Empty, this);
 
 			this.apply = new Command(this.CanExecuteApply, this.ExecuteApply);
 
 			this.contracts = new ContractsClient(Client, ComponentJid);
-			this.contracts.IdentityUpdated += Contracts_IdentityUpdated;
-			this.contracts.PetitionForIdentityReceived += Contracts_PetitionForIdentityReceived;
+			this.contracts.IdentityUpdated += this.Contracts_IdentityUpdated;
+			this.contracts.PetitionForIdentityReceived += this.Contracts_PetitionForIdentityReceived;
 		}
 
 		/// <inheritdoc/>
@@ -406,8 +408,20 @@ namespace LegalLab.Models.Legal
 			set
 			{
 				this.contractTemplateName.Value = value;
-				this.LoadTemplate(value);
+				Task.Run(() => this.LoadTemplate(value, null));
 			}
+		}
+
+		/// <summary>
+		/// Selects the template to use.
+		/// </summary>
+		/// <param name="Name">Name of contract template to select.</param>
+		/// <param name="PresetValues">Optional preset values. Can be null.</param>
+		public async Task SetContractTemplateName(string Name, Dictionary<CaseInsensitiveString, object> PresetValues)
+		{
+			this.contractTemplateName.Value = Name;
+			this.RaisePropertyChanged(nameof(this.ContractTemplateName));
+			await this.LoadTemplate(Name, PresetValues);
 		}
 
 		/// <summary>
@@ -436,7 +450,7 @@ namespace LegalLab.Models.Legal
 			this.Templates = Templates.ToValueArray();
 		}
 
-		private async void LoadTemplate(string TemplateName)
+		private async Task LoadTemplate(string TemplateName, Dictionary<CaseInsensitiveString, object> PresetValues)
 		{
 			try
 			{
@@ -454,8 +468,14 @@ namespace LegalLab.Models.Legal
 				this.currentContract = new ContractModel(this.contracts, this.Template, this, MainWindow.currentInstance.ContractsTab);
 				await this.currentContract.Start();
 
-				await this.currentContract.PopulateParameters(MainWindow.currentInstance.ContractsTab.CreateParameters, MainWindow.currentInstance.ContractsTab.CreateCommands);
-				await this.currentContract.PopulateContract(MainWindow.currentInstance.ContractsTab.ContractToCreate, MainWindow.currentInstance.ContractsTab.ContractToCreateHumanReadable);
+				await this.currentContract.PopulateParameters(
+					MainWindow.currentInstance.ContractsTab.CreateParameters, 
+					MainWindow.currentInstance.ContractsTab.CreateCommands,
+					PresetValues);
+
+				await this.currentContract.PopulateContract(
+					MainWindow.currentInstance.ContractsTab.ContractToCreate, 
+					MainWindow.currentInstance.ContractsTab.ContractToCreateHumanReadable);
 			}
 			catch (Exception ex)
 			{
