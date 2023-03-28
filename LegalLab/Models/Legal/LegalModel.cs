@@ -11,7 +11,6 @@ using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
-using Waher.Script.Units.DerivedQuantities;
 
 namespace LegalLab.Models.Legal
 {

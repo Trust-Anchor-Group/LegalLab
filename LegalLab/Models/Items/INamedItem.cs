@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LegalLab.Items
+﻿namespace LegalLab.Items
 {
 	/// <summary>
 	/// Interface for named items

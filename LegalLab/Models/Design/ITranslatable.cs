@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LegalLab.Models.Design
+﻿namespace LegalLab.Models.Design
 {
 	/// <summary>
 	/// Interface for translatable objects.
