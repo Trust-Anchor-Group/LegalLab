@@ -13,6 +13,7 @@ namespace LegalLab.Dialogs.TransferEDaler
 		private readonly Property<decimal> amount;
 		private readonly Property<decimal> amountExtra;
 		private readonly Property<string> currency;
+		private readonly Property<int> validNrDays;
 		private readonly Property<string> message;
 		private readonly TransferEDalerDialog dialog;
 		private readonly Command transfer;
@@ -24,6 +25,7 @@ namespace LegalLab.Dialogs.TransferEDaler
 			this.amount = new Property<decimal>(nameof(this.Amount), 0M, this);
 			this.amountExtra = new Property<decimal>(nameof(this.AmountExtra), 0M, this);
 			this.currency = new Property<string>(nameof(this.Currency), DefaultCurrency, this);
+			this.validNrDays = new Property<int>(nameof(this.ValidNrDays), 3, this);
 			this.message = new Property<string>(nameof(this.Message), string.Empty, this);
 
 			this.dialog = Dialog;
@@ -86,6 +88,19 @@ namespace LegalLab.Dialogs.TransferEDaler
 		}
 
 		/// <summary>
+		/// Valid number of days.
+		/// </summary>
+		public int ValidNrDays
+		{
+			get => this.validNrDays.Value;
+			set
+			{
+				this.validNrDays.Value = value;
+				this.transfer.RaiseCanExecuteChanged();
+			}
+		}
+
+		/// <summary>
 		/// Message
 		/// </summary>
 		public string Message
@@ -114,6 +129,7 @@ namespace LegalLab.Dialogs.TransferEDaler
 				!string.IsNullOrEmpty(this.Recipient) &&
 				this.Amount > 0 &&
 				this.AmountExtra >= 0 &&
+				this.ValidNrDays > 0 &&
 				this.Currency.Length == 3 &&
 				this.Currency == this.Currency.ToUpper();
 		}

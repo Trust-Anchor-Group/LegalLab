@@ -307,7 +307,7 @@ namespace LegalLab.Models.Wallet
 					return;
 
 				this.Uri = await this.eDalerClient.CreateFullPaymentUri(Model.Recipient, Model.Amount,
-					Model.AmountExtra > 0 ? Model.AmountExtra : (decimal?)null, Model.Currency, 3, Model.Message);
+					Model.AmountExtra > 0 ? Model.AmountExtra : (decimal?)null, Model.Currency, Model.ValidNrDays, Model.Message);
 
 				await this.UpdateAmounts();
 			}
