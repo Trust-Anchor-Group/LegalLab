@@ -316,7 +316,7 @@ namespace LegalLab.Models.Network
 		}
 
 		/// <summary>
-		/// e-Daler Component JID
+		/// eDaler® Component JID
 		/// </summary>
 		public string EDalerComponentJid
 		{

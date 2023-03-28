@@ -121,7 +121,7 @@ namespace LegalLab.Models.Wallet
 		}
 
 		/// <summary>
-		/// eDaler client.
+		/// eDaler® client.
 		/// </summary>
 		public EDalerClient EDaler => this.eDalerClient;
 
@@ -180,7 +180,7 @@ namespace LegalLab.Models.Wallet
 		}
 
 		/// <summary>
-		/// e-Daler URI
+		/// eDaler® URI
 		/// </summary>
 		public string Uri
 		{
@@ -258,7 +258,7 @@ namespace LegalLab.Models.Wallet
 			try
 			{
 				if (!EDalerUri.TryParse(this.Uri, out EDalerUri Uri))
-					throw new Exception("Invalid eDaler URI.");
+					throw new Exception("Invalid eDaler® URI.");
 
 				if (Uri is EDalerIncompletePaymentUri IncompleteUri)
 				{
@@ -280,7 +280,7 @@ namespace LegalLab.Models.Wallet
 		}
 
 		/// <summary>
-		/// Command for transferring eDaler.
+		/// Command for transferring eDaler®.
 		/// </summary>
 		public ICommand TransferEDaler => this.transferEDaler;
 
@@ -318,7 +318,7 @@ namespace LegalLab.Models.Wallet
 		}
 
 		/// <summary>
-		/// Command for buying eDaler.
+		/// Command for buying eDaler®.
 		/// </summary>
 		public ICommand BuyEDaler => this.buyEDaler;
 
@@ -362,7 +362,7 @@ namespace LegalLab.Models.Wallet
 				{
 					MainWindow.MouseHourglass();
 
-					string TemplateName = "Buy eDaler using " + ServiceProvider.Name;
+					string TemplateName = "Buy eDaler® using " + ServiceProvider.Name;
 					string Key = "Contract.Template." + TemplateName;
 					string StoredId = await RuntimeSettings.GetAsync(Key, string.Empty);
 
@@ -432,7 +432,7 @@ namespace LegalLab.Models.Wallet
 		}
 
 		/// <summary>
-		/// Command for selling eDaler.
+		/// Command for selling eDaler®.
 		/// </summary>
 		public ICommand SellEDaler => this.sellEDaler;
 
@@ -476,7 +476,7 @@ namespace LegalLab.Models.Wallet
 				{
 					MainWindow.MouseHourglass();
 
-					string TemplateName = "Sell eDaler using " + ServiceProvider.Name;
+					string TemplateName = "Sell eDaler® using " + ServiceProvider.Name;
 					string Key = "Contract.Template." + TemplateName;
 					string StoredId = await RuntimeSettings.GetAsync(Key, string.Empty);
 

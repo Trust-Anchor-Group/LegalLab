@@ -7,7 +7,7 @@ using System.Windows.Input;
 namespace LegalLab.Dialogs.SellEDaler
 {
 	/// <summary>
-	/// View model for the sell eDaler dialog.
+	/// View model for the sell eDaler® dialog.
 	/// </summary>
 	public class SellEDalerModel : Model
 	{

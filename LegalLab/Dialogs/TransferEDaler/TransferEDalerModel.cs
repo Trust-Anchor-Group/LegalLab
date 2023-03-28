@@ -5,7 +5,7 @@ using System.Windows.Input;
 namespace LegalLab.Dialogs.TransferEDaler
 {
 	/// <summary>
-	/// View model for the Transfer eDaler dialog.
+	/// View model for the Transfer eDaler® dialog.
 	/// </summary>
 	public class TransferEDalerModel : Model
 	{
