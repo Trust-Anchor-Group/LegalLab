@@ -54,8 +54,8 @@ namespace LegalLab
 		public MainWindow()
 		{
 			this.Visibility = Visibility.Hidden;
-			Initialize();
-			InitializeComponent();
+			this.Initialize();
+			this.InitializeComponent();
 		}
 
 		#region Initialization & Setup
@@ -522,7 +522,7 @@ namespace LegalLab
 
 		private static void CloseImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
-			if ((sender as Image)?.Tag is TabItem Item)
+			if (sender is Image { Tag: TabItem Item })
 			{
 				MainWindow.currentInstance?.TabControl?.Items.Remove(Item);
 				if (Item.Content != null && Item.Content is IDisposable Disposable)

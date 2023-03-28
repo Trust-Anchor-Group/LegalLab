@@ -5,7 +5,7 @@ using System.Windows.Input;
 namespace LegalLab.Dialogs.TransferEDaler
 {
 	/// <summary>
-	/// View model for the Add Language dialog.
+	/// View model for the Transfer eDaler dialog.
 	/// </summary>
 	public class TransferEDalerModel : Model
 	{
@@ -18,12 +18,12 @@ namespace LegalLab.Dialogs.TransferEDaler
 		private readonly Command transfer;
 		private readonly Command cancel;
 
-		public TransferEDalerModel(TransferEDalerDialog Dialog)
+		public TransferEDalerModel(TransferEDalerDialog Dialog, string DefaultCurrency)
 		{
 			this.recipient = new Property<string>(nameof(this.Recipient), string.Empty, this);
 			this.amount = new Property<decimal>(nameof(this.Amount), 0M, this);
 			this.amountExtra = new Property<decimal>(nameof(this.AmountExtra), 0M, this);
-			this.currency = new Property<string>(nameof(this.Currency), string.Empty, this);
+			this.currency = new Property<string>(nameof(this.Currency), DefaultCurrency, this);
 			this.message = new Property<string>(nameof(this.Message), string.Empty, this);
 
 			this.dialog = Dialog;

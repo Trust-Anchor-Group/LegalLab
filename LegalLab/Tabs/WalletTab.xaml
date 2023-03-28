@@ -11,7 +11,7 @@
             <StackPanel Orientation="Vertical" Width="250" Margin="10">
                 <Label Padding="0">Balance:</Label>
                 <TextBox Text="{Binding Amount, Converter={conv:MoneyToString}}" IsReadOnly="True"/>
-                <Label Padding="0">Reserved:</Label>
+                <Label Padding="0,10,0,0">Reserved:</Label>
                 <TextBox Text="{Binding Reserved, Converter={conv:MoneyToString}}" IsReadOnly="True"/>
                 <Label Padding="0,10,0,0">Currency:</Label>
                 <TextBox Text="{Binding Currency}" IsReadOnly="True"/>

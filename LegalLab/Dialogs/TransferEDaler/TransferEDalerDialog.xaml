@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" FocusManager.FocusedElement="{Binding ElementName=Recipient}"
-        Width="300" Height="300" Background="#FFE5E5E5" Title="Transfer eDaler®">
+        Width="300" Height="325" Background="#FFE5E5E5" Title="Transfer eDaler®">
     <DockPanel Margin="10,10,10,0" LastChildFill="True">
         <Label Content="Recipient: (JID)" DockPanel.Dock="Top"/>
 		<TextBox Name="Recipient" Text="{Binding Recipient}" DockPanel.Dock="Top"/>
