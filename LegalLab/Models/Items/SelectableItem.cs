@@ -44,7 +44,7 @@ namespace LegalLab.Models.Items
 				if (this.selected != value)
 				{
 					this.selected = value;
-					this.RaisePropertyChanged(nameof(IsSelected));
+					this.RaisePropertyChanged(nameof(this.IsSelected));
 
 					if (this.selected)
 						this.OnSelected();

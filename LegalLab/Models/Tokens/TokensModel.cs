@@ -42,11 +42,11 @@ namespace LegalLab.Models.Tokens
 		{
 			this.neuroFeaturesClient = new NeuroFeaturesClient(Client, Contracts, ComponentJid);
 
-			this.neuroFeaturesClient.TokenAdded += NeuroFeaturesClient_TokenAdded;
-			this.neuroFeaturesClient.TokenRemoved += NeuroFeaturesClient_TokenRemoved;
+			this.neuroFeaturesClient.TokenAdded += this.NeuroFeaturesClient_TokenAdded;
+			this.neuroFeaturesClient.TokenRemoved += this.NeuroFeaturesClient_TokenRemoved;
 
-			this.neuroFeaturesClient.StateUpdated += NeuroFeaturesClient_StateUpdated;
-			this.neuroFeaturesClient.VariablesUpdated += NeuroFeaturesClient_VariablesUpdated;
+			this.neuroFeaturesClient.StateUpdated += this.NeuroFeaturesClient_StateUpdated;
+			this.neuroFeaturesClient.VariablesUpdated += this.NeuroFeaturesClient_VariablesUpdated;
 
 			this.addTextNote = new Command(this.CanExecuteAddNote, this.ExecuteAddTextNote);
 			this.addXmlNote = new Command(this.CanExecuteAddNote, this.ExecuteAddXmlNote);
@@ -55,8 +55,8 @@ namespace LegalLab.Models.Tokens
 		private async Task NeuroFeaturesClient_TokenAdded(object Sender, TokenEventArgs e)
 		{
 			TokenModel Token = await TokenModel.CreateAsync(this.neuroFeaturesClient, e.Token);
-			Token.Selected += Token_Selected;
-			Token.Deselected += Token_Deselected;
+			Token.Selected += this.Token_Selected;
+			Token.Deselected += this.Token_Deselected;
 
 			lock (this.tokens)
 			{
@@ -292,8 +292,8 @@ namespace LegalLab.Models.Tokens
 				foreach (Token Token in e2.Tokens)
 				{
 					TokenModel TokenModel = await TokenModel.CreateAsync(this.neuroFeaturesClient, Token);
-					TokenModel.Selected += Token_Selected;
-					TokenModel.Deselected += Token_Deselected;
+					TokenModel.Selected += this.Token_Selected;
+					TokenModel.Deselected += this.Token_Deselected;
 
 					lock (this.tokens)
 					{

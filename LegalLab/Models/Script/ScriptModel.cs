@@ -108,7 +108,7 @@ namespace LegalLab.Models.Script
 					Tag = Exp
 				};
 
-				ScriptBlock.PreviewMouseDown += TextBlock_PreviewMouseDown;
+				ScriptBlock.PreviewMouseDown += this.TextBlock_PreviewMouseDown;
 
 				this.historyPanel.Children.Add(ScriptBlock);
 
@@ -301,7 +301,7 @@ namespace LegalLab.Models.Script
 					Tag = Tag
 				};
 
-				TextBlock.PreviewMouseDown += TextBlock_PreviewMouseDown;
+				TextBlock.PreviewMouseDown += this.TextBlock_PreviewMouseDown;
 
 				this.AddBlock(ScriptBlock, TextBlock);
 			}
@@ -356,7 +356,7 @@ namespace LegalLab.Models.Script
 					Tag = new Tuple<byte[], int, int, Graph, object[]>(Bin, Pixels.Width, Pixels.Height, Graph, States)
 				};
 
-				ImageBlock.PreviewMouseDown += ImageBlock_PreviewMouseDown;
+				ImageBlock.PreviewMouseDown += this.ImageBlock_PreviewMouseDown;
 
 				this.historyPanel.Children.Insert(this.historyPanel.Children.IndexOf(ScriptBlock) + 1, ImageBlock);
 			}
