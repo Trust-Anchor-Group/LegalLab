@@ -2,6 +2,7 @@
 using EDaler.Uris;
 using EDaler.Uris.Incomplete;
 using LegalLab.Dialogs.BuyEDaler;
+using LegalLab.Dialogs.SellEDaler;
 using LegalLab.Dialogs.TransferEDaler;
 using LegalLab.Models.Network;
 using NeuroFeatures;
@@ -324,7 +325,7 @@ namespace LegalLab.Models.Wallet
 				{
 					MainWindow.MouseHourglass();
 
-					string TemplateName = "Buy eDaler from " + ServiceProvider.Name;
+					string TemplateName = "Buy eDaler using " + ServiceProvider.Name;
 					string Key = "Contract.Template." + TemplateName;
 					string StoredId = await RuntimeSettings.GetAsync(Key, string.Empty);
 
@@ -389,7 +390,77 @@ namespace LegalLab.Models.Wallet
 
 		private async Task ExecuteSellEDaler()
 		{
-			// TODO
+			try
+			{
+				MainWindow.MouseHourglass();
+
+				ISellEDalerServiceProvider[] Providers = await this.eDalerClient.GetServiceProvidersForSellingEDalerAsync();
+				CreationAttributesEventArgs DefaultArgs = await this.networkModel.Tokens.NeuroFeaturesClient.GetCreationAttributesAsync();
+
+				MainWindow.MouseDefault();
+
+				SellEDalerDialog Dialog = new SellEDalerDialog();
+				SellEDalerModel Model = new SellEDalerModel(Dialog, Providers, DefaultArgs.Currency);
+
+				bool? Result = Dialog.ShowDialog();
+				if (!Result.HasValue || !Result.Value)
+					return;
+
+				if (!(Dialog.ServiceProvider.SelectedItem is ServiceProviderModel ServiceProviderModel) ||
+					!(ServiceProviderModel.ServiceProvider is ISellEDalerServiceProvider ServiceProvider))
+				{
+					throw new Exception("Cannot sell eDaler® using that service provider.");
+				}
+
+				if (string.IsNullOrEmpty(ServiceProvider.SellEDalerTemplateContractId))
+				{
+					await this.eDalerClient.InitiateSellEDalerAsync(ServiceProvider.Id, ServiceProvider.Type,
+						Model.Amount, Model.Currency);
+
+					// Server will ask client to open web URL via event.
+				}
+				else
+				{
+					MainWindow.MouseHourglass();
+
+					string TemplateName = "Sell eDaler using " + ServiceProvider.Name;
+					string Key = "Contract.Template." + TemplateName;
+					string StoredId = await RuntimeSettings.GetAsync(Key, string.Empty);
+
+					if (StoredId != ServiceProvider.SellEDalerTemplateContractId)
+					{
+						Contract Contract = await this.contractsClient.GetContractAsync(ServiceProvider.SellEDalerTemplateContractId);
+						if (!Contract.CanActAsTemplate)
+							throw new Exception("Contract referenced by service provider is not a template.");
+
+						await RuntimeSettings.SetAsync(Key, Contract.ContractId);
+						this.networkModel.Legal.ContractTemplateAdded(TemplateName, Contract);
+					}
+
+					Dictionary<CaseInsensitiveString, object> PresetValues = new Dictionary<CaseInsensitiveString, object>()
+					{
+						{ "Amount", Model.Amount },
+						{ "Currency", Model.Currency }
+					};
+
+					await this.networkModel.Legal.SetContractTemplateName(TemplateName, PresetValues);
+
+					foreach (TabItem Item in MainWindow.currentInstance.TabControl.Items)
+					{
+						if (Item.Content == MainWindow.currentInstance.ContractsTab)
+						{
+							MainWindow.currentInstance.TabControl.SelectedItem = Item;
+							break;
+						}
+					}
+
+					MainWindow.MouseDefault();
+				}
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
 		}
 
 		private Task EDalerClient_SellEDalerClientUrlReceived(object Sender, SellEDalerClientUrlEventArgs e)

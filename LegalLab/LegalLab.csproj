@@ -77,6 +77,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Dialogs\SellEDaler\SellEDalerDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Dialogs\BuyEDaler\BuyEDalerDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -95,6 +98,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Dialogs\SellEDaler\SellEDalerDialog.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
     <Page Update="Dialogs\BuyEDaler\BuyEDalerDialog.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
