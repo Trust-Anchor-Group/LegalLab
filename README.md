@@ -80,6 +80,9 @@ TAG technologies.
 			* [DemoToken.xml](ExampleContracts/Tokens/Create/Specific/DemoToken.xml) creates a simple token with a friendly name, that can
 			be used for demo.
 
+			* [DemoTokens5.xml](ExampleContracts/Tokens/Create/Specific/DemoTokens5.xml) creates five simple tokens with a friendly 
+			name, that can be used for demo.
+
 		* [CreateTokenContract1.xml](ExampleContracts/Tokens/Create/CreateTokenContract1.xml) can be used to create one named (ID) token.
 		The operation includes instant payments of commissions.
 

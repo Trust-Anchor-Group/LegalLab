@@ -59,7 +59,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Transfer", "Transfer", "{1C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Specific", "Specific", "{E65D2413-D0F0-47AF-98DC-6C6B5C458A03}"
 	ProjectSection(SolutionItems) = preProject
+		ExampleContracts\Tokens\Create\Specific\Achievement.xml = ExampleContracts\Tokens\Create\Specific\Achievement.xml
 		ExampleContracts\Tokens\Create\Specific\DemoToken.xml = ExampleContracts\Tokens\Create\Specific\DemoToken.xml
+		ExampleContracts\Tokens\Create\Specific\DemoTokens5.xml = ExampleContracts\Tokens\Create\Specific\DemoTokens5.xml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StateMachines", "StateMachines", "{1B94CDD9-BA5A-4328-9F2E-C2B55334E587}"
