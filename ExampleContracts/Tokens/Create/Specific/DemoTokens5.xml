@@ -633,6 +633,63 @@
 				</paragraph>
 			</description>
 		</stringParameter>
+		<calcParameter name="TotalValue" exp="5*Value">
+			<description xml:lang="da">
+				<paragraph>
+					<text>Den samlede værdi af alle oprettede tokens.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="de">
+				<paragraph>
+					<text>Der Gesamtwert aller erstellten Token.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="en">
+				<paragraph>
+					<text>The total value of all tokens created.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>El valor total de todos los tokens creados.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fi">
+				<paragraph>
+					<text>Kaikkien luotujen rahakkeiden kokonaisarvo.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="fr">
+				<paragraph>
+					<text>Valeur totale de tous les jetons créés.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="nb">
+				<paragraph>
+					<text>Den totale verdien av alle tokens opprettet.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ro">
+				<paragraph>
+					<text>Valoarea totală a tuturor jetoanelor create.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="ru">
+				<paragraph>
+					<text>Общая стоимость всех созданных токенов.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sr">
+				<paragraph>
+					<text>Ukupna vrednost svih kreiranih tokena.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="sv">
+				<paragraph>
+					<text>Det totala värdet av alla tokens som skapats.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
 	</parameters>
 	<humanReadableText xml:lang="da">
 		<section>
