@@ -61,7 +61,7 @@
 	<role maxCount="1" minCount="1" name="TrustProvider">
 		<description xml:lang="en">
 			<paragraph>
-				<text>This is the role of the trust provider that acts will host the token and approve its creation.</text>
+				<text>This is the role of the trust provider that will host the token and approve its creation.</text>
 			</paragraph>
 		</description>
 	</role>
