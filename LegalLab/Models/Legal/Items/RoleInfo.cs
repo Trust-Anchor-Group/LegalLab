@@ -171,8 +171,7 @@ namespace LegalLab.Models.Legal.Items
 		{
 			base.RaisePropertyChanged(PropertyName);
 
-			if (!(this.designModel is null))
-				this.designModel.RaisePropertyChanged(nameof(this.designModel.Roles));
+			this.designModel?.RaisePropertyChanged(nameof(this.designModel.Roles));
 		}
 
 		internal void CanBeSignedChanged()

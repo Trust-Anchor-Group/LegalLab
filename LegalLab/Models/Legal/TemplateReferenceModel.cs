@@ -36,5 +36,11 @@
 			get => this.contractId.Value;
 			set => this.contractId.Value = value;
 		}
+
+		/// <inheritdoc/>
+		public override string ToString()
+		{
+			return this.TemplateName + ": " + this.ContractId;
+		}
 	}
 }

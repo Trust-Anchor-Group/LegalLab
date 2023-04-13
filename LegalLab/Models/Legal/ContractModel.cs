@@ -216,7 +216,11 @@ namespace LegalLab.Models.Legal
 			if (e.ContractId == this.ContractId)
 			{
 				Contract Contract = await this.contracts.GetContractAsync(this.ContractId);
-				this.SetContract(Contract);
+				MainWindow.UpdateGui(() =>
+				{
+					this.SetContract(Contract);
+					return Task.CompletedTask;
+				});
 			}
 		}
 

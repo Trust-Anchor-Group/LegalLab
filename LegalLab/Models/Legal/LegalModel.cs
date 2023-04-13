@@ -295,6 +295,7 @@ namespace LegalLab.Models.Legal
 				AddProperty(Properties, "CITY", this.City);
 				AddProperty(Properties, "REGION", this.Region);
 				AddProperty(Properties, "COUNTRY", this.Country);
+				AddProperty(Properties, "JID", this.contracts.Client.BareJID);
 
 				LegalIdentity Identity = await this.contracts.ApplyAsync(Properties.ToArray());
 
@@ -407,7 +408,7 @@ namespace LegalLab.Models.Legal
 			set
 			{
 				this.contractTemplateName.Value = value;
-				Task.Run(() => this.LoadTemplate(value, null));
+				MainWindow.UpdateGui(() => this.LoadTemplate(value, null));
 			}
 		}
 
