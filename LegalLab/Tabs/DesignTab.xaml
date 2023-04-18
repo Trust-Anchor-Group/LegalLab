@@ -21,24 +21,16 @@
                 <Label>
                     <Label.Content>
                         <TextBlock>
-                            <Run>Microsoft Translation Key:</Run>
+                            <Run>OpenAI Key:</Run>
                             <Run Foreground="Red">*</Run>
                         </TextBlock>
                     </Label.Content>
                 </Label>
-                <PasswordBox Name="MicrosoftTranslationKey" PasswordChanged="MicrosoftTranslationKey_PasswordChanged" Margin="0,0,0,10"/>
+                <PasswordBox Name="OpenAiKey" PasswordChanged="OpenAiKey_PasswordChanged" Margin="0,0,0,10"/>
                 <TextBlock TextWrapping="Wrap">
                     <Run Foreground="Red">* </Run>
-                    <Run>By adding a Microsoft Translation Key, localized texts will be automatically machine translated across languages when designing contracts.</Run>
-                    <Run>You can create a free (albeit rate limited) Microsoft Translation key by adding a</Run>
-                    <Hyperlink NavigateUri="https://www.microsoft.com/en-us/translator/business/trial/" Click="Hyperlink_Click">
-                        <Run>Microsoft Translator</Run>
-                    </Hyperlink>
-                    <Run>account in your</Run>
-                    <Hyperlink NavigateUri="https://portal.azure.com/" Click="Hyperlink_Click">
-                        <Run>Azure Portal.</Run>
-                    </Hyperlink>
-                    <Run>Translator keys must be global.</Run>
+                    <Run>By adding an  OpenAI Key, localized texts can be automatically machine translated across languages when designing contracts.</Run>
+                    <Run>You also get access to ChatGPT, to help you create content for your smart contracts.</Run>
                 </TextBlock>
             </StackPanel>
         </ScrollViewer>

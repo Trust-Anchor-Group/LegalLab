@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Waher.Content;
+using Waher.Events;
 
 namespace LegalLab.Models.Design
 {
 	/// <summary>
-	/// Static class performing language translation using Microsoft Translator
+	/// Static class performing language translation using OpenAI
 	/// </summary>
 	public static class Translator
 	{
 		/// <summary>
-		/// Translates a string from one language to another, using Microsoft Translator.
+		/// Translates a string from one language to another, using OpenAI.
 		/// </summary>
 		/// <param name="Text">Text to translate.</param>
 		/// <param name="From">Language to translate from.</param>
 		/// <param name="To">Language to translate to.</param>
-		/// <param name="Key">Microsoft Translator key.</param>
+		/// <param name="Key">OpenAI key.</param>
 		/// <returns>Translated string.</returns>
 		public static async Task<string> Translate(string Text, string From, string To, string Key)
 		{
@@ -25,101 +26,93 @@ namespace LegalLab.Models.Design
 		}
 
 		/// <summary>
-		/// Translates an array of strings from one language to another, using Microsoft Translator.
+		/// Translates an array of strings from one language to another, using OpenAI.
 		/// </summary>
 		/// <param name="Texts">Strings to translate.</param>
 		/// <param name="From">Language to translate from.</param>
 		/// <param name="To">Language to translate to.</param>
-		/// <param name="Key">Microsoft Translator key.</param>
+		/// <param name="Key">OpenAI key.</param>
 		/// <returns>Translated strings.</returns>
 		public static async Task<string[]> Translate(string[] Texts, string From, string To, string Key)
 		{
-			List<Dictionary<string, object>> Req = new List<Dictionary<string, object>>();
-			Dictionary<int, string> ImmutableByIndex = new Dictionary<int, string>();
-			Dictionary<string, int> ImmutableByString = new Dictionary<string, int>();
-			string s, s2, Ref;
-			int i, j, Index;
+			int i, c = Texts.Length;
+			string[] Response = new string[c];
+			Task[] Requests = new Task[c];
 
-			foreach (string Text in Texts)
-			{
-				s = Text;
+			for (i = 0; i < c; i++)
+				Requests[i] = Translate(Texts[i], From, To, Key, Response, i);
 
-				i = s.IndexOf("[%");
+			await Task.WhenAll(Requests);
 
-				while (i >= 0)
-				{
-					j = s.IndexOf(']', i + 2);
-					if (j < 0)
-						break;
-
-					Ref = s.Substring(i, j - i + 1);
-
-					if (!ImmutableByString.TryGetValue(Ref, out Index))
-					{
-						Index = ImmutableByString.Count;
-						ImmutableByString[Ref] = Index;
-						ImmutableByIndex[Index] = Ref;
-					}
-
-					s2 = "{" + Index.ToString() + "}";
-					s = s.Remove(i, j - i + 1).Insert(i, s2);
-
-					i = s.IndexOf("[%", i + s2.Length);
-				}
-
-				Req.Add(new Dictionary<string, object>() { { "Text", s } });
-			}
-
-			StringBuilder Url = new StringBuilder();
-
-			Url.Append("https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=");
-			Url.Append(From);
-			Url.Append("&to=");
-			Url.Append(To);
-
-			object Resp = await InternetContent.PostAsync(new Uri(Url.ToString()), Req.ToArray(),
-				new KeyValuePair<string, string>("Ocp-Apim-Subscription-Key", Key));
-
-			if (!(Resp is Array A))
-				throw new Exception("Unexpected reponse returned.");
-
-			List<string> Response = new List<string>();
-
-			foreach (object Item in A)
-			{
-				if (!(Item is Dictionary<string, object> TypedItem) ||
-					!TypedItem.TryGetValue("translations", out object Obj) ||
-					!(Obj is Array A2) ||
-					A2.Length != 1 ||
-					!(A2.GetValue(0) is Dictionary<string, object> Translation) ||
-					!Translation.TryGetValue("text", out object Obj2) ||
-					!(Obj2 is string TranslatedText))
-				{
-					throw new Exception("Unexpected reponse returned.");
-				}
-
-				i = TranslatedText.IndexOf('{');
-				while (i >= 0)
-				{
-					j = TranslatedText.IndexOf('}', i + 1);
-					if (j < 0)
-						break;
-
-					if (int.TryParse(TranslatedText.Substring(i + 1, j - i - 1), out Index) &&
-						ImmutableByIndex.TryGetValue(Index, out Ref))
-					{
-						TranslatedText = TranslatedText.Remove(i, j - i + 1).Insert(i, Ref);
-						i = TranslatedText.IndexOf('{', i + Ref.Length);
-					}
-					else
-						i = TranslatedText.IndexOf('{', j + 1);
-				}
-
-				Response.Add(TranslatedText);
-			}
-
-			return Response.ToArray();
+			return Response;
 		}
+
+		/// <summary>
+		/// Translates a text string from one language to another, using OpenAI.
+		/// </summary>
+		/// <param name="Text">String to translate.</param>
+		/// <param name="From">Language to translate from.</param>
+		/// <param name="To">Language to translate to.</param>
+		/// <param name="Key">OpenAI key.</param>
+		/// <param name="Translations">Array of translations.</param>
+		/// <param name="Index">Index into the <paramref name="Translations"/> array, where the translation is stored.</param>
+		public static async Task Translate(string Text, string From, string To, string Key, string[] Translations, int Index)
+		{
+			try
+			{
+				object ResponseObj = await InternetContent.PostAsync(openAiCompletions,
+					new Dictionary<string, object>()
+					{
+					{ "model", "gpt-3.5-turbo" },
+					{ "messages", new Dictionary<string,object>[]
+						{
+							new Dictionary<string, object>()
+							{
+								{ "role", "system" },
+								{ "content", "You help to translate Markdown text from language code " +
+									From + " to language code " + To + ". Input is in raw Markdown. " +
+									"Output must be in raw Markdown, keeping the Markdown formatting of the input. "+
+									"No descriptive text or additional formatting must be included. No examples added. "+
+									"Result must only include the translation. If the message is a question, "+
+									"don't answer the question, only translate the question." }
+							},
+							new Dictionary<string, object>()
+							{
+								{ "role", "user" },
+								{ "content", Text }
+							}
+						}
+					}
+					},
+					new KeyValuePair<string, string>[]
+					{
+					new KeyValuePair<string, string>("Accept", "application/json"),
+					new KeyValuePair<string, string>("Authorization", "Bearer " + Key),
+					});
+
+				if (ResponseObj is Dictionary<string, object> Response &&
+					Response.TryGetValue("choices", out object Obj) &&
+					Obj is Array Choices &&
+					Choices.Length > 0 &&
+					Choices.GetValue(0) is Dictionary<string, object> Choice &&
+					Choice.TryGetValue("message", out Obj) &&
+					Obj is Dictionary<string, object> Message &&
+					Message.TryGetValue("content", out Obj) &&
+					Obj is string Content)
+				{
+					Translations[Index] = Content;
+				}
+				else
+					Translations[Index] = Text;
+			}
+			catch (Exception ex)
+			{
+				Log.Critical(ex);
+				Translations[Index] = Text;
+			}
+		}
+
+		private static Uri openAiCompletions = new Uri("https://api.openai.com/v1/chat/completions");
 
 	}
 }

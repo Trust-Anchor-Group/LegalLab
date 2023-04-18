@@ -53,9 +53,9 @@ namespace LegalLab.Tabs
 			}
 		}
 
-		private void MicrosoftTranslationKey_PasswordChanged(object sender, RoutedEventArgs e)
+		private void OpenAiKey_PasswordChanged(object sender, RoutedEventArgs e)
 		{
-			this.model.MicrosoftTranslatorKey = this.MicrosoftTranslationKey.Password;
+			this.model.OpenAiKey = this.OpenAiKey.Password;
 		}
 
 		private void Hyperlink_Click(object sender, RoutedEventArgs e)

@@ -55,7 +55,7 @@ namespace LegalLab.Models.Design
 		private readonly Property<XmlElement> forMachines;
 		private readonly DelayedActionProperty<string> humanReadableMarkdown;
 		private readonly Property<object> humanReadable;
-		private readonly PersistedProperty<string> microsoftTranslatorKey;
+		private readonly PersistedProperty<string> openAiKey;
 
 		private readonly Command addRole;
 		private readonly Command addPart;
@@ -107,7 +107,7 @@ namespace LegalLab.Models.Design
 			this.parameters.PropertyChanged += this.Parameters_PropertyChanged;
 			this.parts.PropertyChanged += this.Parts_PropertyChanged;
 
-			this.Add(this.microsoftTranslatorKey = new PersistedProperty<string>("Design", nameof(this.MicrosoftTranslatorKey), true, string.Empty, this));
+			this.Add(this.openAiKey = new PersistedProperty<string>("Design", nameof(this.OpenAiKey), true, string.Empty, this));
 
 			this.machineReadable.OnAction += this.NormalizeMachineReadableXml;
 			this.humanReadableMarkdown.OnAction += this.RenderHumanReadableMarkdown;
@@ -248,7 +248,7 @@ namespace LegalLab.Models.Design
 			await base.Start();
 
 			MainWindow.currentInstance.DesignTab.DataContext = this;
-			MainWindow.currentInstance.DesignTab.MicrosoftTranslationKey.Password = this.MicrosoftTranslatorKey;
+			MainWindow.currentInstance.DesignTab.OpenAiKey.Password = this.OpenAiKey;
 		}
 
 		/// <summary>
@@ -384,7 +384,7 @@ namespace LegalLab.Models.Design
 							foreach (TranslationItem Item in Items)
 								AllTexts.AddRange(Item.Original);
 
-							string[] AllTranslated = await Translator.Translate(AllTexts.ToArray(), FromLanguage, Language, this.MicrosoftTranslatorKey);
+							string[] AllTranslated = await Translator.Translate(AllTexts.ToArray(), FromLanguage, Language, this.OpenAiKey);
 
 							MainWindow.UpdateGui(() =>
 							{
@@ -1783,12 +1783,12 @@ namespace LegalLab.Models.Design
 		}
 
 		/// <summary>
-		/// Key to use when calling the Microsoft Translator service.
+		/// Key to use when calling the OpenAI service.
 		/// </summary>
-		public string MicrosoftTranslatorKey
+		public string OpenAiKey
 		{
-			get => this.microsoftTranslatorKey.Value;
-			set => this.microsoftTranslatorKey.Value = value;
+			get => this.openAiKey.Value;
+			set => this.openAiKey.Value = value;
 		}
 
 		/// <summary>
