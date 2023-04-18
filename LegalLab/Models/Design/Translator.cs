@@ -60,7 +60,7 @@ namespace LegalLab.Models.Design
 		{
 			try
 			{
-				object ResponseObj = await InternetContent.PostAsync(openAiCompletions,
+				object ResponseObj = await InternetContent.PostAsync(openAiChatCompletions,
 					new Dictionary<string, object>()
 					{
 					{ "model", "gpt-3.5-turbo" },
@@ -112,7 +112,7 @@ namespace LegalLab.Models.Design
 			}
 		}
 
-		private static Uri openAiCompletions = new Uri("https://api.openai.com/v1/chat/completions");
+		private static Uri openAiChatCompletions = new Uri("https://api.openai.com/v1/chat/completions");
 
 	}
 }
