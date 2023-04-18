@@ -86,8 +86,8 @@ namespace LegalLab.Models.Design
 					},
 					new KeyValuePair<string, string>[]
 					{
-					new KeyValuePair<string, string>("Accept", "application/json"),
-					new KeyValuePair<string, string>("Authorization", "Bearer " + Key),
+						new KeyValuePair<string, string>("Accept", "application/json"),
+						new KeyValuePair<string, string>("Authorization", "Bearer " + Key),
 					});
 
 				if (ResponseObj is Dictionary<string, object> Response &&
