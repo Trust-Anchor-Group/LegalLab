@@ -27,7 +27,7 @@ namespace LegalLab.Converters
 		}
 
 		/// <inheritdoc/>
-		public override object ProvideValue(IServiceProvider serviceProvider)
+		public override object ProvideValue(System.IServiceProvider serviceProvider)
 		{
 			return this;
 		}

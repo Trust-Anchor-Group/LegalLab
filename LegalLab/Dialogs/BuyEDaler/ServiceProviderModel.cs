@@ -1,19 +1,17 @@
-﻿using EDaler;
-
-namespace LegalLab.Dialogs.BuyEDaler
+﻿namespace LegalLab.Dialogs.BuyEDaler
 {
 	/// <summary>
 	/// View mode for service providers.
 	/// </summary>
 	public class ServiceProviderModel
 	{
-		private readonly IServiceProvider serviceProvider;
+		private readonly Waher.Networking.XMPP.Contracts.IServiceProvider serviceProvider;
 
 		/// <summary>
 		/// View mode for service providers.
 		/// </summary>
 		/// <param name="ServiceProvider">Service provider reference.</param>
-		public ServiceProviderModel(IServiceProvider ServiceProvider)
+		public ServiceProviderModel(Waher.Networking.XMPP.Contracts.IServiceProvider ServiceProvider)
 		{
 			this.serviceProvider = ServiceProvider;
 		}
@@ -21,7 +19,7 @@ namespace LegalLab.Dialogs.BuyEDaler
 		/// <summary>
 		/// Reference to service provider.
 		/// </summary>
-		public IServiceProvider ServiceProvider => this.serviceProvider;
+		public Waher.Networking.XMPP.Contracts.IServiceProvider ServiceProvider => this.serviceProvider;
 
 		/// <summary>
 		/// Name of service provider.

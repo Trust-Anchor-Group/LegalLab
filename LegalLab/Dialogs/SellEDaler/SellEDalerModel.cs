@@ -1,5 +1,4 @@
-﻿using EDaler;
-using LegalLab.Dialogs.BuyEDaler;
+﻿using LegalLab.Dialogs.BuyEDaler;
 using LegalLab.Models;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -19,7 +18,7 @@ namespace LegalLab.Dialogs.SellEDaler
 		private readonly Command sell;
 		private readonly Command cancel;
 
-		public SellEDalerModel(SellEDalerDialog Dialog, IServiceProvider[] Providers, string DefaultCurrency)
+		public SellEDalerModel(SellEDalerDialog Dialog, Waher.Networking.XMPP.Contracts.IServiceProvider[] Providers, string DefaultCurrency)
 		{
 			this.selectedServiceProvider = new Property<ServiceProviderModel>(nameof(this.SelectedServiceProvider), null, this);
 			this.amount = new Property<decimal>(nameof(this.Amount), 0M, this);
