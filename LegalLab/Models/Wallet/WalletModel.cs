@@ -78,9 +78,15 @@ namespace LegalLab.Models.Wallet
 			this.eDalerClient.BuyEDalerClientUrlReceived += this.EDalerClient_BuyEDalerClientUrlReceived;
 			this.eDalerClient.BuyEDalerCompleted += this.EDalerClient_BuyEDalerCompleted;
 			this.eDalerClient.BuyEDalerError += this.EDalerClient_BuyEDalerError;
+			this.eDalerClient.BuyEDalerOptionsClientUrlReceived += this.EDalerClient_BuyEDalerOptionsClientUrlReceived;
+			this.eDalerClient.BuyEDalerOptionsCompleted += this.EDalerClient_BuyEDalerOptionsCompleted;
+			this.eDalerClient.BuyEDalerOptionsError += this.EDalerClient_BuyEDalerOptionsError;
 			this.eDalerClient.SellEDalerClientUrlReceived += this.EDalerClient_SellEDalerClientUrlReceived;
 			this.eDalerClient.SellEDalerCompleted += this.EDalerClient_SellEDalerCompleted;
 			this.eDalerClient.SellEDalerError += this.EDalerClient_SellEDalerError;
+			this.eDalerClient.SellEDalerOptionsClientUrlReceived += this.EDalerClient_SellEDalerOptionsClientUrlReceived;
+			this.eDalerClient.SellEDalerOptionsCompleted += this.EDalerClient_SellEDalerOptionsCompleted;
+			this.eDalerClient.SellEDalerOptionsError += this.EDalerClient_SellEDalerOptionsError;
 		}
 
 		private async Task EDalerClient_BalanceUpdated(object Sender, BalanceEventArgs e)
@@ -394,6 +400,10 @@ namespace LegalLab.Models.Wallet
 					}
 
 					MainWindow.MouseDefault();
+
+					string TransactionId = Guid.NewGuid().ToString();
+
+					await this.eDalerClient.InitiateGetOptionsBuyEDalerAsync(ServiceProvider.Id, ServiceProvider.Type, TransactionId, null, null, null);
 				}
 			}
 			catch (Exception ex)
@@ -428,6 +438,24 @@ namespace LegalLab.Models.Wallet
 		private Task EDalerClient_BuyEDalerError(object Sender, PaymentErrorEventArgs e)
 		{
 			MainWindow.ErrorBox("Unable to buy eDaler®: " + e.Message);
+			return Task.CompletedTask;
+		}
+
+		private Task EDalerClient_BuyEDalerOptionsClientUrlReceived(object Sender, BuyEDalerClientUrlEventArgs e)
+		{
+			this.OpenUrl(e.ClientUrl);
+			return Task.CompletedTask;
+		}
+
+		private Task EDalerClient_BuyEDalerOptionsCompleted(object Sender, PaymentOptionsEventArgs e)
+		{
+			this.ContractOptionsReceived(e.Options);
+			return Task.CompletedTask;
+		}
+
+		private Task EDalerClient_BuyEDalerOptionsError(object Sender, PaymentErrorEventArgs e)
+		{
+			MainWindow.ErrorBox("Unable to get payment options for buying eDaler®: " + e.Message);
 			return Task.CompletedTask;
 		}
 
@@ -508,6 +536,10 @@ namespace LegalLab.Models.Wallet
 					}
 
 					MainWindow.MouseDefault();
+
+					string TransactionId = Guid.NewGuid().ToString();
+
+					await this.eDalerClient.InitiateGetOptionsSellEDalerAsync(ServiceProvider.Id, ServiceProvider.Type, TransactionId, null, null, null);
 				}
 			}
 			catch (Exception ex)
@@ -531,6 +563,24 @@ namespace LegalLab.Models.Wallet
 		private Task EDalerClient_SellEDalerError(object Sender, PaymentErrorEventArgs e)
 		{
 			MainWindow.ErrorBox("Unable to sell eDaler®: " + e.Message);
+			return Task.CompletedTask;
+		}
+
+		private Task EDalerClient_SellEDalerOptionsClientUrlReceived(object Sender, SellEDalerClientUrlEventArgs e)
+		{
+			this.OpenUrl(e.ClientUrl);
+			return Task.CompletedTask;
+		}
+
+		private Task EDalerClient_SellEDalerOptionsCompleted(object Sender, PaymentOptionsEventArgs e)
+		{
+			this.ContractOptionsReceived(e.Options);
+			return Task.CompletedTask;
+		}
+
+		private Task EDalerClient_SellEDalerOptionsError(object Sender, PaymentErrorEventArgs e)
+		{
+			MainWindow.ErrorBox("Unable to get payment options for selling eDaler®: " + e.Message);
 			return Task.CompletedTask;
 		}
 
@@ -564,5 +614,9 @@ namespace LegalLab.Models.Wallet
 			await base.Start();
 		}
 
+		private void ContractOptionsReceived(IDictionary<CaseInsensitiveString, object>[] Options)
+		{
+			// TODO
+		}
 	}
 }
