@@ -405,6 +405,14 @@ namespace LegalLab.Models.Legal
 		{
 			try
 			{
+				LegalIdentity[] Identities = await this.contracts.GetLegalIdentitiesAsync();
+
+				foreach (LegalIdentity OldIdentity in Identities)
+				{
+					if (OldIdentity.State == IdentityState.Approved)
+						await this.contracts.ObsoleteLegalIdentityAsync(OldIdentity.Id);
+				}
+
 				List<Property> Properties = new List<Property>();
 
 				AddProperty(Properties, "FIRST", this.FirstName);
