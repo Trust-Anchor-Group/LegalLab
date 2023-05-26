@@ -9,6 +9,9 @@
     <DockPanel LastChildFill="True" Background="#FFE5E5E5">
         <ScrollViewer DockPanel.Dock="Left">
             <StackPanel Orientation="Vertical" Width="250" Margin="10">
+				<Label FontWeight="Bold" FontSize="16" HorizontalContentAlignment="Center">
+					<TextBlock TextDecorations="Underline">Personal Information</TextBlock>
+				</Label>
                 <Label Padding="0">First Name:</Label>
                 <TextBox Text="{Binding FirstName}"/>
                 <Label Padding="0,10,0,0">Middle Name:</Label>
@@ -31,7 +34,32 @@
                 <TextBox Text="{Binding Region}"/>
                 <Label Padding="0,10,0,0">Country:</Label>
                 <ComboBox ItemsSource="{Binding CountryCodes}" DisplayMemberPath="Country" SelectedValuePath="Code" SelectedValue="{Binding Country}"/>
-                <Button Margin="10,10,10,0" Command="{Binding Apply}">Apply</Button>
+				<Label FontWeight="Bold" FontSize="16" HorizontalContentAlignment="Center">
+					<TextBlock TextDecorations="Underline">Organization Information</TextBlock>
+				</Label>
+				<Label Padding="0">Name:</Label>
+				<TextBox Text="{Binding OrgName}"/>
+				<Label Padding="0,10,0,0">Department:</Label>
+				<TextBox Text="{Binding OrgDepartment}"/>
+				<Label Padding="0,10,0,0">Role:</Label>
+				<TextBox Text="{Binding OrgRole}"/>
+				<Label Padding="0,10,0,0">Organization Number:</Label>
+				<TextBox Text="{Binding OrgNumber}"/>
+				<Label Padding="0,10,0,0">Address:</Label>
+				<TextBox Text="{Binding OrgAddress}"/>
+				<Label Padding="0,10,0,0">Address, row 2:</Label>
+				<TextBox Text="{Binding OrgAddress2}"/>
+				<Label Padding="0,10,0,0">Postal Code (or ZIP):</Label>
+				<TextBox Text="{Binding OrgZip}"/>
+				<Label Padding="0,10,0,0">Area:</Label>
+				<TextBox Text="{Binding OrgArea}"/>
+				<Label Padding="0,10,0,0">City:</Label>
+				<TextBox Text="{Binding OrgCity}"/>
+				<Label Padding="0,10,0,0">Region:</Label>
+				<TextBox Text="{Binding OrgRegion}"/>
+				<Label Padding="0,10,0,0">Country:</Label>
+				<ComboBox ItemsSource="{Binding CountryCodes}" DisplayMemberPath="Country" SelectedValuePath="Code" SelectedValue="{Binding OrgCountry}"/>
+				<Button Margin="10,10,10,0" Command="{Binding Apply}">Apply</Button>
             </StackPanel>
         </ScrollViewer>
         <ListView HorizontalAlignment="Stretch" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible" 

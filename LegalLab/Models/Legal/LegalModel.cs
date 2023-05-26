@@ -32,6 +32,18 @@ namespace LegalLab.Models.Legal
 		private readonly PersistedProperty<string> region;
 		private readonly PersistedProperty<string> country;
 
+		private readonly PersistedProperty<string> orgName;
+		private readonly PersistedProperty<string> orgDepartment;
+		private readonly PersistedProperty<string> orgRole;
+		private readonly PersistedProperty<string> orgNumber;
+		private readonly PersistedProperty<string> orgAddress;
+		private readonly PersistedProperty<string> orgAddress2;
+		private readonly PersistedProperty<string> orgZip;
+		private readonly PersistedProperty<string> orgArea;
+		private readonly PersistedProperty<string> orgCity;
+		private readonly PersistedProperty<string> orgRegion;
+		private readonly PersistedProperty<string> orgCountry;
+
 		private readonly Property<Contract> template;
 		private readonly Property<TemplateReferenceModel[]> templates;
 		private readonly Property<string> contractTemplateName;
@@ -62,6 +74,18 @@ namespace LegalLab.Models.Legal
 			this.Add(this.city = new PersistedProperty<string>("Legal", nameof(this.City), true, string.Empty, this));
 			this.Add(this.region = new PersistedProperty<string>("Legal", nameof(this.Region), true, string.Empty, this));
 			this.Add(this.country = new PersistedProperty<string>("Legal", nameof(this.Country), true, string.Empty, this));
+
+			this.Add(this.orgName = new PersistedProperty<string>("Legal", nameof(this.OrgName), true, string.Empty, this));
+			this.Add(this.orgDepartment = new PersistedProperty<string>("Legal", nameof(this.OrgDepartment), true, string.Empty, this));
+			this.Add(this.orgRole = new PersistedProperty<string>("Legal", nameof(this.OrgRole), true, string.Empty, this));
+			this.Add(this.orgNumber = new PersistedProperty<string>("Legal", nameof(this.OrgNumber), true, string.Empty, this));
+			this.Add(this.orgAddress = new PersistedProperty<string>("Legal", nameof(this.OrgAddress), true, string.Empty, this));
+			this.Add(this.orgAddress2 = new PersistedProperty<string>("Legal", nameof(this.OrgAddress2), true, string.Empty, this));
+			this.Add(this.orgZip = new PersistedProperty<string>("Legal", nameof(this.OrgZip), true, string.Empty, this));
+			this.Add(this.orgArea = new PersistedProperty<string>("Legal", nameof(this.OrgArea), true, string.Empty, this));
+			this.Add(this.orgCity = new PersistedProperty<string>("Legal", nameof(this.OrgCity), true, string.Empty, this));
+			this.Add(this.orgRegion = new PersistedProperty<string>("Legal", nameof(this.OrgRegion), true, string.Empty, this));
+			this.Add(this.orgCountry = new PersistedProperty<string>("Legal", nameof(this.OrgCountry), true, string.Empty, this));
 
 			this.template = new Property<Contract>(nameof(this.Template), null, this);
 			this.templates = new Property<TemplateReferenceModel[]>(nameof(this.Templates), new TemplateReferenceModel[0], this);
@@ -232,6 +256,105 @@ namespace LegalLab.Models.Legal
 			get => Iso_3166_1.Data;
 		}
 
+		/// <summary>
+		/// Organization name
+		/// </summary>
+		public string OrgName
+		{
+			get => this.orgName.Value;
+			set => this.orgName.Value = value;
+		}
+
+		/// <summary>
+		/// Organization Department
+		/// </summary>
+		public string OrgDepartment
+		{
+			get => this.orgDepartment.Value;
+			set => this.orgDepartment.Value = value;
+		}
+
+		/// <summary>
+		/// Organization Role
+		/// </summary>
+		public string OrgRole
+		{
+			get => this.orgRole.Value;
+			set => this.orgRole.Value = value;
+		}
+
+		/// <summary>
+		/// Organization number
+		/// </summary>
+		public string OrgNumber
+		{
+			get => this.orgNumber.Value;
+			set => this.orgNumber.Value = value;
+		}
+
+		/// <summary>
+		/// Organization Address
+		/// </summary>
+		public string OrgAddress
+		{
+			get => this.orgAddress.Value;
+			set => this.orgAddress.Value = value;
+		}
+
+		/// <summary>
+		/// Organization Address, second row
+		/// </summary>
+		public string OrgAddress2
+		{
+			get => this.orgAddress2.Value;
+			set => this.orgAddress2.Value = value;
+		}
+
+		/// <summary>
+		/// Organization ZIP or postal code
+		/// </summary>
+		public string OrgZip
+		{
+			get => this.orgZip.Value;
+			set => this.orgZip.Value = value;
+		}
+
+		/// <summary>
+		/// Organization Area
+		/// </summary>
+		public string OrgArea
+		{
+			get => this.orgArea.Value;
+			set => this.orgArea.Value = value;
+		}
+
+		/// <summary>
+		/// Organization City
+		/// </summary>
+		public string OrgCity
+		{
+			get => this.orgCity.Value;
+			set => this.orgCity.Value = value;
+		}
+
+		/// <summary>
+		/// Organization Region
+		/// </summary>
+		public string OrgRegion
+		{
+			get => this.orgRegion.Value;
+			set => this.orgRegion.Value = value;
+		}
+
+		/// <summary>
+		/// Organization Country
+		/// </summary>
+		public string OrgCountry
+		{
+			get => this.orgCountry.Value;
+			set => this.orgCountry.Value = value;
+		}
+
 		#endregion
 
 		#region Legal Identities
@@ -295,6 +418,19 @@ namespace LegalLab.Models.Legal
 				AddProperty(Properties, "CITY", this.City);
 				AddProperty(Properties, "REGION", this.Region);
 				AddProperty(Properties, "COUNTRY", this.Country);
+
+				AddProperty(Properties, "ORGNAME", this.OrgName);
+				AddProperty(Properties, "ORGDEPT", this.OrgDepartment);
+				AddProperty(Properties, "ORGROLE", this.OrgRole);
+				AddProperty(Properties, "ORGNR", this.OrgNumber);
+				AddProperty(Properties, "ORGADDR", this.OrgAddress);
+				AddProperty(Properties, "ORGADDR2", this.OrgAddress2);
+				AddProperty(Properties, "ORGZIP", this.OrgZip);
+				AddProperty(Properties, "ORGAREA", this.OrgArea);
+				AddProperty(Properties, "ORGCITY", this.OrgCity);
+				AddProperty(Properties, "ORGREGION", this.OrgRegion);
+				AddProperty(Properties, "ORGCOUNTRY", this.OrgCountry);
+
 				AddProperty(Properties, "JID", this.contracts.Client.BareJID);
 
 				LegalIdentity Identity = await this.contracts.ApplyAsync(Properties.ToArray());
