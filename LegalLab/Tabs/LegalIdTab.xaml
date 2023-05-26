@@ -59,6 +59,9 @@
 				<TextBox Text="{Binding OrgRegion}"/>
 				<Label Padding="0,10,0,0">Country:</Label>
 				<ComboBox ItemsSource="{Binding CountryCodes}" DisplayMemberPath="Country" SelectedValuePath="Code" SelectedValue="{Binding OrgCountry}"/>
+				<Label FontWeight="Bold" FontSize="16" HorizontalContentAlignment="Center">
+					<TextBlock TextDecorations="Underline">Commands</TextBlock>
+				</Label>
 				<Button Margin="10,10,10,0" Command="{Binding Apply}">Apply</Button>
             </StackPanel>
         </ScrollViewer>
