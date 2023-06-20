@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 
 namespace LegalLab.Models.Tokens.Reports
@@ -71,12 +72,12 @@ namespace LegalLab.Models.Tokens.Reports
 				}
 				else
 				{
-					sb.Append(Xaml.Substring(i, M.Index));
+					sb.Append(Xaml.Substring(i, M.Index - i));
 					i = M.Index + M.Length;
 
-					sb.Append("<Image Name=\"DynamicImage");
+					sb.Append("<InlineUIContainer><Image Name=\"DynamicImage");
 					sb.Append(DynamicImages.Count.ToString());
-					sb.Append("\"/>");
+					sb.Append("\"/></InlineUIContainer>");
 
 					DynamicImages.Add(new DynamicImageRef()
 					{
@@ -92,24 +93,40 @@ namespace LegalLab.Models.Tokens.Reports
 
 			object Parsed = sb.ToString().ParseSimple();
 
-			if (Parsed is IContentHost Host)
+			if (Parsed is Panel Panel)
 			{
-				LinkedList<IContentHost> ToProcess = new LinkedList<IContentHost>();
+				LinkedList<Panel> ToProcess = new LinkedList<Panel>();
 				LinkedList<Image> Images = new LinkedList<Image>();
-				ToProcess.AddLast(Host);
+				ToProcess.AddLast(Panel);
 
 				while (!(ToProcess.First is null))
 				{
-					Host = ToProcess.First.Value;
+					Panel = ToProcess.First.Value;
 					ToProcess.RemoveFirst();
 
-					IEnumerator<IInputElement> e2 = Host.HostedElements;
-					while (e2.MoveNext())
+					if (!(Panel.Children is null))
 					{
-						if (e2.Current is IContentHost Host2)
-							ToProcess.AddLast(Host2);
-						else if (e2.Current is Image Image)
-							Images.AddLast(Image);
+						foreach (UIElement Element in Panel.Children)
+						{
+							if (Element is Panel Panel2)
+								ToProcess.AddLast(Panel2);
+							else if (Element is Image Image)
+								Images.AddLast(Image);
+							else if (Element is TextBlock TextBlock)
+							{
+								if (!(TextBlock.Inlines is null))
+								{
+									foreach (Inline Inline in TextBlock.Inlines)
+									{
+										if (Inline is InlineUIContainer Container &&
+											Container.Child is Image Image2)
+										{
+											Images.AddLast(Image2);
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 

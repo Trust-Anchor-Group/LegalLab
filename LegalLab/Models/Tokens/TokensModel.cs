@@ -325,7 +325,7 @@ namespace LegalLab.Models.Tokens
 					if (!(Tab.Content is ReportTab ReportTab))
 						continue;
 
-					if (ReportTab.Report.TokenId != e.TokenId)
+					if (ReportTab.Report.	TokenId != e.TokenId)
 						continue;
 
 					await ReportTab.Report.OnVariablesUpdated(Sender, e);
