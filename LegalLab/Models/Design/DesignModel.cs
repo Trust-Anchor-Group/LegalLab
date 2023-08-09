@@ -49,6 +49,7 @@ namespace LegalLab.Models.Design
 		private readonly Property<RoleInfo[]> roles;
 		private readonly Property<PartInfo[]> parts;
 		private readonly Property<ParameterInfo[]> parameters;
+		private readonly Property<RoleParameterInfo[]> roleParameters;
 		private readonly DelayedActionProperty<string> machineReadable;
 		private readonly Property<string> forMachinesLocalName;
 		private readonly Property<string> forMachinesNamespace;
@@ -95,6 +96,7 @@ namespace LegalLab.Models.Design
 			this.roles = new Property<RoleInfo[]>(nameof(this.Roles), Array.Empty<RoleInfo>(), this);
 			this.parts = new Property<PartInfo[]>(nameof(this.Parts), Array.Empty<PartInfo>(), this);
 			this.parameters = new Property<ParameterInfo[]>(nameof(this.Parameters), Array.Empty<ParameterInfo>(), this);
+			this.roleParameters = new Property<RoleParameterInfo[]>(nameof(this.RoleParameters), Array.Empty<RoleParameterInfo>(), this);
 			this.machineReadable = new DelayedActionProperty<string>(nameof(this.MachineReadable), TimeSpan.FromSeconds(1), string.Empty, this);
 			this.forMachines = new Property<XmlElement>(nameof(this.ForMachines), null, this);
 			this.forMachinesLocalName = new Property<string>(nameof(this.ForMachinesLocalName), string.Empty, this);
@@ -105,6 +107,7 @@ namespace LegalLab.Models.Design
 
 			this.roles.PropertyChanged += this.Roles_PropertyChanged;
 			this.parameters.PropertyChanged += this.Parameters_PropertyChanged;
+			this.roleParameters.PropertyChanged += this.Parameters_PropertyChanged;
 			this.parts.PropertyChanged += this.Parts_PropertyChanged;
 
 			this.Add(this.openAiKey = new PersistedProperty<string>("Design", nameof(this.OpenAiKey), true, string.Empty, this));
@@ -190,6 +193,7 @@ namespace LegalLab.Models.Design
 			this.Roles = Roles.ToArray();
 
 			List<ParameterInfo> ParameterList = new();
+			List<RoleParameterInfo> RoleParameterList = new();
 			ParameterInfo ParameterInfo;
 
 			foreach (Parameter Parameter in this.contract.Parameters)
@@ -210,6 +214,11 @@ namespace LegalLab.Models.Design
 					ParameterInfo = this.GetParameterInfo(DrP);
 				else if (Parameter is CalcParameter CP)
 					ParameterInfo = this.GetParameterInfo(CP);
+				else if (Parameter is RoleParameter RP)
+				{
+					RoleParameterList.Add(this.GetParameterInfo(RP));
+					continue;
+				}
 				else
 					continue;
 
@@ -217,6 +226,7 @@ namespace LegalLab.Models.Design
 			}
 
 			this.Parameters = ParameterList.ToArray();
+			this.RoleParameters = RoleParameterList.ToArray();
 
 			await this.ValidateParameters();
 
@@ -355,6 +365,9 @@ namespace LegalLab.Models.Design
 							foreach (ParameterInfo PI in this.Parameters)
 								PI.DescriptionAsMarkdown = (PI.Parameter.Descriptions.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
 
+							foreach (RoleParameterInfo PI in this.RoleParameters)
+								PI.DescriptionAsMarkdown = (PI.Parameter.Descriptions.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
+
 							foreach (RoleInfo RI in this.Roles)
 								RI.DescriptionAsMarkdown = (RI.Role.Descriptions.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
 
@@ -370,6 +383,9 @@ namespace LegalLab.Models.Design
 						List<TranslationItem> Items = new();
 
 						foreach (ParameterInfo PI in this.Parameters)
+							Add(Items, PI, FromLanguage, Language);
+
+						foreach (RoleParameterInfo PI in this.RoleParameters)
 							Add(Items, PI, FromLanguage, Language);
 
 						foreach (RoleInfo RI in this.Roles)
@@ -651,7 +667,21 @@ namespace LegalLab.Models.Design
 			foreach (ParameterInfo P in this.Parameters)
 				P.Parameter.Populate(Variables);
 
+			foreach (RoleParameterInfo P in this.RoleParameters)
+				P.Parameter.Populate(Variables);
+
 			foreach (ParameterInfo P in this.Parameters)
+			{
+				if (await P.ValidateParameter(Variables))
+					P.Control.Background = null;
+				else
+				{
+					P.Control.Background = Brushes.Salmon;
+					Ok = false;
+				}
+			}
+
+			foreach (RoleParameterInfo P in this.RoleParameters)
 			{
 				if (await P.ValidateParameter(Variables))
 					P.Control.Background = null;
@@ -672,6 +702,31 @@ namespace LegalLab.Models.Design
 		{
 			get => this.roles.Value;
 			set => this.roles.Value = value;
+		}
+
+		/// <summary>
+		/// Tries to get information about a given role.
+		/// </summary>
+		/// <param name="Name">Name of role.</param>
+		/// <param name="Role">Role reference, if found, null otherwise.</param>
+		/// <returns>If a role was found with the given name.</returns>
+		public bool TryGetRole(string Name, out RoleInfo Role)
+		{
+			Role = null;
+
+			if (this.roles?.Value is null)
+				return false;
+
+			foreach (RoleInfo R in this.roles.Value)
+			{
+				if (R.Name == Name)
+				{
+					Role = R;
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		private void Roles_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -702,9 +757,23 @@ namespace LegalLab.Models.Design
 			set => this.parameters.Value = value;
 		}
 
+		/// <summary>
+		/// Role reference Parameters defined the contract.
+		/// </summary>
+		public RoleParameterInfo[] RoleParameters
+		{
+			get => this.roleParameters.Value;
+			set => this.roleParameters.Value = value;
+		}
+
 		private void Parameters_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
-			this.contract.Parameters = this.parameters.Value.ToParameters();
+			List<Parameter> Parameters = new List<Parameter>();
+
+			Parameters.AddRange(this.parameters.Value.ToParameters());
+			Parameters.AddRange(this.roleParameters.Value.ToParameters());
+
+			this.contract.Parameters = Parameters.ToArray();
 		}
 
 		/// <summary>
@@ -804,7 +873,7 @@ namespace LegalLab.Models.Design
 
 			this.Parts = Parts;
 			this.PartsMode = ContractParts.ExplicitlyDefined;
-	
+
 			return Task.CompletedTask;
 		}
 
@@ -1567,6 +1636,24 @@ namespace LegalLab.Models.Design
 			return ParameterInfo;
 		}
 
+		private RoleParameterInfo GetParameterInfo(RoleParameter RP)
+		{
+			TextBox ValueControl = new()
+			{
+				IsReadOnly = true
+			};
+			Binding Binding = new("Value")
+			{
+				Converter = new MoneyToString()
+			};
+			ValueControl.SetBinding(TextBox.TextProperty, Binding);
+
+			RoleParameterInfo ParameterInfo = new RoleParameterInfo(this.contract, RP, ValueControl, this, this.parameters);
+			ValueControl.Tag = ParameterInfo;
+
+			return ParameterInfo;
+		}
+
 		private void AddParameter(ParameterInfo Parameter)
 		{
 			ParameterInfo[] Parameters = this.Parameters;
@@ -1672,7 +1759,7 @@ namespace LegalLab.Models.Design
 				Doc.Load(Dialog.FileName);
 
 				ParsedContract Parsed = await Waher.Networking.XMPP.Contracts.Contract.Parse(Doc);
-				Contract Contract = Parsed.Contract 
+				Contract Contract = Parsed.Contract
 					?? throw new InvalidOperationException("Not a valid Smart Contract file.");
 
 				if (!Contract.CanActAsTemplate)
@@ -1744,7 +1831,7 @@ namespace LegalLab.Models.Design
 
 			this.Languages = this.Languages.ToCodes().Append(Language).ToIso639_1();
 			this.Language = Language.ToLower();
-	
+
 			return Task.CompletedTask;
 		}
 
@@ -1778,7 +1865,7 @@ namespace LegalLab.Models.Design
 
 			this.Languages = this.Languages.ToCodes().Remove(Language).ToIso639_1();
 			this.Language = this.contract.DefaultLanguage;
-	
+
 			return Task.CompletedTask;
 		}
 
@@ -1798,8 +1885,8 @@ namespace LegalLab.Models.Design
 
 		private bool CanExecuteProposeContract()
 		{
-			return this.Connected && 
-				(this.ParametersOk || this.PartsMode == ContractParts.TemplateOnly) && 
+			return this.Connected &&
+				(this.ParametersOk || this.PartsMode == ContractParts.TemplateOnly) &&
 				!string.IsNullOrEmpty(this.ContractId) &&
 				this.contract.ForMachines is not null;
 		}

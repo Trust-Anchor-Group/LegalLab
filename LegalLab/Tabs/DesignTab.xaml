@@ -312,7 +312,118 @@
                     <Button Width="100" HorizontalAlignment="Left" Margin="0,5,5,0" Command="{Binding AddCalcParameter}">Add Calculation</Button>
                 </WrapPanel>
 
-                <Label FontSize="20" Margin="0,10,0,0">Machine-Readable Content</Label>
+
+				<Label FontSize="20" Margin="0,10,0,0">Referenced Signatory Properties</Label>
+				<Label>
+					<TextBlock TextWrapping="Wrap">Following are parameters defined in the contract, whose values will be taken from the identities of the signatories signing the contract:</TextBlock>
+				</Label>
+				<DataGrid ItemsSource="{Binding RoleParameters}" Width="Auto" HorizontalAlignment="Left" 
+                          AutoGenerateColumns="False" GridLinesVisibility="None">
+					<DataGrid.Columns>
+						<DataGridTextColumn Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Header="Parameter"/>
+						<DataGridTemplateColumn Header="Description">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<ContentControl Content="{Binding Description}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+							<DataGridTemplateColumn.CellEditingTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding DescriptionAsMarkdown}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellEditingTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTextColumn Binding="{Binding Guide}" Header="Guide"/>
+						<DataGridTextColumn Binding="{Binding Expression, UpdateSourceTrigger=PropertyChanged}" Header="Expression"/>
+						<DataGridTemplateColumn Header="Role">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<ComboBox IsEditable="False" SelectedValue="{Binding Role}" 
+											  ItemsSource="{Binding Roles}" DisplayMemberPath="Name"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTextColumn Binding="{Binding Index}" Header="Index"/>
+						<DataGridTemplateColumn Header="Property">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<ComboBox IsEditable="True" Text="{Binding Property}">
+										<ComboBoxItem>FIRST</ComboBoxItem>
+										<ComboBoxItem>MIDDLE</ComboBoxItem>
+										<ComboBoxItem>LAST</ComboBoxItem>
+										<ComboBoxItem>FULLNAME</ComboBoxItem>
+										<ComboBoxItem>PNR</ComboBoxItem>
+										<ComboBoxItem>ADDR</ComboBoxItem>
+										<ComboBoxItem>ADDR2</ComboBoxItem>
+										<ComboBoxItem>ZIP</ComboBoxItem>
+										<ComboBoxItem>AREA</ComboBoxItem>
+										<ComboBoxItem>CITY</ComboBoxItem>
+										<ComboBoxItem>REGION</ComboBoxItem>
+										<ComboBoxItem>COUNTRY</ComboBoxItem>
+										<ComboBoxItem>FULLADDR</ComboBoxItem>
+										<ComboBoxItem>PHONE</ComboBoxItem>
+										<ComboBoxItem>JID</ComboBoxItem>
+										<ComboBoxItem>AGENT</ComboBoxItem>
+										<ComboBoxItem>ORGNAME</ComboBoxItem>
+										<ComboBoxItem>ORGNR</ComboBoxItem>
+										<ComboBoxItem>ORGDEPT</ComboBoxItem>
+										<ComboBoxItem>ORGROLE</ComboBoxItem>
+										<ComboBoxItem>ORGADDR</ComboBoxItem>
+										<ComboBoxItem>ORGADDR2</ComboBoxItem>
+										<ComboBoxItem>ORGZIP</ComboBoxItem>
+										<ComboBoxItem>ORGAREA</ComboBoxItem>
+										<ComboBoxItem>ORGCITY</ComboBoxItem>
+										<ComboBoxItem>ORGREGION</ComboBoxItem>
+										<ComboBoxItem>ORGCOUNTRY</ComboBoxItem>
+										<ComboBoxItem>FULLORGADDR</ComboBoxItem>
+									</ComboBox>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						<DataGridCheckBoxColumn Binding="{Binding Required}" Header="Required"/>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderStyle>
+								<Style TargetType="DataGridColumnHeader">
+									<Setter Property="Background" Value="{Binding Path=Background, ElementName=ContractId}"/>
+								</Style>
+							</DataGridTemplateColumn.HeaderStyle>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<Button Command="{Binding MoveUp}" Padding="5,0,5,0">Up</Button>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderStyle>
+								<Style TargetType="DataGridColumnHeader">
+									<Setter Property="Background" Value="{Binding Path=Background, ElementName=ContractId}"/>
+								</Style>
+							</DataGridTemplateColumn.HeaderStyle>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<Button Command="{Binding MoveDown}" Padding="5,0,5,0">Down</Button>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderStyle>
+								<Style TargetType="DataGridColumnHeader">
+									<Setter Property="Background" Value="{Binding Path=Background, ElementName=ContractId}"/>
+								</Style>
+							</DataGridTemplateColumn.HeaderStyle>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<Button Command="{Binding RemoveParameter}" Padding="5,0,5,0">Remove</Button>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+					</DataGrid.Columns>
+				</DataGrid>
+				<WrapPanel Orientation="Horizontal">
+					<Button Width="100" HorizontalAlignment="Left" Margin="0,5,5,0" Command="{Binding AddRoleReference}">Add Reference</Button>
+				</WrapPanel>
+
+				<Label FontSize="20" Margin="0,10,0,0">Machine-Readable Content</Label>
                 <Label>Following is the embedded Machine-readable content of the contract (as XML):</Label>
                 <avalonedit:TextEditor Name="MachineReadableXmlEditor" TextChanged="MachineReadableXmlEditor_TextChanged"
                                        FontFamily="Courier New" MinHeight="100" Height="Auto" WordWrap="False" SyntaxHighlighting="XML"

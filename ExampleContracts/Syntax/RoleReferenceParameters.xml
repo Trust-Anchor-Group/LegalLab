@@ -1,0 +1,85 @@
+<contract archiveOpt="P3M" archiveReq="P1M" canActAsTemplate="true" duration="P1M" id="RoleReferenceContract1" visibility="Public" xmlns="urn:ieee:iot:leg:sc:1.0">
+	<Nop xmlns="https://paiwise.tagroot.io/Schema/PaymentInstructions.xsd" />
+	<role maxCount="1" minCount="1" name="Seller">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This role represents a seller of goods.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role maxCount="1" minCount="1" name="Buyer">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This role represents the buyer of goods.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<open />
+	</parts>
+	<parameters>
+		<stringParameter name="Reference" value="Ref" guide="Reference">
+			<description xml:lang="en">
+				<paragraph>
+					<text>A reference text, for the recipient.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<roleParameter name="SellerFirstName" role="Seller" index="1" property="FIRST" required="true">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The seller's first name.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter name="SellerLastName" role="Seller" index="1" property="LAST" required="true">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The seller's last name.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter name="BuyerFirstName" role="Buyer" index="1" property="FIRST" required="true">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The buyer's first name.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter name="BuyerLastName" role="Buyer" index="1" property="LAST" required="true">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The buyer's last name.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Simple contract</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This contract defines an arrangement (ref: </text>
+					<bold>
+						<parameter name="Reference" />
+					</bold>
+					<text>) between </text>
+					<bold>
+						<parameter name="SellerFirstName" />
+						<text> </text>
+						<parameter name="SellerLastName" />
+					</bold>
+					<text> and </text>
+					<bold>
+						<parameter name="BuyerFirstName" />
+						<text> </text>
+						<parameter name="BuyerLastName" />
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>

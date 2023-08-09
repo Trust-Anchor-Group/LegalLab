@@ -24,7 +24,7 @@ namespace LegalLab.Models.Legal.Items
 		private readonly Property<string> guide;
 
 		private readonly Command removeParameter;
-		private readonly DesignModel designModel;
+		protected readonly DesignModel designModel;
 
 		/// <summary>
 		/// Contains information about a parameter

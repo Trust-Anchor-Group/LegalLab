@@ -68,6 +68,11 @@ TAG technologies.
 
 	* [CalculatedParameters.xml](ExampleContracts/Syntax/CalculatedParameters.xml) shows how calculated parameters can be used in contracts.
 
+	* [RoleReferenceParameters.xml](ExampleContracts/Syntax/RoleReferenceParameters.xml) shows how to use role reference parameters.
+	This allows you to create contracts where you include information from the signatories into the contract text, without having
+	to define separate parameters the users have to edit. This simplifies contract creation, and improves integrity of the information
+	presented.
+
 * [Tokens](ExampleContracts/Tokens) contains examples on how to create and manage Neuro-Feature tokens.
 
 	* [Create](ExampleContracts/Tokens/Create) contains examples on how to create tokens.

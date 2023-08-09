@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Syntax", "Syntax", "{A151F6
 	ProjectSection(SolutionItems) = preProject
 		ExampleContracts\Syntax\CalculatedParameters.xml = ExampleContracts\Syntax\CalculatedParameters.xml
 		ExampleContracts\Syntax\Markdown.xml = ExampleContracts\Syntax\Markdown.xml
+		ExampleContracts\Syntax\RoleReferenceParameters.xml = ExampleContracts\Syntax\RoleReferenceParameters.xml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Buying", "Buying", "{C0BD025A-D93B-4E43-9383-904927669BF5}"
