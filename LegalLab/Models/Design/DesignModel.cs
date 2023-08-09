@@ -49,7 +49,7 @@ namespace LegalLab.Models.Design
 		private readonly Property<RoleInfo[]> roles;
 		private readonly Property<PartInfo[]> parts;
 		private readonly Property<ParameterInfo[]> parameters;
-		private readonly Property<RoleParameterInfo[]> roleParameters;
+		private readonly Property<ParameterInfo[]> roleParameters;
 		private readonly DelayedActionProperty<string> machineReadable;
 		private readonly Property<string> forMachinesLocalName;
 		private readonly Property<string> forMachinesNamespace;
@@ -96,7 +96,7 @@ namespace LegalLab.Models.Design
 			this.roles = new Property<RoleInfo[]>(nameof(this.Roles), Array.Empty<RoleInfo>(), this);
 			this.parts = new Property<PartInfo[]>(nameof(this.Parts), Array.Empty<PartInfo>(), this);
 			this.parameters = new Property<ParameterInfo[]>(nameof(this.Parameters), Array.Empty<ParameterInfo>(), this);
-			this.roleParameters = new Property<RoleParameterInfo[]>(nameof(this.RoleParameters), Array.Empty<RoleParameterInfo>(), this);
+			this.roleParameters = new Property<ParameterInfo[]>(nameof(this.RoleParameters), Array.Empty<ParameterInfo>(), this);
 			this.machineReadable = new DelayedActionProperty<string>(nameof(this.MachineReadable), TimeSpan.FromSeconds(1), string.Empty, this);
 			this.forMachines = new Property<XmlElement>(nameof(this.ForMachines), null, this);
 			this.forMachinesLocalName = new Property<string>(nameof(this.ForMachinesLocalName), string.Empty, this);
@@ -760,7 +760,7 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Role reference Parameters defined the contract.
 		/// </summary>
-		public RoleParameterInfo[] RoleParameters
+		public ParameterInfo[] RoleParameters
 		{
 			get => this.roleParameters.Value;
 			set => this.roleParameters.Value = value;
@@ -1648,7 +1648,7 @@ namespace LegalLab.Models.Design
 			};
 			ValueControl.SetBinding(TextBox.TextProperty, Binding);
 
-			RoleParameterInfo ParameterInfo = new RoleParameterInfo(this.contract, RP, ValueControl, this, this.parameters);
+			RoleParameterInfo ParameterInfo = new RoleParameterInfo(this.contract, RP, ValueControl, this, this.roleParameters);
 			ValueControl.Tag = ParameterInfo;
 
 			return ParameterInfo;
