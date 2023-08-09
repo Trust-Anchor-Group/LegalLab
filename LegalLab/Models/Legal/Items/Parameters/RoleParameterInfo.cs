@@ -1,5 +1,6 @@
 ﻿using LegalLab.Models.Design;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using Waher.Networking.XMPP.Contracts;
 
@@ -10,7 +11,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 	/// </summary>
 	public class RoleParameterInfo : ParameterInfo
 	{
-		private readonly Property<RoleInfo> role;
+		private readonly Property<string> role;
 		private readonly Property<string> property;
 		private readonly Property<int> index;
 		private readonly Property<bool> required;
@@ -26,10 +27,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		public RoleParameterInfo(Contract Contract, RoleParameter Parameter, Control Control, DesignModel DesignModel, Property<ParameterInfo[]> Parameters)
 			: base(Contract, Parameter, Control, DesignModel, Parameters)
 		{
-			if (!designModel.TryGetRole(Parameter.Role, out RoleInfo Role))
-				Role = null;
-
-			this.role = new Property<RoleInfo>(nameof(this.Role), Role, this);
+			this.role = new Property<string>(nameof(this.Role), Parameter.Role, this);
 			this.property = new Property<string>(nameof(this.Property), Parameter.Property, this);
 			this.index = new Property<int>(nameof(this.Index), Parameter.Index, this);
 			this.required = new Property<bool>(nameof(this.Required), Parameter.Required, this);
@@ -38,10 +36,42 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		/// <summary>
 		/// Name of the referenced role.
 		/// </summary>
-		public RoleInfo Role
+		public string Role
 		{
 			get => this.role.Value;
-			set => this.role.Value = value;
+			set
+			{
+				if (!this.designModel.TryGetRole(value, out _))
+					throw new ArgumentException(nameof(this.Role), "Role is not defined.");
+
+                this.role.Value = value;
+			}
+		}
+
+		/// <summary>
+		/// Index of the <see cref="Role"/> parameter, in the array of roles <see cref="Roles"/>.
+		/// </summary>
+		public int RoleIndex
+		{
+			get
+			{
+				int i = 0;
+
+				foreach (RoleInfo RoleInfo in this.designModel.Roles)
+				{
+					if (this.role.Value == RoleInfo.Name)
+						return i;
+
+					i++;
+				}
+
+				return -1;
+			}
+
+			set
+			{
+				this.role.Value = this.designModel.Roles[value].Name;
+			}
 		}
 
 		/// <summary>
@@ -92,6 +122,15 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		public override void SetValue(string Value)
 		{
 			throw new Exception("Role reference parameter cannot be set.");
+		}
+
+		/// <summary>
+		/// Removes the parameter.
+		/// </summary>
+		public override Task ExecuteRemoveParameter()
+		{
+			this.designModel?.RemoveRoleParameter(this);
+			return Task.CompletedTask;
 		}
 	}
 }

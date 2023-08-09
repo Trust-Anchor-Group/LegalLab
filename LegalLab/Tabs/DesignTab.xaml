@@ -338,7 +338,7 @@
 						<DataGridTemplateColumn Header="Role">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<ComboBox IsEditable="False" SelectedValue="{Binding Role}" 
+									<ComboBox IsEditable="False" SelectedIndex="{Binding RoleIndex, Mode=TwoWay}"
 											  ItemsSource="{Binding Roles}" DisplayMemberPath="Name"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>

@@ -142,7 +142,9 @@ namespace LegalLab.Models.Legal.Items
 			set
 			{
 				if (!string.IsNullOrEmpty(value))
-					new Expression(value);
+				{
+					Expression _ = new(value);
+				}
 
 				this.Parameter.Expression = value;
 				this.expression.Value = value;
@@ -226,13 +228,13 @@ namespace LegalLab.Models.Legal.Items
 		/// <returns></returns>
 		public bool CanExecuteRemoveParameter()
 		{
-			return !(this.designModel is null);
+			return this.designModel is not null;
 		}
 
 		/// <summary>
 		/// Removes the parameter.
 		/// </summary>
-		public Task ExecuteRemoveParameter()
+		public virtual Task ExecuteRemoveParameter()
 		{
 			this.designModel?.RemoveParameter(this);
 			return Task.CompletedTask;

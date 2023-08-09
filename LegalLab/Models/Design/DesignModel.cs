@@ -68,6 +68,7 @@ namespace LegalLab.Models.Design
 		private readonly Command addTimeParameter;
 		private readonly Command addDurationParameter;
 		private readonly Command addCalcParameter;
+		private readonly Command addRoleReference;
 		private readonly Command @new;
 		private readonly Command load;
 		private readonly Command save;
@@ -125,6 +126,7 @@ namespace LegalLab.Models.Design
 			this.addTimeParameter = new Command(this.ExecuteAddTimeParameter);
 			this.addDurationParameter = new Command(this.ExecuteAddDurationParameter);
 			this.addCalcParameter = new Command(this.ExecuteAddCalcParameter);
+			this.addRoleReference = new Command(this.ExecuteAddRoleReference);
 			this.@new = new Command(this.ExecuteNewContract);
 			this.load = new Command(this.ExecuteLoadContract);
 			this.save = new Command(this.ExecuteSaveContract);
@@ -277,7 +279,7 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Contract visibilities.
 		/// </summary>
-		public string[] Visibilities => Enum.GetNames(typeof(ContractVisibility));
+		public static string[] Visibilities => Enum.GetNames(typeof(ContractVisibility));
 
 		/// <summary>
 		/// Contract parts mode
@@ -362,10 +364,7 @@ namespace LegalLab.Models.Design
 					{
 						if (!string.IsNullOrEmpty(Language))
 						{
-							foreach (ParameterInfo PI in this.Parameters)
-								PI.DescriptionAsMarkdown = (PI.Parameter.Descriptions.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
-
-							foreach (RoleParameterInfo PI in this.RoleParameters)
+							foreach (ParameterInfo PI in this.AllParameterInfos)
 								PI.DescriptionAsMarkdown = (PI.Parameter.Descriptions.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
 
 							foreach (RoleInfo RI in this.Roles)
@@ -382,10 +381,7 @@ namespace LegalLab.Models.Design
 
 						List<TranslationItem> Items = new();
 
-						foreach (ParameterInfo PI in this.Parameters)
-							Add(Items, PI, FromLanguage, Language);
-
-						foreach (RoleParameterInfo PI in this.RoleParameters)
+						foreach (ParameterInfo PI in this.AllParameterInfos)
 							Add(Items, PI, FromLanguage, Language);
 
 						foreach (RoleInfo RI in this.Roles)
@@ -664,24 +660,10 @@ namespace LegalLab.Models.Design
 
 			Variables["Duration"] = this.Duration;
 
-			foreach (ParameterInfo P in this.Parameters)
+			foreach (ParameterInfo P in this.AllParameterInfos)
 				P.Parameter.Populate(Variables);
 
-			foreach (RoleParameterInfo P in this.RoleParameters)
-				P.Parameter.Populate(Variables);
-
-			foreach (ParameterInfo P in this.Parameters)
-			{
-				if (await P.ValidateParameter(Variables))
-					P.Control.Background = null;
-				else
-				{
-					P.Control.Background = Brushes.Salmon;
-					Ok = false;
-				}
-			}
-
-			foreach (RoleParameterInfo P in this.RoleParameters)
+			foreach (ParameterInfo P in this.AllParameterInfos)
 			{
 				if (await P.ValidateParameter(Variables))
 					P.Control.Background = null;
@@ -766,14 +748,41 @@ namespace LegalLab.Models.Design
 			set => this.roleParameters.Value = value;
 		}
 
+		/// <summary>
+		/// An array of both <see cref="Parameters"/> and <see cref="RoleParameters"/>.
+		/// </summary>
+		public ParameterInfo[] AllParameterInfos
+		{
+			get
+			{
+				List<ParameterInfo> Parameters = new();
+
+				Parameters.AddRange(this.parameters.Value);
+				Parameters.AddRange(this.roleParameters.Value);
+
+				return Parameters.ToArray();
+			}
+		}
+
+		/// <summary>
+		/// An array of both <see cref="Parameters"/> and <see cref="RoleParameters"/>.
+		/// </summary>
+		public Parameter[] AllParameters
+		{
+			get
+			{
+				List<Parameter> Parameters = new();
+
+				Parameters.AddRange(this.parameters.Value.ToParameters());
+				Parameters.AddRange(this.roleParameters.Value.ToParameters());
+
+				return Parameters.ToArray();
+			}
+		}
+
 		private void Parameters_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
-			List<Parameter> Parameters = new List<Parameter>();
-
-			Parameters.AddRange(this.parameters.Value.ToParameters());
-			Parameters.AddRange(this.roleParameters.Value.ToParameters());
-
-			this.contract.Parameters = Parameters.ToArray();
+			this.contract.Parameters = this.AllParameters;
 		}
 
 		/// <summary>
@@ -800,6 +809,12 @@ namespace LegalLab.Models.Design
 			}, this.roles);
 
 			this.Roles = Roles;
+
+			foreach (ParameterInfo RoleRef in this.roleParameters.Value)
+			{
+				if (RoleRef is RoleParameterInfo RoleRefInfo)
+					RoleRefInfo.RaisePropertyChanged(nameof(RoleRefInfo.Roles));
+			}
 		}
 
 		private static string FindNewName(string ProposedName, INamedItem[] NamedItems)
@@ -910,7 +925,7 @@ namespace LegalLab.Models.Design
 		{
 			NumericalParameter NP = new()
 			{
-				Name = FindNewName("Numeric", this.Parameters),
+				Name = FindNewName("Numeric", this.AllParameterInfos),
 				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
@@ -986,7 +1001,7 @@ namespace LegalLab.Models.Design
 		{
 			StringParameter SP = new()
 			{
-				Name = FindNewName("String", this.Parameters),
+				Name = FindNewName("String", this.AllParameterInfos),
 				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
@@ -1225,7 +1240,7 @@ namespace LegalLab.Models.Design
 		{
 			BooleanParameter BP = new()
 			{
-				Name = FindNewName("Boolean", this.Parameters),
+				Name = FindNewName("Boolean", this.AllParameterInfos),
 				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
@@ -1317,7 +1332,7 @@ namespace LegalLab.Models.Design
 		{
 			DateParameter DP = new()
 			{
-				Name = FindNewName("Date", this.Parameters),
+				Name = FindNewName("Date", this.AllParameterInfos),
 				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
@@ -1390,7 +1405,7 @@ namespace LegalLab.Models.Design
 		{
 			DateTimeParameter DP = new()
 			{
-				Name = FindNewName("DateTime", this.Parameters),
+				Name = FindNewName("DateTime", this.AllParameterInfos),
 				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
@@ -1463,7 +1478,7 @@ namespace LegalLab.Models.Design
 		{
 			TimeParameter DP = new()
 			{
-				Name = FindNewName("Time", this.Parameters),
+				Name = FindNewName("Time", this.AllParameterInfos),
 				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
@@ -1536,7 +1551,7 @@ namespace LegalLab.Models.Design
 		{
 			DurationParameter DP = new()
 			{
-				Name = FindNewName("Duration", this.Parameters),
+				Name = FindNewName("Duration", this.AllParameterInfos),
 				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
@@ -1609,13 +1624,35 @@ namespace LegalLab.Models.Design
 		{
 			CalcParameter CP = new()
 			{
-				Name = FindNewName("Calc", this.Parameters),
+				Name = FindNewName("Calc", this.AllParameterInfos),
 				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty
 			};
 
 			this.AddParameter(this.GetParameterInfo(CP));
+		}
+
+		/// <summary>
+		/// Command for adding a role reference parameter
+		/// </summary>
+		public ICommand AddRoleReference => this.addRoleReference;
+
+		/// <summary>
+		/// Adds a role reference parameter to the design.
+		/// </summary>
+		public async Task ExecuteAddRoleReference()
+		{
+			RoleParameter RP = new()
+			{
+				Name = FindNewName("RoleRef", this.AllParameterInfos),
+				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
+				Expression = string.Empty,
+				Guide = string.Empty,
+				Index = 1
+			};
+
+			this.AddRoleParameter(this.GetParameterInfo(RP));
 		}
 
 		private ParameterInfo GetParameterInfo(CalcParameter CP)
@@ -1648,7 +1685,7 @@ namespace LegalLab.Models.Design
 			};
 			ValueControl.SetBinding(TextBox.TextProperty, Binding);
 
-			RoleParameterInfo ParameterInfo = new RoleParameterInfo(this.contract, RP, ValueControl, this, this.roleParameters);
+			RoleParameterInfo ParameterInfo = new(this.contract, RP, ValueControl, this, this.roleParameters);
 			ValueControl.Tag = ParameterInfo;
 
 			return ParameterInfo;
@@ -1659,7 +1696,7 @@ namespace LegalLab.Models.Design
 			ParameterInfo[] Parameters = this.Parameters;
 			int c = Parameters.Length;
 
-			Array.Resize<ParameterInfo>(ref Parameters, c + 1);
+			Array.Resize(ref Parameters, c + 1);
 			Parameters[c] = Parameter;
 
 			this.Parameters = Parameters;
@@ -1672,7 +1709,7 @@ namespace LegalLab.Models.Design
 		public void RemoveParameter(ParameterInfo Parameter)
 		{
 			ParameterInfo[] Parameters = this.Parameters;
-			int i = Array.IndexOf<ParameterInfo>(Parameters, Parameter);
+			int i = Array.IndexOf(Parameters, Parameter);
 			if (i < 0)
 				return;
 
@@ -1681,9 +1718,41 @@ namespace LegalLab.Models.Design
 			if (i < c - 1)
 				Array.Copy(Parameters, i + 1, Parameters, i, c - i - 1);
 
-			Array.Resize<ParameterInfo>(ref Parameters, c - 1);
+			Array.Resize(ref Parameters, c - 1);
 
 			this.Parameters = Parameters;
+		}
+
+		private void AddRoleParameter(RoleParameterInfo Parameter)
+		{
+			ParameterInfo[] Parameters = this.RoleParameters;
+			int c = Parameters.Length;
+
+			Array.Resize(ref Parameters, c + 1);
+			Parameters[c] = Parameter;
+
+			this.RoleParameters = Parameters;
+		}
+
+		/// <summary>
+		/// Removes a role reference parameter from the design
+		/// </summary>
+		/// <param name="Parameter">Parameter to remove</param>
+		public void RemoveRoleParameter(RoleParameterInfo Parameter)
+		{
+			ParameterInfo[] Parameters = this.RoleParameters;
+			int i = Array.IndexOf(Parameters, Parameter);
+			if (i < 0)
+				return;
+
+			int c = Parameters.Length;
+
+			if (i < c - 1)
+				Array.Copy(Parameters, i + 1, Parameters, i, c - i - 1);
+
+			Array.Resize(ref Parameters, c - 1);
+
+			this.RoleParameters = Parameters;
 		}
 
 		/// <summary>
@@ -1713,6 +1782,7 @@ namespace LegalLab.Models.Design
 				this.Roles = Array.Empty<RoleInfo>();
 				this.Parts = Array.Empty<PartInfo>();
 				this.Parameters = Array.Empty<ParameterInfo>();
+				this.RoleParameters = Array.Empty<ParameterInfo>();
 				this.MachineReadable = string.Empty;
 				this.ForMachines = null;
 				this.ContractId = string.Empty;
@@ -1855,7 +1925,7 @@ namespace LegalLab.Models.Design
 				return Task.CompletedTask;
 			}
 
-			foreach (ParameterInfo PI in this.Parameters)
+			foreach (ParameterInfo PI in this.AllParameterInfos)
 				PI.Parameter.Descriptions = PI.Parameter.Descriptions.Remove(Language);
 
 			foreach (RoleInfo RI in this.Roles)

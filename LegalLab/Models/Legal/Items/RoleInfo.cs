@@ -201,7 +201,7 @@ namespace LegalLab.Models.Legal.Items
 		{
 			try
 			{
-				if (!(this.contractModel is null))
+				if (this.contractModel is not null)
 					await this.contractModel.SignAsRole(this.Name);
 			}
 			catch (Exception ex)
@@ -244,7 +244,7 @@ namespace LegalLab.Models.Legal.Items
 		/// <returns></returns>
 		public bool CanExecuteRemoveRole()
 		{
-			return !(this.designModel is null);
+			return this.designModel is not null;
 		}
 
 		/// <summary>

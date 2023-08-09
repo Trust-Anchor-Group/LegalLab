@@ -52,10 +52,7 @@ namespace LegalLab.Models.Items
 			if (i <= 0)
 				return Task.CompletedTask;
 
-			T Temp = Items[i - 1];
-			Items[i - 1] = Items[i];
-			Items[i] = Temp;
-
+			(Items[i], Items[i - 1]) = (Items[i - 1], Items[i]);
 			this.items.Value = Items;
 		
 			return Task.CompletedTask;
@@ -82,10 +79,7 @@ namespace LegalLab.Models.Items
 			if (i < 0 || i >= Items.Length - 1)
 				return Task.CompletedTask;
 
-			T Temp = Items[i + 1];
-			Items[i + 1] = Items[i];
-			Items[i] = Temp;
-
+			(Items[i], Items[i + 1]) = (Items[i + 1], Items[i]);
 			this.items.Value = Items;
 		
 			return Task.CompletedTask;

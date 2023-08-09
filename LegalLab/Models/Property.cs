@@ -55,7 +55,7 @@ namespace LegalLab.Models
 				this.value = value;
 
 				PropertyChangedEventHandler h = this.PropertyChanged;
-				if (!(h is null))
+				if (h is not null)
 				{
 					try
 					{
