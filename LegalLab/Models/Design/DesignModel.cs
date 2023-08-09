@@ -88,13 +88,13 @@ namespace LegalLab.Models.Design
 			this.archiveRequired = new Property<Waher.Content.Duration?>(nameof(this.ArchiveRequired), Waher.Content.Duration.Zero, this);
 			this.duration = new Property<Waher.Content.Duration?>(nameof(this.Duration), Waher.Content.Duration.Zero, this);
 			this.language = new Property<string>(nameof(this.Language), "en", this);
-			this.languages = new Property<Iso__639_1.Record[]>(nameof(this.Languages), new Iso__639_1.Record[0], this);
+			this.languages = new Property<Iso__639_1.Record[]>(nameof(this.Languages), Array.Empty<Iso__639_1.Record>(), this);
 			this.signBefore = new Property<DateTime?>(nameof(this.SignBefore), null, this);
 			this.signAfter = new Property<DateTime?>(nameof(this.SignAfter), null, this);
 			this.parametersOk = new Property<bool>(nameof(this.ParametersOk), false, this);
-			this.roles = new Property<RoleInfo[]>(nameof(this.Roles), new RoleInfo[0], this);
-			this.parts = new Property<PartInfo[]>(nameof(this.Parts), new PartInfo[0], this);
-			this.parameters = new Property<ParameterInfo[]>(nameof(this.Parameters), new ParameterInfo[0], this);
+			this.roles = new Property<RoleInfo[]>(nameof(this.Roles), Array.Empty<RoleInfo>(), this);
+			this.parts = new Property<PartInfo[]>(nameof(this.Parts), Array.Empty<PartInfo>(), this);
+			this.parameters = new Property<ParameterInfo[]>(nameof(this.Parameters), Array.Empty<ParameterInfo>(), this);
 			this.machineReadable = new DelayedActionProperty<string>(nameof(this.MachineReadable), TimeSpan.FromSeconds(1), string.Empty, this);
 			this.forMachines = new Property<XmlElement>(nameof(this.ForMachines), null, this);
 			this.forMachinesLocalName = new Property<string>(nameof(this.ForMachinesLocalName), string.Empty, this);
@@ -138,17 +138,17 @@ namespace LegalLab.Models.Design
 			{
 				ArchiveOptional = this.ArchiveOptional,
 				ArchiveRequired = this.ArchiveRequired,
-				Attachments = new Attachment[0],
+				Attachments = Array.Empty<Attachment>(),
 				CanActAsTemplate = true,
-				ClientSignatures = new ClientSignature[0],
+				ClientSignatures = Array.Empty<ClientSignature>(),
 				ContractId = this.ContractId,
 				Duration = this.Duration,
-				ForHumans = new HumanReadableText[0],
+				ForHumans = Array.Empty<HumanReadableText>(),
 				ForMachines = this.ForMachines,
-				Parameters = new Parameter[0],
-				Parts = new Part[0],
+				Parameters = Array.Empty<Parameter>(),
+				Parts = Array.Empty<Part>(),
 				PartsMode = ContractParts.TemplateOnly,
-				Roles = new Role[0],
+				Roles = Array.Empty<Role>(),
 				ServerSignature = null,
 				SignAfter = this.SignAfter,
 				SignBefore = this.SignBefore,
@@ -169,9 +169,9 @@ namespace LegalLab.Models.Design
 			this.Visibility = Contract.Visibility;
 			this.PartsMode = Contract.PartsMode;
 
-			List<PartInfo> Parts = new List<PartInfo>();
+			List<PartInfo> Parts = new();
 
-			if (!(Contract.Parts is null))
+			if (Contract.Parts is not null)
 			{
 				foreach (Part Part in Contract.Parts)
 					Parts.Add(new PartInfo(Part, this, this.parts));
@@ -179,9 +179,9 @@ namespace LegalLab.Models.Design
 
 			this.Parts = Parts.ToArray();
 
-			List<RoleInfo> Roles = new List<RoleInfo>();
+			List<RoleInfo> Roles = new();
 
-			if (!(Contract.Roles is null))
+			if (Contract.Roles is not null)
 			{
 				foreach (Role Role in Contract.Roles)
 					Roles.Add(new RoleInfo(this, Role, this.roles));
@@ -189,7 +189,7 @@ namespace LegalLab.Models.Design
 
 			this.Roles = Roles.ToArray();
 
-			List<ParameterInfo> ParameterList = new List<ParameterInfo>();
+			List<ParameterInfo> ParameterList = new();
 			ParameterInfo ParameterInfo;
 
 			foreach (Parameter Parameter in this.contract.Parameters)
@@ -287,7 +287,7 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Contract parts modes
 		/// </summary>
-		public string[] PartsModes => Enum.GetNames(typeof(ContractParts));
+		public static string[] PartsModes => Enum.GetNames(typeof(ContractParts));
 
 		/// <summary>
 		/// Optional archiving time
@@ -367,19 +367,19 @@ namespace LegalLab.Models.Design
 					{
 						this.lastLanguage = Language;
 
-						List<TranslationItem> Items = new List<TranslationItem>();
+						List<TranslationItem> Items = new();
 
 						foreach (ParameterInfo PI in this.Parameters)
-							this.Add(Items, PI, FromLanguage, Language);
+							Add(Items, PI, FromLanguage, Language);
 
 						foreach (RoleInfo RI in this.Roles)
-							this.Add(Items, RI, FromLanguage, Language);
+							Add(Items, RI, FromLanguage, Language);
 
-						this.Add(Items, this, FromLanguage, Language);
+						Add(Items, this, FromLanguage, Language);
 
 						if (Items.Count > 0)
 						{
-							List<string> AllTexts = new List<string>();
+							List<string> AllTexts = new();
 
 							foreach (TranslationItem Item in Items)
 								AllTexts.AddRange(Item.Original);
@@ -418,15 +418,15 @@ namespace LegalLab.Models.Design
 			}
 		}
 
-		private void Add(List<TranslationItem> Items, ITranslatable Translatable, string From, string To)
+		private static void Add(List<TranslationItem> Items, ITranslatable Translatable, string From, string To)
 		{
 			string[] Texts = Translatable.GetTranslatableTexts(To);
-			if (!(Texts is null))
+			if (Texts is not null)
 				Translatable.SetTranslatableTexts(Texts, To);
 			else
 			{
 				Texts = Translatable.GetTranslatableTexts(From);
-				if (!(Texts is null))
+				if (Texts is not null)
 				{
 					Items.Add(new TranslationItem()
 					{
@@ -643,7 +643,7 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public async Task ValidateParameters()
 		{
-			Variables Variables = new Variables();
+			Variables Variables = new();
 			bool Ok = true;
 
 			Variables["Duration"] = this.Duration;
@@ -720,10 +720,10 @@ namespace LegalLab.Models.Design
 			RoleInfo[] Roles = this.Roles;
 			int c = Roles.Length;
 
-			Array.Resize<RoleInfo>(ref Roles, c + 1);
+			Array.Resize(ref Roles, c + 1);
 			Roles[c] = new RoleInfo(this, new Role()
 			{
-				Name = this.FindNewName("Role", this.Roles),
+				Name = FindNewName("Role", this.Roles),
 				Descriptions = new HumanReadableText[] { await "Enter role description as **Markdown**".ToHumanReadableText("en") },
 				MinCount = 1,
 				MaxCount = 1,
@@ -733,7 +733,7 @@ namespace LegalLab.Models.Design
 			this.Roles = Roles;
 		}
 
-		private string FindNewName(string ProposedName, INamedItem[] NamedItems)
+		private static string FindNewName(string ProposedName, INamedItem[] NamedItems)
 		{
 			int i = 1;
 			string Result;
@@ -768,7 +768,7 @@ namespace LegalLab.Models.Design
 		public void RemoveRole(RoleInfo Role)
 		{
 			RoleInfo[] Roles = this.Roles;
-			int i = Array.IndexOf<RoleInfo>(Roles, Role);
+			int i = Array.IndexOf(Roles, Role);
 			if (i < 0)
 				return;
 
@@ -777,7 +777,7 @@ namespace LegalLab.Models.Design
 			if (i < c - 1)
 				Array.Copy(Roles, i + 1, Roles, i, c - i - 1);
 
-			Array.Resize<RoleInfo>(ref Roles, c - 1);
+			Array.Resize(ref Roles, c - 1);
 
 			this.Roles = Roles;
 		}
@@ -839,9 +839,9 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public async Task ExecuteAddNumericParameter()
 		{
-			NumericalParameter NP = new NumericalParameter()
+			NumericalParameter NP = new()
 			{
-				Name = this.FindNewName("Numeric", this.Parameters),
+				Name = FindNewName("Numeric", this.Parameters),
 				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
@@ -857,8 +857,8 @@ namespace LegalLab.Models.Design
 
 		private ParameterInfo GetParameterInfo(NumericalParameter NP)
 		{
-			TextBox ValueControl = new TextBox();
-			Binding Binding = new Binding("Value")
+			TextBox ValueControl = new();
+			Binding Binding = new("Value")
 			{
 				Converter = new MoneyToString()
 			};
@@ -866,8 +866,8 @@ namespace LegalLab.Models.Design
 			ValueControl.SetBinding(TextBox.TextProperty, "Value");
 			ValueControl.TextChanged += this.Parameter_TextChanged;
 
-			TextBox MinControl = new TextBox();
-			Binding = new Binding("Value")
+			TextBox MinControl = new();
+			Binding = new("Value")
 			{
 				Converter = new MoneyToString()
 			};
@@ -875,7 +875,7 @@ namespace LegalLab.Models.Design
 			MinControl.SetBinding(TextBox.TextProperty, "Min");
 			MinControl.TextChanged += this.Parameter_MinTextChanged;
 
-			TextBox MaxControl = new TextBox();
+			TextBox MaxControl = new();
 			Binding = new Binding("Value")
 			{
 				Converter = new MoneyToString()
@@ -884,12 +884,12 @@ namespace LegalLab.Models.Design
 			MaxControl.SetBinding(TextBox.TextProperty, "Max");
 			MaxControl.TextChanged += this.Parameter_MaxTextChanged;
 
-			CheckBox MinIncludedControl = new CheckBox();
+			CheckBox MinIncludedControl = new();
 			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
 			MinIncludedControl.Checked += this.Parameter_MinIncludedCheckedChanged;
 			MinIncludedControl.Unchecked += this.Parameter_MinIncludedCheckedChanged;
 
-			CheckBox MaxIncludedControl = new CheckBox();
+			CheckBox MaxIncludedControl = new();
 			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
 			MaxIncludedControl.Checked += this.Parameter_MaxIncludedCheckedChanged;
 			MaxIncludedControl.Unchecked += this.Parameter_MaxIncludedCheckedChanged;
@@ -915,9 +915,9 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public async Task ExecuteAddStringParameter()
 		{
-			StringParameter SP = new StringParameter()
+			StringParameter SP = new()
 			{
-				Name = this.FindNewName("String", this.Parameters),
+				Name = FindNewName("String", this.Parameters),
 				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
@@ -936,37 +936,37 @@ namespace LegalLab.Models.Design
 
 		private ParameterInfo GetParameterInfo(StringParameter SP)
 		{
-			TextBox ValueControl = new TextBox();
+			TextBox ValueControl = new();
 			ValueControl.SetBinding(TextBox.TextProperty, "Value");
 			ValueControl.TextChanged += this.Parameter_TextChanged;
 
-			TextBox MinControl = new TextBox();
+			TextBox MinControl = new();
 			MinControl.SetBinding(TextBox.TextProperty, "Min");
 			MinControl.TextChanged += this.Parameter_MinTextChanged;
 
-			TextBox MaxControl = new TextBox();
+			TextBox MaxControl = new();
 			MaxControl.SetBinding(TextBox.TextProperty, "Max");
 			MaxControl.TextChanged += this.Parameter_MaxTextChanged;
 
-			CheckBox MinIncludedControl = new CheckBox();
+			CheckBox MinIncludedControl = new();
 			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
 			MinIncludedControl.Checked += this.Parameter_MinIncludedCheckedChanged;
 			MinIncludedControl.Unchecked += this.Parameter_MinIncludedCheckedChanged;
 
-			CheckBox MaxIncludedControl = new CheckBox();
+			CheckBox MaxIncludedControl = new();
 			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
 			MaxIncludedControl.Checked += this.Parameter_MaxIncludedCheckedChanged;
 			MaxIncludedControl.Unchecked += this.Parameter_MaxIncludedCheckedChanged;
 
-			TextBox MinLengthControl = new TextBox();
+			TextBox MinLengthControl = new();
 			MinLengthControl.SetBinding(TextBox.TextProperty, "MinLength");
 			MinLengthControl.TextChanged += this.Parameter_MinLengthTextChanged;
 
-			TextBox MaxLengthControl = new TextBox();
+			TextBox MaxLengthControl = new();
 			MaxLengthControl.SetBinding(TextBox.TextProperty, "MaxLength");
 			MaxLengthControl.TextChanged += this.Parameter_MaxLengthTextChanged;
 
-			TextBox RegExControl = new TextBox();
+			TextBox RegExControl = new();
 			RegExControl.SetBinding(TextBox.TextProperty, "RegEx");
 			RegExControl.TextChanged += this.Parameter_RegExTextChanged;
 
@@ -986,7 +986,7 @@ namespace LegalLab.Models.Design
 		{
 			try
 			{
-				if (!(sender is TextBox TextBox) || !(TextBox.Tag is ParameterInfo ParameterInfo))
+				if (sender is not TextBox TextBox || TextBox.Tag is not ParameterInfo ParameterInfo)
 					return;
 
 				try
@@ -1013,7 +1013,7 @@ namespace LegalLab.Models.Design
 		{
 			try
 			{
-				if (!(sender is TextBox TextBox) || !(TextBox.Tag is RangedParameterInfo ParameterInfo))
+				if (sender is not TextBox TextBox || TextBox.Tag is not RangedParameterInfo ParameterInfo)
 					return;
 
 				try
@@ -1038,7 +1038,7 @@ namespace LegalLab.Models.Design
 		{
 			try
 			{
-				if (!(sender is TextBox TextBox) || !(TextBox.Tag is RangedParameterInfo ParameterInfo))
+				if (sender is not TextBox TextBox || TextBox.Tag is not RangedParameterInfo ParameterInfo)
 					return;
 
 				try
@@ -1063,7 +1063,7 @@ namespace LegalLab.Models.Design
 		{
 			try
 			{
-				if (!(sender is TextBox TextBox) || !(TextBox.Tag is StringParameterInfo ParameterInfo))
+				if (sender is not TextBox TextBox || TextBox.Tag is not StringParameterInfo ParameterInfo)
 					return;
 
 				try
@@ -1093,7 +1093,7 @@ namespace LegalLab.Models.Design
 		{
 			try
 			{
-				if (!(sender is TextBox TextBox) || !(TextBox.Tag is StringParameterInfo ParameterInfo))
+				if (sender is not TextBox TextBox || TextBox.Tag is not StringParameterInfo ParameterInfo)
 					return;
 
 				try
@@ -1123,7 +1123,7 @@ namespace LegalLab.Models.Design
 		{
 			try
 			{
-				if (!(sender is TextBox TextBox) || !(TextBox.Tag is StringParameterInfo ParameterInfo))
+				if (sender is not TextBox TextBox || TextBox.Tag is not StringParameterInfo ParameterInfo)
 					return;
 
 				try
@@ -1154,9 +1154,9 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public async Task ExecuteAddBooleanParameter()
 		{
-			BooleanParameter BP = new BooleanParameter()
+			BooleanParameter BP = new()
 			{
-				Name = this.FindNewName("Boolean", this.Parameters),
+				Name = FindNewName("Boolean", this.Parameters),
 				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
@@ -1168,7 +1168,7 @@ namespace LegalLab.Models.Design
 
 		private ParameterInfo GetParameterInfo(BooleanParameter BP)
 		{
-			CheckBox CheckBox = new CheckBox()
+			CheckBox CheckBox = new()
 			{
 				VerticalContentAlignment = VerticalAlignment.Center,
 				HorizontalContentAlignment = HorizontalAlignment.Center
@@ -1188,7 +1188,7 @@ namespace LegalLab.Models.Design
 		{
 			try
 			{
-				if (!(sender is CheckBox CheckBox) || !(CheckBox.Tag is ParameterInfo ParameterInfo))
+				if (sender is not CheckBox CheckBox || CheckBox.Tag is not ParameterInfo ParameterInfo)
 					return;
 
 				ParameterInfo.Value = CheckBox.IsChecked;
@@ -1206,7 +1206,7 @@ namespace LegalLab.Models.Design
 		{
 			try
 			{
-				if (!(sender is CheckBox CheckBox) || !(CheckBox.Tag is RangedParameterInfo ParameterInfo))
+				if (sender is not CheckBox CheckBox || CheckBox.Tag is not RangedParameterInfo ParameterInfo)
 					return;
 
 				ParameterInfo.MinIncluded = CheckBox.IsChecked ?? false;
@@ -1223,7 +1223,7 @@ namespace LegalLab.Models.Design
 		{
 			try
 			{
-				if (!(sender is CheckBox CheckBox) || !(CheckBox.Tag is RangedParameterInfo ParameterInfo))
+				if (sender is not CheckBox CheckBox || CheckBox.Tag is not RangedParameterInfo ParameterInfo)
 					return;
 
 				ParameterInfo.MaxIncluded = CheckBox.IsChecked ?? false;
@@ -1246,9 +1246,9 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public async Task ExecuteAddDateParameter()
 		{
-			DateParameter DP = new DateParameter()
+			DateParameter DP = new()
 			{
-				Name = this.FindNewName("Date", this.Parameters),
+				Name = FindNewName("Date", this.Parameters),
 				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
@@ -1264,23 +1264,23 @@ namespace LegalLab.Models.Design
 
 		private ParameterInfo GetParameterInfo(DateParameter DP)
 		{
-			TextBox ValueControl = new TextBox();
-			Binding Binding = new Binding("Value")
+			TextBox ValueControl = new();
+			Binding Binding = new("Value")
 			{
 				Converter = new DateToXmlString()
 			};
 			ValueControl.SetBinding(TextBox.TextProperty, Binding);
 			ValueControl.TextChanged += this.Parameter_TextChanged;
 
-			TextBox MinControl = new TextBox();
-			Binding = new Binding("Min")
+			TextBox MinControl = new();
+			Binding = new("Min")
 			{
 				Converter = new DateToXmlString()
 			};
 			MinControl.SetBinding(TextBox.TextProperty, Binding);
 			MinControl.TextChanged += this.Parameter_MinTextChanged;
 
-			TextBox MaxControl = new TextBox();
+			TextBox MaxControl = new();
 			Binding = new Binding("Max")
 			{
 				Converter = new DateToXmlString()
@@ -1288,12 +1288,12 @@ namespace LegalLab.Models.Design
 			MaxControl.SetBinding(TextBox.TextProperty, Binding);
 			MaxControl.TextChanged += this.Parameter_MaxTextChanged;
 
-			CheckBox MinIncludedControl = new CheckBox();
+			CheckBox MinIncludedControl = new();
 			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
 			MinIncludedControl.Checked += this.Parameter_MinIncludedCheckedChanged;
 			MinIncludedControl.Unchecked += this.Parameter_MinIncludedCheckedChanged;
 
-			CheckBox MaxIncludedControl = new CheckBox();
+			CheckBox MaxIncludedControl = new();
 			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
 			MaxIncludedControl.Checked += this.Parameter_MaxIncludedCheckedChanged;
 			MaxIncludedControl.Unchecked += this.Parameter_MaxIncludedCheckedChanged;
@@ -1319,9 +1319,9 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public async Task ExecuteAddDateTimeParameter()
 		{
-			DateTimeParameter DP = new DateTimeParameter()
+			DateTimeParameter DP = new()
 			{
-				Name = this.FindNewName("DateTime", this.Parameters),
+				Name = FindNewName("DateTime", this.Parameters),
 				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
@@ -1337,15 +1337,15 @@ namespace LegalLab.Models.Design
 
 		private ParameterInfo GetParameterInfo(DateTimeParameter DP)
 		{
-			TextBox ValueControl = new TextBox();
-			Binding Binding = new Binding("Value")
+			TextBox ValueControl = new();
+			Binding Binding = new("Value")
 			{
 				Converter = new DateTimeToXmlString()
 			};
 			ValueControl.SetBinding(TextBox.TextProperty, Binding);
 			ValueControl.TextChanged += this.Parameter_TextChanged;
 
-			TextBox MinControl = new TextBox();
+			TextBox MinControl = new();
 			Binding = new Binding("Min")
 			{
 				Converter = new DateTimeToXmlString()
@@ -1353,7 +1353,7 @@ namespace LegalLab.Models.Design
 			MinControl.SetBinding(TextBox.TextProperty, Binding);
 			MinControl.TextChanged += this.Parameter_MinTextChanged;
 
-			TextBox MaxControl = new TextBox();
+			TextBox MaxControl = new();
 			Binding = new Binding("Max")
 			{
 				Converter = new DateTimeToXmlString()
@@ -1361,12 +1361,12 @@ namespace LegalLab.Models.Design
 			MaxControl.SetBinding(TextBox.TextProperty, Binding);
 			MaxControl.TextChanged += this.Parameter_MaxTextChanged;
 
-			CheckBox MinIncludedControl = new CheckBox();
+			CheckBox MinIncludedControl = new();
 			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
 			MinIncludedControl.Checked += this.Parameter_MinIncludedCheckedChanged;
 			MinIncludedControl.Unchecked += this.Parameter_MinIncludedCheckedChanged;
 
-			CheckBox MaxIncludedControl = new CheckBox();
+			CheckBox MaxIncludedControl = new();
 			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
 			MaxIncludedControl.Checked += this.Parameter_MaxIncludedCheckedChanged;
 			MaxIncludedControl.Unchecked += this.Parameter_MaxIncludedCheckedChanged;
@@ -1392,9 +1392,9 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public async Task ExecuteAddTimeParameter()
 		{
-			TimeParameter DP = new TimeParameter()
+			TimeParameter DP = new()
 			{
-				Name = this.FindNewName("Time", this.Parameters),
+				Name = FindNewName("Time", this.Parameters),
 				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
@@ -1410,15 +1410,15 @@ namespace LegalLab.Models.Design
 
 		private ParameterInfo GetParameterInfo(TimeParameter DP)
 		{
-			TextBox ValueControl = new TextBox();
-			Binding Binding = new Binding("Value")
+			TextBox ValueControl = new();
+			Binding Binding = new("Value")
 			{
 				Converter = new TimeToXmlString()
 			};
 			ValueControl.SetBinding(TextBox.TextProperty, Binding);
 			ValueControl.TextChanged += this.Parameter_TextChanged;
 
-			TextBox MinControl = new TextBox();
+			TextBox MinControl = new();
 			Binding = new Binding("Min")
 			{
 				Converter = new TimeToXmlString()
@@ -1426,20 +1426,20 @@ namespace LegalLab.Models.Design
 			MinControl.SetBinding(TextBox.TextProperty, Binding);
 			MinControl.TextChanged += this.Parameter_MinTextChanged;
 
-			TextBox MaxControl = new TextBox();
-			Binding = new Binding("Min")
+			TextBox MaxControl = new();
+			Binding = new("Min")
 			{
 				Converter = new TimeToXmlString()
 			};
 			MaxControl.SetBinding(TextBox.TextProperty, Binding);
 			MaxControl.TextChanged += this.Parameter_MaxTextChanged;
 
-			CheckBox MinIncludedControl = new CheckBox();
+			CheckBox MinIncludedControl = new();
 			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
 			MinIncludedControl.Checked += this.Parameter_MinIncludedCheckedChanged;
 			MinIncludedControl.Unchecked += this.Parameter_MinIncludedCheckedChanged;
 
-			CheckBox MaxIncludedControl = new CheckBox();
+			CheckBox MaxIncludedControl = new();
 			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
 			MaxIncludedControl.Checked += this.Parameter_MaxIncludedCheckedChanged;
 			MaxIncludedControl.Unchecked += this.Parameter_MaxIncludedCheckedChanged;
@@ -1465,9 +1465,9 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public async Task ExecuteAddDurationParameter()
 		{
-			DurationParameter DP = new DurationParameter()
+			DurationParameter DP = new()
 			{
-				Name = this.FindNewName("Duration", this.Parameters),
+				Name = FindNewName("Duration", this.Parameters),
 				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
@@ -1483,15 +1483,15 @@ namespace LegalLab.Models.Design
 
 		private ParameterInfo GetParameterInfo(DurationParameter DP)
 		{
-			TextBox ValueControl = new TextBox();
-			Binding Binding = new Binding("Value")
+			TextBox ValueControl = new();
+			Binding Binding = new("Value")
 			{
 				Converter = new DurationToXmlString()
 			};
 			ValueControl.SetBinding(TextBox.TextProperty, Binding);
 			ValueControl.TextChanged += this.Parameter_TextChanged;
 
-			TextBox MinControl = new TextBox();
+			TextBox MinControl = new();
 			Binding = new Binding("Min")
 			{
 				Converter = new DurationToXmlString()
@@ -1499,7 +1499,7 @@ namespace LegalLab.Models.Design
 			MinControl.SetBinding(TextBox.TextProperty, Binding);
 			MinControl.TextChanged += this.Parameter_MinTextChanged;
 
-			TextBox MaxControl = new TextBox();
+			TextBox MaxControl = new();
 			Binding = new Binding("Max")
 			{
 				Converter = new DurationToXmlString()
@@ -1507,12 +1507,12 @@ namespace LegalLab.Models.Design
 			MaxControl.SetBinding(TextBox.TextProperty, Binding);
 			MaxControl.TextChanged += this.Parameter_MaxTextChanged;
 
-			CheckBox MinIncludedControl = new CheckBox();
+			CheckBox MinIncludedControl = new();
 			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
 			MinIncludedControl.Checked += this.Parameter_MinIncludedCheckedChanged;
 			MinIncludedControl.Unchecked += this.Parameter_MinIncludedCheckedChanged;
 
-			CheckBox MaxIncludedControl = new CheckBox();
+			CheckBox MaxIncludedControl = new();
 			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
 			MaxIncludedControl.Checked += this.Parameter_MaxIncludedCheckedChanged;
 			MaxIncludedControl.Unchecked += this.Parameter_MaxIncludedCheckedChanged;
@@ -1538,9 +1538,9 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public async Task ExecuteAddCalcParameter()
 		{
-			CalcParameter CP = new CalcParameter()
+			CalcParameter CP = new()
 			{
-				Name = this.FindNewName("Calc", this.Parameters),
+				Name = FindNewName("Calc", this.Parameters),
 				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty
@@ -1551,11 +1551,11 @@ namespace LegalLab.Models.Design
 
 		private ParameterInfo GetParameterInfo(CalcParameter CP)
 		{
-			TextBox ValueControl = new TextBox()
+			TextBox ValueControl = new()
 			{
 				IsReadOnly = true
 			};
-			Binding Binding = new Binding("Value")
+			Binding Binding = new("Value")
 			{
 				Converter = new MoneyToString()
 			};
@@ -1620,12 +1620,12 @@ namespace LegalLab.Models.Design
 				this.ArchiveRequired = Waher.Content.Duration.Zero;
 				this.Duration = Waher.Content.Duration.Zero;
 				this.Language = "en";
-				this.Languages = new Iso__639_1.Record[0];
+				this.Languages = Array.Empty<Iso__639_1.Record>();
 				this.SignBefore = null;
 				this.SignAfter = null;
-				this.Roles = new RoleInfo[0];
-				this.Parts = new PartInfo[0];
-				this.Parameters = new ParameterInfo[0];
+				this.Roles = Array.Empty<RoleInfo>();
+				this.Parts = Array.Empty<PartInfo>();
+				this.Parameters = Array.Empty<ParameterInfo>();
 				this.MachineReadable = string.Empty;
 				this.ForMachines = null;
 				this.ContractId = string.Empty;
@@ -1649,7 +1649,7 @@ namespace LegalLab.Models.Design
 		{
 			try
 			{
-				OpenFileDialog Dialog = new OpenFileDialog()
+				OpenFileDialog Dialog = new()
 				{
 					CheckFileExists = true,
 					CheckPathExists = true,
@@ -1664,7 +1664,7 @@ namespace LegalLab.Models.Design
 				if (!Result.HasValue || !Result.Value)
 					return;
 
-				XmlDocument Doc = new XmlDocument()
+				XmlDocument Doc = new()
 				{
 					PreserveWhitespace = true
 				};
@@ -1695,7 +1695,7 @@ namespace LegalLab.Models.Design
 		{
 			try
 			{
-				SaveFileDialog Dialog = new SaveFileDialog()
+				SaveFileDialog Dialog = new()
 				{
 					AddExtension = true,
 					CheckFileExists = false,
@@ -1731,8 +1731,8 @@ namespace LegalLab.Models.Design
 
 		private Task ExecuteAddLanguage()
 		{
-			AddLanguageDialog Dialog = new AddLanguageDialog();
-			AddLanguageModel Model = new AddLanguageModel(Dialog);
+			AddLanguageDialog Dialog = new();
+			AddLanguageModel Model = new(Dialog);
 
 			bool? Result = Dialog.ShowDialog();
 			if (!Result.HasValue || !Result.Value)
@@ -1801,7 +1801,7 @@ namespace LegalLab.Models.Design
 			return this.Connected && 
 				(this.ParametersOk || this.PartsMode == ContractParts.TemplateOnly) && 
 				!string.IsNullOrEmpty(this.ContractId) &&
-				!(this.contract.ForMachines is null);
+				this.contract.ForMachines is not null;
 		}
 
 		/// <inheritdoc/>
