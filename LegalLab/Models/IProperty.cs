@@ -5,7 +5,7 @@ namespace LegalLab.Models
 	/// <summary>
 	/// Interface for properties.
 	/// </summary>
-	public interface IProperty
+	public interface IProperty: INotifyPropertyChanged
 	{
 		/// <summary>
 		/// Property Name
@@ -21,10 +21,5 @@ namespace LegalLab.Models
 		/// Untyped value of property
 		/// </summary>
 		object UntypedValue { get; set; }
-
-		/// <summary>
-		/// Occurs when the property value changes.
-		/// </summary>
-		event PropertyChangedEventHandler PropertyChanged;
 	}
 }

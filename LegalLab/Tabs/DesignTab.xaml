@@ -17,7 +17,8 @@
 				<Button Command="{Binding SaveCommand}" Margin="0,0,0,10">Save</Button>
 				<Button Command="{Binding Propose}" Margin="0,0,0,10">Propose</Button>
 				<Label>Language:</Label>
-				<ComboBox ItemsSource="{Binding Languages}" DisplayMemberPath="Language" SelectedValuePath="Code" SelectedValue="{Binding Language}" Margin="0,0,0,10"/>
+				<ComboBox ItemsSource="{Binding Languages}" DisplayMemberPath="Language" SelectedValuePath="Code" 
+						  SelectedValue="{Binding Language}" Margin="0,0,0,10"/>
 				<Button Command="{Binding AddLanguage}" Margin="0,0,0,10">Add Language</Button>
 				<Button Command="{Binding RemoveLanguage}" Margin="0,0,0,10">Remove Language</Button>
 				<Label>
@@ -47,7 +48,8 @@
 					</StackPanel>
 					<StackPanel Orientation="Vertical" Width="100" Margin="0,0,10,10">
 						<Label>Visibility:</Label>
-						<ComboBox SelectedItem="{Binding Visibility, Converter={conv:ContractVisibilityToString}}" ItemsSource="{Binding Visibilities}"/>
+						<ComboBox SelectedItem="{Binding Visibility, Converter={conv:ContractVisibilityToString}}" 
+								  ItemsSource="{Binding Visibilities}"/>
 					</StackPanel>
 					<StackPanel Orientation="Vertical" Width="100" Margin="0,0,10,10">
 						<Label>Duration:</Label>
@@ -63,7 +65,8 @@
 					</StackPanel>
 					<StackPanel Orientation="Vertical" Width="100" Margin="0,0,10,10">
 						<Label>Parts:</Label>
-						<ComboBox SelectedItem="{Binding PartsMode, Converter={conv:ContractPartsToString}}" ItemsSource="{Binding PartsModes}"/>
+						<ComboBox SelectedItem="{Binding PartsMode, Converter={conv:ContractPartsToString}}" 
+								  ItemsSource="{Binding PartsModes}"/>
 					</StackPanel>
 					<StackPanel Orientation="Vertical" Width="100" Margin="0,0,10,10">
 						<Label>Sign After:</Label>
@@ -145,7 +148,8 @@
 						<DataGridTemplateColumn Header="Role">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<ComboBox SelectedItem="{Binding Role, Mode=TwoWay}" ItemsSource="{Binding Roles}"/>
+									<ComboBox SelectedItem="{Binding Role, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+											  ItemsSource="{Binding Roles}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
@@ -340,7 +344,8 @@
 						<DataGridTemplateColumn Header="Role">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<ComboBox SelectedItem="{Binding Role, Mode=TwoWay}" ItemsSource="{Binding Roles}"/>
+									<ComboBox SelectedItem="{Binding Role, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+											  ItemsSource="{Binding Roles}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
@@ -348,7 +353,7 @@
 						<DataGridTemplateColumn Header="Property">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<ComboBox IsEditable="True" Text="{Binding Property}">
+									<ComboBox IsEditable="True" Text="{Binding Property, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 										<ComboBoxItem>FIRST</ComboBoxItem>
 										<ComboBoxItem>MIDDLE</ComboBoxItem>
 										<ComboBoxItem>LAST</ComboBoxItem>
