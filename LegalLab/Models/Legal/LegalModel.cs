@@ -48,7 +48,7 @@ namespace LegalLab.Models.Legal
 		private readonly Property<TemplateReferenceModel[]> templates;
 		private readonly Property<string> contractTemplateName;
 
-		private readonly Dictionary<string, IdentityWrapper> identities = new Dictionary<string, IdentityWrapper>();
+		private readonly Dictionary<string, IdentityWrapper> identities = new();
 
 		private readonly Command apply;
 
@@ -88,7 +88,7 @@ namespace LegalLab.Models.Legal
 			this.Add(this.orgCountry = new PersistedProperty<string>("Legal", nameof(this.OrgCountry), true, string.Empty, this));
 
 			this.template = new Property<Contract>(nameof(this.Template), null, this);
-			this.templates = new Property<TemplateReferenceModel[]>(nameof(this.Templates), new TemplateReferenceModel[0], this);
+			this.templates = new Property<TemplateReferenceModel[]>(nameof(this.Templates), Array.Empty<TemplateReferenceModel>(), this);
 			this.contractTemplateName = new Property<string>(nameof(this.ContractTemplateName), string.Empty, this);
 
 			this.apply = new Command(this.CanExecuteApply, this.ExecuteApply);
@@ -134,7 +134,7 @@ namespace LegalLab.Models.Legal
 			this.RaisePropertyChanged(nameof(this.Identities));
 
 			Dictionary<string, object> Settings = await RuntimeSettings.GetWhereKeyLikeAsync("Contract.Template.*", "*");
-			List<TemplateReferenceModel> Templates = new List<TemplateReferenceModel>();
+			List<TemplateReferenceModel> Templates = new();
 
 			foreach (KeyValuePair<string, object> Setting in Settings)
 			{
@@ -251,7 +251,7 @@ namespace LegalLab.Models.Legal
 		/// <summary>
 		/// ISO 3166-1 country codes
 		/// </summary>
-		public Iso_3166_1.Record[] CountryCodes
+		public static Iso_3166_1.Record[] CountryCodes
 		{
 			get => Iso_3166_1.Data;
 		}
@@ -413,7 +413,7 @@ namespace LegalLab.Models.Legal
 						await this.contracts.ObsoleteLegalIdentityAsync(OldIdentity.Id);
 				}
 
-				List<Property> Properties = new List<Property>();
+				List<Property> Properties = new();
 
 				AddProperty(Properties, "FIRST", this.FirstName);
 				AddProperty(Properties, "MIDDLE", this.MiddleName);
@@ -468,7 +468,7 @@ namespace LegalLab.Models.Legal
 
 		private Task Contracts_PetitionForIdentityReceived(object Sender, LegalIdentityPetitionEventArgs e)
 		{
-			StringBuilder Question = new StringBuilder();
+			StringBuilder Question = new();
 
 			Question.Append("A petition for your legal identity has been received for the following purpose: ");
 			Question.Append(e.Purpose);
@@ -584,7 +584,7 @@ namespace LegalLab.Models.Legal
 		/// <param name="Contract">Contract</param>
 		public void ContractTemplateAdded(string TemplateName, Contract Contract)
 		{
-			SortedDictionary<string, TemplateReferenceModel> Templates = new SortedDictionary<string, TemplateReferenceModel>();
+			SortedDictionary<string, TemplateReferenceModel> Templates = new();
 
 			foreach (TemplateReferenceModel Ref in this.Templates)
 				Templates[Ref.TemplateName] = Ref;
@@ -606,10 +606,10 @@ namespace LegalLab.Models.Legal
 				this.Template = await this.contracts.GetContractAsync(ContractId);
 				MainWindow.MouseDefault();
 
-				if (!(this.currentContract is null))
+				if (this.currentContract is not null)
 					await this.currentContract.Stop();
 
-				this.currentContract = new ContractModel(this.contracts, this.Template, this, MainWindow.currentInstance.ContractsTab);
+				this.currentContract = await ContractModel.CreateAsync(this.contracts, this.Template, this, MainWindow.currentInstance.ContractsTab);
 				await this.currentContract.Start();
 
 				await this.currentContract.PopulateParameters(

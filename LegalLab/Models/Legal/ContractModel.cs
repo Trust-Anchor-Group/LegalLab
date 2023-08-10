@@ -59,7 +59,7 @@ namespace LegalLab.Models.Legal
 		/// <param name="Contract">Contract</param>
 		/// <param name="LegalModel">Legal Model</param>
 		/// <param name="ContractsTab">Tab where contract is being displayed.</param>
-		public ContractModel(ContractsClient Contracts, Contract Contract, LegalModel LegalModel, ContractsTab ContractsTab)
+		private ContractModel(ContractsClient Contracts, Contract Contract, LegalModel LegalModel, ContractsTab ContractsTab)
 		{
 			this.parametersOk = new Property<bool>(nameof(this.ParametersOk), false, this);
 			this.generalInformation = new Property<GenInfo[]>(nameof(this.GeneralInformation), Array.Empty<GenInfo>(), this);
@@ -82,16 +82,30 @@ namespace LegalLab.Models.Legal
 			this.contractsTab = ContractsTab;
 			this.legalModel = LegalModel;
 			this.contracts = Contracts;
-			this.SetContract(Contract);
 
 			this.TemplateName = Contract.ContractId;
-
-			(string s, XmlElement E) = Contract.ForMachines.ToPrettyXml();
-
-			this.MachineReadable = s;
 		}
 
-		private void SetContract(Contract Contract)
+		/// <summary>
+		/// Creates the contract model
+		/// </summary>
+		/// <param name="Contracts">Contracts Client</param>
+		/// <param name="Contract">Contract</param>
+		/// <param name="LegalModel">Legal Model</param>
+		/// <param name="ContractsTab">Tab where contract is being displayed.</param>
+		/// <returns>Contract object model.</returns>
+		public static async Task<ContractModel> CreateAsync(ContractsClient Contracts, Contract Contract, LegalModel LegalModel, ContractsTab ContractsTab)
+		{
+			ContractModel Result = new(Contracts, Contract, LegalModel, ContractsTab);
+			(string s, _) = Contract.ForMachines.ToPrettyXml();
+
+			await Result.SetContract(Contract);
+			Result.MachineReadable = s;
+
+			return Result;
+		}
+
+		private async Task SetContract(Contract Contract)
 		{
 			this.contract = Contract;
 
@@ -181,6 +195,8 @@ namespace LegalLab.Models.Legal
 				this.ServerSignatures = Array.Empty<ServerSignatureInfo>();
 			else
 				this.ServerSignatures = new ServerSignatureInfo[] { new ServerSignatureInfo(this.contract.ServerSignature) };
+
+			await this.PopulateHumanReadableText();
 		}
 
 		/// <inheritdoc/>
@@ -216,10 +232,9 @@ namespace LegalLab.Models.Legal
 			if (e.ContractId == this.ContractId)
 			{
 				Contract Contract = await this.contracts.GetContractAsync(this.ContractId);
-				MainWindow.UpdateGui(() =>
+				MainWindow.UpdateGui(async () =>
 				{
-					this.SetContract(Contract);
-					return Task.CompletedTask;
+					await this.SetContract(Contract);
 				});
 			}
 		}
@@ -335,7 +350,7 @@ namespace LegalLab.Models.Legal
 					this.contract.ArchiveRequired, this.contract.ArchiveOptional, this.contract.SignAfter, this.contract.SignBefore,
 					this.contract.CanActAsTemplate);
 
-				this.SetContract(Contract);
+				await this.SetContract(Contract);
 
 				await RuntimeSettings.SetAsync("Contract.Template." + this.TemplateName, Contract.ContractId);
 				this.legalModel.ContractTemplateAdded(this.TemplateName, Contract);
@@ -793,7 +808,7 @@ namespace LegalLab.Models.Legal
 					this.contract.Duration, this.contract.ArchiveRequired, this.contract.ArchiveOptional, this.contract.SignAfter,
 					this.contract.SignBefore, false);
 
-				this.SetContract(Contract);
+				await this.SetContract(Contract);
 
 				MainWindow.SuccessBox("Contract successfully created.");
 			}
@@ -821,7 +836,7 @@ namespace LegalLab.Models.Legal
 
 				Contract Contract = await this.contracts.SignContractAsync(this.contract, Role, false);
 
-				this.SetContract(Contract);
+				await this.SetContract(Contract);
 
 				MainWindow.SuccessBox("Contract successfully signed.");
 			}

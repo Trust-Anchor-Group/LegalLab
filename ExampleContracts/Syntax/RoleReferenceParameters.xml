@@ -15,7 +15,7 @@
 		</description>
 	</role>
 	<parts>
-		<open />
+		<templateOnly />
 	</parts>
 	<parameters>
 		<stringParameter name="Reference" value="Ref" guide="Reference">
