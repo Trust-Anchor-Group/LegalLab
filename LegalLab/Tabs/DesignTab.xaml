@@ -81,8 +81,8 @@
 
 				<Label FontSize="20" Margin="0,10,0,0">Roles</Label>
 				<Label>Following are roles defined in the contract:</Label>
-				<DataGrid ItemsSource="{Binding Roles}" Width="Auto" HorizontalAlignment="Left"
-                          AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="False">
+				<design:NonScrollingDataGrid ItemsSource="{Binding Roles}" Width="Auto" HorizontalAlignment="Left"
+											 AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="False">
 					<DataGrid.Columns>
 						<DataGridTextColumn Binding="{Binding Name}" Header="Role"/>
 						<DataGridTemplateColumn Header="Description">
@@ -137,13 +137,13 @@
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 					</DataGrid.Columns>
-				</DataGrid>
+				</design:NonScrollingDataGrid>
 				<Button Width="100" HorizontalAlignment="Left" Margin="0,5,0,0" Command="{Binding AddRole}">Add</Button>
 
 				<Label FontSize="20" Margin="0,10,0,0">Parts</Label>
 				<Label>Following are parts defined in the contract:</Label>
-				<DataGrid ItemsSource="{Binding Parts}" Width="Auto" HorizontalAlignment="Left" 
-                          AutoGenerateColumns="False" GridLinesVisibility="None">
+				<design:NonScrollingDataGrid ItemsSource="{Binding Parts}" Width="Auto" HorizontalAlignment="Left" 
+											 AutoGenerateColumns="False" GridLinesVisibility="None">
 					<DataGrid.Columns>
 						<DataGridTextColumn Binding="{Binding LegalId}" Header="Legal ID"/>
 						<DataGridTemplateColumn Header="Role">
@@ -191,13 +191,13 @@
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 					</DataGrid.Columns>
-				</DataGrid>
+				</design:NonScrollingDataGrid>
 				<Button Width="100" HorizontalAlignment="Left" Margin="0,5,0,0" Command="{Binding AddPart}">Add</Button>
 
 				<Label FontSize="20" Margin="0,10,0,0">Editable Parameters</Label>
 				<Label>Following are the editable parameters defined in the contract:</Label>
-				<DataGrid ItemsSource="{Binding Parameters}" Width="Auto" HorizontalAlignment="Left" 
-                          AutoGenerateColumns="False" GridLinesVisibility="None">
+				<design:NonScrollingDataGrid ItemsSource="{Binding Parameters}" Width="Auto" HorizontalAlignment="Left" 
+											 AutoGenerateColumns="False" GridLinesVisibility="None">
 					<DataGrid.Columns>
 						<DataGridTextColumn Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Header="Parameter"/>
 						<DataGridTemplateColumn Header="Value">
@@ -307,7 +307,7 @@
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 					</DataGrid.Columns>
-				</DataGrid>
+				</design:NonScrollingDataGrid>
 				<WrapPanel Orientation="Horizontal">
 					<Button Width="100" HorizontalAlignment="Left" Margin="0,5,5,0" Command="{Binding AddNumericParameter}">Add Numeric</Button>
 					<Button Width="100" HorizontalAlignment="Left" Margin="0,5,5,0" Command="{Binding AddStringParameter}">Add String</Button>
@@ -324,8 +324,8 @@
 				<Label>
 					<TextBlock TextWrapping="Wrap">Following are role reference parameters defined in the contract. They take the values from the identities of the signatories signing the contract:</TextBlock>
 				</Label>
-				<DataGrid ItemsSource="{Binding RoleParameters}" Width="Auto" HorizontalAlignment="Left" 
-                          AutoGenerateColumns="False" GridLinesVisibility="None">
+				<design:NonScrollingDataGrid ItemsSource="{Binding RoleParameters}" Width="Auto" HorizontalAlignment="Left" 
+											 AutoGenerateColumns="False" GridLinesVisibility="None">
 					<DataGrid.Columns>
 						<DataGridTextColumn Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Header="Parameter"/>
 						<DataGridTemplateColumn Header="Description">
@@ -425,7 +425,7 @@
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 					</DataGrid.Columns>
-				</DataGrid>
+				</design:NonScrollingDataGrid>
 				<WrapPanel Orientation="Horizontal">
 					<Button Width="100" HorizontalAlignment="Left" Margin="0,5,5,0" Command="{Binding AddRoleReference}">Add Reference</Button>
 				</WrapPanel>
