@@ -27,10 +27,10 @@ namespace LegalLab.Tabs
 			// Register AvalonEdit Syntax Highlighting for Smart Contract Markdown documents:
 
 			byte[] Bin = Waher.Content.Resources.LoadResource(typeof(DesignModel).Namespace + ".AvalonExtensions.SmartContractMarkdown.xshd", typeof(App).Assembly);
-			using MemoryStream ms = new MemoryStream(Bin);
+			using MemoryStream ms = new(Bin);
 			using XmlReader r = XmlReader.Create(ms);
 			IHighlightingDefinition Def = HighlightingLoader.Load(r, HighlightingManager.Instance);
-			HighlightingManager.Instance.RegisterHighlighting(Def.Name, new string[0], Def);
+			HighlightingManager.Instance.RegisterHighlighting(Def.Name, Array.Empty<string>(), Def);
 
 			this.InitializeComponent();
 		}

@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:conv="clr-namespace:LegalLab.Converters"
              xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit" 
+			 xmlns:avalonEx="clr-namespace:LegalLab.Models.Design.AvalonExtensions"
 			 xmlns:design="clr-namespace:LegalLab.Models.Design"
 			 d:DataContext="{d:DesignInstance Type=design:DesignModel}"
 			 mc:Ignorable="d" 
@@ -431,9 +432,9 @@
 
 				<Label FontSize="20" Margin="0,10,0,0">Machine-Readable Content</Label>
 				<Label>Following is the embedded Machine-readable content of the contract (as XML):</Label>
-				<avalonedit:TextEditor Name="MachineReadableXmlEditor" TextChanged="MachineReadableXmlEditor_TextChanged"
-                                       FontFamily="Courier New" MinHeight="100" Height="Auto" WordWrap="False" SyntaxHighlighting="XML"
-                                       VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
+				<avalonEx:NonScrollingTextEditor x:Name="MachineReadableXmlEditor" TextChanged="MachineReadableXmlEditor_TextChanged"
+												 FontFamily="Courier New" MinHeight="100" Height="Auto" WordWrap="False" SyntaxHighlighting="XML"
+												 VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
 					<avalonedit:TextEditor.Options>
 						<avalonedit:TextEditorOptions ShowSpaces="False" ShowTabs="False"/>
 					</avalonedit:TextEditor.Options>
@@ -447,13 +448,13 @@
 							<MenuItem Command="Paste" />
 						</ContextMenu>
 					</avalonedit:TextEditor.ContextMenu>
-				</avalonedit:TextEditor>
+				</avalonEx:NonScrollingTextEditor>
 
 				<Label FontSize="20" Margin="0,10,0,0">Human-Readable Content</Label>
 				<Label>Following is the human-readable text of the contract (as Markdown):</Label>
-				<avalonedit:TextEditor Name="HumanReadableMarkdownEditor" TextChanged="HumanReadableMarkdownEditor_TextChanged"
-                                       FontFamily="Courier New" MinHeight="100" Height="Auto" WordWrap="True" SyntaxHighlighting="SmartContractMarkdown"
-                                       VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
+				<avalonEx:NonScrollingTextEditor x:Name="HumanReadableMarkdownEditor" TextChanged="HumanReadableMarkdownEditor_TextChanged"
+												 FontFamily="Courier New" MinHeight="100" Height="Auto" WordWrap="True" SyntaxHighlighting="SmartContractMarkdown"
+												 VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
 					<avalonedit:TextEditor.Options>
 						<avalonedit:TextEditorOptions ShowSpaces="False" ShowTabs="False"/>
 					</avalonedit:TextEditor.Options>
@@ -467,7 +468,7 @@
 							<MenuItem Command="Paste" />
 						</ContextMenu>
 					</avalonedit:TextEditor.ContextMenu>
-				</avalonedit:TextEditor>
+				</avalonEx:NonScrollingTextEditor>
 				<Label>The human-readable text will be rendered as follows:</Label>
 				<StackPanel Background="White">
 					<ContentControl Content="{Binding HumanReadable, UpdateSourceTrigger=PropertyChanged}" Margin="10"/>
