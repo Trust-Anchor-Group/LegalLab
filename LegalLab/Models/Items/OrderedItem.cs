@@ -50,7 +50,7 @@ namespace LegalLab.Models.Items
 		/// </summary>
 		public Task ExecuteMoveUp()
 		{
-			if (this.items is not Array Items)
+			if (this.items.UntypedValue is not Array Items)
 				return Task.CompletedTask;
 
 			Items = (Array)Items.Clone();
@@ -87,7 +87,7 @@ namespace LegalLab.Models.Items
 		/// </summary>
 		public Task ExecuteMoveDown()
 		{
-			if (this.items is not Array Items)
+			if (this.items.UntypedValue is not Array Items)
 				return Task.CompletedTask;
 
 			Items = (Array)Items.Clone();
