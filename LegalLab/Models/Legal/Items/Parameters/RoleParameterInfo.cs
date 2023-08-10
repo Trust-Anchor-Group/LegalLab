@@ -12,6 +12,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 	public class RoleParameterInfo : ParameterInfo
 	{
 		private readonly Property<string> role;
+		private readonly Property<int> roleIndex;
 		private readonly Property<string> property;
 		private readonly Property<int> index;
 		private readonly Property<bool> required;
@@ -28,6 +29,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 			: base(Contract, Parameter, Control, DesignModel, Parameters)
 		{
 			this.role = new Property<string>(nameof(this.Role), Parameter.Role, this);
+			this.roleIndex = new Property<int>(nameof(this.RoleIndex), this.GetRoleIndex(Parameter.Role), this);
 			this.property = new Property<string>(nameof(this.Property), Parameter.Property, this);
 			this.index = new Property<int>(nameof(this.Index), Parameter.Index, this);
 			this.required = new Property<bool>(nameof(this.Required), Parameter.Required, this);
@@ -41,9 +43,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 			get => this.role.Value;
 			set
 			{
-				if (!this.designModel.TryGetRole(value, out _))
-					throw new Exception("Role is not defined.");
-
+				this.roleIndex.Value = this.GetRoleIndex(value);
                 this.role.Value = value;
 			}
 		}
@@ -53,25 +53,28 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		/// </summary>
 		public int RoleIndex
 		{
-			get
-			{
-				int i = 0;
-
-				foreach (RoleInfo RoleInfo in this.designModel.Roles)
-				{
-					if (this.role.Value == RoleInfo.Name)
-						return i;
-
-					i++;
-				}
-
-				return -1;
-			}
-
+			get => this.roleIndex.Value;
 			set
 			{
-				this.role.Value = this.designModel.Roles[value].Name;
+				this.role.Value = this.GetRole(value);
+				this.roleIndex.Value = value;
 			}
+		}
+
+		private int GetRoleIndex(string Name)
+		{
+			if (this.designModel.TryGetRole(Name, out RoleInfo Role))
+				return Array.IndexOf(this.designModel.Roles, Role);
+			else
+				return -1;
+		}
+
+		private string GetRole(int Index)
+		{
+			if (Index < 0 || Index >= this.designModel.Roles.Length)
+				throw new ArgumentOutOfRangeException(nameof(Index));
+
+			return this.designModel.Roles[Index].Name;
 		}
 
 		/// <summary>
