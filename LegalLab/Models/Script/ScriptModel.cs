@@ -200,7 +200,7 @@ namespace LegalLab.Models.Script
 				}
 				else if (Ans.AssociatedObjectValue is ObjectMatrix M && M.ColumnNames != null)
 				{
-					StringBuilder Markdown = new StringBuilder();
+					StringBuilder Markdown = new();
 
 					foreach (string s2 in M.ColumnNames)
 					{
@@ -226,7 +226,7 @@ namespace LegalLab.Models.Script
 							object Item = M.GetElement(x, y).AssociatedObjectValue;
 							if (Item != null)
 							{
-								if (!(Item is string s2))
+								if (Item is not string s2)
 									s2 = Waher.Script.Expression.ToString(Item);
 
 								s2 = s2.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", "<br/>");
@@ -330,7 +330,7 @@ namespace LegalLab.Models.Script
 			BitmapImage BitmapImage;
 			byte[] Bin = Pixels.EncodeAsPng();
 
-			using (MemoryStream ms = new MemoryStream(Bin))
+			using (MemoryStream ms = new(Bin))
 			{
 				BitmapImage = new BitmapImage();
 				BitmapImage.BeginInit();

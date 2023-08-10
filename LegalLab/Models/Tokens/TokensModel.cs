@@ -20,8 +20,8 @@ namespace LegalLab.Models.Tokens
 	[Singleton]
 	public class TokensModel : PersistedModel, IDisposable
 	{
-		private readonly List<TokenModel> tokens = new List<TokenModel>();
-		private readonly List<TokenTotal> totals = new List<TokenTotal>();
+		private readonly List<TokenModel> tokens = new();
+		private readonly List<TokenTotal> totals = new();
 
 		private readonly NeuroFeaturesClient neuroFeaturesClient;
 
@@ -90,7 +90,7 @@ namespace LegalLab.Models.Tokens
 
 		private void LoadEvents()
 		{
-			this.events = new TokenEventDetail[0];
+			this.events = Array.Empty<TokenEventDetail>();
 			this.RaisePropertyChanged(nameof(this.Events));
 
 			this.neuroFeaturesClient.GetEvents(this.selectedItem.TokenId, 0, 100, (sender, e) =>
@@ -218,7 +218,7 @@ namespace LegalLab.Models.Tokens
 
 		private bool CanExecuteAddNote()
 		{
-			return !(this.selectedItem is null);
+			return this.selectedItem is not null;
 		}
 
 		private async Task ExecuteAddTextNote()
@@ -319,10 +319,10 @@ namespace LegalLab.Models.Tokens
 			{
 				foreach (object Control in MainWindow.currentInstance.TabControl.Items)
 				{
-					if (!(Control is TabItem Tab))
+					if (Control is not TabItem Tab)
 						continue;
 
-					if (!(Tab.Content is ReportTab ReportTab))
+					if (Tab.Content is not ReportTab ReportTab)
 						continue;
 
 					if (ReportTab.Report.	TokenId != e.TokenId)
@@ -343,10 +343,10 @@ namespace LegalLab.Models.Tokens
 			{
 				foreach (object Control in MainWindow.currentInstance.TabControl.Items)
 				{
-					if (!(Control is TabItem Tab))
+					if (Control is not TabItem Tab)
 						continue;
 
-					if (!(Tab.Content is ReportTab ReportTab))
+					if (Tab.Content is not ReportTab ReportTab)
 						continue;
 
 					if (ReportTab.Report.TokenId != e.TokenId)

@@ -42,7 +42,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 			set
 			{
 				if (!this.designModel.TryGetRole(value, out _))
-					throw new ArgumentException(nameof(this.Role), "Role is not defined.");
+					throw new Exception("Role is not defined.");
 
                 this.role.Value = value;
 			}

@@ -47,7 +47,7 @@ namespace LegalLab.Models.Standards
 		{
 			if (languageByCode is null)
 			{
-				Dictionary<string, string> Temp = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
+				Dictionary<string, string> Temp = new(StringComparer.CurrentCultureIgnoreCase);
 
 				foreach (Record Rec in Data)
 					Temp[Rec.Code] = Rec.Language;

@@ -98,7 +98,7 @@ namespace LegalLab.Models.Network
 
 				this.connect = new Command(this.CanExecuteConnect, this.ExecuteConnect);
 				this.disconnect = new Command(this.CanExecuteDisconnect, this.ExecuteDisconnect);
-				this.randomizePassword = new Command(this.CanExecuteRandomizePassword, this.ExecuteRandomizePassword);
+				this.randomizePassword = new Command(this.CanExecuteRandomizePassword, ExecuteRandomizePassword);
 				this.copySnifferItem = new ParametrizedCommand(this.CanExecuteCopy, this.ExecuteCopy);
 				this.removeSnifferItem = new ParametrizedCommand(this.CanExecuteRemove, this.ExecuteRemove);
 				this.clearSniffer = new Command(this.CanExecuteClearAll, this.ExecuteClearAll);
@@ -121,14 +121,14 @@ namespace LegalLab.Models.Network
 			{
 				string s = this.savedAccounts.Value;
 				if (string.IsNullOrEmpty(s))
-					return new string[0];
+					return Array.Empty<string>();
 				else
 					return s.Split('|');
 			}
 
 			set
 			{
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 				bool First = true;
 
 				foreach (string Item in value)
@@ -441,14 +441,14 @@ namespace LegalLab.Models.Network
 			MainWindow.currentInstance.NetworkTab.XmppPassword2.PasswordChanged -= this.Password2Changed;
 			MainWindow.currentInstance.NetworkTab.ApiKeySecret.PasswordChanged -= this.ApiKeySecretChanged;
 
-			if (!(this.legalModel is null))
+			if (this.legalModel is not null)
 			{
 				await this.legalModel.Stop();
 				this.legalModel.Dispose();
 				this.legalModel = null;
 			}
 
-			if (!(this.walletModel is null))
+			if (this.walletModel is not null)
 			{
 				await this.walletModel.Stop();
 				this.walletModel.Dispose();
@@ -481,7 +481,7 @@ namespace LegalLab.Models.Network
 			return this.client is null && this.CreateAccount;
 		}
 
-		public Task ExecuteRandomizePassword()
+		public static Task ExecuteRandomizePassword()
 		{
 			using RandomNumberGenerator Rnd = RandomNumberGenerator.Create();
 			byte[] Bin = new byte[28];
@@ -531,21 +531,21 @@ namespace LegalLab.Models.Network
 					Port = 5222;    // Default XMPP Client-to-Server port.
 				}
 
-				if (!(this.legalModel is null))
+				if (this.legalModel is not null)
 				{
 					await this.legalModel.Stop();
 					this.legalModel.Dispose();
 					this.legalModel = null;
 				}
 
-				if (!(this.walletModel is null))
+				if (this.walletModel is not null)
 				{
 					await this.walletModel.Stop();
 					this.walletModel.Dispose();
 					this.walletModel = null;
 				}
 
-				ListViewSniffer Sniffer = new ListViewSniffer(MainWindow.currentInstance.NetworkTab.SnifferListView, 1000);
+				ListViewSniffer Sniffer = new(MainWindow.currentInstance.NetworkTab.SnifferListView, 1000);
 				Sniffer.SelectionChanged += this.Sniffer_SelectionChanged;
 
 				if (string.IsNullOrEmpty(this.PasswordMethod))
@@ -701,7 +701,7 @@ namespace LegalLab.Models.Network
 				}
 
 				StateChangedEventHandler h = this.OnStateChanged;
-				if (!(h is null))
+				if (h is not null)
 					await h(this, NewState);
 			}
 			catch (Exception ex)
@@ -717,7 +717,7 @@ namespace LegalLab.Models.Network
 
 		private bool CanExecuteDisconnect()
 		{
-			return !(this.client is null);
+			return this.client is not null;
 		}
 
 		/// <summary>
@@ -758,7 +758,7 @@ namespace LegalLab.Models.Network
 		{
 			if (SelectedItem(Item) is SniffItem SniffItem)
 			{
-				StringBuilder Output = new StringBuilder();
+				StringBuilder Output = new();
 
 				Output.Append("Date:\t");
 				Output.AppendLine(SniffItem.Timestamp.Date.ToShortDateString());
@@ -826,7 +826,7 @@ namespace LegalLab.Models.Network
 
 		private async Task ExecuteSaveCredentials()
 		{
-			SortedDictionary<string, bool> Sorted = new SortedDictionary<string, bool>();
+			SortedDictionary<string, bool> Sorted = new();
 
 			foreach (string Account in this.SavedAccounts)
 				Sorted[Account] = true;
@@ -905,7 +905,7 @@ namespace LegalLab.Models.Network
 
 		private async Task ExecuteDeleteCredentials()
 		{
-			SortedDictionary<string, bool> Sorted = new SortedDictionary<string, bool>();
+			SortedDictionary<string, bool> Sorted = new();
 
 			foreach (string Account in this.SavedAccounts)
 			{

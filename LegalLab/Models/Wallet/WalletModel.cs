@@ -34,7 +34,7 @@ namespace LegalLab.Models.Wallet
 		private readonly Property<DateTime> timestamp;
 		private readonly Property<string> uri;
 
-		private readonly List<AccountEventWrapper> events = new List<AccountEventWrapper>();
+		private readonly List<AccountEventWrapper> events = new();
 
 		private readonly Command sendUri;
 		private readonly Command transferEDaler;
@@ -93,7 +93,7 @@ namespace LegalLab.Models.Wallet
 		{
 			await this.SetBalance(e.Balance);
 
-			AccountEventWrapper Item = new AccountEventWrapper(e.Balance.Event);
+			AccountEventWrapper Item = new(e.Balance.Event);
 			Item.Selected += this.Item_Selected;
 			Item.Deselected += this.Item_Deselected;
 
@@ -305,8 +305,8 @@ namespace LegalLab.Models.Wallet
 
 				MainWindow.MouseDefault();
 
-				TransferEDalerDialog Dialog = new TransferEDalerDialog();
-				TransferEDalerModel Model = new TransferEDalerModel(Dialog, DefaultArgs.Currency);
+				TransferEDalerDialog Dialog = new();
+				TransferEDalerModel Model = new(Dialog, DefaultArgs.Currency);
 
 				bool? Result = Dialog.ShowDialog();
 				if (!Result.HasValue || !Result.Value)
@@ -344,15 +344,15 @@ namespace LegalLab.Models.Wallet
 
 				MainWindow.MouseDefault();
 
-				BuyEDalerDialog Dialog = new BuyEDalerDialog();
-				BuyEDalerModel Model = new BuyEDalerModel(Dialog, Providers, DefaultArgs.Currency);
+				BuyEDalerDialog Dialog = new();
+				BuyEDalerModel Model = new(Dialog, Providers, DefaultArgs.Currency);
 
 				bool? Result = Dialog.ShowDialog();
 				if (!Result.HasValue || !Result.Value)
 					return;
 
-				if (!(Dialog.ServiceProvider.SelectedItem is ServiceProviderModel ServiceProviderModel) ||
-					!(ServiceProviderModel.ServiceProvider is IBuyEDalerServiceProvider ServiceProvider))
+				if (Dialog.ServiceProvider.SelectedItem is not ServiceProviderModel ServiceProviderModel ||
+					ServiceProviderModel.ServiceProvider is not IBuyEDalerServiceProvider ServiceProvider)
 				{
 					throw new Exception("Cannot buy eDaler® using that service provider.");
 				}
@@ -382,7 +382,7 @@ namespace LegalLab.Models.Wallet
 						this.networkModel.Legal.ContractTemplateAdded(TemplateName, Contract);
 					}
 
-					Dictionary<CaseInsensitiveString, object> PresetValues = new Dictionary<CaseInsensitiveString, object>()
+					Dictionary<CaseInsensitiveString, object> PresetValues = new()
 					{
 						{ "Amount", Model.Amount },
 						{ "Currency", Model.Currency }
@@ -414,13 +414,13 @@ namespace LegalLab.Models.Wallet
 
 		private Task EDalerClient_BuyEDalerClientUrlReceived(object Sender, BuyEDalerClientUrlEventArgs e)
 		{
-			this.OpenUrl(e.ClientUrl);
+			OpenUrl(e.ClientUrl);
 			return Task.CompletedTask;
 		}
 
-		private void OpenUrl(string Url)
+		private static void OpenUrl(string Url)
 		{
-			ProcessStartInfo StartInfo = new ProcessStartInfo
+			ProcessStartInfo StartInfo = new()
 			{
 				FileName = Url,
 				UseShellExecute = true
@@ -443,13 +443,13 @@ namespace LegalLab.Models.Wallet
 
 		private Task EDalerClient_BuyEDalerOptionsClientUrlReceived(object Sender, BuyEDalerClientUrlEventArgs e)
 		{
-			this.OpenUrl(e.ClientUrl);
+			OpenUrl(e.ClientUrl);
 			return Task.CompletedTask;
 		}
 
 		private Task EDalerClient_BuyEDalerOptionsCompleted(object Sender, PaymentOptionsEventArgs e)
 		{
-			this.ContractOptionsReceived(e.Options);
+			ContractOptionsReceived(e.Options);
 			return Task.CompletedTask;
 		}
 
@@ -480,15 +480,15 @@ namespace LegalLab.Models.Wallet
 
 				MainWindow.MouseDefault();
 
-				SellEDalerDialog Dialog = new SellEDalerDialog();
-				SellEDalerModel Model = new SellEDalerModel(Dialog, Providers, DefaultArgs.Currency);
+				SellEDalerDialog Dialog = new();
+				SellEDalerModel Model = new(Dialog, Providers, DefaultArgs.Currency);
 
 				bool? Result = Dialog.ShowDialog();
 				if (!Result.HasValue || !Result.Value)
 					return;
 
-				if (!(Dialog.ServiceProvider.SelectedItem is ServiceProviderModel ServiceProviderModel) ||
-					!(ServiceProviderModel.ServiceProvider is ISellEDalerServiceProvider ServiceProvider))
+				if (Dialog.ServiceProvider.SelectedItem is not ServiceProviderModel ServiceProviderModel ||
+					ServiceProviderModel.ServiceProvider is not ISellEDalerServiceProvider ServiceProvider)
 				{
 					throw new Exception("Cannot sell eDaler® using that service provider.");
 				}
@@ -518,7 +518,7 @@ namespace LegalLab.Models.Wallet
 						this.networkModel.Legal.ContractTemplateAdded(TemplateName, Contract);
 					}
 
-					Dictionary<CaseInsensitiveString, object> PresetValues = new Dictionary<CaseInsensitiveString, object>()
+					Dictionary<CaseInsensitiveString, object> PresetValues = new()
 					{
 						{ "Amount", Model.Amount },
 						{ "Currency", Model.Currency }
@@ -550,7 +550,7 @@ namespace LegalLab.Models.Wallet
 
 		private Task EDalerClient_SellEDalerClientUrlReceived(object Sender, SellEDalerClientUrlEventArgs e)
 		{
-			this.OpenUrl(e.ClientUrl);
+			OpenUrl(e.ClientUrl);
 			return Task.CompletedTask;
 		}
 
@@ -568,13 +568,13 @@ namespace LegalLab.Models.Wallet
 
 		private Task EDalerClient_SellEDalerOptionsClientUrlReceived(object Sender, SellEDalerClientUrlEventArgs e)
 		{
-			this.OpenUrl(e.ClientUrl);
+			OpenUrl(e.ClientUrl);
 			return Task.CompletedTask;
 		}
 
 		private Task EDalerClient_SellEDalerOptionsCompleted(object Sender, PaymentOptionsEventArgs e)
 		{
-			this.ContractOptionsReceived(e.Options);
+			ContractOptionsReceived(e.Options);
 			return Task.CompletedTask;
 		}
 
@@ -601,7 +601,7 @@ namespace LegalLab.Models.Wallet
 			{
 				foreach (AccountEvent Event in Events)
 				{
-					AccountEventWrapper Item = new AccountEventWrapper(Event);
+					AccountEventWrapper Item = new(Event);
 					Item.Selected += this.Item_Selected;
 					Item.Deselected += this.Item_Deselected;
 
@@ -614,7 +614,7 @@ namespace LegalLab.Models.Wallet
 			await base.Start();
 		}
 
-		private void ContractOptionsReceived(IDictionary<CaseInsensitiveString, object>[] Options)
+		private static void ContractOptionsReceived(IDictionary<CaseInsensitiveString, object>[] Options)
 		{
 			// TODO
 		}

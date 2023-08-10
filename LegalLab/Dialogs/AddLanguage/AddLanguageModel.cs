@@ -42,7 +42,7 @@ namespace LegalLab.Dialogs.AddLanguage
 		/// <summary>
 		/// ISO 639-1 language codes
 		/// </summary>
-		public Iso__639_1.Record[] Languages
+		public static Iso__639_1.Record[] Languages
 		{
 			get => Iso__639_1.Data;
 		}

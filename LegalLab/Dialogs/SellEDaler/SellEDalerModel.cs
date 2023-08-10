@@ -94,7 +94,7 @@ namespace LegalLab.Dialogs.SellEDaler
 		private bool CanExecuteSell()
 		{
 			return
-				!(this.SelectedServiceProvider is null) &&
+				this.SelectedServiceProvider is not null &&
 				this.Amount > 0 &&
 				this.Currency.Length == 3 &&
 				this.Currency.ToUpper() == this.Currency;

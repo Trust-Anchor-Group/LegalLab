@@ -112,7 +112,7 @@ namespace LegalLab.Models.Design
 			}
 		}
 
-		private readonly static Uri openAiChatCompletions = new Uri("https://api.openai.com/v1/chat/completions");
+		private readonly static Uri openAiChatCompletions = new("https://api.openai.com/v1/chat/completions");
 
 	}
 }
