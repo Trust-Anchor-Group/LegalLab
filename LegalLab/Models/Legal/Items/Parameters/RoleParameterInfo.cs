@@ -12,7 +12,6 @@ namespace LegalLab.Models.Legal.Items.Parameters
 	public class RoleParameterInfo : ParameterInfo
 	{
 		private readonly Property<string> role;
-		private readonly Property<int> roleIndex;
 		private readonly Property<string> property;
 		private readonly Property<int> index;
 		private readonly Property<bool> required;
@@ -25,14 +24,16 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		/// <param name="Control">Edit control</param>
 		/// <param name="DesignModel">Design model</param>
 		/// <param name="Parameters">Collection of parameters.</param>
-		public RoleParameterInfo(Contract Contract, RoleParameter Parameter, Control Control, DesignModel DesignModel, Property<ParameterInfo[]> Parameters)
+		public RoleParameterInfo(Contract Contract, RoleParameter Parameter, Control Control, DesignModel DesignModel, Property<RoleParameterInfo[]> Parameters)
 			: base(Contract, Parameter, Control, DesignModel, Parameters)
 		{
 			this.role = new Property<string>(nameof(this.Role), Parameter.Role, this);
-			this.roleIndex = new Property<int>(nameof(this.RoleIndex), this.GetRoleIndex(Parameter.Role), this);
 			this.property = new Property<string>(nameof(this.Property), Parameter.Property, this);
 			this.index = new Property<int>(nameof(this.Index), Parameter.Index, this);
 			this.required = new Property<bool>(nameof(this.Required), Parameter.Required, this);
+
+			if (this.designModel is not null)
+				this.designModel.PropertyChanged += this.DesignModel_PropertyChanged;
 		}
 
 		/// <summary>
@@ -41,40 +42,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		public string Role
 		{
 			get => this.role.Value;
-			set
-			{
-				this.roleIndex.Value = this.GetRoleIndex(value);
-                this.role.Value = value;
-			}
-		}
-
-		/// <summary>
-		/// Index of the <see cref="Role"/> parameter, in the array of roles <see cref="Roles"/>.
-		/// </summary>
-		public int RoleIndex
-		{
-			get => this.roleIndex.Value;
-			set
-			{
-				this.role.Value = this.GetRole(value);
-				this.roleIndex.Value = value;
-			}
-		}
-
-		private int GetRoleIndex(string Name)
-		{
-			if (this.designModel.TryGetRole(Name, out RoleInfo Role))
-				return Array.IndexOf(this.designModel.Roles, Role);
-			else
-				return -1;
-		}
-
-		private string GetRole(int Index)
-		{
-			if (Index < 0 || Index >= this.designModel.Roles.Length)
-				throw new ArgumentOutOfRangeException(nameof(Index));
-
-			return this.designModel.Roles[Index].Name;
+			set => this.role.Value = value;
 		}
 
 		/// <summary>
@@ -117,9 +85,15 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		}
 
 		/// <summary>
-		/// Available roles.
+		/// Available role names.
 		/// </summary>
-		public RoleInfo[] Roles => this.designModel.Roles;
+		public string[] Roles => this.designModel.RoleNames;
+
+		private void DesignModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof(this.Roles))
+				this.RaisePropertyChanged(nameof(this.Roles));
+		}
 
 		/// <inheritdoc/>
 		public override void SetValue(string Value)

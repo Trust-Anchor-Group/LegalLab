@@ -14,7 +14,7 @@ namespace LegalLab.Models.Legal.Items
 	/// <summary>
 	/// Contains information about a parameter
 	/// </summary>
-	public abstract class ParameterInfo : OrderedItem<ParameterInfo>, INamedItem, ITranslatable
+	public abstract class ParameterInfo : OrderedItem, INamedItem, ITranslatable
 	{
 		private readonly Property<string> name;
 		private readonly Property<object> description;
@@ -34,7 +34,7 @@ namespace LegalLab.Models.Legal.Items
 		/// <param name="Control">Edit control</param>
 		/// <param name="DesignModel">Design model</param>
 		/// <param name="Parameters">Collection of parameters.</param>
-		public ParameterInfo(Contract Contract, Parameter Parameter, Control Control, DesignModel DesignModel, Property<ParameterInfo[]> Parameters)
+		public ParameterInfo(Contract Contract, Parameter Parameter, Control Control, DesignModel DesignModel, IProperty Parameters)
 			: base(Parameters)
 		{
 			string Language = DesignModel?.Language ?? Contract.DefaultLanguage;

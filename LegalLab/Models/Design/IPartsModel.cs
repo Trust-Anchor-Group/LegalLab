@@ -10,19 +10,17 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Roles defined the contract.
 		/// </summary>
-		public RoleInfo[] Roles
-		{
-			get;
-		}
+		public RoleInfo[] Roles { get; }
+
+		/// <summary>
+		/// Role names
+		/// </summary>
+		public string[] RoleNames { get; }
 
 		/// <summary>
 		/// Parts defined the contract.
 		/// </summary>
-		public PartInfo[] Parts
-		{
-			get;
-			set;
-		}
+		public PartInfo[] Parts { get; set; }
 
 		/// <summary>
 		/// Removes a part from the design

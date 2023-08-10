@@ -7,7 +7,7 @@ namespace LegalLab.Models
 	/// <summary>
 	/// Generic class for properties
 	/// </summary>
-	public class Property<T>
+	public class Property<T> : IProperty
 	{
 		protected T value = default;
 		private readonly string name;
@@ -37,6 +37,21 @@ namespace LegalLab.Models
 		/// Model hosting the property.
 		/// </summary>
 		public IModel Model => this.model;
+
+		/// <summary>
+		/// Untyped value of property
+		/// </summary>
+		public object UntypedValue
+		{
+			get => this.Value;
+			set
+			{
+				if (value is T Typed)
+					this.Value = Typed;
+				else
+					throw new ArgumentException(nameof(this.UntypedValue), "Expected value of type " + typeof(T).FullName);
+			}
+		}
 
 		/// <summary>
 		/// Current value of the property
@@ -75,6 +90,5 @@ namespace LegalLab.Models
 		/// Occurs when the property value changes.
 		/// </summary>
 		public event PropertyChangedEventHandler PropertyChanged;
-
 	}
 }

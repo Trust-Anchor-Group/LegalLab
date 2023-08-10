@@ -45,7 +45,7 @@ namespace LegalLab.Models.Legal
 		private readonly Command addPart;
 		private readonly Command createContract;
 
-		private readonly Dictionary<string, ParameterInfo> parametersByName = new Dictionary<string, ParameterInfo>();
+		private readonly Dictionary<string, ParameterInfo> parametersByName = new();
 		private readonly ContractsClient contracts;
 		private readonly LegalModel legalModel;
 		private readonly ContractsTab contractsTab;
@@ -62,12 +62,12 @@ namespace LegalLab.Models.Legal
 		public ContractModel(ContractsClient Contracts, Contract Contract, LegalModel LegalModel, ContractsTab ContractsTab)
 		{
 			this.parametersOk = new Property<bool>(nameof(this.ParametersOk), false, this);
-			this.generalInformation = new Property<GenInfo[]>(nameof(this.GeneralInformation), new GenInfo[0], this);
-			this.roles = new Property<RoleInfo[]>(nameof(this.Roles), new RoleInfo[0], this);
-			this.parts = new Property<PartInfo[]>(nameof(this.Parts), new PartInfo[0], this);
-			this.parameters = new Property<ParameterInfo[]>(nameof(this.Parameters), new ParameterInfo[0], this);
-			this.clientSignatures = new Property<ClientSignatureInfo[]>(nameof(this.ClientSignatures), new ClientSignatureInfo[0], this);
-			this.serverSignatures = new Property<ServerSignatureInfo[]>(nameof(this.ServerSignatures), new ServerSignatureInfo[0], this);
+			this.generalInformation = new Property<GenInfo[]>(nameof(this.GeneralInformation), Array.Empty<GenInfo>(), this);
+			this.roles = new Property<RoleInfo[]>(nameof(this.Roles), Array.Empty<RoleInfo>(), this);
+			this.parts = new Property<PartInfo[]>(nameof(this.Parts), Array.Empty<PartInfo>(), this);
+			this.parameters = new Property<ParameterInfo[]>(nameof(this.Parameters), Array.Empty<ParameterInfo>(), this);
+			this.clientSignatures = new Property<ClientSignatureInfo[]>(nameof(this.ClientSignatures), Array.Empty<ClientSignatureInfo>(), this);
+			this.serverSignatures = new Property<ServerSignatureInfo[]>(nameof(this.ServerSignatures), Array.Empty<ServerSignatureInfo>(), this);
 			this.hasId = new Property<bool>(nameof(this.HasId), false, this);
 			this.canBeSigned = new Property<bool>(nameof(this.CanBeSigned), false, this);
 			this.uri = new Property<string>(nameof(this.Uri), string.Empty, this);
@@ -101,7 +101,7 @@ namespace LegalLab.Models.Legal
 			this.Uri = ContractsClient.ContractIdUriString(Contract.ContractId);
 			this.QrCodeUri = "https://" + this.contracts.Client.Domain + "/QR/" + this.Uri;
 
-			List<GenInfo> GenInfo = new List<GenInfo>()
+			List<GenInfo> GenInfo = new()
 			{
 				new GenInfo("Created:", this.contract.Created.ToString(CultureInfo.CurrentUICulture))
 			};
@@ -131,9 +131,9 @@ namespace LegalLab.Models.Legal
 
 			this.GeneralInformation = GenInfo.ToArray();
 
-			List<PartInfo> Parts = new List<PartInfo>();
+			List<PartInfo> Parts = new();
 
-			if (!(this.contract.Parts is null))
+			if (this.contract.Parts is not null)
 			{
 				foreach (Part Part in this.contract.Parts)
 					Parts.Add(new PartInfo(Part, this, this.parts));
@@ -141,9 +141,9 @@ namespace LegalLab.Models.Legal
 
 			this.Parts = Parts.ToArray();
 
-			List<RoleInfo> Roles = new List<RoleInfo>();
+			List<RoleInfo> Roles = new();
 
-			if (!(this.contract.Roles is null))
+			if (this.contract.Roles is not null)
 			{
 				foreach (Role Role in this.contract.Roles)
 					Roles.Add(new RoleInfo(this, Role, this.roles));
@@ -151,9 +151,9 @@ namespace LegalLab.Models.Legal
 
 			this.Roles = Roles.ToArray();
 
-			List<ParameterInfo> Parameters = new List<ParameterInfo>();
+			List<ParameterInfo> Parameters = new();
 
-			if (!(this.contract.Parameters is null))
+			if (this.contract.Parameters is not null)
 			{
 				foreach (Parameter Parameter in this.contract.Parameters)
 				{
@@ -167,9 +167,9 @@ namespace LegalLab.Models.Legal
 
 			this.Parameters = Parameters.ToArray();
 
-			List<ClientSignatureInfo> ClientSignatures = new List<ClientSignatureInfo>();
+			List<ClientSignatureInfo> ClientSignatures = new();
 
-			if (!(this.contract.ClientSignatures is null))
+			if (this.contract.ClientSignatures is not null)
 			{
 				foreach (ClientSignature ClientSignature in this.contract.ClientSignatures)
 					ClientSignatures.Add(new ClientSignatureInfo(this.contracts, ClientSignature));
@@ -178,7 +178,7 @@ namespace LegalLab.Models.Legal
 			this.ClientSignatures = ClientSignatures.ToArray();
 
 			if (this.contract.ServerSignature is null)
-				this.ServerSignatures = new ServerSignatureInfo[0];
+				this.ServerSignatures = Array.Empty<ServerSignatureInfo>();
 			else
 				this.ServerSignatures = new ServerSignatureInfo[] { new ServerSignatureInfo(this.contract.ServerSignature) };
 		}
@@ -357,7 +357,7 @@ namespace LegalLab.Models.Legal
 		public async Task PopulateParameters(StackPanel Parameters, StackPanel AdditionalCommands, 
 			Dictionary<CaseInsensitiveString, object> PresetValues)
 		{
-			List<ParameterInfo> ParameterList = new List<ParameterInfo>();
+			List<ParameterInfo> ParameterList = new();
 			ParameterInfo ParameterInfo;
 
 			Parameters.Children.Clear();
@@ -369,7 +369,7 @@ namespace LegalLab.Models.Legal
 			{
 				if (Parameter is BooleanParameter BP)
 				{
-					CheckBox CheckBox = new CheckBox()
+					CheckBox CheckBox = new()
 					{
 						Tag = Parameter.Name,
 						IsChecked = BP.Value.HasValue && BP.Value.Value,
@@ -394,13 +394,13 @@ namespace LegalLab.Models.Legal
 				}
 				else
 				{
-					Label Label = new Label()
+					Label Label = new()
 					{
 						Content = Parameter.GetLabel(),
 						Margin = new Thickness(0, 10, 0, 0)
 					};
 
-					TextBox TextBox = new TextBox()
+					TextBox TextBox = new()
 					{
 						Tag = Parameter.Name,
 						Text = Parameter.ObjectValue?.ToString(),
@@ -493,7 +493,7 @@ namespace LegalLab.Models.Legal
 		{
 			try
 			{
-				if (!(sender is CheckBox CheckBox) || !this.parametersByName.TryGetValue(CheckBox.Tag.ToString(), out ParameterInfo ParameterInfo))
+				if (sender is not CheckBox CheckBox || !this.parametersByName.TryGetValue(CheckBox.Tag.ToString(), out ParameterInfo ParameterInfo))
 					return;
 
 				ParameterInfo.Value = CheckBox.IsChecked;
@@ -511,7 +511,7 @@ namespace LegalLab.Models.Legal
 		{
 			try
 			{
-				if (!(sender is TextBox TextBox) || !this.parametersByName.TryGetValue(TextBox.Tag.ToString(), out ParameterInfo ParameterInfo))
+				if (sender is not TextBox TextBox || !this.parametersByName.TryGetValue(TextBox.Tag.ToString(), out ParameterInfo ParameterInfo))
 					return;
 
 				try
@@ -533,7 +533,7 @@ namespace LegalLab.Models.Legal
 						ParameterInfo.Value = TS;
 					else if (ParameterInfo.Parameter is DurationParameter && Waher.Content.Duration.TryParse(TextBox.Text, out Waher.Content.Duration Dr))
 						ParameterInfo.Value = Dr;
-					else if (!(ParameterInfo.Parameter is CalcParameter))
+					else if (ParameterInfo.Parameter is not CalcParameter)
 						ParameterInfo.Value = TextBox.Text;
 
 					TextBox.Background = null;
@@ -554,7 +554,7 @@ namespace LegalLab.Models.Legal
 
 		private async Task ValidateParameters()
 		{
-			Variables Variables = new Variables();
+			Variables Variables = new();
 			bool Ok = true;
 
 			Variables["Duration"] = this.contract.Duration;
@@ -585,7 +585,7 @@ namespace LegalLab.Models.Legal
 
 			if (XamlReader.Parse(await this.contract.ToXAML(this.contract.DefaultLanguage)) is StackPanel Panel)
 			{
-				LinkedList<UIElement> Elements = new LinkedList<UIElement>();
+				LinkedList<UIElement> Elements = new();
 
 				foreach (UIElement Item in Panel.Children)
 					Elements.AddLast(Item);
@@ -613,6 +613,28 @@ namespace LegalLab.Models.Legal
 		{
 			get => this.roles.Value;
 			set => this.roles.Value = value;
+		}
+
+		/// <summary>
+		/// Role names
+		/// </summary>
+		public string[] RoleNames
+		{
+			get
+			{
+				RoleInfo[] Roles = this.Roles;
+
+				if (Roles is null)
+					return Array.Empty<string>();
+
+				int i, c = Roles.Length;
+				string[] Result = new string[c];
+
+				for (i = 0; i < c; i++)
+					Result[i] = Roles[i].Name;
+
+				return Result;
+			}
 		}
 
 		/// <summary>
@@ -658,7 +680,7 @@ namespace LegalLab.Models.Legal
 		/// <summary>
 		/// If a contract is loaded.
 		/// </summary>
-		public bool ContractLoaded => !(this.contract is null);
+		public bool ContractLoaded => this.contract is not null;
 
 		/// <summary>
 		/// Displays the contents of the contract

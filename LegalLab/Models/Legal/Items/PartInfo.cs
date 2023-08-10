@@ -9,7 +9,7 @@ namespace LegalLab.Models.Legal.Items
 	/// <summary>
 	/// Contains information about a part in the contract
 	/// </summary>
-	public class PartInfo : OrderedItem<PartInfo>
+	public class PartInfo : OrderedItem
 	{
 		private readonly Property<string> legalId;
 		private readonly Property<string> role;
@@ -36,8 +36,8 @@ namespace LegalLab.Models.Legal.Items
 
 			this.removePart = new Command(this.CanExecuteRemovePart, this.ExecuteRemovePart);
 
-			if (!(this.partsModel is null))
-				this.partsModel.PropertyChanged += DesignModel_PropertyChanged;
+			if (this.partsModel is not null)
+				this.partsModel.PropertyChanged += this.DesignModel_PropertyChanged;
 		}
 
 		/// <summary>
@@ -74,29 +74,12 @@ namespace LegalLab.Models.Legal.Items
 		/// <summary>
 		/// Roles
 		/// </summary>
-		public string[] Roles
-		{
-			get
-			{
-				RoleInfo[] Roles = this.partsModel.Roles;
-
-				if (Roles is null)
-					return new string[0];
-
-				int i, c = Roles.Length;
-				string[] Result = new string[c];
-
-				for (i = 0; i < c; i++)
-					Result[i] = Roles[i].Name;
-
-				return Result;
-			}
-		}
+		public string[] Roles => this.partsModel.RoleNames;
 
 		private void DesignModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == nameof(Roles))
-				this.RaisePropertyChanged(nameof(Roles));
+			if (e.PropertyName == nameof(this.Roles))
+				this.RaisePropertyChanged(nameof(this.Roles));
 		}
 
 		/// <summary>
@@ -110,7 +93,7 @@ namespace LegalLab.Models.Legal.Items
 		/// <returns></returns>
 		public bool CanExecuteRemovePart()
 		{
-			return !(this.partsModel is null);
+			return this.partsModel is not null;
 		}
 
 		/// <summary>
@@ -118,9 +101,9 @@ namespace LegalLab.Models.Legal.Items
 		/// </summary>
 		public Task ExecuteRemovePart()
 		{
-			if (!(this.partsModel is null))
+			if (this.partsModel is not null)
 			{
-				this.partsModel.PropertyChanged -= DesignModel_PropertyChanged;
+				this.partsModel.PropertyChanged -= this.DesignModel_PropertyChanged;
 				this.partsModel.RemovePart(this);
 			}
 	

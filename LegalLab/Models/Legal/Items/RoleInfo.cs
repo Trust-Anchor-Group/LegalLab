@@ -13,7 +13,7 @@ namespace LegalLab.Models.Legal.Items
 	/// <summary>
 	/// Contains information about a role
 	/// </summary>
-	public class RoleInfo : OrderedItem<RoleInfo>, INamedItem, ITranslatable
+	public class RoleInfo : OrderedItem, INamedItem, ITranslatable
 	{
 		private readonly ContractModel contractModel;
 		private readonly DesignModel designModel;

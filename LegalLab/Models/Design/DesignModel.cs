@@ -49,7 +49,7 @@ namespace LegalLab.Models.Design
 		private readonly Property<RoleInfo[]> roles;
 		private readonly Property<PartInfo[]> parts;
 		private readonly Property<ParameterInfo[]> parameters;
-		private readonly Property<ParameterInfo[]> roleParameters;
+		private readonly Property<RoleParameterInfo[]> roleParameters;
 		private readonly DelayedActionProperty<string> machineReadable;
 		private readonly Property<string> forMachinesLocalName;
 		private readonly Property<string> forMachinesNamespace;
@@ -97,7 +97,7 @@ namespace LegalLab.Models.Design
 			this.roles = new Property<RoleInfo[]>(nameof(this.Roles), Array.Empty<RoleInfo>(), this);
 			this.parts = new Property<PartInfo[]>(nameof(this.Parts), Array.Empty<PartInfo>(), this);
 			this.parameters = new Property<ParameterInfo[]>(nameof(this.Parameters), Array.Empty<ParameterInfo>(), this);
-			this.roleParameters = new Property<ParameterInfo[]>(nameof(this.RoleParameters), Array.Empty<ParameterInfo>(), this);
+			this.roleParameters = new Property<RoleParameterInfo[]>(nameof(this.RoleParameters), Array.Empty<RoleParameterInfo>(), this);
 			this.machineReadable = new DelayedActionProperty<string>(nameof(this.MachineReadable), TimeSpan.FromSeconds(1), string.Empty, this);
 			this.forMachines = new Property<XmlElement>(nameof(this.ForMachines), null, this);
 			this.forMachinesLocalName = new Property<string>(nameof(this.ForMachinesLocalName), string.Empty, this);
@@ -687,6 +687,28 @@ namespace LegalLab.Models.Design
 		}
 
 		/// <summary>
+		/// Role names
+		/// </summary>
+		public string[] RoleNames
+		{
+			get
+			{
+				RoleInfo[] Roles = this.Roles;
+
+				if (Roles is null)
+					return Array.Empty<string>();
+
+				int i, c = Roles.Length;
+				string[] Result = new string[c];
+
+				for (i = 0; i < c; i++)
+					Result[i] = Roles[i].Name;
+
+				return Result;
+			}
+		}
+
+		/// <summary>
 		/// Tries to get information about a given role.
 		/// </summary>
 		/// <param name="Name">Name of role.</param>
@@ -742,7 +764,7 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Role reference Parameters defined the contract.
 		/// </summary>
-		public ParameterInfo[] RoleParameters
+		public RoleParameterInfo[] RoleParameters
 		{
 			get => this.roleParameters.Value;
 			set => this.roleParameters.Value = value;
@@ -1725,7 +1747,7 @@ namespace LegalLab.Models.Design
 
 		private void AddRoleParameter(RoleParameterInfo Parameter)
 		{
-			ParameterInfo[] Parameters = this.RoleParameters;
+			RoleParameterInfo[] Parameters = this.RoleParameters;
 			int c = Parameters.Length;
 
 			Array.Resize(ref Parameters, c + 1);
@@ -1740,7 +1762,7 @@ namespace LegalLab.Models.Design
 		/// <param name="Parameter">Parameter to remove</param>
 		public void RemoveRoleParameter(RoleParameterInfo Parameter)
 		{
-			ParameterInfo[] Parameters = this.RoleParameters;
+			RoleParameterInfo[] Parameters = this.RoleParameters;
 			int i = Array.IndexOf(Parameters, Parameter);
 			if (i < 0)
 				return;
@@ -1782,7 +1804,7 @@ namespace LegalLab.Models.Design
 				this.Roles = Array.Empty<RoleInfo>();
 				this.Parts = Array.Empty<PartInfo>();
 				this.Parameters = Array.Empty<ParameterInfo>();
-				this.RoleParameters = Array.Empty<ParameterInfo>();
+				this.RoleParameters = Array.Empty<RoleParameterInfo>();
 				this.MachineReadable = string.Empty;
 				this.ForMachines = null;
 				this.ContractId = string.Empty;

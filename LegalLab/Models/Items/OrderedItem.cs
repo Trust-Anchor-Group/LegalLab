@@ -7,14 +7,14 @@ namespace LegalLab.Models.Items
 	/// <summary>
 	/// Abstract base class for ordered items
 	/// </summary>
-	public abstract class OrderedItem<T> : Model
+	public abstract class OrderedItem : Model
 	{
-		private readonly Property<T[]> items;
+		private readonly IProperty items;
 
 		private readonly Command moveUp;
 		private readonly Command moveDown;
 
-		public OrderedItem(Property<T[]> Items)
+		public OrderedItem(IProperty Items)
 			: base()
 		{
 			this.items = Items;
@@ -39,7 +39,10 @@ namespace LegalLab.Models.Items
 		/// <returns>If the item can move up.</returns>
 		public bool CanExecuteMoveUp()
 		{
-			return Array.IndexOf(this.items.Value, this) > 0;
+			if (this.items.UntypedValue is Array A)
+				return Array.IndexOf(A, this) > 0;
+			else
+				return false;
 		}
 
 		/// <summary>
@@ -47,14 +50,23 @@ namespace LegalLab.Models.Items
 		/// </summary>
 		public Task ExecuteMoveUp()
 		{
-			T[] Items = (T[])this.items.Value.Clone();
+			if (this.items is not Array Items)
+				return Task.CompletedTask;
+
+			Items = (Array)Items.Clone();
+
 			int i = Array.IndexOf(Items, this);
 			if (i <= 0)
 				return Task.CompletedTask;
 
-			(Items[i], Items[i - 1]) = (Items[i - 1], Items[i]);
-			this.items.Value = Items;
-		
+			object Item1 = Items.GetValue(i - 1);
+			object Item2 = Items.GetValue(i);
+
+			Items.SetValue(Item2, i - 1);
+			Items.SetValue(Item1, i);
+
+			this.items.UntypedValue = Items;
+
 			return Task.CompletedTask;
 		}
 
@@ -64,9 +76,10 @@ namespace LegalLab.Models.Items
 		/// <returns>If the item can move down.</returns>
 		public bool CanExecuteMoveDown()
 		{
-			T[] Items = this.items.Value;
-			int i = Array.IndexOf(Items, this);
-			return i >= 0 && i < Items.Length - 1;
+			if (this.items.UntypedValue is Array A)
+				return Array.IndexOf(A, this) < A.Length - 1;
+			else
+				return false;
 		}
 
 		/// <summary>
@@ -74,16 +87,24 @@ namespace LegalLab.Models.Items
 		/// </summary>
 		public Task ExecuteMoveDown()
 		{
-			T[] Items = (T[])this.items.Value.Clone();
+			if (this.items is not Array Items)
+				return Task.CompletedTask;
+
+			Items = (Array)Items.Clone();
+
 			int i = Array.IndexOf(Items, this);
 			if (i < 0 || i >= Items.Length - 1)
 				return Task.CompletedTask;
 
-			(Items[i], Items[i + 1]) = (Items[i + 1], Items[i]);
-			this.items.Value = Items;
-		
+			object Item1 = Items.GetValue(i + 1);
+			object Item2 = Items.GetValue(i);
+
+			Items.SetValue(Item2, i + 1);
+			Items.SetValue(Item1, i);
+
+			this.items.UntypedValue = Items;
+
 			return Task.CompletedTask;
 		}
-
 	}
 }
