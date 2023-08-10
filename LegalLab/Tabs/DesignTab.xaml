@@ -187,8 +187,8 @@
                 </DataGrid>
                 <Button Width="100" HorizontalAlignment="Left" Margin="0,5,0,0" Command="{Binding AddPart}">Add</Button>
 
-                <Label FontSize="20" Margin="0,10,0,0">Parameters</Label>
-                <Label>Following are parameters defined in the contract:</Label>
+                <Label FontSize="20" Margin="0,10,0,0">Editable Parameters</Label>
+                <Label>Following are the editable parameters defined in the contract:</Label>
                 <DataGrid ItemsSource="{Binding Parameters}" Width="Auto" HorizontalAlignment="Left" 
                           AutoGenerateColumns="False" GridLinesVisibility="None">
                     <DataGrid.Columns>
@@ -315,7 +315,7 @@
 
 				<Label FontSize="20" Margin="0,10,0,0">Referenced Signatory Properties</Label>
 				<Label>
-					<TextBlock TextWrapping="Wrap">Following are parameters defined in the contract, whose values will be taken from the identities of the signatories signing the contract:</TextBlock>
+					<TextBlock TextWrapping="Wrap">Following are role reference parameters defined in the contract. They take the values from the identities of the signatories signing the contract:</TextBlock>
 				</Label>
 				<DataGrid ItemsSource="{Binding RoleParameters}" Width="Auto" HorizontalAlignment="Left" 
                           AutoGenerateColumns="False" GridLinesVisibility="None">
@@ -338,7 +338,7 @@
 						<DataGridTemplateColumn Header="Role">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<ComboBox IsEditable="False" SelectedIndex="{Binding RoleIndex, Mode=TwoWay}"
+									<ComboBox SelectedIndex="{Binding RoleIndex, Mode=TwoWay}"
 											  ItemsSource="{Binding Roles}" DisplayMemberPath="Name"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
