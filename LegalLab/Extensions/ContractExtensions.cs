@@ -23,7 +23,7 @@ namespace LegalLab.Extensions
 		/// <returns>XML.</returns>
 		public static string ToXml(this Contract Contract)
 		{
-			StringBuilder Result = new StringBuilder();
+			StringBuilder Result = new();
 			Contract.Serialize(Result, true, true, false, false, false, false, false);
 			return Result.ToString();
 		}
@@ -35,7 +35,7 @@ namespace LegalLab.Extensions
 		/// <returns>Contract</returns>
 		public static async Task<Contract> ToContract(this string Xml)
 		{
-			XmlDocument Doc = new XmlDocument()
+			XmlDocument Doc = new()
 			{
 				PreserveWhitespace = true
 			};
@@ -58,7 +58,7 @@ namespace LegalLab.Extensions
 				return null;
 
 			MarkdownDocument ParsedMarkdown = await MarkdownDocument.CreateAsync(Markdown);
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			using XmlWriter w = XmlWriter.Create(sb);
 
 			w.WriteStartElement("Root", ContractsClient.NamespaceSmartContracts);
@@ -67,7 +67,7 @@ namespace LegalLab.Extensions
 			w.Flush();
 
 			string Xml = sb.ToString();
-			XmlDocument ParsedXml = new XmlDocument()
+			XmlDocument ParsedXml = new()
 			{
 				PreserveWhitespace = true
 			};
@@ -147,7 +147,7 @@ namespace LegalLab.Extensions
 		/// <returns>String representation of pretty XML, as well as parsed version.</returns>
 		public static (string, XmlElement) ToPrettyXml(this string Xml)
 		{
-			XmlDocument Doc = new XmlDocument()
+			XmlDocument Doc = new()
 			{
 				PreserveWhitespace = true
 			};
@@ -166,10 +166,10 @@ namespace LegalLab.Extensions
 			if (Xml is null)
 				return (string.Empty, null);
 
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			Contract.NormalizeXml(Xml, sb, ContractsClient.NamespaceSmartContracts);
 
-			XmlDocument Doc = new XmlDocument()
+			XmlDocument Doc = new()
 			{
 				PreserveWhitespace = true
 			};
@@ -198,7 +198,7 @@ namespace LegalLab.Extensions
 			if (string.IsNullOrEmpty(Xml))
 				return null;
 
-			XmlDocument Doc = new XmlDocument()
+			XmlDocument Doc = new()
 			{
 				PreserveWhitespace = true
 			};
@@ -207,7 +207,7 @@ namespace LegalLab.Extensions
 			if (Doc.DocumentElement is null)
 				return null;
 
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			Contract.NormalizeXml(Doc.DocumentElement, sb, ContractsClient.NamespaceSmartContracts);
 
 			Doc = new XmlDocument()
@@ -227,13 +227,13 @@ namespace LegalLab.Extensions
 		/// <returns>Sorted array of updated texts.</returns>
 		public static HumanReadableText[] Append(this HumanReadableText[] Texts, HumanReadableText Text)
 		{
-			SortedDictionary<string, HumanReadableText> Sorted = new SortedDictionary<string, HumanReadableText>();
+			SortedDictionary<string, HumanReadableText> Sorted = new();
 
-			if (!(Texts is null))
+			if (Texts is not null)
 			{
 				foreach (HumanReadableText Old in Texts)
 				{
-					if (!(Old.Language is null))
+					if (Old.Language is not null)
 						Sorted[Old.Language] = Old;
 				}
 			}
@@ -256,9 +256,9 @@ namespace LegalLab.Extensions
 		/// <returns>Updated array</returns>
 		public static HumanReadableText[] Remove(this HumanReadableText[] Texts, string Language)
 		{
-			List<HumanReadableText> Result = new List<HumanReadableText>();
+			List<HumanReadableText> Result = new();
 
-			if (!(Texts is null))
+			if (Texts is not null)
 			{
 				foreach (HumanReadableText Old in Texts)
 				{
@@ -295,9 +295,9 @@ namespace LegalLab.Extensions
 		/// <returns>Sorted array of updated texts.</returns>
 		public static string[] Append(this string[] Texts, string Text)
 		{
-			SortedDictionary<string, string> Sorted = new SortedDictionary<string, string>();
+			SortedDictionary<string, string> Sorted = new();
 
-			if (!(Texts is null))
+			if (Texts is not null)
 			{
 				foreach (string Old in Texts)
 					Sorted[Old] = Old;
@@ -328,7 +328,7 @@ namespace LegalLab.Extensions
 
 			int c = Texts.Length;
 			if (c == 1)
-				return new string[0];
+				return Array.Empty<string>();
 
 			string[] Result = new string[c - 1];
 

@@ -53,9 +53,9 @@ namespace LegalLab.Models.Tokens
 
 		public static async Task<TokenModel> CreateAsync(NeuroFeaturesClient Client, Token Token)
 		{
-			TokenModel Result = new TokenModel(Client, Token);
+			TokenModel Result = new(Client, Token);
 
-			List<TokenDetail> Details = new List<TokenDetail>()
+			List<TokenDetail> Details = new()
 			{
 				new TokenDetail("Token ID", Result.token.TokenId),
 				new TokenDetail("Token ID Method", Result.token.TokenIdMethod),
@@ -165,9 +165,9 @@ namespace LegalLab.Models.Tokens
 		{
 			get
 			{
-				if (this.glyph is null && !(this.token.Glyph is null))
+				if (this.glyph is null && this.token.Glyph is not null)
 				{
-					BitmapImage Result = new BitmapImage();
+					BitmapImage Result = new();
 					Result.BeginInit();
 					Result.CreateOptions = BitmapCreateOptions.None;
 					Result.CacheOption = BitmapCacheOption.Default;
@@ -244,33 +244,33 @@ namespace LegalLab.Models.Tokens
 		private async Task ExecuteViewPresentReport()
 		{
 			if (!string.IsNullOrEmpty(this.TokenId))
-				await this.AddReport(new TokenPresentReport(this.client, this.TokenId));
+				await AddReport(new TokenPresentReport(this.client, this.TokenId));
 		}
 
 		private async Task ExecuteViewHistoryReport()
 		{
 			if (!string.IsNullOrEmpty(this.TokenId))
-				await this.AddReport(new TokenHistoryReport(this.client, this.TokenId));
+				await AddReport(new TokenHistoryReport(this.client, this.TokenId));
 		}
 
 		private async Task ExecuteViewStateDiagramReport()
 		{
 			if (!string.IsNullOrEmpty(this.TokenId))
-				await this.AddReport(new TokenStateDiagramReport(this.client, this.TokenId));
+				await AddReport(new TokenStateDiagramReport(this.client, this.TokenId));
 		}
 
 		private async Task ExecuteViewProfilingReport()
 		{
 			if (!string.IsNullOrEmpty(this.TokenId))
-				await this.AddReport(new TokenProfilingReport(this.client, this.TokenId));
+				await AddReport(new TokenProfilingReport(this.client, this.TokenId));
 		}
 
-		private async Task AddReport(TokenReport Report)
+		private static async Task AddReport(TokenReport Report)
 		{
 			MainWindow.MouseHourglass();
 			try
 			{
-				ReportTab ReportTab = new ReportTab(Report);
+				ReportTab ReportTab = new(Report);
 				string Title = await Report.GetTitle();
 
 				await Report.GenerateReport(ReportTab);
