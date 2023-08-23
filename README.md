@@ -10,6 +10,13 @@ Desktop WPF application allowing you to work and experiment with TAG Legal objec
 * Marketplace Auctions
 * Neuro-Features
 
+Note: MicrosoftInterop
+-------------------------
+
+To compile the project, you need to clone the [MicrosoftInterop](https://github.com/Trust-Anchor-Group/MicrosoftInterop) repository
+into a folder parallel to the LegalLab folder. The LegalLab application uses a library from this repository, that converts
+Microsoft Word to Markdown. This library allows LegalLab to create smart contracts from Word documents.
+
 Example Contracts
 ----------------------
 

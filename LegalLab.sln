@@ -77,6 +77,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StateMachines", "StateMachi
 		ExampleContracts\StateMachines\ProjectEscrow.xml = ExampleContracts\StateMachines\ProjectEscrow.xml
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TAG.Content.Microsoft", "..\MicrosoftInterop\TAG.Content.Microsoft\TAG.Content.Microsoft.csproj", "{058A6BB8-9C37-4460-B1A0-038DCBA04302}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{FAFE126F-BB0E-4154-8DEF-CB7B8DC37663}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAFE126F-BB0E-4154-8DEF-CB7B8DC37663}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FAFE126F-BB0E-4154-8DEF-CB7B8DC37663}.Release|Any CPU.Build.0 = Release|Any CPU
+		{058A6BB8-9C37-4460-B1A0-038DCBA04302}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{058A6BB8-9C37-4460-B1A0-038DCBA04302}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{058A6BB8-9C37-4460-B1A0-038DCBA04302}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{058A6BB8-9C37-4460-B1A0-038DCBA04302}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
