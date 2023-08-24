@@ -52,6 +52,25 @@ namespace LegalLab.Extensions
 		/// <param name="Markdown">Markdown text</param>
 		/// <param name="Language">Language code</param>
 		/// <returns>Human-readable text.</returns>
+		public static async Task<HumanReadableText[]> ToHumanReadableText(this string[] Markdown, string Language)
+		{
+			List<HumanReadableText> Result = new();
+
+			foreach (string s in Markdown)
+			{
+				if (!string.IsNullOrEmpty(s))
+					Result.Add(await s.ToHumanReadableText(Language));
+			}
+
+			return Result.ToArray();
+		}
+
+		/// <summary>
+		/// Converts Markdown to Human-readable text for use in smart contracts.
+		/// </summary>
+		/// <param name="Markdown">Markdown text</param>
+		/// <param name="Language">Language code</param>
+		/// <returns>Human-readable text.</returns>
 		public static async Task<HumanReadableText> ToHumanReadableText(this string Markdown, string Language)
 		{
 			if (string.IsNullOrEmpty(Markdown))
@@ -321,7 +340,7 @@ namespace LegalLab.Extensions
 		/// <returns>Updated array</returns>
 		public static string[] Remove(this string[] Texts, string Text)
 		{
-			int i = Array.IndexOf<string>(Texts, Text);
+			int i = Array.IndexOf(Texts, Text);
 
 			if (i < 0)
 				return Texts;

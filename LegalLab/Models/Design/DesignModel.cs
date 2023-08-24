@@ -11,6 +11,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,6 +21,7 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Xml;
 using TAG.Content.Microsoft;
+using Waher.Content;
 using Waher.Events;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
@@ -36,6 +38,8 @@ namespace LegalLab.Models.Design
 	[Singleton]
 	public class DesignModel : ConnectionSensitiveModel, IPartsModel, ITranslatable
 	{
+		private const string defaultParameterDescription = "Enter parameter description as **Markdown**";
+
 		private readonly Property<Waher.Content.Duration?> archiveOptional;
 		private readonly Property<Waher.Content.Duration?> archiveRequired;
 		private readonly Property<Waher.Content.Duration?> duration;
@@ -904,7 +908,7 @@ namespace LegalLab.Models.Design
 			PartInfo[] Parts = this.Parts;
 			int c = Parts.Length;
 
-			Array.Resize<PartInfo>(ref Parts, c + 1);
+			Array.Resize(ref Parts, c + 1);
 			Parts[c] = new PartInfo(new Part()
 			{
 				LegalId = string.Empty,
@@ -924,7 +928,7 @@ namespace LegalLab.Models.Design
 		public void RemovePart(PartInfo Part)
 		{
 			PartInfo[] Parts = this.Parts;
-			int i = Array.IndexOf<PartInfo>(Parts, Part);
+			int i = Array.IndexOf(Parts, Part);
 			if (i < 0)
 				return;
 
@@ -933,7 +937,7 @@ namespace LegalLab.Models.Design
 			if (i < c - 1)
 				Array.Copy(Parts, i + 1, Parts, i, c - i - 1);
 
-			Array.Resize<PartInfo>(ref Parts, c - 1);
+			Array.Resize(ref Parts, c - 1);
 
 			this.Parts = Parts;
 		}
@@ -946,19 +950,24 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Adds a numeric parameter to the design.
 		/// </summary>
-		public async Task ExecuteAddNumericParameter()
+		public Task ExecuteAddNumericParameter()
+		{
+			return this.ExecuteAddNumericParameter("Numeric", null, defaultParameterDescription);
+		}
+
+		private async Task ExecuteAddNumericParameter(string Name, decimal? Value, params string[] MarkdownDescription)
 		{
 			NumericalParameter NP = new()
 			{
-				Name = FindNewName("Numeric", this.AllParameterInfos),
-				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
+				Name = FindNewName(Name, this.AllParameterInfos),
+				Descriptions = await MarkdownDescription.ToHumanReadableText("en"),
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Max = null,
 				MaxIncluded = false,
 				Min = null,
 				MinIncluded = false,
-				Value = null
+				Value = Value
 			};
 
 			this.AddParameter(this.GetParameterInfo(NP));
@@ -1022,12 +1031,17 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Adds a string parameter to the design.
 		/// </summary>
-		public async Task ExecuteAddStringParameter()
+		public Task ExecuteAddStringParameter()
+		{
+			return this.ExecuteAddStringParameter("String", null, null, defaultParameterDescription);
+		}
+
+		private async Task ExecuteAddStringParameter(string Name, string RegEx, int? MaxLength, params string[] MarkdownDescription)
 		{
 			StringParameter SP = new()
 			{
-				Name = FindNewName("String", this.AllParameterInfos),
-				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
+				Name = FindNewName(Name, this.AllParameterInfos),
+				Descriptions = await MarkdownDescription.ToHumanReadableText("en"),
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Max = null,
@@ -1036,8 +1050,8 @@ namespace LegalLab.Models.Design
 				MinIncluded = false,
 				Value = null,
 				MinLength = null,
-				MaxLength = null,
-				RegEx = null
+				MaxLength = MaxLength,
+				RegEx = RegEx
 			};
 
 			this.AddParameter(this.GetParameterInfo(SP));
@@ -1261,15 +1275,20 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Adds a boolean parameter to the design.
 		/// </summary>
-		public async Task ExecuteAddBooleanParameter()
+		public Task ExecuteAddBooleanParameter()
+		{
+			return this.ExecuteAddBooleanParameter("Boolean", null, defaultParameterDescription);
+		}
+
+		private async Task ExecuteAddBooleanParameter(string Name, bool? Value, params string[] MarkdownDescription)
 		{
 			BooleanParameter BP = new()
 			{
-				Name = FindNewName("Boolean", this.AllParameterInfos),
-				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
+				Name = FindNewName(Name, this.AllParameterInfos),
+				Descriptions = await MarkdownDescription.ToHumanReadableText("en"),
 				Expression = string.Empty,
 				Guide = string.Empty,
-				Value = null
+				Value = Value
 			};
 
 			this.AddParameter(this.GetParameterInfo(BP));
@@ -1353,19 +1372,24 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Adds a date parameter to the design.
 		/// </summary>
-		public async Task ExecuteAddDateParameter()
+		public Task ExecuteAddDateParameter()
+		{
+			return this.ExecuteAddDateParameter("Date", null, defaultParameterDescription);
+		}
+
+		private async Task ExecuteAddDateParameter(string Name, DateTime? Value, params string[] MarkdownDescription)
 		{
 			DateParameter DP = new()
 			{
-				Name = FindNewName("Date", this.AllParameterInfos),
-				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
+				Name = FindNewName(Name, this.AllParameterInfos),
+				Descriptions = await MarkdownDescription.ToHumanReadableText("en"),
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Max = null,
 				MaxIncluded = false,
 				Min = null,
 				MinIncluded = false,
-				Value = null
+				Value = Value
 			};
 
 			this.AddParameter(this.GetParameterInfo(DP));
@@ -1431,7 +1455,7 @@ namespace LegalLab.Models.Design
 			DateTimeParameter DP = new()
 			{
 				Name = FindNewName("DateTime", this.AllParameterInfos),
-				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
+				Descriptions = new HumanReadableText[] { await defaultParameterDescription.ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Max = null,
@@ -1499,19 +1523,24 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Adds a time parameter to the design.
 		/// </summary>
-		public async Task ExecuteAddTimeParameter()
+		public Task ExecuteAddTimeParameter()
+		{
+			return this.ExecuteAddTimeParameter("Time", null, defaultParameterDescription);
+		}
+
+		private async Task ExecuteAddTimeParameter(string Name, TimeSpan? Value, params string[] MarkdownDescription)
 		{
 			TimeParameter DP = new()
 			{
-				Name = FindNewName("Time", this.AllParameterInfos),
-				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
+				Name = FindNewName(Name, this.AllParameterInfos),
+				Descriptions = await MarkdownDescription.ToHumanReadableText("en"),
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Max = null,
 				MaxIncluded = false,
 				Min = null,
 				MinIncluded = false,
-				Value = null
+				Value = Value
 			};
 
 			this.AddParameter(this.GetParameterInfo(DP));
@@ -1577,7 +1606,7 @@ namespace LegalLab.Models.Design
 			DurationParameter DP = new()
 			{
 				Name = FindNewName("Duration", this.AllParameterInfos),
-				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
+				Descriptions = new HumanReadableText[] { await defaultParameterDescription.ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Max = null,
@@ -1650,7 +1679,7 @@ namespace LegalLab.Models.Design
 			CalcParameter CP = new()
 			{
 				Name = FindNewName("Calc", this.AllParameterInfos),
-				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
+				Descriptions = new HumanReadableText[] { await defaultParameterDescription.ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty
 			};
@@ -1671,7 +1700,7 @@ namespace LegalLab.Models.Design
 			RoleParameter RP = new()
 			{
 				Name = FindNewName("RoleRef", this.AllParameterInfos),
-				Descriptions = new HumanReadableText[] { await "Enter parameter description as **Markdown**".ToHumanReadableText("en") },
+				Descriptions = new HumanReadableText[] { await defaultParameterDescription.ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Index = 1
@@ -1941,6 +1970,88 @@ namespace LegalLab.Models.Design
 
 				if (ContractUtilities.ExtractParameters(ref Markdown, out Dictionary<string, ParameterInformation> HeaderInfo))
 				{
+					foreach (KeyValuePair<string, ParameterInformation> P in HeaderInfo)
+					{
+						switch (P.Value.Type)
+						{
+							case ParameterType.String:
+							default:
+								await this.ExecuteAddStringParameter(P.Value.Name, null, P.Value.MaxLength,
+									GetDescriptions(P.Value.Values));
+								break;
+
+							case ParameterType.Boolean:
+								if ((P.Value.Values?.Count ?? 0) > 0 && CommonTypes.TryParse(P.Value.Values[0], out bool b))
+									await this.ExecuteAddBooleanParameter(P.Value.Name, b, defaultParameterDescription);
+								else
+									await this.ExecuteAddBooleanParameter(P.Value.Name, null, defaultParameterDescription);
+								break;
+
+							case ParameterType.StringWithOptions:
+								StringBuilder RegEx = new();
+								bool First = true;
+
+								foreach (OptionInformation Option in P.Value.Options)
+								{
+									if (First)
+										First = false;
+									else
+										RegEx.Append('|');
+
+									RegEx.Append(CommonTypes.RegexStringEncode(Option.Value));
+									RegEx.Append(".*");
+								}
+
+								RegEx.Append("|.*");
+
+								await this.ExecuteAddStringParameter(P.Value.Name, RegEx.ToString(), P.Value.MaxLength,
+									GetDescriptions(P.Value.Values));
+								break;
+
+							case ParameterType.ListOfOptions:
+								RegEx = new();
+								First = true;
+
+								RegEx.Append("^(");
+
+								foreach (OptionInformation Option in P.Value.Options)
+								{
+									if (First)
+										First = false;
+									else
+										RegEx.Append('|');
+
+									RegEx.Append(CommonTypes.RegexStringEncode(Option.Value));
+								}
+
+								RegEx.Append(")$");
+
+								await this.ExecuteAddStringParameter(P.Value.Name, RegEx.ToString(), P.Value.MaxLength,
+									GetDescriptions(P.Value.Values));
+								break;
+
+							case ParameterType.Date:
+								if ((P.Value.Values?.Count ?? 0) > 0 && DateTime.TryParse(P.Value.Values[0], out DateTime TP))
+									await this.ExecuteAddDateParameter(P.Value.Name, TP, defaultParameterDescription);
+								else
+									await this.ExecuteAddDateParameter(P.Value.Name, null, defaultParameterDescription);
+								break;
+
+							case ParameterType.Time:
+								if ((P.Value.Values?.Count ?? 0) > 0 && TimeSpan.TryParse(P.Value.Values[0], out TimeSpan TS))
+									await this.ExecuteAddTimeParameter(P.Value.Name, TS, defaultParameterDescription);
+								else
+									await this.ExecuteAddTimeParameter(P.Value.Name, null, defaultParameterDescription);
+								break;
+
+							case ParameterType.Number:
+								if ((P.Value.Values?.Count ?? 0) > 0 && CommonTypes.TryParse(P.Value.Values[0], out decimal d))
+									await this.ExecuteAddNumericParameter(P.Value.Name, d, defaultParameterDescription);
+								else
+									await this.ExecuteAddNumericParameter(P.Value.Name, null, defaultParameterDescription);
+								break;
+						}
+					}
 				}
 
 				this.HumanReadableMarkdown = Markdown;
@@ -1949,6 +2060,17 @@ namespace LegalLab.Models.Design
 			{
 				MainWindow.ErrorBox(ex.Message);
 			}
+		}
+
+		private static string[] GetDescriptions(List<string> Descriptions)
+		{
+			if (Descriptions is null || Descriptions.Count == 0 ||
+				(Descriptions.Count == 1 && string.IsNullOrEmpty(Descriptions[0])))
+			{
+				return new string[] { defaultParameterDescription };
+			}
+			else
+				return Descriptions.ToArray();
 		}
 
 		/// <summary>
