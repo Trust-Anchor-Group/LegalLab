@@ -15,6 +15,7 @@
 			<StackPanel Name="DesignCommands" Orientation="Vertical" Width="250" Margin="10">
 				<Button Command="{Binding New}" Margin="0,0,0,10">New</Button>
 				<Button Command="{Binding LoadCommand}" Margin="0,0,0,10">Load</Button>
+				<Button Command="{Binding ImportCommand}" Margin="0,0,0,10">Import</Button>
 				<Button Command="{Binding SaveCommand}" Margin="0,0,0,10">Save</Button>
 				<Button Command="{Binding Propose}" Margin="0,0,0,10">Propose</Button>
 				<Label>Language:</Label>

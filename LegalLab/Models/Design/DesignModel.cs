@@ -19,6 +19,7 @@ using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Xml;
+using TAG.Content.Microsoft;
 using Waher.Events;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
@@ -71,6 +72,7 @@ namespace LegalLab.Models.Design
 		private readonly Command addRoleReference;
 		private readonly Command @new;
 		private readonly Command load;
+		private readonly Command import;
 		private readonly Command save;
 		private readonly Command propose;
 		private readonly Command addLanguage;
@@ -129,6 +131,7 @@ namespace LegalLab.Models.Design
 			this.addRoleReference = new Command(this.ExecuteAddRoleReference);
 			this.@new = new Command(this.ExecuteNewContract);
 			this.load = new Command(this.ExecuteLoadContract);
+			this.import = new Command(this.ExecuteImportContract);
 			this.save = new Command(this.ExecuteSaveContract);
 			this.propose = new Command(this.CanExecuteProposeContract, this.ExecuteProposeContract);
 			this.addLanguage = new Command(this.ExecuteAddLanguage);
@@ -1782,11 +1785,17 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public ICommand New => this.@new;
 
-		private async Task ExecuteNewContract()
+		private Task ExecuteNewContract()
+		{
+			return this.ExecuteNewContract(true);
+		}
+
+		private async Task ExecuteNewContract(bool QueryUser)
 		{
 			try
 			{
-				if (MessageBox.Show("Are you sure you want clear the form and lose all data that has not been saved?", "Confirm",
+				if (QueryUser &&
+					MessageBox.Show("Are you sure you want clear the form and lose all data that has not been saved?", "Confirm",
 					MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
 				{
 					return;
@@ -1901,6 +1910,42 @@ namespace LegalLab.Models.Design
 			}
 
 			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Import command
+		/// </summary>
+		public ICommand ImportCommand => this.import;
+
+		private async Task ExecuteImportContract()
+		{
+			try
+			{
+				OpenFileDialog Dialog = new()
+				{
+					CheckFileExists = true,
+					CheckPathExists = true,
+					DefaultExt = "docx",
+					Filter = "Microsoft Word Files (*.docx)|*.docx",
+					Multiselect = false,
+					ShowReadOnly = true,
+					Title = "Import from Microsoft Word"
+				};
+
+				bool? Result = Dialog.ShowDialog(MainWindow.currentInstance);
+				if (!Result.HasValue || !Result.Value)
+					return;
+
+				string Markdown = WordUtilities.ExtractAsMarkdown(Dialog.FileName);
+
+				await this.ExecuteNewContract(false);
+
+				this.HumanReadableMarkdown = Markdown;
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
 		}
 
 		/// <summary>
