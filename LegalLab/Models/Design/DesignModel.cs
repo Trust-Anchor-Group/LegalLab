@@ -2054,6 +2054,9 @@ namespace LegalLab.Models.Design
 					}
 				}
 
+				HumanReadableText Text = await Markdown.ToHumanReadableText(this.Language);
+				Markdown = Text.GenerateMarkdown(this.Contract);
+
 				this.HumanReadableMarkdown = Markdown;
 			}
 			catch (Exception ex)
