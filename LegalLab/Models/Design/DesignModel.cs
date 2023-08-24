@@ -1965,7 +1965,7 @@ namespace LegalLab.Models.Design
 				if (!Result.HasValue || !Result.Value)
 					return;
 
-				string Markdown = WordUtilities.ExtractAsMarkdown(Dialog.FileName);
+				string Markdown = WordUtilities.ExtractAsMarkdown(Dialog.FileName, out string Language);
 				await this.ExecuteNewContract(false);
 
 				if (ContractUtilities.ExtractParameters(ref Markdown, out Dictionary<string, ParameterInformation> HeaderInfo))
@@ -2054,7 +2054,15 @@ namespace LegalLab.Models.Design
 					}
 				}
 
-				HumanReadableText Text = await Markdown.ToHumanReadableText(this.Language);
+				if (string.IsNullOrEmpty(Language))
+					Language = this.Language;
+				else
+				{
+					this.Languages = new string[] { Language }.ToIso639_1();
+					this.Language = Language;
+				}
+
+				HumanReadableText Text = await Markdown.ToHumanReadableText(Language);
 				Markdown = Text.GenerateMarkdown(this.Contract);
 
 				this.HumanReadableMarkdown = Markdown;
