@@ -1937,8 +1937,11 @@ namespace LegalLab.Models.Design
 					return;
 
 				string Markdown = WordUtilities.ExtractAsMarkdown(Dialog.FileName);
-
 				await this.ExecuteNewContract(false);
+
+				if (ContractUtilities.ExtractParameters(ref Markdown, out Dictionary<string, ParameterInformation> HeaderInfo))
+				{
+				}
 
 				this.HumanReadableMarkdown = Markdown;
 			}
