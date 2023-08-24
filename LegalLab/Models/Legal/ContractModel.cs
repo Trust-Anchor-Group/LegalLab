@@ -758,7 +758,7 @@ namespace LegalLab.Models.Legal
 		public void RemovePart(PartInfo Part)
 		{
 			PartInfo[] Parts = this.Parts;
-			int i = Array.IndexOf<PartInfo>(Parts, Part);
+			int i = Array.IndexOf(Parts, Part);
 			if (i < 0)
 				return;
 
