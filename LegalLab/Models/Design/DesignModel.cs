@@ -2058,6 +2058,10 @@ namespace LegalLab.Models.Design
 				Markdown = Text.GenerateMarkdown(this.Contract);
 
 				this.HumanReadableMarkdown = Markdown;
+				this.MachineReadable = "<Nop xmlns=\"https://paiwise.tagroot.io/Schema/PaymentInstructions.xsd\" />";
+				this.ContractId = Path.GetFileName(Path.ChangeExtension(Dialog.FileName, string.Empty));
+
+				await this.ValidateParameters();
 			}
 			catch (Exception ex)
 			{
