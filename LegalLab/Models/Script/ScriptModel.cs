@@ -229,7 +229,7 @@ namespace LegalLab.Models.Script
 								if (Item is not string s2)
 									s2 = Waher.Script.Expression.ToString(Item);
 
-								s2 = s2.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", "<br/>");
+								s2 = s2.Replace("\r\n", "\n").Replace('\r', '\n').Replace("\n", "<br/>");
 								Markdown.Append(MarkdownDocument.Encode(s2));
 							}
 						}
