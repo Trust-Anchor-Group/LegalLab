@@ -22,6 +22,7 @@ using System.Windows.Media;
 using System.Xml;
 using TAG.Content.Microsoft;
 using Waher.Content;
+using Waher.Content.Xml;
 using Waher.Events;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
@@ -2064,6 +2065,34 @@ namespace LegalLab.Models.Design
 
 				HumanReadableText Text = await Markdown.ToHumanReadableText(Language);
 				Markdown = Text.GenerateMarkdown(this.Contract);
+
+				StringBuilder sb = new StringBuilder();
+				Text.Serialize(sb);
+
+				XmlDocument Doc = new();
+				Doc.LoadXml(sb.ToString());
+
+				LinkedList<XmlElement> Elements = new LinkedList<XmlElement>();
+				Elements.AddLast(Doc.DocumentElement);
+
+				while (Elements.First is not null)
+				{
+					XmlElement E = Elements.First.Value;
+					Elements.RemoveFirst();
+
+					if (E.LocalName == "parameter")
+					{
+						string ParameterName = XML.Attribute(E, "name");
+						if (!string.IsNullOrEmpty(ParameterName))
+							Markdown = Markdown.Replace("`" + ParameterName + "`", "[%" + ParameterName + "]");
+					}
+
+					foreach (XmlNode N in E.ChildNodes)
+					{
+						if (N is XmlElement E2)
+							Elements.AddLast(E2);
+					}
+				}
 
 				this.HumanReadableMarkdown = Markdown;
 				this.MachineReadable = "<Nop xmlns=\"https://paiwise.tagroot.io/Schema/PaymentInstructions.xsd\" />";
