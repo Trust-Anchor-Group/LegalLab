@@ -613,6 +613,7 @@ namespace LegalLab.Models.Legal
 				await this.currentContract.Start();
 
 				await this.currentContract.PopulateParameters(
+					MainWindow.currentInstance.ContractsTab.LanguageOptions,
 					MainWindow.currentInstance.ContractsTab.CreateParameters, 
 					MainWindow.currentInstance.ContractsTab.CreateCommands,
 					PresetValues);

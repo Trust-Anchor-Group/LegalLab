@@ -7,14 +7,18 @@
 			 xmlns:design="clr-namespace:LegalLab.Models.Design"
              xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
 			 xmlns:avalonEx="clr-namespace:LegalLab.Models.Design.AvalonExtensions"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800">
 	<DockPanel LastChildFill="True" Background="#FFE5E5E5">
 		<ScrollViewer DockPanel.Dock="Left">
 			<StackPanel Name="ContractCommands" Orientation="Vertical" Width="250" Margin="10">
 				<Label>Template:</Label>
 				<ComboBox ItemsSource="{Binding Templates}" DisplayMemberPath="TemplateName" SelectedValuePath="TemplateName" 
 						  SelectedValue="{Binding ContractTemplateName}"/>
+				<StackPanel Name="LanguageOptions">
+					<Label>Language:</Label>
+					<ComboBox ItemsSource="{Binding Languages}" DisplayMemberPath="Language" SelectedValuePath="Code" 
+						  SelectedValue="{Binding Language}" Margin="0,0,0,10"/>
+				</StackPanel>
 				<StackPanel Name="CreateParameters"/>
 				<StackPanel Name="CreateCommands" Visibility="Hidden">
 					<Button Margin="0,10,0,0" Command="{Binding CreateContract}" IsEnabled="{Binding ParametersOk}">Create Contract</Button>

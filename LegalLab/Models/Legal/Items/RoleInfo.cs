@@ -38,9 +38,8 @@ namespace LegalLab.Models.Legal.Items
 		/// <param name="Role">Role</param>
 		/// <param name="Roles">Collection of roles.</param>
 		public RoleInfo(ContractModel ContractModel, Role Role, Property<RoleInfo[]> Roles)
-			: this(ContractModel.Contract, Role, Roles)
+			: this(ContractModel, null, ContractModel.Contract, Role, Roles)
 		{
-			this.contractModel = ContractModel;
 		}
 
 		/// <summary>
@@ -50,24 +49,27 @@ namespace LegalLab.Models.Legal.Items
 		/// <param name="Role">Role</param>
 		/// <param name="Roles">Collection of roles.</param>
 		public RoleInfo(DesignModel DesignModel, Role Role, Property<RoleInfo[]> Roles)
-			: this(DesignModel.Contract, Role, Roles)
+			: this(null, DesignModel, DesignModel.Contract, Role, Roles)
 		{
-			this.designModel = DesignModel;
 		}
 
 		/// <summary>
 		/// Contains information about a role
 		/// </summary>
+		/// <param name="ContractModel">Contract Model hosting the parameter</param>
+		/// <param name="DesignModel">Design Model hosting the parameter</param>
 		/// <param name="Contract">Contract hosting the parameter</param>
 		/// <param name="Role">Role</param>
 		/// <param name="Roles">Collection of roles.</param>
-		public RoleInfo(Contract Contract, Role Role, Property<RoleInfo[]> Roles)
+		private RoleInfo(ContractModel ContractModel, DesignModel DesignModel, Contract Contract, Role Role, Property<RoleInfo[]> Roles)
 			: base(Roles)
 		{
-			string Language = this.designModel?.Language ?? Contract.DefaultLanguage;
-
+			this.contractModel = ContractModel;
+			this.designModel = DesignModel;
 			this.contract = Contract;
 			this.role = Role;
+
+			string Language = this.designModel?.Language ?? this.contractModel?.Language ?? Contract.DefaultLanguage;
 
 			this.name = new Property<string>(nameof(this.Name), Role.Name, this);
 			this.description = new Property<object>(nameof(this.Description), Role.ToSimpleXAML(Language, this.contract).Result, this);
@@ -115,15 +117,16 @@ namespace LegalLab.Models.Legal.Items
 			get => this.descriptionAsMarkdown.Value;
 			set
 			{
-				HumanReadableText Text = value.ToHumanReadableText(this.designModel.Language).Result;
+				string Language = this.designModel?.Language ?? this.contractModel?.Language ?? this.contract.DefaultLanguage;
+				HumanReadableText Text = value.ToHumanReadableText(Language).Result;
 
 				if (Text is null)
-					this.role.Descriptions = this.role.Descriptions.Remove(this.designModel.Language);
+					this.role.Descriptions = this.role.Descriptions.Remove(Language);
 				else
 					this.role.Descriptions = this.role.Descriptions.Append(Text);
 
 				this.descriptionAsMarkdown.Value = value;
-				this.description.Value = value.ToSimpleXAML(this.contract, this.designModel.Language).Result;
+				this.description.Value = value.ToSimpleXAML(this.contract, Language).Result;
 			}
 		}
 

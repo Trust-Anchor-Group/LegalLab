@@ -2,6 +2,7 @@
 using LegalLab.Models.Design;
 using LegalLab.Models.Legal.Items;
 using LegalLab.Models.Legal.Items.Parameters;
+using LegalLab.Models.Standards;
 using LegalLab.Tabs;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,10 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
-using System.Xml;
 using Waher.Events;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Contracts.HumanReadable;
 using Waher.Persistence;
 using Waher.Runtime.Settings;
 using Waher.Script;
@@ -41,6 +42,8 @@ namespace LegalLab.Models.Legal
 		private readonly Property<string> machineReadable;
 		private readonly Property<string> templateName;
 		private readonly Property<string> contractId;
+		private readonly Property<string> language;
+		private readonly Property<Iso__639_1.Record[]> languages;
 
 		private readonly Command addPart;
 		private readonly Command createContract;
@@ -51,6 +54,9 @@ namespace LegalLab.Models.Legal
 		private readonly ContractsTab contractsTab;
 		private Contract contract;
 		private StackPanel humanReadableText = null;
+		private StackPanel additionalCommands = null;
+		private StackPanel languageOptions = null;
+		private StackPanel parameterOptions = null;
 
 		/// <summary>
 		/// Contract model
@@ -75,6 +81,8 @@ namespace LegalLab.Models.Legal
 			this.machineReadable = new Property<string>(nameof(this.MachineReadable), string.Empty, this);
 			this.templateName = new Property<string>(nameof(this.TemplateName), string.Empty, this);
 			this.contractId = new Property<string>(nameof(this.ContractId), Contract.ContractId, this);
+			this.language = new Property<string>(nameof(this.Language), "en", this);
+			this.languages = new Property<Iso__639_1.Record[]>(nameof(this.Languages), Array.Empty<Iso__639_1.Record>(), this);
 
 			this.addPart = new Command(this.ExecuteAddPart);
 			this.createContract = new Command(this.CanExecuteCreateContract, this.ExecuteCreateContract);
@@ -108,6 +116,15 @@ namespace LegalLab.Models.Legal
 		private async Task SetContract(Contract Contract)
 		{
 			this.contract = Contract;
+
+			this.Languages = Contract.GetLanguages().ToIso639_1();
+			this.Language = Contract.DefaultLanguage;
+
+			if (string.IsNullOrEmpty(this.Language) && this.Languages.Length == 0)
+			{
+				this.Languages = new string[] { "en" }.ToIso639_1();
+				this.Language = "en";
+			}
 
 			this.ContractId = Contract.ContractId;
 			this.HasId = !string.IsNullOrEmpty(Contract.ContractId);
@@ -245,6 +262,51 @@ namespace LegalLab.Models.Legal
 		public Contract Contract => this.contract;
 
 		/// <summary>
+		/// Currently selected language.
+		/// </summary>
+		public string Language
+		{
+			get => this.language.Value;
+			set => this.SetLanguage(value);
+		}
+
+		/// <summary>
+		/// Available languages.
+		/// </summary>
+		public Iso__639_1.Record[] Languages
+		{
+			get => this.languages.Value;
+			set => this.languages.Value = value;
+		}
+
+		private async void SetLanguage(string Language)
+		{
+			try
+			{
+				this.language.Value = Language;
+
+				if (!string.IsNullOrEmpty(Language))
+				{
+					foreach (ParameterInfo PI in this.Parameters)
+						PI.DescriptionAsMarkdown = (PI.Parameter.Descriptions.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
+
+					foreach (RoleInfo RI in this.Roles)
+						RI.DescriptionAsMarkdown = (RI.Role.Descriptions.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
+
+					await this.PopulateHumanReadableText();
+
+					if (!(this.languageOptions is null))
+						await this.PopulateParameters(this.languageOptions, this.parameterOptions, this.additionalCommands, null);
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.Critical(ex);
+				MainWindow.ErrorBox(ex.Message);
+			}
+		}
+
+		/// <summary>
 		/// If all parameters are OK or not
 		/// </summary>
 		public bool ParametersOk
@@ -366,19 +428,23 @@ namespace LegalLab.Models.Legal
 		/// <summary>
 		/// Populates a <see cref="StackPanel"/> with parameter controls.
 		/// </summary>
+		/// <param name="Languages">StackPanel to language options</param>
 		/// <param name="Parameters">StackPanel to populate with parameters</param>
 		/// <param name="AdditionalCommands">StackPanel to populate with additional commends.</param>
 		/// <param name="PresetValues">Optional preset values. Can be null.</param>
-		public async Task PopulateParameters(StackPanel Parameters, StackPanel AdditionalCommands, 
+		public async Task PopulateParameters(StackPanel Languages, StackPanel Parameters, StackPanel AdditionalCommands,
 			Dictionary<CaseInsensitiveString, object> PresetValues)
 		{
 			List<ParameterInfo> ParameterList = new();
 			ParameterInfo ParameterInfo;
 
-			Parameters.Children.Clear();
-			this.parametersByName.Clear();
+			this.languageOptions = Languages;
+			this.languageOptions.DataContext = this;
 
-			Parameters.DataContext = this;
+			this.parameterOptions = Parameters;
+			this.parameterOptions.Children.Clear();
+			this.parameterOptions.DataContext = this;
+			this.parametersByName.Clear();
 
 			foreach (Parameter Parameter in this.contract.Parameters)
 			{
@@ -390,7 +456,7 @@ namespace LegalLab.Models.Legal
 						IsChecked = BP.Value.HasValue && BP.Value.Value,
 						VerticalContentAlignment = VerticalAlignment.Center,
 						Content = Parameter.GetLabel(),
-						ToolTip = await Parameter.ToSimpleXAML(this.contract.DefaultLanguage, this.contract),
+						ToolTip = await Parameter.ToSimpleXAML(this.Language, this.contract),
 						Margin = new Thickness(0, 10, 0, 0)
 					};
 
@@ -419,7 +485,7 @@ namespace LegalLab.Models.Legal
 					{
 						Tag = Parameter.Name,
 						Text = Parameter.ObjectValue?.ToString(),
-						ToolTip = await Parameter.ToSimpleXAML(this.contract.DefaultLanguage, this.contract)
+						ToolTip = await Parameter.ToSimpleXAML(this.Language, this.contract)
 					};
 
 					if (PresetValues?.TryGetValue(Parameter.Name, out object PresetValue) ?? false)
@@ -499,9 +565,10 @@ namespace LegalLab.Models.Legal
 			await this.ValidateParameters();
 			await this.PopulateHumanReadableText();
 
-			AdditionalCommands.DataContext = this;
-			AdditionalCommands.Visibility = Visibility.Visible;
-			AdditionalCommands.InvalidateVisual();
+			this.additionalCommands = AdditionalCommands;
+			this.additionalCommands.DataContext = this;
+			this.additionalCommands.Visibility = Visibility.Visible;
+			this.additionalCommands.InvalidateVisual();
 		}
 
 		private async void Parameter_CheckedChanged(object sender, RoutedEventArgs e)
@@ -598,7 +665,7 @@ namespace LegalLab.Models.Legal
 
 			this.humanReadableText.Children.Clear();
 
-			if (XamlReader.Parse(await this.contract.ToXAML(this.contract.DefaultLanguage)) is StackPanel Panel)
+			if (XamlReader.Parse(await this.contract.ToXAML(this.Language)) is StackPanel Panel)
 			{
 				LinkedList<UIElement> Elements = new();
 
