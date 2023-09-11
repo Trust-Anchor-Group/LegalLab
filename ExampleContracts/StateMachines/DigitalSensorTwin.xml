@@ -297,7 +297,7 @@ Historical data
 								<paragraph>
 									<text>Partition ID: </text>
 									<bold>
-										<parameter name="Partition ID" />
+										<parameter name="PartitionID" />
 									</bold>
 								</paragraph>
 								<paragraph>
