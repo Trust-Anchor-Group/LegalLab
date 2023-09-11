@@ -55,6 +55,11 @@ TAG technologies.
 	* [CrowdFunding.xml](ExampleContracts/StateMachines/CrowdFunding.xml) creates a state-machine for crowd-funding a project. The
 	state-machine also contains an escrow feature that allows the machine to control how funds are released to the project, for the
 	duration of the project.
+	
+	* [DigitalSensorTwin.xml](ExampleContracts/StateMachines/DigitalSensorTwin.xml) creates a digital twin of a sensor. The
+	state-machine that is created persists sensor-data from the sensor in two ways: It subscribes to events to receive
+	momentary values as soon as they are available. It also performs polling using a preset interval, to assure key frame values
+	are a available. Sensor data is sampled and accessible both in present reports and history reports.
 
 	* [MicroLoan.xml](ExampleContracts/StateMachines/MicroLoan.xml) creates a state-machine implementing a micro-loan, where a borrower
 	borrows a small amount of money from a lender for a small amount of time. The state-machine automatically returns the borrowed money
