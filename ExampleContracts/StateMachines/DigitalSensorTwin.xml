@@ -1,35 +1,28 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<contract xmlns="urn:ieee:iot:leg:sc:1.0"
-          id="DigitalSensorTwin"
-          archiveOpt="P2Y"
-          archiveReq="P1Y"
-          canActAsTemplate="true"
-          duration="P2Y"
-          visibility="Public">
+<contract archiveOpt="P2Y" archiveReq="P1Y" canActAsTemplate="true" duration="P2Y" id="DigitalSensorTwin" visibility="Public" xmlns="urn:ieee:iot:leg:sc:1.0">
 	<Create xmlns="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd">
 		<TokenID>
 			<Random />
 		</TokenID>
 		<Creator>
-			<RoleReference role="Creator"/>
+			<RoleReference role="Creator" />
 		</Creator>
 		<Owner>
-			<RoleReference role="Owner"/>
+			<RoleReference role="Owner" />
 		</Owner>
 		<TrustProvider>
-			<RoleReference role="TrustProvider"/>
+			<RoleReference role="TrustProvider" />
 		</TrustProvider>
 		<Value>
-			<ParameterReference parameter="Value"/>
+			<ParameterReference parameter="Value" />
 		</Value>
 		<Currency>
-			<ParameterReference parameter="Currency"/>
+			<ParameterReference parameter="Currency" />
 		</Currency>
 		<CommissionPercent>
-			<ParameterReference parameter="CommissionPercent"/>
+			<ParameterReference parameter="CommissionPercent" />
 		</CommissionPercent>
 		<Expires>
-			<ParameterReference parameter="Expires"/>
+			<ParameterReference parameter="Expires" />
 		</Expires>
 		<CreatorCanDestroy>
 			<Boolean>true</Boolean>
@@ -44,86 +37,94 @@
 			<Boolean>true</Boolean>
 		</CertifierCanDestroy>
 		<Definition>
-			<StateMachine xmlns="https://paiwise.tagroot.io/Schema/StateMachines.xsd" startState="Active">
+			<StateMachine startState="Active" xmlns="https://paiwise.tagroot.io/Schema/StateMachines.xsd">
 				<Variable id="NodeID">
-					<TagReference tag="NodeID"/>
+					<TagReference tag="NodeID" />
 				</Variable>
 				<Variable id="SourceID">
-					<TagReference tag="SourceID"/>
+					<TagReference tag="SourceID" />
 				</Variable>
 				<Variable id="PartitionID">
-					<TagReference tag="PartitionID"/>
+					<TagReference tag="PartitionID" />
 				</Variable>
 				<Variable id="JID">
-					<TagReference tag="JID"/>
+					<TagReference tag="JID" />
 				</Variable>
 				<Variable id="PollingInterval">
-					<TagReference tag="PollingInterval"/>
+					<TagReference tag="PollingInterval" />
+				</Variable>
+				<Variable id="Expires">
+					<TagReference tag="Expires" />
 				</Variable>
 				<State id="Active">
 					<OnEvent actionRef="PollSensor">
 						<OnDuration>{PollingInterval}</OnDuration>
 					</OnEvent>
 					<OnEvent newState="Paused">
-						<OnXmlNote localName="Pause" namespace="https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd"/>
+						<OnXmlNote localName="Pause" namespace="https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd" />
 					</OnEvent>
 					<OnEvent newState="Done">
-						<OnXmlNote localName="Terminate" namespace="https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd"/>
+						<OnXmlNote localName="Terminate" namespace="https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd" />
+					</OnEvent>
+					<OnEvent newState="Done">
+						<OnDateTime>{Expires}</OnDateTime>
 					</OnEvent>
 				</State>
 				<State id="Paused">
 					<OnEvent newState="Active">
-						<OnXmlNote localName="Resume" namespace="https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd"/>
+						<OnXmlNote localName="Resume" namespace="https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd" />
 					</OnEvent>
 					<OnEvent newState="Done">
-						<OnXmlNote localName="Terminate" namespace="https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd"/>
+						<OnXmlNote localName="Terminate" namespace="https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd" />
+					</OnEvent>
+					<OnEvent newState="Done">
+						<OnDateTime>{Expires}</OnDateTime>
 					</OnEvent>
 				</State>
 				<State id="Done">
-					<OnEnter actionRef="End"/>
+					<OnEnter actionRef="End" />
 				</State>
 				<Action id="PollSensor">
 					<If condition="InvestedAmount&lt;ThresholdAmount">
 						<Then>
-							<TextNote content="Investment threashold not met."/>
-							<Error reason="Investment threashold not met."/>
+							<TextNote content="Investment threashold not met." />
+							<Error reason="Investment threashold not met." />
 						</Then>
 						<Else>
-							<TextNote content="Investment threashold met."/>
+							<TextNote content="Investment threashold met." />
 						</Else>
 					</If>
 				</Action>
 				<Action id="End">
-					<End/>
+					<End />
 				</Action>
 				<ReportPresent>
-					<![CDATA[
 Sensor-data
 --------------
-					]]>
-				</ReportPresent>
+			</ReportPresent>
 				<ReportHistory>
-					<![CDATA[
 Historical data
 ------------------
-					]]>
-				</ReportHistory>
+			</ReportHistory>
 			</StateMachine>
 		</Definition>
 		<Tag name="NodeID">
-			<ParameterReference parameter="NodeID"/>
+			<ParameterReference parameter="NodeID" />
 		</Tag>
 		<Tag name="SourceID">
-			<ParameterReference parameter="SourceID"/>
+			<ParameterReference parameter="SourceID" />
 		</Tag>
 		<Tag name="PartitionID">
-			<ParameterReference parameter="PartitionID"/>
+			<ParameterReference parameter="PartitionID" />
 		</Tag>
 		<Tag name="JID">
-			<ParameterReference parameter="JID"/>
+			<ParameterReference parameter="JID" />
 		</Tag>
 		<Tag name="PollingInterval">
-			<ParameterReference parameter="PollingInterval"/>
+			<ParameterReference parameter="PollingInterval" />
+		</Tag>
+		<Tag name="Expires">
+			<ParameterReference parameter="Expires" />
 		</Tag>
 		<FriendlyName>
 			<String>Digital Sensor Twin</String>
@@ -133,13 +134,13 @@ Historical data
 		</Category>
 		<Description>
 			<String>Token representing a digital twin of a sensor. The sensor is polled using a regular interval. The twin also
-			subscribes to momentary values of the sensor, if possible and supported, to receive real-time events when sensor data
-			changes. Latest sensor data is presented in the present report. Historical sensor-data is available in the history 
-			report.</String>
+	subscribes to momentary values of the sensor, if possible and supported, to receive real-time events when sensor data
+	changes. Latest sensor data is presented in the present report. Historical sensor-data is available in the history 
+	report.</String>
 		</Description>
 		<Glyph contentType="image/png">iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAABFFJREFUeJztWU1IMlsYfrqTFmgLIb5yEURlLQo3YVZUCi1qFUFQUKt2QURWm7IgIkhqJ9IP1EIIWkWuIugPLIh0GVFUBC5SocCkEM2/uYvv3oPDNNM43Thwv3lgYM77d57zeI7nzEwBy7Is/mD8RZsAbSgC0CZAG4oAtAnQhiIAbQK0oQhAmwBtKALQJkAbigC0CdCGIgBtArShCECbAG0oAtAmQBuKALQJ0EahkCMYDGJpaQklJSV5F43H4+jr60NHRwfPNz8/j3g8jmw2i5qaGoyMjORdHwBSqRScTicODg5wfX2N19dXqNVqVFRUoLGxET09Pejv7/+6ECsAn8/HApB9LS4u8mo+PT3x4vJFJpNh29vbJfPY2dkRrSe4BL77uSCTyfBs4+PjPNvCwoLkmqenp2AYBufn55JzHh8fRf0FQh9G3t7ecHx8jOLiYo69tLQUZrOZtLe3t/Hr1y+k02liSyaTMBqNqKqq4nZWUAAA0Gg0iMVixC5FbK/XC6vVyrE1Nzdjbm4O3d3dYBiG2O/v77G7u4vZ2VlMT0/D4XAIF857Dv5mS65oNCopx+FwkBy73c5arVbS3t/fz6tPAOzt7a2kfgOBgHhdSVVEyITD4bxzYrEYe3R0RNoGg0E0d2BggJOfTCbl0P6cl6ykPAXIHWx1dfWndV5eXiT153K55FAWri0rKU8BGhoaSLzH4yF2u91O7ENDQ5/mer3eb+0aX+HHBYhGo6ID+GpwKysrxF9fXy+Hrih+/CRos9nI/dTUFM+fe1hyOp08fygUIvcGg0Fyv3V1dWhtbYXJZBIPlKMa8pgBubHpdJrn9/v9xM8wDM9vs9mIv7e3VxZHMfzoDFhdXSX3FouFs1f/C5PJBI1GA+D34eni4oLjLysrI/eBQOA/5yh4EBJN+udAAwDhcBjl5eWfxhUVFSGZTAIAlpeX0dbWhkQiwYnRarXY2trC5uYmAKCpqQk+n4/4Dw8P0dXVRdpS6eZyFM2RPKcEppfQEri8vJT9HPHx8SHY397eXt4cReOkDVm4uJAALS0tsgUYHR3l1LJYLHlvhVLjf2QJpNNpqFQq0na73UilUoJTkWEYPD8/Y2ZmhthyY6PRKHQ6HWmr1WrEYjEUFgo+zdNdAmNjY8RvNpsl19VqtSTP7XZzfGtra7yZMjg4yPr9fl4dj8dDdwnk+s/OziTXXV9fJ3k6nY7ndzqdspaU6Fgks8tNyikeDAY5PpfL9a2ja27uZ79uKBRia2trJQ++srJStD/hRSSCiYkJqFQqvL+/816ZJRIJTE5OIpvNcrYvqXC73bi6ukI2m8XDwwPvJKfX63F3d4dIJIKNjQ2cnJzg5uYGkUgEDMNAr9fDaDSis7MTw8PD5IwhBFl/gv8n/PFvhRUBaBOgDUUA2gRoQxGANgHaUASgTYA2FAFoE6ANRQDaBGhDEYA2AdpQBKBNgDYUAWgToA1FANoEaONve9o8PVvYS2AAAAAASUVORK5CYII=</Glyph>
 	</Create>
-	<role name="Creator" minCount="1" maxCount="1">
+	<role maxCount="1" minCount="1" name="Creator">
 		<description xml:lang="en">
 			<paragraph>
 				<text>The part that creates the </text>
@@ -150,7 +151,7 @@ Historical data
 			</paragraph>
 		</description>
 	</role>
-	<role name="Owner" minCount="1" maxCount="1">
+	<role maxCount="1" minCount="1" name="Owner">
 		<description xml:lang="en">
 			<paragraph>
 				<text>The owner of the token, and person that can view the data collected by the </text>
@@ -161,7 +162,7 @@ Historical data
 			</paragraph>
 		</description>
 	</role>
-	<role name="TrustProvider" minCount="1" maxCount="1">
+	<role maxCount="1" minCount="1" name="TrustProvider">
 		<description xml:lang="en">
 			<paragraph>
 				<text>The part that acts as a host of the token and approves its creation.</text>
@@ -169,7 +170,7 @@ Historical data
 		</description>
 	</role>
 	<parts>
-		<templateOnly/>
+		<templateOnly />
 	</parts>
 	<parameters>
 		<stringParameter name="NodeID" guide="Node ID" minLength="1">
@@ -214,14 +215,14 @@ Historical data
 				</paragraph>
 			</description>
 		</numericalParameter>
-		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="\w{3}">
+		<stringParameter name="Currency" guide="Currency" regEx="\w{3}" minLength="3" maxLength="3">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The currency of the token.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
-		<numericalParameter name="CommissionPercent" guide="Commision (%)" min="0" max="100">
+		<numericalParameter name="CommissionPercent" guide="Commision (%)" min="0" minIncluded="true" max="100" maxIncluded="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The commission the Trust Provider gets for creating the token and managing the </text>
@@ -247,8 +248,158 @@ Historical data
 			</header>
 			<body>
 				<paragraph>
-					<text>This contract creates a token representing a digital sensor twin of a live sensor.</text>
+					<text>This contract creates a token representing a </text>
+					<italic>
+						<text>digital sensor twin</text>
+					</italic>
+					<text> of a live sensor.</text>
 				</paragraph>
+				<section>
+					<header>
+						<text>Sensor</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>The digital twin relies on data from a live sensor, integrated to the Neuron® itself, or available via a remote host (a </text>
+							<italic>
+								<text>concentrator</text>
+							</italic>
+							<text>). A sensor is addressed using up to four (4) parameters: A Node ID, a Source ID, a Partition ID and a JID. The only parameter that is required, is the Node ID. If a sensor is hosted by a remote entity, a JID (Jabber ID, or XMPP address) of the host must be provided. If the JID parameter is empty, the sensor integration has to be made on the Neuron® itself. If the node is available via a specific </text>
+							<italic>
+								<text>source</text>
+							</italic>
+							<text>, a Source ID has to be provided. A host can host nodes in multiple sources. Some hosts may host some sources that are huge, and therefore partitioned into multiple </text>
+							<italic>
+								<text>partitions</text>
+							</italic>
+							<text>. If this is the case, a Partition ID must also be provided.</text>
+						</paragraph>
+						<section>
+							<header>
+								<text>Connection parameters</text>
+							</header>
+							<body>
+								<paragraph>
+									<text>For the current node, the following live connection parameters are available:</text>
+								</paragraph>
+								<paragraph>
+									<text>Node ID: </text>
+									<bold>
+										<parameter name="NodeID" />
+									</bold>
+								</paragraph>
+								<paragraph>
+									<text>Source ID: </text>
+									<bold>
+										<parameter name="SourceID" />
+									</bold>
+								</paragraph>
+								<paragraph>
+									<text>Partition ID: </text>
+									<bold>
+										<parameter name="Partition ID" />
+									</bold>
+								</paragraph>
+								<paragraph>
+									<text>JID: </text>
+									<bold>
+										<parameter name="JID" />
+									</bold>
+								</paragraph>
+							</body>
+						</section>
+						<section>
+							<header>
+								<text>Connectivity</text>
+							</header>
+							<body>
+								<paragraph>
+									<text>If connectivity to the live sensor is lost, or integration removed, access to live sensor data will also be affected. The digital twin token can only log sensor data as long as the connectivity to the device is maintained.</text>
+								</paragraph>
+							</body>
+						</section>
+						<section>
+							<header>
+								<text>Provisioning</text>
+							</header>
+							<body>
+								<paragraph>
+									<text>Some devices are provisioned, and only provide sensor-data to authorized individuals. In such cases, the </text>
+									<italic>
+										<text>Owner</text>
+									</italic>
+									<text> of the token must be authorized read-access to the sensor data the digital twin wants to access. If the owner of the digital twin token is not authorized access, the digital twin token will not be able to log sensor data accordingly.</text>
+								</paragraph>
+							</body>
+						</section>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Operation</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>The digital twin token will be active once fully signed, and at most until </text>
+							<parameter name="Expires" />
+							<text>. The </text>
+							<italic>
+								<text>Owner</text>
+							</italic>
+							<text> of the token can temporarily pause the operation by adding a </text>
+							<text>Pause</text>
+							<text> XML note on the token, and resume operation by adding a </text>
+							<text>Terminate</text>
+							<text> XML note on the token. The </text>
+							<italic>
+								<text>Owner</text>
+							</italic>
+							<text> can also terminate the operation by adding a </text>
+							<text>Terminate</text>
+							<text> XML note on the token. Both the </text>
+							<italic>
+								<text>Owner</text>
+							</italic>
+							<text> as well as the </text>
+							<italic>
+								<text>Creator</text>
+							</italic>
+							<text> are authorized to destroy the token as well.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Value</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>The initial value of the digital sensor twin token is set to </text>
+							<parameter name="Value" />
+							<text> </text>
+							<parameter name="Currency" />
+							<text>, and is defined by the </text>
+							<italic>
+								<text>Creator</text>
+							</italic>
+							<text> in conjunction with the </text>
+							<italic>
+								<text>Owner</text>
+							</italic>
+							<text>. From this value, a </text>
+							<italic>
+								<text>commission</text>
+							</italic>
+							<text> is paid to the </text>
+							<italic>
+								<text>Trust Provider</text>
+							</italic>
+							<text> of </text>
+							<parameter name="CommissionPercent" />
+							<text> %.</text>
+						</paragraph>
+					</body>
+				</section>
 			</body>
 		</section>
 	</humanReadableText>
