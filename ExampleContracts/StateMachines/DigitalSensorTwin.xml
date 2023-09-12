@@ -63,6 +63,7 @@
 					<String></String>
 				</Variable>
 				<State id="Active">
+					<OnEnter actionRef="PollSensor"/>
 					<OnEvent actionRef="PollSensor">
 						<OnDuration>{PollingInterval}</OnDuration>
 					</OnEvent>
@@ -98,11 +99,11 @@
 						<Script>
 							<![CDATA[
 							if !empty(JID) then
-								N:=GetNode(NodeID,SourceID,PartitionID,JID);
+								N:=GetNode(NodeID,SourceID,PartitionID,JID)
 							else if !empty(PartitionID) then
-								N:=GetNode(NodeID,SourceID,PartitionID);
+								N:=GetNode(NodeID,SourceID,PartitionID)
 							else if !empty(SourceID) then
-								N:=GetNode(NodeID,SourceID);
+								N:=GetNode(NodeID,SourceID)
 							else
 								N:=GetNode(NodeID);
 								
@@ -230,28 +231,28 @@
 				</paragraph>
 			</description>
 		</stringParameter>
-		<stringParameter name="SourceID" guide="Source ID">
+		<stringParameter name="SourceID" guide="Source ID" value="MeteringTopology">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Optional ID of source hosting the node that implements the live connection with the underlying sensor.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
-		<stringParameter name="PartitionID" guide="Partition ID">
+		<stringParameter name="PartitionID" guide="Partition ID" value="">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Optional ID of the partition of the source hosting the node that implements the live connection with the underlying sensor.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
-		<stringParameter name="JID" guide="JID">
+		<stringParameter name="JID" guide="JID" value="">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Optional JID of remote entity that hosts the node that implements the live connection with the underlying sensor.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
-		<durationParameter name="PollingInterval" guide="Polling Interval">
+		<durationParameter name="PollingInterval" guide="Polling Interval" value="PT1H">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Interval with which to poll the sensor for data.</text>
