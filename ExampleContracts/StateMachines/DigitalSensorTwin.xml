@@ -56,9 +56,18 @@
 				<Variable id="Expires">
 					<TagReference tag="Expires" />
 				</Variable>
+				<Variable id="Error">
+					<Boolean>false</Boolean>
+				</Variable>
+				<Variable id="ErrorMessage">
+					<String></String>
+				</Variable>
 				<State id="Active">
 					<OnEvent actionRef="PollSensor">
 						<OnDuration>{PollingInterval}</OnDuration>
+					</OnEvent>
+					<OnEvent actionRef="PollSensor">
+						<OnXmlNote localName="Poll" namespace="https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd" />
 					</OnEvent>
 					<OnEvent newState="Paused">
 						<OnXmlNote localName="Pause" namespace="https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd" />
@@ -85,27 +94,66 @@
 					<OnEnter actionRef="End" />
 				</State>
 				<Action id="PollSensor">
-					<If condition="InvestedAmount&lt;ThresholdAmount">
-						<Then>
-							<TextNote content="Investment threashold not met." />
-							<Error reason="Investment threashold not met." />
-						</Then>
-						<Else>
-							<TextNote content="Investment threashold met." />
-						</Else>
-					</If>
+					<Try>
+						<Script>
+							<![CDATA[
+							if !empty(JID) then
+								N:=GetNode(NodeID,SourceID,PartitionID,JID);
+							else if !empty(PartitionID) then
+								N:=GetNode(NodeID,SourceID,PartitionID);
+							else if !empty(SourceID) then
+								N:=GetNode(NodeID,SourceID);
+							else
+								N:=GetNode(NodeID);
+								
+							if !exists(N) then error("Sensor not found on broker.");
+							if !N.IsReadable then error("Sensor node is not readable.");
+							if !(N is Waher.Things.ISensor) then error("Node is not a sensor node.");
+						
+							D:=ReadSensorData(N);
+							
+							if !D.Ok then
+							(
+								foreach E in D.Errors do error(E.ErrorMessage);
+								error("Unable to read sensor.")
+							);
+							]]>
+						</Script>
+						<ForEach set="D.Fields" variable="F">
+							<PersistVariable onlyIfChanged="true">
+								<Name>
+									<Calc>F.Value.Name</Calc>
+								</Name>
+								<Value>
+									<Calc>F.Value.Value</Calc>
+								</Value>
+							</PersistVariable>
+						</ForEach>
+						<Catch exceptionVariable="ex">
+							<PersistVariable name="Error" onlyIfChanged="true">
+								<Value>
+									<Boolean>true</Boolean>
+								</Value>
+							</PersistVariable>
+							<PersistVariable name="ErrorMessage" onlyIfChanged="true">
+								<Value>
+									<Calc>ex.Message</Calc>
+								</Value>
+							</PersistVariable>
+						</Catch>
+					</Try>
 				</Action>
 				<Action id="End">
 					<End />
 				</Action>
 				<ReportPresent>
-Sensor-data
---------------
-			</ReportPresent>
+					Sensor-data
+					--------------
+				</ReportPresent>
 				<ReportHistory>
-Historical data
-------------------
-			</ReportHistory>
+					Historical data
+					------------------
+				</ReportHistory>
 			</StateMachine>
 		</Definition>
 		<Tag name="NodeID">
@@ -133,10 +181,12 @@ Historical data
 			<String>Example</String>
 		</Category>
 		<Description>
-			<String>Token representing a digital twin of a sensor. The sensor is polled using a regular interval. The twin also
-	subscribes to momentary values of the sensor, if possible and supported, to receive real-time events when sensor data
-	changes. Latest sensor data is presented in the present report. Historical sensor-data is available in the history 
-	report.</String>
+			<String>
+				Token representing a digital twin of a sensor. The sensor is polled using a regular interval. The twin also
+				subscribes to momentary values of the sensor, if possible and supported, to receive real-time events when sensor data
+				changes. Latest sensor data is presented in the present report. Historical sensor-data is available in the history
+				report.
+			</String>
 		</Description>
 		<Glyph contentType="image/png">iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAABFFJREFUeJztWU1IMlsYfrqTFmgLIb5yEURlLQo3YVZUCi1qFUFQUKt2QURWm7IgIkhqJ9IP1EIIWkWuIugPLIh0GVFUBC5SocCkEM2/uYvv3oPDNNM43Thwv3lgYM77d57zeI7nzEwBy7Is/mD8RZsAbSgC0CZAG4oAtAnQhiIAbQK0oQhAmwBtKALQJkAbigC0CdCGIgBtArShCECbAG0oAtAmQBuKALQJ0EahkCMYDGJpaQklJSV5F43H4+jr60NHRwfPNz8/j3g8jmw2i5qaGoyMjORdHwBSqRScTicODg5wfX2N19dXqNVqVFRUoLGxET09Pejv7/+6ECsAn8/HApB9LS4u8mo+PT3x4vJFJpNh29vbJfPY2dkRrSe4BL77uSCTyfBs4+PjPNvCwoLkmqenp2AYBufn55JzHh8fRf0FQh9G3t7ecHx8jOLiYo69tLQUZrOZtLe3t/Hr1y+k02liSyaTMBqNqKqq4nZWUAAA0Gg0iMVixC5FbK/XC6vVyrE1Nzdjbm4O3d3dYBiG2O/v77G7u4vZ2VlMT0/D4XAIF857Dv5mS65oNCopx+FwkBy73c5arVbS3t/fz6tPAOzt7a2kfgOBgHhdSVVEyITD4bxzYrEYe3R0RNoGg0E0d2BggJOfTCbl0P6cl6ykPAXIHWx1dfWndV5eXiT153K55FAWri0rKU8BGhoaSLzH4yF2u91O7ENDQ5/mer3eb+0aX+HHBYhGo6ID+GpwKysrxF9fXy+Hrih+/CRos9nI/dTUFM+fe1hyOp08fygUIvcGg0Fyv3V1dWhtbYXJZBIPlKMa8pgBubHpdJrn9/v9xM8wDM9vs9mIv7e3VxZHMfzoDFhdXSX3FouFs1f/C5PJBI1GA+D34eni4oLjLysrI/eBQOA/5yh4EBJN+udAAwDhcBjl5eWfxhUVFSGZTAIAlpeX0dbWhkQiwYnRarXY2trC5uYmAKCpqQk+n4/4Dw8P0dXVRdpS6eZyFM2RPKcEppfQEri8vJT9HPHx8SHY397eXt4cReOkDVm4uJAALS0tsgUYHR3l1LJYLHlvhVLjf2QJpNNpqFQq0na73UilUoJTkWEYPD8/Y2ZmhthyY6PRKHQ6HWmr1WrEYjEUFgo+zdNdAmNjY8RvNpsl19VqtSTP7XZzfGtra7yZMjg4yPr9fl4dj8dDdwnk+s/OziTXXV9fJ3k6nY7ndzqdspaU6Fgks8tNyikeDAY5PpfL9a2ja27uZ79uKBRia2trJQ++srJStD/hRSSCiYkJqFQqvL+/816ZJRIJTE5OIpvNcrYvqXC73bi6ukI2m8XDwwPvJKfX63F3d4dIJIKNjQ2cnJzg5uYGkUgEDMNAr9fDaDSis7MTw8PD5IwhBFl/gv8n/PFvhRUBaBOgDUUA2gRoQxGANgHaUASgTYA2FAFoE6ANRQDaBGhDEYA2AdpQBKBNgDYUAWgToA1FANoEaONve9o8PVvYS2AAAAAASUVORK5CYII=</Glyph>
 	</Create>
@@ -340,32 +390,124 @@ Historical data
 					</header>
 					<body>
 						<paragraph>
-							<text>The digital twin token will be active once fully signed, and at most until </text>
-							<parameter name="Expires" />
-							<text>. The </text>
+							<text>The operation of the token is divided into three categories: </text>
 							<italic>
-								<text>Owner</text>
+								<text>Implicit</text>
 							</italic>
-							<text> of the token can temporarily pause the operation by adding a </text>
-							<text>Pause</text>
-							<text> XML note on the token, and resume operation by adding a </text>
-							<text>Terminate</text>
-							<text> XML note on the token. The </text>
+							<text>, </text>
 							<italic>
-								<text>Owner</text>
+								<text>Notes</text>
 							</italic>
-							<text> can also terminate the operation by adding a </text>
-							<text>Terminate</text>
-							<text> XML note on the token. Both the </text>
+							<text> and </text>
 							<italic>
-								<text>Owner</text>
+								<text>Lifecycle</text>
 							</italic>
-							<text> as well as the </text>
-							<italic>
-								<text>Creator</text>
-							</italic>
-							<text> are authorized to destroy the token as well.</text>
+							<text>, each described in the following subsections.</text>
 						</paragraph>
+						<section>
+							<header>
+								<text>Implicit operation</text>
+							</header>
+							<body>
+								<paragraph>
+									<text>Once the state machine belonging to the token is in an </text>
+									<italic>
+										<text>Active</text>
+									</italic>
+									<text> state, it starts to poll the sensor regularly, using the defined interval (</text>
+									<parameter name="PollingInterval" />
+									<text>). This polling is suspended if the state machine goes into the </text>
+									<italic>
+										<text>Puased</text>
+									</italic>
+									<text> state, but is resumed again, if set into the </text>
+									<italic>
+										<text>Active</text>
+									</italic>
+									<text> state again. This repreated polling continues until the token expires (</text>
+									<parameter name="Expires" />
+									<text>), or the token is manually terminated or destroyed.</text>
+								</paragraph>
+							</body>
+						</section>
+						<section>
+							<header>
+								<text>Operation via Notes</text>
+							</header>
+							<body>
+								<paragraph>
+									<text>The owner can add XML notes to the token, and thus control its operation. The following notes can be added (all empty XML elements with the indicated local name using the namespace </text>
+									<text>https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd).</text>
+								</paragraph>
+								<bulletItems>
+									<item>
+										<text>The </text>
+										<italic>
+											<text>Owner</text>
+										</italic>
+										<text> of the token can temporarily pause the operation by adding a </text>
+										<italic>
+											<text>Pause</text>
+										</italic>
+										<text> XML note on the token.</text>
+									</item>
+									<item>
+										<text>Resuming operation is done by adding a </text>
+										<italic>
+											<text>Resume</text>
+										</italic>
+										<text> XML note on the token.</text>
+									</item>
+									<item>
+										<text>The </text>
+										<italic>
+											<text>Owner</text>
+										</italic>
+										<text> can also terminate the operation by adding a </text>
+										<italic>
+											<text>Terminate</text>
+										</italic>
+										<text> XML note on the token.</text>
+									</item>
+									<item>
+										<text>The token refularly polls the sensor using the predefined interval (</text>
+										<parameter name="PollingInterval" />
+										<text>). The owner can request an extra-ordinarly polling of the sensor by adding a </text>
+										<italic>
+											<text>Poll</text>
+										</italic>
+										<text> XML Note.</text>
+									</item>
+								</bulletItems>
+								<paragraph>
+									<text>All notes logged on the token are kept in the ledger and viewed in the token event log.</text>
+								</paragraph>
+							</body>
+						</section>
+						<section>
+							<header>
+								<text>Lifecycle of token</text>
+							</header>
+							<body>
+								<paragraph>
+									<text>The token expires at </text>
+									<parameter name="Expires" />
+									<text>, or if the owner adds a </text>
+									<italic>
+										<text>Terminate</text>
+									</italic>
+									<text> XML note on the token. Both the </text>
+									<italic>
+										<text>Owner</text>
+									</italic>
+									<text> as well as the </text>
+									<italic>
+										<text>Creator</text>
+									</italic>
+									<text> are also authorized to destroy the token explicitly.</text>
+								</paragraph>
+							</body>
+						</section>
 					</body>
 				</section>
 				<section>

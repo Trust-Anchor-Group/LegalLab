@@ -12,6 +12,7 @@
 	<xs:element name="Pause" type="Empty"/>
 	<xs:element name="Resume" type="Empty"/>
 	<xs:element name="Terminate" type="Empty"/>
+	<xs:element name="Poll" type="Empty"/>
 
 	<xs:complexType name="Empty"/>
 </xs:schema>
