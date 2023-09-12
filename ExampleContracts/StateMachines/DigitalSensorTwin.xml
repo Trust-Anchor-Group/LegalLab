@@ -121,16 +121,24 @@
 							]]>
 						</Script>
 						<ForEach set="D.Fields" variable="F">
-							<PersistVariable onlyIfChanged="true">
-								<Name>
-									<Calc>F.Value.Name</Calc>
-								</Name>
-								<Value>
-									<Calc>F.Value.Value</Calc>
-								</Value>
-							</PersistVariable>
+							<If condition="F.Value is Waher.Things.SensorData.Field">
+								<!-- If multiple fields are reported using the same name, they are reported as arrays of fields, 
+								     and not individual fields. By doing this check, we make sure to only persist individual fields,
+										 and not arrays. -->
+								<Then>
+									<PersistVariable onlyIfChanged="true">
+										<Name>
+											<Calc>F.Value.Name</Calc>
+										</Name>
+										<Value>
+											<Calc>F.Value.Value</Calc>
+										</Value>
+									</PersistVariable>
+								</Then>
+							</If>
 						</ForEach>
 						<Catch exceptionVariable="ex">
+							<LogEvent type="Critical" message="{ex.Message}"/>
 							<PersistVariable name="Error" onlyIfChanged="true">
 								<Value>
 									<Boolean>true</Boolean>
