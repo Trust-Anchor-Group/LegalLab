@@ -223,7 +223,7 @@ DurationToStr(D):=
 );
 
 DuratonToStr(PollingInterval)
-}}, until it is manually terminated, or until {{Expires.ToShortDateString()}}, 
+}}, until it is manually terminated, or until {{Years(Expires)}}-{{Months(Expires)}}-{{Days(Expires)}}, 
 whichever comes first.
 
 {{if Error then ]]
