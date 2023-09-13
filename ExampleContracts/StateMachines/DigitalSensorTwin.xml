@@ -137,6 +137,16 @@
 								</Then>
 							</If>
 						</ForEach>
+						<PersistVariable name="Error" onlyIfChanged="true">
+							<Value>
+								<Boolean>false</Boolean>
+							</Value>
+						</PersistVariable>
+						<PersistVariable name="ErrorMessage" onlyIfChanged="true">
+							<Value>
+								<String></String>
+							</Value>
+						</PersistVariable>
 						<Catch exceptionVariable="ex">
 							<LogEvent type="Critical" message="{ex.Message}"/>
 							<PersistVariable name="Error" onlyIfChanged="true">
