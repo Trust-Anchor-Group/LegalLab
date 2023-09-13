@@ -166,12 +166,87 @@
 					<End />
 				</Action>
 				<ReportPresent>
-					Sensor-data
-					--------------
+					<![CDATA[
+Data from sensor
+-------------------
+
+The following data is available from the sensor:
+
+| Field | Value |
+|:---------|------:|
+{{foreach P in CurrentState.VariableValues??[] do
+(
+	s:=P.Name;
+	if s!="NodeID" and s!="SourceID" and s!="PartitionID" and s!="JID" and s!="PollingInterval" and s!="Expires" and s!="Error" and s!="ErrorMessage" then
+		]]| ((P.Name)) | `((
+First:=true;
+Rows:=Str(P.Value).Replace("\r\n","\n").Replace("\r","\n").Split("\n",System.StringSplitOptions.None);
+s:="";
+
+foreach Row in Rows do
+(
+	if First then First:=false else s+="<br/>";
+	
+	if !empty(Row) then s+="`"+Row+"`"
+);
+
+s
+))` |
+[[
+)}}
+
+Configuration
+----------------
+
+The following sensor configuration has been used to access the sensor data:
+
+| Parameter    | Value             |
+|:-------------|:------------------|
+| Node ID      | `{{NodeID}}`      |
+| Source ID    | `{{SourceID}}`    |
+| Partition ID | `{{PartitionID}}` |
+| JID          | `{{NodeID}}`      |
+
+The sensor data is polled at least every {{
+Append(s,s2):=empty(s)?s2:s+", "+s2;
+Append(s,N,UnitSing,UnitPlur):=N=0?s:N=1?Append(s,Str(N)+" "+UnitSing):Append(s,Str(N)+" "+UnitPlur);
+DurationToStr(D):=
+(
+	s:="";
+	s:=Append(s,Years(D),"year","years");
+	s:=Append(s,Months(D),"month","months");
+	s:=Append(s,Days(D),"day","days");
+	s:=Append(s,Hours(D),"hour","hours");
+	s:=Append(s,Minutes(D),"minute","minutes");
+	s:=Append(s,Seconds(D),"second","seconds");
+	s
+);
+
+DuratonToStr(PollingInterval)
+}}, until it is manually terminated, or until {{Expires.ToShortDateString()}}, 
+whichever comes first.
+
+{{if Error then ]]
+Error
+--------
+
+There's currently an error reported when trying to read the sensor. The following error has been reported:
+
+((ErrorMessage))
+
+[[ else ]]
+OK
+----
+
+There's currently no error reported.
+[[}}
+]]>
 				</ReportPresent>
 				<ReportHistory>
-					Historical data
-					------------------
+					<![CDATA[
+Historical data
+------------------
+					]]>
 				</ReportHistory>
 			</StateMachine>
 		</Definition>
