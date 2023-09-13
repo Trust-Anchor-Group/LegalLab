@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Waher.Content.Xml;
 using Waher.Events;
 using Waher.Networking.XMPP;
@@ -52,20 +53,25 @@ namespace LegalLab.Models.Tokens
 			this.addXmlNote = new Command(this.CanExecuteAddNote, this.ExecuteAddXmlNote);
 		}
 
-		private async Task NeuroFeaturesClient_TokenAdded(object Sender, TokenEventArgs e)
+		private Task NeuroFeaturesClient_TokenAdded(object Sender, TokenEventArgs e)
 		{
-			TokenModel Token = await TokenModel.CreateAsync(this.neuroFeaturesClient, e.Token);
-			Token.Selected += this.Token_Selected;
-			Token.Deselected += this.Token_Deselected;
-
-			lock (this.tokens)
+			MainWindow.UpdateGui(async () =>
 			{
-				this.tokens.Insert(0, Token);
-			}
+				TokenModel Token = await TokenModel.CreateAsync(this.neuroFeaturesClient, e.Token);
+				Token.Selected += this.Token_Selected;
+				Token.Deselected += this.Token_Deselected;
 
-			this.RaisePropertyChanged(nameof(this.Tokens));
+				lock (this.tokens)
+				{
+					this.tokens.Insert(0, Token);
+				}
 
-			Task _ = this.LoadTotals();
+				this.RaisePropertyChanged(nameof(this.Tokens));
+
+				Task _ = this.LoadTotals();
+			});
+
+			return Task.CompletedTask;
 		}
 
 		private void Token_Deselected(object sender, EventArgs e)
@@ -113,23 +119,28 @@ namespace LegalLab.Models.Tokens
 
 		private Task NeuroFeaturesClient_TokenRemoved(object Sender, TokenEventArgs e)
 		{
-			lock (this.tokens)
+			MainWindow.UpdateGui(() =>
 			{
-				int i, c = this.tokens.Count;
-
-				for (i = 0; i < c; i++)
+				lock (this.tokens)
 				{
-					if (this.tokens[i].TokenId == e.Token.TokenId)
+					int i, c = this.tokens.Count;
+
+					for (i = 0; i < c; i++)
 					{
-						this.tokens.RemoveAt(i);
-						break;
+						if (this.tokens[i].TokenId == e.Token.TokenId)
+						{
+							this.tokens.RemoveAt(i);
+							break;
+						}
 					}
 				}
-			}
 
-			this.RaisePropertyChanged(nameof(this.Tokens));
+				this.RaisePropertyChanged(nameof(this.Tokens));
 
-			Task _ = this.LoadTotals();
+				Task _ = this.LoadTotals();
+		
+				return Task.CompletedTask;
+			});
 
 			return Task.CompletedTask;
 		}
@@ -313,52 +324,62 @@ namespace LegalLab.Models.Tokens
 			await base.Start();
 		}
 
-		private async Task NeuroFeaturesClient_VariablesUpdated(object Sender, VariablesUpdatedEventArgs e)
+		private Task NeuroFeaturesClient_VariablesUpdated(object Sender, VariablesUpdatedEventArgs e)
 		{
-			try
+			MainWindow.UpdateGui(async () =>
 			{
-				foreach (object Control in MainWindow.currentInstance.TabControl.Items)
+				try
 				{
-					if (Control is not TabItem Tab)
-						continue;
+					foreach (object Control in MainWindow.currentInstance.TabControl.Items)
+					{
+						if (Control is not TabItem Tab)
+							continue;
 
-					if (Tab.Content is not ReportTab ReportTab)
-						continue;
+						if (Tab.Content is not ReportTab ReportTab)
+							continue;
 
-					if (ReportTab.Report.	TokenId != e.TokenId)
-						continue;
+						if (ReportTab.Report.TokenId != e.TokenId)
+							continue;
 
-					await ReportTab.Report.OnVariablesUpdated(Sender, e);
+						await ReportTab.Report.OnVariablesUpdated(Sender, e);
+					}
 				}
-			}
-			catch (Exception ex)
-			{
-				MainWindow.ErrorBox(ex.Message);
-			}
+				catch (Exception ex)
+				{
+					MainWindow.ErrorBox(ex.Message);
+				}
+			});
+
+			return Task.CompletedTask;
 		}
 
-		private async Task NeuroFeaturesClient_StateUpdated(object Sender, NewStateEventArgs e)
+		private Task NeuroFeaturesClient_StateUpdated(object Sender, NewStateEventArgs e)
 		{
-			try
+			MainWindow.UpdateGui(async () =>
 			{
-				foreach (object Control in MainWindow.currentInstance.TabControl.Items)
+				try
 				{
-					if (Control is not TabItem Tab)
-						continue;
+					foreach (object Control in MainWindow.currentInstance.TabControl.Items)
+					{
+						if (Control is not TabItem Tab)
+							continue;
 
-					if (Tab.Content is not ReportTab ReportTab)
-						continue;
+						if (Tab.Content is not ReportTab ReportTab)
+							continue;
 
-					if (ReportTab.Report.TokenId != e.TokenId)
-						continue;
+						if (ReportTab.Report.TokenId != e.TokenId)
+							continue;
 
-					await ReportTab.Report.OnNewState(Sender, e);
+						await ReportTab.Report.OnNewState(Sender, e);
+					}
 				}
-			}
-			catch (Exception ex)
-			{
-				MainWindow.ErrorBox(ex.Message);
-			}
+				catch (Exception ex)
+				{
+					MainWindow.ErrorBox(ex.Message);
+				}
+			});
+
+			return Task.CompletedTask;
 		}
 
 	}
