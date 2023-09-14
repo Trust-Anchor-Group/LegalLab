@@ -222,7 +222,7 @@ DurationToStr(D):=
 	s
 );
 
-DuratonToStr(PollingInterval)
+DurationToStr(PollingInterval)
 }}, until it is manually terminated, or until {{Years(Expires)}}-{{Months(Expires)}}-{{Days(Expires)}}, 
 whichever comes first.
 
