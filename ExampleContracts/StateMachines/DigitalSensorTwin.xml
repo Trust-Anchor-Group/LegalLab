@@ -129,11 +129,11 @@
 							FT:=Waher.Things.SensorData.FieldType;
 							Types:=0;
 							
-							if Momentary then Types:=Types or FT.Momentary;
-							if Identity then Types:=Types or FT.Identity;
-							if Status then Types:=Types or FT.Status;
-							if Computed then Types:=Types or FT.Computed;
-							if Peak then Types:=Types or FT.Peak;
+							if Momentary then Types|=FT.Momentary;
+							if Identity then Types|=FT.Identity;
+							if Status then Types|=FT.Status;
+							if Computed then Types|=FT.Computed;
+							if Peak then Types|=FT.Peak;
 						
 							D:=ReadSensorData(N,Types);
 							
