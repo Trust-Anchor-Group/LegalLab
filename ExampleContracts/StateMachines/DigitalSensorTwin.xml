@@ -155,7 +155,7 @@
 											<Calc>F.Value.Name</Calc>
 										</Name>
 										<Value>
-											<Calc>F.Value.Value</Calc>
+											<Calc>F.Value is Waher.Things.SensorData.QuantityField ? F.Value.PersistableQuantity : F.Value.Value</Calc>
 										</Value>
 									</PersistVariable>
 								</Then>
