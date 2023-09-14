@@ -50,6 +50,21 @@
 				<Variable id="JID">
 					<TagReference tag="JID" />
 				</Variable>
+				<Variable id="Momentary">
+					<TagReference tag="Momentary" />
+				</Variable>
+				<Variable id="Identity">
+					<TagReference tag="Identity" />
+				</Variable>
+				<Variable id="Status">
+					<TagReference tag="Status" />
+				</Variable>
+				<Variable id="Computed">
+					<TagReference tag="Computed" />
+				</Variable>
+				<Variable id="Peak">
+					<TagReference tag="Peak" />
+				</Variable>
 				<Variable id="PollingInterval">
 					<TagReference tag="PollingInterval" />
 				</Variable>
@@ -111,7 +126,16 @@
 							if !N.IsReadable then error("Sensor node is not readable.");
 							if !(N is Waher.Things.ISensor) then error("Node is not a sensor node.");
 						
-							D:=ReadSensorData(N);
+							FT:=Waher.Things.SensorData.FieldType;
+							Types:=0;
+							
+							if Momentary then Types:=Types or FT.Momentary;
+							if Identity then Types:=Types or FT.Identity;
+							if Status then Types:=Types or FT.Status;
+							if Computed then Types:=Types or FT.Computed;
+							if Peak then Types:=Types or FT.Peak;
+						
+							D:=ReadSensorData(N,Types);
 							
 							if !D.Ok then
 							(
@@ -177,7 +201,19 @@ The following data is available from the sensor:
 {{foreach P in CurrentState.VariableValues??[] do
 (
 	s:=P.Name;
-	if s!="NodeID" and s!="SourceID" and s!="PartitionID" and s!="JID" and s!="PollingInterval" and s!="Expires" and s!="Error" and s!="ErrorMessage" then
+	if s!="NodeID" and 
+		s!="SourceID" and 
+		s!="PartitionID" and 
+		s!="JID" and 
+		s!="Momentary" and 
+		s!="Identity" and 
+		s!="Status" and 
+		s!="Computed" and 
+		s!="Peak" and 
+		s!="PollingInterval" and 
+		s!="Expires" and 
+		s!="Error" and 
+		s!="ErrorMessage" then
 		]]| ((P.Name)) | `((
 First:=true;
 Rows:=Str(P.Value).Replace("\r\n","\n").Replace("\r","\n").Split("\n",System.StringSplitOptions.None);
@@ -206,6 +242,16 @@ The following sensor configuration has been used to access the sensor data:
 | Source ID    | `{{SourceID}}`    |
 | Partition ID | `{{PartitionID}}` |
 | JID          | `{{NodeID}}`      |
+
+The following types of sensor data are read:
+
+| Type             | Included        |
+|:-----------------|:---------------:|
+| Momentary Values | `{{Momentary}}` |
+| Identity Values  | `{{Identity}}`  |
+| Status Values    | `{{Status}}`    |
+| Computed Values  | `{{Computed}}`  |
+| Peak Values      | `{{Peak}}`      |
 
 The sensor data is polled at least every {{
 Append(s,s2):=empty(s)?s2:s+", "+s2;
@@ -261,6 +307,21 @@ Historical data
 		</Tag>
 		<Tag name="JID">
 			<ParameterReference parameter="JID" />
+		</Tag>
+		<Tag name="Momentary">
+			<ParameterReference parameter="Momentary" />
+		</Tag>
+		<Tag name="Identity">
+			<ParameterReference parameter="Identity" />
+		</Tag>
+		<Tag name="Status">
+			<ParameterReference parameter="Status" />
+		</Tag>
+		<Tag name="Computed">
+			<ParameterReference parameter="Computed" />
+		</Tag>
+		<Tag name="Peak">
+			<ParameterReference parameter="Peak" />
 		</Tag>
 		<Tag name="PollingInterval">
 			<ParameterReference parameter="PollingInterval" />
@@ -345,6 +406,61 @@ Historical data
 				</paragraph>
 			</description>
 		</stringParameter>
+		<booleanParameter name="Momentary" value="true" exp="Momentary or Identity or Status or Computed or Peak">
+			<description xml:lang="en">
+				<paragraph>
+					<text>If </text>
+					<bold>
+						<text>momentary values</text>
+					</bold>
+					<text> are to be read.</text>
+				</paragraph>
+			</description>
+		</booleanParameter>
+		<booleanParameter name="Identity" value="false" exp="Momentary or Identity or Status or Computed or Peak">
+			<description xml:lang="en">
+				<paragraph>
+					<text>If </text>
+					<bold>
+						<text>identity values</text>
+					</bold>
+					<text> are to be read.</text>
+				</paragraph>
+			</description>
+		</booleanParameter>
+		<booleanParameter name="Status" value="false" exp="Momentary or Identity or Status or Computed or Peak">
+			<description xml:lang="en">
+				<paragraph>
+					<text>If </text>
+					<bold>
+						<text>status values</text>
+					</bold>
+					<text> are to be read.</text>
+				</paragraph>
+			</description>
+		</booleanParameter>
+		<booleanParameter name="Computed" value="false" exp="Momentary or Identity or Status or Computed or Peak">
+			<description xml:lang="en">
+				<paragraph>
+					<text>If </text>
+					<bold>
+						<text>computed values</text>
+					</bold>
+					<text> are to be read.</text>
+				</paragraph>
+			</description>
+		</booleanParameter>
+		<booleanParameter name="Peak" value="false" exp="Momentary or Identity or Status or Computed or Peak">
+			<description xml:lang="en">
+				<paragraph>
+					<text>If </text>
+					<bold>
+						<text>peak values</text>
+					</bold>
+					<text> are to be read.</text>
+				</paragraph>
+			</description>
+		</booleanParameter>
 		<durationParameter name="PollingInterval" guide="Polling Interval" value="PT1H">
 			<description xml:lang="en">
 				<paragraph>
