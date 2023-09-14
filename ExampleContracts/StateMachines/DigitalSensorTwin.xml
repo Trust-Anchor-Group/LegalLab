@@ -317,7 +317,7 @@ Historical data
 		<templateOnly />
 	</parts>
 	<parameters>
-		<stringParameter name="NodeID" guide="Node ID" minLength="1">
+		<stringParameter name="NodeID" guide="Node ID" value="" exp="!(empty(JID) and empty(NodeID))">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The ID of the node, that implements the live connection with the underlying sensor.</text>
@@ -338,7 +338,7 @@ Historical data
 				</paragraph>
 			</description>
 		</stringParameter>
-		<stringParameter name="JID" guide="JID" value="">
+		<stringParameter name="JID" guide="JID" value="" exp="!(empty(JID) and empty(NodeID))">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Optional JID of remote entity that hosts the node that implements the live connection with the underlying sensor.</text>
