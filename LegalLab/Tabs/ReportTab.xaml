@@ -6,7 +6,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel LastChildFill="True">
-        <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" DockPanel.Dock="Top">
+        <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" DockPanel.Dock="Top">
             <StackPanel Name="ReportPanel" Margin="10,10,10,10">
             </StackPanel>
         </ScrollViewer>
