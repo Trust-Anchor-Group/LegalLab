@@ -105,10 +105,17 @@ namespace LegalLab.Extensions
 		/// <returns>Label</returns>
 		public static string GetLabel(this Parameter P)
 		{
-			if (string.IsNullOrEmpty(P.Guide))
-				return P.Name + ":";
+			string s = P.Name;
+
+			if (P is BooleanParameter BP)
+				s += ".";
 			else
-				return P.Name + " (" + P.Guide + "):";
+				s += ":";
+
+			if (string.IsNullOrEmpty(P.Guide))
+				return s;
+			else
+				return s + " (" + P.Guide + ")";
 		}
 
 		/// <summary>
