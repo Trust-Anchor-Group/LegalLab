@@ -292,6 +292,138 @@ There's currently no error reported.
 					<![CDATA[
 Historical data
 ------------------
+
+{{
+ByCategory:={};
+Quantity:=Waher.Things.SensorData.PersistableQuantity;
+Double:=System.Double;
+Int32:=System.Int32;
+Int64:=System.Int64;
+
+foreach P in CurrentState.VariableValues??[] do
+(
+	s:=P.Name;
+	if s!="NodeID" and 
+		s!="SourceID" and 
+		s!="PartitionID" and 
+		s!="JID" and 
+		s!="Momentary" and 
+		s!="Identity" and 
+		s!="Status" and 
+		s!="Computed" and 
+		s!="Peak" and 
+		s!="PollingInterval" and 
+		s!="Expires" and 
+		s!="Error" and 
+		s!="ErrorMessage" then
+	(
+		Values:=eval(s) ??? [];
+		Category:=Contains(s,", ") ? Before(s,", ") : s;
+
+		foreach Value in Values do
+		(
+			Category2:=Value is Quantity ? Category+" "+Value.Unit : Category;
+			if Value is Quantity or Value is Double or Value is Int32 or Value is Int64 then
+			(
+				ByCat:=ByCategory[Category] ??? null;
+				if !exists(ByCat) then ByCategory[Category]:=ByCat:={"Category":Category,"ByName":{},"MaxCount":0};
+
+				ByName:=ByCat.ByName[Name] ??? null;
+				if !exists(ByName) then ByCat.ByName[Name]:=ByName:={"Timestamps":[],"Samples":[],"Index":ByCat.ByName.Count};
+				ByName.Timestamps:=join(ByName.Timestamps,F.Timestamp);
+				ByName.Samples:=v:=join(ByName.Samples,F.Value);
+				c:=count(v);
+				if c>ByCat.MaxCount then ByCat.MaxCount:=c;
+			)
+		)
+	)
+);
+
+Colors:=["Green","Blue","Red","Yellow","Cyan","Magenta"];
+NrColors:=count(Colors);
+
+foreach Category in ByCategory.Keys do
+(
+	CatRec:=ByCategory[Category];
+	if CatRec.MaxCount>=2 then
+	(
+		]]### ((Category))
+
+[[;
+		try
+		(
+			G:=null;
+
+			NameByIndex:={};
+			foreach Name in CatRec.ByName.Keys do
+			(
+				NameRec:=CatRec.ByName[Name];
+				Color:=Alpha(Colors[NameRec.Index MOD NrColors],255-32*Floor(NameRec.Index / NrColors));
+				NameByIndex[Str(NameRec.Index)]:={"Name":Name,"Index":NameRec.Index,"Color":Color};
+				G2:=plot2dline(NameRec.Timestamps,NameRec.Samples,Color);
+				if exists(G) then G+=G2 else G:=G2;
+			);
+
+			G.Title:=Category;
+
+			]]```graph
+((G.ToXml();))
+[[;
+			]]```
+
+[[;
+			if count(CatRec.ByName)>1 then
+			(
+				]]```layout
+<Layout2D xmlns="http://waher.se/Schema/Layout2D.xsd"
+          background="ThemeBackground" font="Text" textColor="Black">
+  <SolidBackground id="ThemeBackground" color="White"/>[[;
+
+				foreach Index in NameByIndex.Keys do
+				(
+					Info:=NameByIndex[Index];
+					]]
+  <SolidBackground id="Color((Index))" color="#((HexEncode(Info.Color.Red,1);))((HexEncode(Info.Color.Green,1);))((HexEncode(Info.Color.Blue,1);))((HexEncode(Info.Color.Alpha,1);))"/>[[
+				);
+
+				]]
+  <Grid columns="2">[[;
+
+				foreach Index in NameByIndex.Keys do
+				(
+					Info:=NameByIndex[Index];
+					]]
+    <Cell>
+      <Margins left="1mm" top="1mm" bottom="1mm" right="1mm">
+        <RoundedRectangle radiusX="2mm" radiusY="2mm" width="1cm" height=".7cm" fill="Color((Index))"/>
+      </Margins>
+    </Cell>
+    <Cell>
+      <Margins left="1mm" top="1mm" bottom="1mm" right="1mm">
+        <Label text="((Info.Name))" x="50%" y="50%" halign="Center" valign="Center"/>
+      </Margins>
+    </Cell>[[
+				);
+
+
+				]]
+  </Grid>
+</Layout2D>
+[[;
+				]]```
+
+[[
+			)
+		)
+		catch
+		(
+			]]((Exception.Message))
+
+[[
+		)
+	)
+)
+}}
 					]]>
 				</ReportHistory>
 			</StateMachine>
