@@ -295,7 +295,7 @@ namespace LegalLab.Models.Legal
 
 					await this.PopulateHumanReadableText();
 
-					if (!(this.languageOptions is null))
+					if (this.languageOptions is not null)
 						await this.PopulateParameters(this.languageOptions, this.parameterOptions, this.additionalCommands, null);
 				}
 			}

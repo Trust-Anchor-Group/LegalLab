@@ -2066,13 +2066,13 @@ namespace LegalLab.Models.Design
 				HumanReadableText Text = await Markdown.ToHumanReadableText(Language);
 				Markdown = Text.GenerateMarkdown(this.Contract);
 
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 				Text.Serialize(sb);
 
 				XmlDocument Doc = new();
 				Doc.LoadXml(sb.ToString());
 
-				LinkedList<XmlElement> Elements = new LinkedList<XmlElement>();
+				LinkedList<XmlElement> Elements = new();
 				Elements.AddLast(Doc.DocumentElement);
 
 				while (Elements.First is not null)

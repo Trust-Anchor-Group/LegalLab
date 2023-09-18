@@ -42,7 +42,7 @@ namespace LegalLab
 	public partial class MainWindow : Window
 	{
 		internal static MainWindow currentInstance = null;
-		private static readonly LinkedList<GuiUpdateTask> guiUpdateQueue = new LinkedList<GuiUpdateTask>();
+		private static readonly LinkedList<GuiUpdateTask> guiUpdateQueue = new();
 		private static string appDataFolder;
 		private static string databaseFolder;
 		private static string eventsFolder;
@@ -290,8 +290,8 @@ namespace LegalLab
 		/// <returns>Text input by the user, null if Cancel has been pressed.</returns>
 		public static string PromptUser(string Title, string Label, string Text, string OkButton, string CancelButton)
 		{
-			PromptDialog Dialog = new PromptDialog();
-			PromptModel Model = new PromptModel(Dialog)
+			PromptDialog Dialog = new();
+			PromptModel Model = new(Dialog)
 			{
 				Title = Title,
 				Label = Label,
@@ -353,7 +353,7 @@ namespace LegalLab
 		private static void UpdateGui(GuiDelegateWithParameter Method, string Name, object State)
 		{
 			bool Start;
-			GuiUpdateTask Rec = new GuiUpdateTask()
+			GuiUpdateTask Rec = new()
 			{
 				Method = Method,
 				State = State,
@@ -363,7 +363,7 @@ namespace LegalLab
 
 			lock (guiUpdateQueue)
 			{
-				Start = (guiUpdateQueue.First is null) && !(currentInstance is null);
+				Start = (guiUpdateQueue.First is null) && currentInstance is not null;
 				guiUpdateQueue.AddLast(Rec);
 			}
 
@@ -382,7 +382,7 @@ namespace LegalLab
 				{
 					lock (guiUpdateQueue)
 					{
-						if (!(Rec is null))
+						if (Rec is not null)
 							guiUpdateQueue.RemoveFirst();
 
 						Prev = Rec;
@@ -466,7 +466,7 @@ namespace LegalLab
 
 		internal static TabItem NewTab(string HeaderText, out TextBlock HeaderLabel)
 		{
-			TabItem Result = new TabItem();
+			TabItem Result = new();
 			NewHeader(HeaderText, Result, out HeaderLabel);
 			return Result;
 		}
@@ -478,12 +478,12 @@ namespace LegalLab
 
 		internal static void NewHeader(string HeaderText, TabItem Tab, out TextBlock HeaderLabel)
 		{
-			StackPanel Header = new StackPanel()
+			StackPanel Header = new()
 			{
 				Orientation = Orientation.Horizontal
 			};
 
-			Image CloseImage = new Image()
+			Image CloseImage = new()
 			{
 				Source = new BitmapImage(new Uri("../Graphics/symbol-delete-icon-gray.png", UriKind.Relative)),
 				Width = 16,

@@ -107,7 +107,7 @@ namespace LegalLab.Extensions
 		{
 			string s = P.Name;
 
-			if (P is BooleanParameter BP)
+			if (P is BooleanParameter)
 				s += ".";
 			else
 				s += ":";
