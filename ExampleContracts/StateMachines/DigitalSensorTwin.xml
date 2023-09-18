@@ -317,21 +317,23 @@ foreach P in CurrentState.VariableValues??[] do
 		s!="Error" and 
 		s!="ErrorMessage" then
 	(
-		Values:=eval(s) ??? [];
+		Values:=Variables[s] ??? [];
 		Category:=Contains(s,", ") ? Before(s,", ") : s;
 
-		foreach Value in Values do
+		foreach Sample in Values do
 		(
+			Value:=Sample.Value;
 			Category2:=Value is Quantity ? Category+" "+Value.Unit : Category;
 			if Value is Quantity or Value is Double or Value is Int32 or Value is Int64 then
 			(
-				ByCat:=ByCategory[Category] ??? null;
-				if !exists(ByCat) then ByCategory[Category]:=ByCat:={"Category":Category,"ByName":{},"MaxCount":0};
+				ByCat:=ByCategory[Category2] ??? null;
+				if !exists(ByCat) then ByCategory[Category2]:=ByCat:={"Category":Category2,"ByName":{},"MaxCount":0};
 
+				Name:=Sample.Variable;
 				ByName:=ByCat.ByName[Name] ??? null;
 				if !exists(ByName) then ByCat.ByName[Name]:=ByName:={"Timestamps":[],"Samples":[],"Index":ByCat.ByName.Count};
-				ByName.Timestamps:=join(ByName.Timestamps,F.Timestamp);
-				ByName.Samples:=v:=join(ByName.Samples,F.Value);
+				ByName.Timestamps:=join(ByName.Timestamps,Sample.Timestamp);
+				ByName.Samples:=v:=join(ByName.Samples,Value);
 				c:=count(v);
 				if c>ByCat.MaxCount then ByCat.MaxCount:=c;
 			)
@@ -400,7 +402,7 @@ foreach Category in ByCategory.Keys do
     </Cell>
     <Cell>
       <Margins left="1mm" top="1mm" bottom="1mm" right="1mm">
-        <Label text="((Info.Name))" x="50%" y="50%" halign="Center" valign="Center"/>
+        <Label text="((Info.Name))" x="0%" y="50%" halign="Left" valign="Center"/>
       </Margins>
     </Cell>[[
 				);
