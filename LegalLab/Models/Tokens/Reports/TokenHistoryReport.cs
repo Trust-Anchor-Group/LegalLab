@@ -1,6 +1,7 @@
 ﻿using NeuroFeatures;
 using System;
 using System.Threading.Tasks;
+using Waher.Content.Markdown;
 
 namespace LegalLab.Models.Tokens.Reports
 {
@@ -26,11 +27,15 @@ namespace LegalLab.Models.Tokens.Reports
 		/// <returns>String-representation of XAML of report.</returns>
 		public override async Task<string> GetReportXaml()
 		{
-			ReportEventArgs e = await this.client.GenerateHistoryReportAsync(this.TokenId, ReportFormat.Xaml);
+			ReportEventArgs e = await this.client.GenerateHistoryReportAsync(this.TokenId, ReportFormat.Markdown);
 			if (!e.Ok)
 				throw e.StanzaError ?? new Exception("Unable to get history report.");
 
-			return e.ReportText;
+			string Markdown = e.ReportText;
+			MarkdownDocument Doc = await MarkdownDocument.CreateAsync(Markdown);
+			string Xaml = await Doc.GenerateXAML();
+
+			return Xaml;
 		}
 	}
 }
