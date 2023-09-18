@@ -317,23 +317,22 @@ foreach P in CurrentState.VariableValues??[] do
 		s!="Error" and 
 		s!="ErrorMessage" then
 	(
-		Values:=Variables[s] ??? [];
+		Values:=Variables[s][] ??? [];
 		Category:=Contains(s,", ") ? Before(s,", ") : s;
 
 		foreach Sample in Values do
 		(
-			Value:=Sample.Value;
+			Value:=Sample.Value ??? null;
 			Category2:=Value is Quantity ? Category+" "+Value.Unit : Category;
 			if Value is Quantity or Value is Double or Value is Int32 or Value is Int64 then
 			(
 				ByCat:=ByCategory[Category2] ??? null;
-				if !exists(ByCat) then ByCategory[Category2]:=ByCat:={"Category":Category2,"ByName":{},"MaxCount":0};
+				if !exists(ByCat) then ByCategory[Category2]:=(ByCat:={"Category":Category2,"ByName":{},"MaxCount":0});
 
-				Name:=Sample.Variable;
-				ByName:=ByCat.ByName[Name] ??? null;
-				if !exists(ByName) then ByCat.ByName[Name]:=ByName:={"Timestamps":[],"Samples":[],"Index":ByCat.ByName.Count};
+				ByName:=ByCat.ByName[s] ??? null;
+				if !exists(ByName) then ByCat.ByName[s]:=(ByName:={"Timestamps":[],"Samples":[],"Index":ByCat.ByName.Count});
 				ByName.Timestamps:=join(ByName.Timestamps,Sample.Timestamp);
-				ByName.Samples:=v:=join(ByName.Samples,Value);
+				ByName.Samples:=(v:=join(ByName.Samples,Value));
 				c:=count(v);
 				if c>ByCat.MaxCount then ByCat.MaxCount:=c;
 			)
