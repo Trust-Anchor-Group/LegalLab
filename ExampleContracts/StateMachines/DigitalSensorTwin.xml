@@ -241,7 +241,7 @@ The following sensor configuration has been used to access the sensor data:
 | Node ID      | `{{NodeID}}`      |
 | Source ID    | `{{SourceID}}`    |
 | Partition ID | `{{PartitionID}}` |
-| JID          | `{{NodeID}}`      |
+| JID          | `{{JID}}`         |
 
 The following types of sensor data are read:
 
