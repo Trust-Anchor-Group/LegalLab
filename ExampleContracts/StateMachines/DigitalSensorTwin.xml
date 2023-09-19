@@ -88,6 +88,9 @@
 					<OnEvent newState="Paused">
 						<OnXmlNote localName="Pause" namespace="https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd" />
 					</OnEvent>
+					<OnEvent actionRef="Reconfigure" newState="Reconfiguring" failureState="Active">
+						<OnXmlNote localName="Reconfigure" namespace="https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd" noteVariable="Note" />
+					</OnEvent>
 					<OnEvent newState="Done">
 						<OnXmlNote localName="Terminate" namespace="https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd" />
 					</OnEvent>
@@ -104,6 +107,11 @@
 					</OnEvent>
 					<OnEvent newState="Done">
 						<OnDateTime>{Expires}</OnDateTime>
+					</OnEvent>
+				</State>
+				<State id="Reconfiguring">
+					<OnEvent newState="Active">
+						<OnDuration>PT1S</OnDuration>
 					</OnEvent>
 				</State>
 				<State id="Done">
@@ -186,9 +194,56 @@
 						</Catch>
 					</Try>
 				</Action>
+				<Action id="Reconfigure">
+					<PersistVariable name="PollingInterval">
+						<Value>
+							<Calc>
+								<![CDATA[
+								Duration(Duration(GetAttribute(Note,"pollingInterval")))
+								]]>
+							</Calc>
+						</Value>
+					</PersistVariable>
+				</Action>
 				<Action id="End">
 					<End />
 				</Action>
+				<NoteCommand id="Poll" ownerNote="true">
+					<Title lang="en">Poll sensor</Title>
+					<ToolTip lang="en">Requests the sensor to be polled.</ToolTip>
+					<Success lang="en">A request has been made to poll the sensor.</Success>
+					<NoteGenerationScript>
+						<![CDATA[
+						<Poll xmlns='https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd'/>
+						]]>
+					</NoteGenerationScript>
+				</NoteCommand>
+				<NoteCommand id="Reconfigure" ownerNote="true">
+					<Title lang="en">Reconfigure twin...</Title>
+					<ToolTip lang="en">Reconfigures the digital sensor twin.</ToolTip>
+					<Success lang="en">The digital sensor twin has been successfully reconfigured.</Success>
+					<Parameters>
+						<DurationParameter name="PollingInterval" exp="PollingInterval&gt;=Duration('PT1S')" guide="Duration">
+							<Description lang="en">Polling Interval</Description>
+						</DurationParameter>
+					</Parameters>
+					<NoteGenerationScript>
+						<![CDATA[
+						<Reconfigure xmlns='https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd' pollingInterval=(PollingInterval)/>
+						]]>
+					</NoteGenerationScript>
+				</NoteCommand>
+				<NoteCommand id="Terminate" ownerNote="true">
+					<Title lang="en">Terminate Digital Twin...</Title>
+					<ToolTip lang="en">Adds a note on the token requesting the digital twin to be terminated.</ToolTip>
+					<Confirmation lang="en">Are you sure you want to terminate the digital sensor twin? This action cannot be undone.</Confirmation>
+					<Success lang="en">A request has been made to terminate the digital sensor twin.</Success>
+					<NoteGenerationScript>
+						<![CDATA[
+						<Terminate xmlns='https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd'/>
+						]]>
+					</NoteGenerationScript>
+				</NoteCommand>
 				<ReportPresent>
 					<![CDATA[
 Data from sensor

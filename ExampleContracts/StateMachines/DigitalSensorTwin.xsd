@@ -14,5 +14,11 @@
 	<xs:element name="Terminate" type="Empty"/>
 	<xs:element name="Poll" type="Empty"/>
 
+	<xs:element name="Reconfigure">
+		<xs:complexType>
+			<xs:attribute name="pollingInterval" type="xs:duration" use="required"/>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:complexType name="Empty"/>
 </xs:schema>
