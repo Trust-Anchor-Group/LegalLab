@@ -294,6 +294,30 @@
 				<Action id="End">
 					<End/>
 				</Action>
+				<NoteCommand id="Start" externalNote="true">
+					<Title lang="en">Start...</Title>
+					<ToolTip lang="en">Starts the project.</ToolTip>
+					<Confirmation lang="en">Are you sure you want to start the project? You cannot undo this operation.</Confirmation>
+					<NoteGenerationScript>
+						<![CDATA[
+						<Start xmlns='https://lab.tagroot.io/Downloads/CrowdFunding.xsd'/>
+						]]>
+					</NoteGenerationScript>
+				</NoteCommand>
+				<NoteCommand id="Release" externalNote="true">
+					<Title lang="en">Release...</Title>
+					<ToolTip lang="en">Releases funds in accordance with compliance of contract.</ToolTip>
+					<Parameters>
+						<NumericalParameter name="Amount" min="0" minIncluded="false">
+							<Description lang="en">Funds to release:</Description>
+						</NumericalParameter>
+					</Parameters>
+					<NoteGenerationScript>
+						<![CDATA[
+						<Release xmlns='https://lab.tagroot.io/Downloads/CrowdFunding.xsd'><[Amount]></Release>
+						]]>
+					</NoteGenerationScript>
+				</NoteCommand>
 				<ReportPresent>
 					<![CDATA[
 | Variable            | Value                   |

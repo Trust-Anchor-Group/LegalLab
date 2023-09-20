@@ -216,6 +216,57 @@
 				<Action id="End">
 					<End/>
 				</Action>
+				<NoteCommand id="BuyEDaler" ownerNote="true" externalNote="true">
+					<Title lang="en">Buy</Title>
+					<ToolTip lang="en">Request to buy eDaler.</ToolTip>
+					<Parameters>
+						<NumericalParameter name="Amount" min="0" minIncluded="false">
+							<Description lang="en">Amount to buy:</Description>
+						</NumericalParameter>
+						<StringParameter name="Bank" minLength="1">
+							<Description lang="en">Bank:</Description>
+						</StringParameter>
+						<StringParameter name="Account" minLength="1">
+							<Description lang="en">Account:</Description>
+						</StringParameter>
+					</Parameters>
+					<NoteGenerationScript>
+						<![CDATA[
+						<BuyEDaler xmlns='https://lab.tagroot.io/Downloads/BuyTransferSellEDaler.xsd' amount=(Amount) bank=(Bank) account=(Account)/>
+						]]>
+					</NoteGenerationScript>
+				</NoteCommand>
+				<NoteCommand id="TransferEDaler" ownerNote="true" externalNote="true">
+					<Title lang="en">Transfer</Title>
+					<ToolTip lang="en">Request to transfer eDaler.</ToolTip>
+					<Parameters>
+						<NumericalParameter name="Amount" min="0" minIncluded="false">
+							<Description lang="en">Amount to transfer:</Description>
+						</NumericalParameter>
+					</Parameters>
+					<NoteGenerationScript>
+						<![CDATA[
+						<TransferEDaler xmlns='https://lab.tagroot.io/Downloads/BuyTransferSellEDaler.xsd' amount=(Amount)/>
+						]]>
+					</NoteGenerationScript>
+				</NoteCommand>
+				<NoteCommand id="SellEDaler" ownerNote="true">
+					<Title lang="en">Transfer</Title>
+					<ToolTip lang="en">Request to sell eDaler.</ToolTip>
+					<Parameters>
+						<NumericalParameter name="Amount" min="0" minIncluded="false">
+							<Description lang="en">Amount to sell:</Description>
+						</NumericalParameter>
+						<StringParameter name="BankAccount" minLength="1">
+							<Description lang="en">Bank account:</Description>
+						</StringParameter>
+					</Parameters>
+					<NoteGenerationScript>
+						<![CDATA[
+						<SellEDaler xmlns='https://lab.tagroot.io/Downloads/BuyTransferSellEDaler.xsd' amount=(Amount) bankAccount=(BankAccount)/>
+						]]>
+					</NoteGenerationScript>
+				</NoteCommand>
 				<ReportPresent>
 					<![CDATA[
 | Variable          | Value                 |
