@@ -4,13 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LegalLab.Dialogs.Parameters"
-        mc:Ignorable="d"
+		xmlns:model="clr-namespace:LegalLab.Models.Legal"
+        mc:Ignorable="d" DataContext="model:ContractParametersModel"
         Title="ParametersDialog" Height="350" Width="400" WindowStartupLocation="CenterOwner">
 	<DockPanel Margin="10,10,10,0" LastChildFill="True">
 		<StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Center" Margin="10">
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-				<Button Command="{Binding Ok}" Content="OK" Width="100" IsDefault="True"/>
-				<Button Command="{Binding Cancel}" Content="Cancel" Width="100" Margin="10,0,0,0" IsCancel="True"/>
+				<Button Content="OK" Width="100" IsDefault="True" IsEnabled="{Binding ParametersOk}"/>
+				<Button Content="Cancel" Width="100" Margin="10,0,0,0" IsCancel="True"/>
 			</StackPanel>
 		</StackPanel>
 		<ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">

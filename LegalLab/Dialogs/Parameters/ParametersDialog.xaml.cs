@@ -8,8 +8,6 @@ namespace LegalLab.Dialogs.Parameters
 	/// </summary>
 	public partial class ParametersDialog : Window
 	{
-		private readonly ContractParametersModel model;
-
 		/// <summary>
 		/// Interaction logic for ParametersDialog.xaml
 		/// </summary>
@@ -17,10 +15,9 @@ namespace LegalLab.Dialogs.Parameters
 		/// <param name="Model">Model containing parameters to edit.</param>
 		public ParametersDialog(string Title, ContractParametersModel Model)
 		{
-			this.model = Model;
-
 			this.InitializeComponent();
-		
+
+			this.DataContext = Model;
 			this.Title = Title;
 		}
 	}
