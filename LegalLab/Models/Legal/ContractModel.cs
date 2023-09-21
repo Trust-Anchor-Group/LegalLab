@@ -401,7 +401,7 @@ namespace LegalLab.Models.Legal
 		/// </summary>
 		public RoleInfo[] Roles
 		{
-			get => this.roles?.Value ?? new RoleInfo[0];
+			get => this.roles?.Value ?? Array.Empty<RoleInfo>();
 			set => this.roles.Value = value;
 		}
 
