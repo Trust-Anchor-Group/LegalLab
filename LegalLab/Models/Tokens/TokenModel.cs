@@ -3,11 +3,13 @@ using LegalLab.Models.Items;
 using LegalLab.Models.Tokens.Reports;
 using LegalLab.Tabs;
 using NeuroFeatures;
+using NeuroFeatures.NoteCommands;
 using NeuroFeatures.Tags;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Waher.Content.Markdown;
@@ -23,12 +25,14 @@ namespace LegalLab.Models.Tokens
 		private readonly NeuroFeaturesClient client;
 		private readonly Token token;
 		private TokenDetail[] details;
+		private NoteCommand[] noteCommands;
 		private BitmapImage glyph;
 
 		private readonly Command viewPresentReport;
 		private readonly Command viewHistoryReport;
 		private readonly Command viewStateDiagramReport;
 		private readonly Command viewProfilingReport;
+		private readonly ParametrizedCommand executeNoteCommand;
 
 		/// <summary>
 		/// Token model.
@@ -39,17 +43,24 @@ namespace LegalLab.Models.Tokens
 		{
 			this.client = Client;
 			this.token = Token;
+			this.noteCommands = this.token.GetNoteCommands();
 
 			this.viewPresentReport = new Command(this.CanExecuteViewStateMachineReport, this.ExecuteViewPresentReport);
 			this.viewHistoryReport = new Command(this.CanExecuteViewStateMachineReport, this.ExecuteViewHistoryReport);
 			this.viewStateDiagramReport = new Command(this.CanExecuteViewStateMachineReport, this.ExecuteViewStateDiagramReport);
 			this.viewProfilingReport = new Command(this.CanExecuteViewStateMachineReport, this.ExecuteViewProfilingReport);
+			this.executeNoteCommand = new ParametrizedCommand(this.CanExecuteNoteCommand, this.ExecuteNoteCommand);
 		}
 
 		/// <summary>
 		/// Referenced token.
 		/// </summary>
 		public Token Token => this.token;
+
+		/// <summary>
+		/// Available note commands.
+		/// </summary>
+		public NoteCommand[] NoteCommands => this.noteCommands;
 
 		public static async Task<TokenModel> CreateAsync(NeuroFeaturesClient Client, Token Token)
 		{
@@ -124,32 +135,55 @@ namespace LegalLab.Models.Tokens
 				Details.Add(new TokenDetail("State-Machine Present State", new Button()
 				{
 					Command = Result.viewPresentReport,
-					Content = "View Report"
+					Content = "View Report",
+					Margin = new Thickness(10, 2, 10, 2),
+					MinWidth = 150
 				}));
 
 				Details.Add(new TokenDetail("State-Machine History", new Button()
 				{
 					Command = Result.viewHistoryReport,
-					Content = "View Report"
+					Content = "View Report",
+					Margin = new Thickness(10, 2, 10, 2),
+					MinWidth = 150
 				}));
 
 				Details.Add(new TokenDetail("State-Machine State Diagram", new Button()
 				{
 					Command = Result.viewStateDiagramReport,
-					Content = "View Report"
+					Content = "View Report",
+					Margin = new Thickness(10, 2, 10, 2),
+					MinWidth = 150
 				}));
 
 				Details.Add(new TokenDetail("State-Machine Profiling", new Button()
 				{
 					Command = Result.viewProfilingReport,
-					Content = "View Report"
+					Content = "View Report",
+					Margin = new Thickness(10, 2, 10, 2),
+					MinWidth = 150
 				}));
+
+				int i = 0;
+
+				foreach (NoteCommand NoteCommand in Result.noteCommands)
+				{
+					Details.Add(new TokenDetail(NoteCommand.ToolTip?.Find("en"), new Button()
+					{
+						Command = Result.executeNoteCommand,
+						CommandParameter = i++,
+						Content = NoteCommand.Title?.Find("en"),
+						Margin = new Thickness(10, 2, 10, 2),
+						MinWidth = 150
+					}));
+				}
 			}
 
 			Result.details = Details.ToArray();
 
 			return Result;
 		}
+
 
 		private static async Task<object> MarkdownToXaml(string Markdown)
 		{
@@ -288,6 +322,33 @@ namespace LegalLab.Models.Tokens
 			finally
 			{
 				MainWindow.MouseDefault();
+			}
+		}
+
+		private bool CanExecuteNoteCommand(object Parameter)
+		{
+			return 
+				this.token.HasStateMachine && 
+				this.noteCommands is not null && 
+				Parameter is int i &&
+				i >= 0 &&
+				i < this.noteCommands.Length;
+		}
+
+		private void ExecuteNoteCommand(object Parameter)
+		{
+			if (this.token.HasStateMachine &&
+				this.noteCommands is not null &&
+				Parameter is int i &&
+				i >= 0 &&
+				i < this.noteCommands.Length)
+			{
+				NoteCommand Command = this.noteCommands[i];
+
+				if (Command.HasParameters)
+				{
+
+				}
 			}
 		}
 

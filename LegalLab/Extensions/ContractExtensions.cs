@@ -1,4 +1,5 @@
 ﻿using LegalLab.Models.Legal.Items;
+using NeuroFeatures.NoteCommands;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -309,6 +310,47 @@ namespace LegalLab.Extensions
 				if (Text.Language == Language)
 					return Text;
 			}
+
+			if (Language != "en")
+			{
+				foreach (HumanReadableText Text in AvailableTexts)
+				{
+					if (Text.Language == "en")
+						return Text;
+				}
+			}
+
+			foreach (HumanReadableText Text in AvailableTexts)
+				return Text;
+
+			return null;
+		}
+
+		/// <summary>
+		/// Finds a localized version of a text.
+		/// </summary>
+		/// <param name="AvailableTexts">Available texts</param>
+		/// <param name="Language">Language</param>
+		/// <returns>Result, if found.</returns>
+		public static string Find(this LocalizedString[] AvailableTexts, string Language)
+		{
+			foreach (LocalizedString Text in AvailableTexts)
+			{
+				if (Text.Language == Language)
+					return Text.Text;
+			}
+
+			if (Language != "en")
+			{
+				foreach (LocalizedString Text in AvailableTexts)
+				{
+					if (Text.Language == "en")
+						return Text.Text;
+				}
+			}
+
+			foreach (LocalizedString Text in AvailableTexts)
+				return Text.Text;
 
 			return null;
 		}
