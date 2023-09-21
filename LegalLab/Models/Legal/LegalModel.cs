@@ -609,7 +609,9 @@ namespace LegalLab.Models.Legal
 				if (this.currentContract is not null)
 					await this.currentContract.Stop();
 
-				this.currentContract = await ContractModel.CreateAsync(this.contracts, this.Template, this, MainWindow.currentInstance.ContractsTab);
+				this.currentContract = await ContractModel.CreateAsync(this.contracts, this.Template, this, 
+					MainWindow.currentInstance.ContractsTab.MachineReadableXmlEditor);
+				
 				await this.currentContract.Start();
 
 				await this.currentContract.PopulateParameters(

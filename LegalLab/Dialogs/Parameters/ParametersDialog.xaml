@@ -1,0 +1,21 @@
+﻿<Window x:Class="LegalLab.Dialogs.Parameters.ParametersDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LegalLab.Dialogs.Parameters"
+        mc:Ignorable="d"
+        Title="ParametersDialog" Height="350" Width="400" WindowStartupLocation="CenterOwner">
+	<DockPanel Margin="10,10,10,0" LastChildFill="True">
+		<StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Center" Margin="10">
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+				<Button Command="{Binding Ok}" Content="OK" Width="100" IsDefault="True"/>
+				<Button Command="{Binding Cancel}" Content="Cancel" Width="100" Margin="10,0,0,0" IsCancel="True"/>
+			</StackPanel>
+		</StackPanel>
+		<ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
+			<StackPanel x:Name="ParametersPanel" Orientation="Vertical" Margin="0,0,10,0">
+			</StackPanel>
+		</ScrollViewer>
+	</DockPanel>
+</Window>

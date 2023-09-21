@@ -1,9 +1,9 @@
 ﻿using LegalLab.Extensions;
 using LegalLab.Models.Design;
+using LegalLab.Models.Design.AvalonExtensions;
 using LegalLab.Models.Legal.Items;
 using LegalLab.Models.Legal.Items.Parameters;
 using LegalLab.Models.Standards;
-using LegalLab.Tabs;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -26,13 +26,11 @@ namespace LegalLab.Models.Legal
 	/// <summary>
 	/// Contract model
 	/// </summary>
-	public class ContractModel : Model, IPartsModel
+	public class ContractModel : ContractParametersModel, IPartsModel
 	{
-		private readonly Property<bool> parametersOk;
 		private readonly Property<GenInfo[]> generalInformation;
 		private readonly Property<RoleInfo[]> roles;
 		private readonly Property<PartInfo[]> parts;
-		private readonly Property<ParameterInfo[]> parameters;
 		private readonly Property<ClientSignatureInfo[]> clientSignatures;
 		private readonly Property<ServerSignatureInfo[]> serverSignatures;
 		private readonly Property<bool> hasId;
@@ -42,21 +40,14 @@ namespace LegalLab.Models.Legal
 		private readonly Property<string> machineReadable;
 		private readonly Property<string> templateName;
 		private readonly Property<string> contractId;
-		private readonly Property<string> language;
-		private readonly Property<Iso__639_1.Record[]> languages;
 
 		private readonly Command addPart;
 		private readonly Command createContract;
 
-		private readonly Dictionary<string, ParameterInfo> parametersByName = new();
+		private readonly NonScrollingTextEditor xmlEditor = null;
 		private readonly ContractsClient contracts;
 		private readonly LegalModel legalModel;
-		private readonly ContractsTab contractsTab;
-		private Contract contract;
 		private StackPanel humanReadableText = null;
-		private StackPanel additionalCommands = null;
-		private StackPanel languageOptions = null;
-		private StackPanel parameterOptions = null;
 
 		/// <summary>
 		/// Contract model
@@ -64,14 +55,13 @@ namespace LegalLab.Models.Legal
 		/// <param name="Contracts">Contracts Client</param>
 		/// <param name="Contract">Contract</param>
 		/// <param name="LegalModel">Legal Model</param>
-		/// <param name="ContractsTab">Tab where contract is being displayed.</param>
-		private ContractModel(ContractsClient Contracts, Contract Contract, LegalModel LegalModel, ContractsTab ContractsTab)
+		/// <param name="XmlEditor">XML Editor</param>
+		private ContractModel(ContractsClient Contracts, Contract Contract, LegalModel LegalModel, NonScrollingTextEditor XmlEditor)
+			: base(Contract.Parameters, Contract, "en")
 		{
-			this.parametersOk = new Property<bool>(nameof(this.ParametersOk), false, this);
 			this.generalInformation = new Property<GenInfo[]>(nameof(this.GeneralInformation), Array.Empty<GenInfo>(), this);
 			this.roles = new Property<RoleInfo[]>(nameof(this.Roles), Array.Empty<RoleInfo>(), this);
 			this.parts = new Property<PartInfo[]>(nameof(this.Parts), Array.Empty<PartInfo>(), this);
-			this.parameters = new Property<ParameterInfo[]>(nameof(this.Parameters), Array.Empty<ParameterInfo>(), this);
 			this.clientSignatures = new Property<ClientSignatureInfo[]>(nameof(this.ClientSignatures), Array.Empty<ClientSignatureInfo>(), this);
 			this.serverSignatures = new Property<ServerSignatureInfo[]>(nameof(this.ServerSignatures), Array.Empty<ServerSignatureInfo>(), this);
 			this.hasId = new Property<bool>(nameof(this.HasId), false, this);
@@ -81,13 +71,11 @@ namespace LegalLab.Models.Legal
 			this.machineReadable = new Property<string>(nameof(this.MachineReadable), string.Empty, this);
 			this.templateName = new Property<string>(nameof(this.TemplateName), string.Empty, this);
 			this.contractId = new Property<string>(nameof(this.ContractId), Contract.ContractId, this);
-			this.language = new Property<string>(nameof(this.Language), "en", this);
-			this.languages = new Property<Iso__639_1.Record[]>(nameof(this.Languages), Array.Empty<Iso__639_1.Record>(), this);
 
 			this.addPart = new Command(this.ExecuteAddPart);
 			this.createContract = new Command(this.CanExecuteCreateContract, this.ExecuteCreateContract);
 
-			this.contractsTab = ContractsTab;
+			this.xmlEditor = XmlEditor;
 			this.legalModel = LegalModel;
 			this.contracts = Contracts;
 
@@ -100,11 +88,12 @@ namespace LegalLab.Models.Legal
 		/// <param name="Contracts">Contracts Client</param>
 		/// <param name="Contract">Contract</param>
 		/// <param name="LegalModel">Legal Model</param>
-		/// <param name="ContractsTab">Tab where contract is being displayed.</param>
+		/// <param name="XmlEditor">XML Editor</param>
 		/// <returns>Contract object model.</returns>
-		public static async Task<ContractModel> CreateAsync(ContractsClient Contracts, Contract Contract, LegalModel LegalModel, ContractsTab ContractsTab)
+		public static async Task<ContractModel> CreateAsync(ContractsClient Contracts, Contract Contract, LegalModel LegalModel,
+			NonScrollingTextEditor XmlEditor)
 		{
-			ContractModel Result = new(Contracts, Contract, LegalModel, ContractsTab);
+			ContractModel Result = new(Contracts, Contract, LegalModel, XmlEditor);
 			(string s, _) = Contract.ForMachines.ToPrettyXml();
 
 			await Result.SetContract(Contract);
@@ -117,14 +106,7 @@ namespace LegalLab.Models.Legal
 		{
 			this.contract = Contract;
 
-			this.Languages = Contract.GetLanguages().ToIso639_1();
-			this.Language = Contract.DefaultLanguage;
-
-			if (string.IsNullOrEmpty(this.Language) && this.Languages.Length == 0)
-			{
-				this.Languages = new string[] { "en" }.ToIso639_1();
-				this.Language = "en";
-			}
+			this.SetParameters(Contract.Parameters);
 
 			this.ContractId = Contract.ContractId;
 			this.HasId = !string.IsNullOrEmpty(Contract.ContractId);
@@ -181,22 +163,6 @@ namespace LegalLab.Models.Legal
 			}
 
 			this.Roles = Roles.ToArray();
-
-			List<ParameterInfo> Parameters = new();
-
-			if (this.contract.Parameters is not null)
-			{
-				foreach (Parameter Parameter in this.contract.Parameters)
-				{
-					if (this.parametersByName.TryGetValue(Parameter.Name, out ParameterInfo ParameterInfo))
-					{
-						Parameters.Add(ParameterInfo);
-						ParameterInfo.ContractUpdated(this.contract);
-					}
-				}
-			}
-
-			this.Parameters = Parameters.ToArray();
 
 			List<ClientSignatureInfo> ClientSignatures = new();
 
@@ -256,67 +222,35 @@ namespace LegalLab.Models.Legal
 			}
 		}
 
-		/// <summary>
-		/// Referenced contract
-		/// </summary>
-		public Contract Contract => this.contract;
-
-		/// <summary>
-		/// Currently selected language.
-		/// </summary>
-		public string Language
+		protected override async Task<bool> SetLanguage(string Language)
 		{
-			get => this.language.Value;
-			set => this.SetLanguage(value);
-		}
+			if (!await base.SetLanguage(Language))
+				return false;
 
-		/// <summary>
-		/// Available languages.
-		/// </summary>
-		public Iso__639_1.Record[] Languages
-		{
-			get => this.languages.Value;
-			set => this.languages.Value = value;
-		}
-
-		private async void SetLanguage(string Language)
-		{
 			try
 			{
-				this.language.Value = Language;
-
 				if (!string.IsNullOrEmpty(Language))
 				{
-					foreach (ParameterInfo PI in this.Parameters)
-						PI.DescriptionAsMarkdown = (PI.Parameter.Descriptions.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
-
 					foreach (RoleInfo RI in this.Roles)
 						RI.DescriptionAsMarkdown = (RI.Role.Descriptions.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
 
 					await this.PopulateHumanReadableText();
-
-					if (this.languageOptions is not null)
-						await this.PopulateParameters(this.languageOptions, this.parameterOptions, this.additionalCommands, null);
 				}
+
+				return true;
 			}
 			catch (Exception ex)
 			{
 				Log.Critical(ex);
 				MainWindow.ErrorBox(ex.Message);
+
+				return false;
 			}
 		}
 
-		/// <summary>
-		/// If all parameters are OK or not
-		/// </summary>
-		public bool ParametersOk
+		protected override void ParametersOkChanged()
 		{
-			get => this.parametersOk.Value;
-			set
-			{
-				this.parametersOk.Value = value;
-				this.createContract.RaiseCanExecuteChanged();
-			}
+			this.createContract.RaiseCanExecuteChanged();
 		}
 
 		/// <summary>
@@ -370,7 +304,9 @@ namespace LegalLab.Models.Legal
 			set
 			{
 				this.machineReadable.Value = value;
-				this.contractsTab.MachineReadableXmlEditor.Text = value;
+
+				if (this.xmlEditor is not null)
+					this.xmlEditor.Text = value;
 			}
 		}
 
@@ -425,237 +361,9 @@ namespace LegalLab.Models.Legal
 			}
 		}
 
-		/// <summary>
-		/// Populates a <see cref="StackPanel"/> with parameter controls.
-		/// </summary>
-		/// <param name="Languages">StackPanel to language options</param>
-		/// <param name="Parameters">StackPanel to populate with parameters</param>
-		/// <param name="AdditionalCommands">StackPanel to populate with additional commends.</param>
-		/// <param name="PresetValues">Optional preset values. Can be null.</param>
-		public async Task PopulateParameters(StackPanel Languages, StackPanel Parameters, StackPanel AdditionalCommands,
-			Dictionary<CaseInsensitiveString, object> PresetValues)
+		protected override Task ParametersChanged()
 		{
-			List<ParameterInfo> ParameterList = new();
-			ParameterInfo ParameterInfo;
-
-			this.languageOptions = Languages;
-			this.languageOptions.DataContext = this;
-
-			this.parameterOptions = Parameters;
-			this.parameterOptions.Children.Clear();
-			this.parameterOptions.DataContext = this;
-			this.parametersByName.Clear();
-
-			foreach (Parameter Parameter in this.contract.Parameters)
-			{
-				if (Parameter is BooleanParameter BP)
-				{
-					CheckBox CheckBox = new()
-					{
-						Tag = Parameter.Name,
-						IsChecked = BP.Value.HasValue && BP.Value.Value,
-						VerticalContentAlignment = VerticalAlignment.Center,
-						Content = Parameter.GetLabel(),
-						ToolTip = await Parameter.ToSimpleXAML(this.Language, this.contract),
-						Margin = new Thickness(0, 10, 0, 0)
-					};
-
-					if ((PresetValues?.TryGetValue(Parameter.Name, out object PresetValue) ?? false) && PresetValue is bool b)
-					{
-						BP.Value = b;
-						CheckBox.IsChecked = b;
-					}
-
-					CheckBox.Checked += this.Parameter_CheckedChanged;
-					CheckBox.Unchecked += this.Parameter_CheckedChanged;
-
-					this.parametersByName[Parameter.Name] = ParameterInfo = new BooleanParameterInfo(this.contract, BP, CheckBox, null, this.parameters);
-
-					Parameters.Children.Add(CheckBox);
-				}
-				else
-				{
-					Label Label = new()
-					{
-						Content = Parameter.GetLabel(),
-						Margin = new Thickness(0, 10, 0, 0)
-					};
-
-					TextBox TextBox = new()
-					{
-						Tag = Parameter.Name,
-						Text = Parameter.ObjectValue?.ToString(),
-						ToolTip = await Parameter.ToSimpleXAML(this.Language, this.contract)
-					};
-
-					if (PresetValues?.TryGetValue(Parameter.Name, out object PresetValue) ?? false)
-						TextBox.Text = PresetValue?.ToString() ?? string.Empty;
-					else
-						PresetValue = null;
-
-					TextBox.TextChanged += this.Parameter_TextChanged;
-
-					if (Parameter is NumericalParameter NP)
-					{
-						if (PresetValue is decimal d)
-							NP.Value = d;
-
-						this.parametersByName[Parameter.Name] = ParameterInfo = new NumericalParameterInfo(this.contract, NP, TextBox,
-							null, null, null, null, null, this.parameters);
-					}
-					else if (Parameter is StringParameter SP)
-					{
-						if (PresetValue is string s)
-							SP.Value = s;
-
-						this.parametersByName[Parameter.Name] = ParameterInfo = new StringParameterInfo(this.contract, SP, TextBox,
-							null, null, null, null, null, null, null, null, this.parameters);
-					}
-					else if (Parameter is DateParameter DP)
-					{
-						if (PresetValue is DateTime TP)
-							DP.Value = TP;
-
-						this.parametersByName[Parameter.Name] = ParameterInfo = new DateParameterInfo(this.contract, DP, TextBox,
-							null, null, null, null, null, this.parameters);
-					}
-					else if (Parameter is DateTimeParameter DTP)
-					{
-						if (PresetValue is DateTime TP)
-							DTP.Value = TP;
-
-						this.parametersByName[Parameter.Name] = ParameterInfo = new DateTimeParameterInfo(this.contract, DTP, TextBox,
-							null, null, null, null, null, this.parameters);
-					}
-					else if (Parameter is TimeParameter TP)
-					{
-						if (PresetValue is TimeSpan TS)
-							TP.Value = TS;
-
-						this.parametersByName[Parameter.Name] = ParameterInfo = new TimeParameterInfo(this.contract, TP, TextBox,
-							null, null, null, null, null, this.parameters);
-					}
-					else if (Parameter is DurationParameter DrP)
-					{
-						if (PresetValue is Waher.Content.Duration D)
-							DrP.Value = D;
-
-						this.parametersByName[Parameter.Name] = ParameterInfo = new DurationParameterInfo(this.contract, DrP, TextBox,
-							null, null, null, null, null, this.parameters);
-					}
-					else if (Parameter is CalcParameter CP)
-					{
-						TextBox.IsReadOnly = true;
-
-						this.parametersByName[Parameter.Name] = ParameterInfo = new CalcParameterInfo(this.contract, CP, TextBox,
-							null, this.parameters);
-					}
-					else
-						continue;
-
-					Parameters.Children.Add(Label);
-					Parameters.Children.Add(TextBox);
-				}
-
-				ParameterList.Add(ParameterInfo);
-			}
-
-			this.Parameters = ParameterList.ToArray();
-
-			await this.ValidateParameters();
-			await this.PopulateHumanReadableText();
-
-			this.additionalCommands = AdditionalCommands;
-			this.additionalCommands.DataContext = this;
-			this.additionalCommands.Visibility = Visibility.Visible;
-			this.additionalCommands.InvalidateVisual();
-		}
-
-		private async void Parameter_CheckedChanged(object sender, RoutedEventArgs e)
-		{
-			try
-			{
-				if (sender is not CheckBox CheckBox || !this.parametersByName.TryGetValue(CheckBox.Tag.ToString(), out ParameterInfo ParameterInfo))
-					return;
-
-				ParameterInfo.Value = CheckBox.IsChecked;
-
-				await this.ValidateParameters();
-				await this.PopulateHumanReadableText();
-			}
-			catch (Exception ex)
-			{
-				Log.Critical(ex);
-			}
-		}
-
-		private async void Parameter_TextChanged(object sender, RoutedEventArgs e)
-		{
-			try
-			{
-				if (sender is not TextBox TextBox || !this.parametersByName.TryGetValue(TextBox.Tag.ToString(), out ParameterInfo ParameterInfo))
-					return;
-
-				try
-				{
-					if (ParameterInfo.Parameter is NumericalParameter && decimal.TryParse(TextBox.Text, out decimal d))
-						ParameterInfo.Value = d;
-					else if (ParameterInfo.Parameter is BooleanParameter && bool.TryParse(TextBox.Text, out bool b))
-						ParameterInfo.Value = b;
-					else if (ParameterInfo.Parameter is DateParameter && DateTime.TryParse(TextBox.Text, out DateTime TP))
-					{
-						if (TP.TimeOfDay != TimeSpan.Zero)
-							throw new Exception("Date only.");
-
-						ParameterInfo.Value = TP;
-					}
-					else if (ParameterInfo.Parameter is DateTimeParameter && DateTime.TryParse(TextBox.Text, out TP))
-						ParameterInfo.Value = TP;
-					else if (ParameterInfo.Parameter is TimeParameter && TimeSpan.TryParse(TextBox.Text, out TimeSpan TS))
-						ParameterInfo.Value = TS;
-					else if (ParameterInfo.Parameter is DurationParameter && Waher.Content.Duration.TryParse(TextBox.Text, out Waher.Content.Duration Dr))
-						ParameterInfo.Value = Dr;
-					else if (ParameterInfo.Parameter is not CalcParameter)
-						ParameterInfo.Value = TextBox.Text;
-
-					TextBox.Background = null;
-					await this.ValidateParameters();
-				}
-				catch (Exception)
-				{
-					TextBox.Background = Brushes.Salmon;
-				}
-
-				await this.PopulateHumanReadableText();
-			}
-			catch (Exception ex)
-			{
-				Log.Critical(ex);
-			}
-		}
-
-		private async Task ValidateParameters()
-		{
-			Variables Variables = new();
-			bool Ok = true;
-
-			Variables["Duration"] = this.contract.Duration;
-
-			foreach (ParameterInfo P in this.parametersByName.Values)
-				P.Parameter.Populate(Variables);
-
-			foreach (ParameterInfo P in this.parametersByName.Values)
-			{
-				if (await P.ValidateParameter(Variables))
-					P.Control.Background = null;
-				else
-				{
-					P.Control.Background = Brushes.Salmon;
-					Ok = false;
-				}
-			}
-
-			this.ParametersOk = Ok;
+			return this.PopulateHumanReadableText();
 		}
 
 		private async Task PopulateHumanReadableText()
@@ -693,7 +401,7 @@ namespace LegalLab.Models.Legal
 		/// </summary>
 		public RoleInfo[] Roles
 		{
-			get => this.roles.Value;
+			get => this.roles?.Value ?? new RoleInfo[0];
 			set => this.roles.Value = value;
 		}
 
@@ -730,15 +438,6 @@ namespace LegalLab.Models.Legal
 				this.parts.Value = value;
 				this.contract.Parts = value.ToParts();
 			}
-		}
-
-		/// <summary>
-		/// Parameters defined the contract.
-		/// </summary>
-		public ParameterInfo[] Parameters
-		{
-			get => this.parameters.Value;
-			set => this.parameters.Value = value;
 		}
 
 		/// <summary>
@@ -944,6 +643,5 @@ namespace LegalLab.Models.Legal
 				MainWindow.ErrorBox(ex.Message);
 			}
 		}
-
 	}
 }

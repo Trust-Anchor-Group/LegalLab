@@ -1,5 +1,7 @@
-﻿using LegalLab.Extensions;
+﻿using LegalLab.Dialogs.Parameters;
+using LegalLab.Extensions;
 using LegalLab.Models.Items;
+using LegalLab.Models.Legal;
 using LegalLab.Models.Tokens.Reports;
 using LegalLab.Tabs;
 using NeuroFeatures;
@@ -13,6 +15,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Waher.Content.Markdown;
+using Waher.Events;
 using Waher.Networking.XMPP.Contracts;
 
 namespace LegalLab.Models.Tokens
@@ -23,9 +26,10 @@ namespace LegalLab.Models.Tokens
 	public class TokenModel : SelectableItem
 	{
 		private readonly NeuroFeaturesClient client;
+		private readonly NoteCommand[] noteCommands;
 		private readonly Token token;
+		private readonly string language;
 		private TokenDetail[] details;
-		private NoteCommand[] noteCommands;
 		private BitmapImage glyph;
 
 		private readonly Command viewPresentReport;
@@ -44,6 +48,7 @@ namespace LegalLab.Models.Tokens
 			this.client = Client;
 			this.token = Token;
 			this.noteCommands = this.token.GetNoteCommands();
+			this.language = "en";
 
 			this.viewPresentReport = new Command(this.CanExecuteViewStateMachineReport, this.ExecuteViewPresentReport);
 			this.viewHistoryReport = new Command(this.CanExecuteViewStateMachineReport, this.ExecuteViewHistoryReport);
@@ -62,7 +67,7 @@ namespace LegalLab.Models.Tokens
 		/// </summary>
 		public NoteCommand[] NoteCommands => this.noteCommands;
 
-		public static async Task<TokenModel> CreateAsync(NeuroFeaturesClient Client, Token Token)
+		public static async Task<TokenModel> CreateAsync(NeuroFeaturesClient Client, Token Token, string Language)
 		{
 			TokenModel Result = new(Client, Token);
 
@@ -168,11 +173,11 @@ namespace LegalLab.Models.Tokens
 
 				foreach (NoteCommand NoteCommand in Result.noteCommands)
 				{
-					Details.Add(new TokenDetail(NoteCommand.ToolTip?.Find("en"), new Button()
+					Details.Add(new TokenDetail(NoteCommand.ToolTip?.Find(Language), new Button()
 					{
 						Command = Result.executeNoteCommand,
 						CommandParameter = i++,
-						Content = NoteCommand.Title?.Find("en"),
+						Content = NoteCommand.Title?.Find(Language),
 						Margin = new Thickness(10, 2, 10, 2),
 						MinWidth = 150
 					}));
@@ -327,28 +332,47 @@ namespace LegalLab.Models.Tokens
 
 		private bool CanExecuteNoteCommand(object Parameter)
 		{
-			return 
-				this.token.HasStateMachine && 
-				this.noteCommands is not null && 
-				Parameter is int i &&
+			return
+				this.token.HasStateMachine &&
+				this.noteCommands is not null &&
+				(Parameter is null ||
+				(Parameter is int i &&
 				i >= 0 &&
-				i < this.noteCommands.Length;
+				i < this.noteCommands.Length));
 		}
 
-		private void ExecuteNoteCommand(object Parameter)
+		private async void ExecuteNoteCommand(object Parameter)
 		{
-			if (this.token.HasStateMachine &&
-				this.noteCommands is not null &&
-				Parameter is int i &&
-				i >= 0 &&
-				i < this.noteCommands.Length)
+			try
 			{
-				NoteCommand Command = this.noteCommands[i];
-
-				if (Command.HasParameters)
+				if (this.token.HasStateMachine &&
+					this.noteCommands is not null &&
+					Parameter is int i &&
+					i >= 0 &&
+					i < this.noteCommands.Length)
 				{
+					NoteCommand Command = this.noteCommands[i];
 
+					if (Command.HasParameters)
+					{
+						ContractParametersModel Model = new(Command.Parameters, null, this.language);
+						ParametersDialog Dialog = new(Command.Title.Find(this.language), Model)
+						{
+							Owner = MainWindow.currentInstance
+						};
+
+						await Model.Start();
+						await Model.PopulateParameters(null, Dialog.ParametersPanel, null, null);
+
+						bool? Result = Dialog.ShowDialog();
+						if (!Result.HasValue || !Result.Value)
+							return;
+					}
 				}
+			}
+			catch (Exception ex)
+			{
+				Log.Critical(ex);
 			}
 		}
 
