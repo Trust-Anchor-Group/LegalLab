@@ -245,14 +245,19 @@ namespace LegalLab
 		/// <param name="Caption">Caption text</param>
 		/// <param name="Button">Button text</param>
 		/// <param name="Icon">Icon to display</param>
-		public static void MessageBox(string Text, string Caption, MessageBoxButton Button, MessageBoxImage Icon)
+		/// <returns>Button pressed.</returns>
+		public static Task<MessageBoxResult> MessageBox(string Text, string Caption, MessageBoxButton Button, MessageBoxImage Icon)
 		{
+			TaskCompletionSource<MessageBoxResult> Result = new TaskCompletionSource<MessageBoxResult>();
+
 			UpdateGui(() =>
 			{
 				Mouse.OverrideCursor = null;
-				System.Windows.MessageBox.Show(currentInstance, Text, Caption, Button, Icon);
+				Result.TrySetResult(System.Windows.MessageBox.Show(currentInstance, Text, Caption, Button, Icon));
 				return Task.CompletedTask;
 			});
+
+			return Result.Task;
 		}
 
 		/// <summary>

@@ -62,6 +62,7 @@ namespace LegalLab.Models.Tokens
 				TokenModel Token = await TokenModel.CreateAsync(this.neuroFeaturesClient, e.Token, "en");
 				Token.Selected += this.Token_Selected;
 				Token.Deselected += this.Token_Deselected;
+				Token.NoteAdded += this.Token_NoteAdded;
 
 				lock (this.tokens)
 				{
@@ -74,6 +75,11 @@ namespace LegalLab.Models.Tokens
 			});
 
 			return Task.CompletedTask;
+		}
+
+		private void Token_NoteAdded(object sender, EventArgs e)
+		{
+			this.LoadEvents();
 		}
 
 		private void Token_Deselected(object sender, EventArgs e)
@@ -116,7 +122,12 @@ namespace LegalLab.Models.Tokens
 						Events[i] = TokenEventDetail.Create(e.Events[i]);
 
 					this.events = Events;
-					this.RaisePropertyChanged(nameof(this.Events));
+
+					MainWindow.UpdateGui(() =>
+					{
+						this.RaisePropertyChanged(nameof(this.Events));
+						return Task.CompletedTask;
+					});
 				}
 
 				return Task.CompletedTask;
@@ -141,7 +152,7 @@ namespace LegalLab.Models.Tokens
 					Header = "Add XML Note...",
 					Command = this.addXmlNote
 				});
-				
+
 				Items.Add(new Separator());
 
 				Items.Add(new MenuItem()
@@ -181,7 +192,7 @@ namespace LegalLab.Models.Tokens
 							Header = Command.Title?.Find("en"),
 							ToolTip = Command.ToolTip?.Find("en"),
 							Command = Model.NoteCommand,
-							CommandParameter = ++i
+							CommandParameter = i++
 						});
 					}
 				}
@@ -384,6 +395,7 @@ namespace LegalLab.Models.Tokens
 					TokenModel TokenModel = await TokenModel.CreateAsync(this.neuroFeaturesClient, Token, "en");
 					TokenModel.Selected += this.Token_Selected;
 					TokenModel.Deselected += this.Token_Deselected;
+					TokenModel.NoteAdded += this.Token_NoteAdded;
 
 					lock (this.tokens)
 					{

@@ -397,7 +397,7 @@ namespace LegalLab.Models.Legal
 		/// Validates available parameters. If OK, a collection of variables is returned, otherwise null is returned.
 		/// </summary>
 		/// <returns>Collection of parameter values, if ok, null otherwise.</returns>
-		protected virtual async Task<Variables> ValidateParameters()
+		public virtual async Task<Variables> ValidateParameters()
 		{
 			Variables Variables = new();
 			bool Ok = true;

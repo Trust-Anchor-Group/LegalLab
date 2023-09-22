@@ -14,9 +14,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using System.Xml;
 using Waher.Content.Markdown;
 using Waher.Events;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Script;
+using Waher.Script.Model;
 
 namespace LegalLab.Models.Tokens
 {
@@ -165,7 +168,7 @@ namespace LegalLab.Models.Tokens
 				Details.Add(new TokenDetail("State-Machine Present State", new Button()
 				{
 					Command = Result.viewPresentReport,
-					Content = "View Report",
+					Content = "Present State...",
 					Margin = new Thickness(10, 2, 10, 2),
 					MinWidth = 150
 				}));
@@ -173,7 +176,7 @@ namespace LegalLab.Models.Tokens
 				Details.Add(new TokenDetail("State-Machine History", new Button()
 				{
 					Command = Result.viewHistoryReport,
-					Content = "View Report",
+					Content = "History...",
 					Margin = new Thickness(10, 2, 10, 2),
 					MinWidth = 150
 				}));
@@ -181,7 +184,7 @@ namespace LegalLab.Models.Tokens
 				Details.Add(new TokenDetail("State-Machine State Diagram", new Button()
 				{
 					Command = Result.viewStateDiagramReport,
-					Content = "View Report",
+					Content = "State Diagram...",
 					Margin = new Thickness(10, 2, 10, 2),
 					MinWidth = 150
 				}));
@@ -189,7 +192,7 @@ namespace LegalLab.Models.Tokens
 				Details.Add(new TokenDetail("State-Machine Profiling", new Button()
 				{
 					Command = Result.viewProfilingReport,
-					Content = "View Report",
+					Content = "Profiling...",
 					Margin = new Thickness(10, 2, 10, 2),
 					MinWidth = 150
 				}));
@@ -377,26 +380,103 @@ namespace LegalLab.Models.Tokens
 					i < this.noteCommands.Length)
 				{
 					NoteCommand Command = this.noteCommands[i];
+					Variables NoteParameters;
+					string Msg;
 
-					if (Command.HasParameters)
+					try
 					{
-						ContractParametersModel Model = new(Command.Parameters, null, this.language);
-						ParametersDialog Dialog = new(Command.Title.Find(this.language), Model)
+						if (Command.HasParameters)
 						{
-							Owner = MainWindow.currentInstance
-						};
+							ContractParametersModel Model = new(Command.Parameters, null, this.language);
+							ParametersDialog Dialog = new(Command.Title.Find(this.language), Model)
+							{
+								Owner = MainWindow.currentInstance
+							};
 
-						await Model.Start();
-						Control First = await Model.PopulateParameters(null, Dialog.ParametersPanel, null, null);
+							await Model.Start();
+							Control First = await Model.PopulateParameters(null, Dialog.ParametersPanel, null, null);
 
-						if (First is not null)
-						{
-							First.Focus();
+							if (First is not null)
+							{
+								First.Focus();
 
-							bool? Result = Dialog.ShowDialog();
-							if (!Result.HasValue || !Result.Value)
-								return;
+								bool? Result = Dialog.ShowDialog();
+								if (!Result.HasValue || !Result.Value)
+									return;
+
+								Msg = Command.Confirmation?.Find(this.language);
+								if (!string.IsNullOrEmpty(Msg))
+								{
+									MessageBoxResult Confirmation = await MainWindow.MessageBox("Confirmation", Msg,
+										MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+
+									if (Confirmation != MessageBoxResult.Yes)
+										return;
+								}
+
+								NoteParameters = await Model.ValidateParameters()
+									?? throw new Exception("Invalid parameters.");
+							}
+							else
+								NoteParameters = new Variables();
 						}
+						else
+							NoteParameters = new Variables();
+
+						Waher.Script.Expression Exp = Command.ParsedNoteGenerationScript
+							?? (string.IsNullOrEmpty(Command.NoteGenerationScript) ?
+							throw new Exception("Missing note script.")
+							: new Waher.Script.Expression(Command.NoteGenerationScript));
+
+						if (!Exp.CheckExpressionSafe(out ScriptNode Prohibited))
+							throw new Exception("Command blocked. Unsafe portion of script: " + Prohibited.SubExpression);
+
+						Task _ = Task.Run(async () =>
+						{
+							try
+							{
+								object Obj = await Exp.EvaluateAsync(NoteParameters);
+
+								if (Obj is string s)
+								{
+									await this.client.AddTextNoteAsync(this.TokenId, s);
+									// TODO: Load events.
+									// TODO: Personal.
+								}
+								else if (Obj is XmlDocument Xml)
+								{
+									await this.client.AddXmlNoteAsync(this.TokenId, Xml.DocumentElement.OuterXml);
+									// TODO: Load events.
+									// TODO: Personal.
+								}
+								else if (Obj is XmlElement E)
+								{
+									await this.client.AddXmlNoteAsync(this.TokenId, E.OuterXml);
+									// TODO: Load events.
+									// TODO: Personal.
+								}
+								else if (Obj is null)
+									throw new Exception("Note command returned null.");
+								else
+									throw new Exception("Command generated note of uncompatible type: " + Obj.GetType().FullName);
+
+								this.NoteAdded?.Invoke(this, EventArgs.Empty);
+
+								Msg = Command.Success?.Find(this.language);
+								if (!string.IsNullOrEmpty(Msg))
+									await MainWindow.MessageBox("Success", Msg, MessageBoxButton.OK, MessageBoxImage.Information);
+							}
+							catch (Exception ex)
+							{
+								Msg = Command.Failure?.Find(this.language);
+								MainWindow.ErrorBox(string.IsNullOrEmpty(Msg) ? ex.Message : Msg);
+							}
+						});
+					}
+					catch (Exception ex)
+					{
+						Msg = Command.Failure?.Find(this.language);
+						MainWindow.ErrorBox(string.IsNullOrEmpty(Msg) ? ex.Message : Msg);
 					}
 				}
 			}
@@ -406,5 +486,9 @@ namespace LegalLab.Models.Tokens
 			}
 		}
 
+		/// <summary>
+		/// Event raised when a note has been added.
+		/// </summary>
+		public event EventHandler NoteAdded;
 	}
 }
