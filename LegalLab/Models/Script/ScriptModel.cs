@@ -166,7 +166,7 @@ namespace LegalLab.Models.Script
 				catch (Exception ex)
 				{
 					ex = Log.UnnestException(ex);
-					MainWindow.MessageBox(ex.Message, "Unable to parse script.", MessageBoxButton.OK, MessageBoxImage.Error);
+					await MainWindow.MessageBox(ex.Message, "Unable to parse script.", MessageBoxButton.OK, MessageBoxImage.Error);
 				}
 			});
 		}

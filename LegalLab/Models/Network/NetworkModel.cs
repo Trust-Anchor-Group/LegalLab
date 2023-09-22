@@ -863,7 +863,7 @@ namespace LegalLab.Models.Network
 				this.loading = false;
 			}
 
-			MainWindow.MessageBox("Credentials saved.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+			await MainWindow.MessageBox("Credentials saved.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
 		}
 
 		/// <summary>
@@ -943,7 +943,7 @@ namespace LegalLab.Models.Network
 				this.loading = false;
 			}
 
-			MainWindow.MessageBox("Credentials deleted.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+			await MainWindow.MessageBox("Credentials deleted.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
 		}
 
 	}
