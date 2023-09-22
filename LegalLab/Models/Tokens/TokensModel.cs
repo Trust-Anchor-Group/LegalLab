@@ -1,12 +1,13 @@
-﻿using LegalLab.Models.Tokens.Events;
+﻿using LegalLab.Extensions;
+using LegalLab.Models.Tokens.Events;
 using LegalLab.Tabs;
 using NeuroFeatures;
+using NeuroFeatures.NoteCommands;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Waher.Content.Xml;
 using Waher.Events;
 using Waher.Networking.XMPP;
@@ -28,6 +29,7 @@ namespace LegalLab.Models.Tokens
 
 		private TokenModel selectedItem = null;
 		private TokenEventDetail[] events = null;
+		private Control[] tokenMenuItems = null;
 
 		private readonly Command addTextNote;
 		private readonly Command addXmlNote;
@@ -83,6 +85,9 @@ namespace LegalLab.Models.Tokens
 
 				this.events = null;
 				this.RaisePropertyChanged(nameof(this.Events));
+
+				this.tokenMenuItems = null;
+				this.RaisePropertyChanged(nameof(this.TokenMenuItems));
 			}
 		}
 
@@ -92,6 +97,7 @@ namespace LegalLab.Models.Tokens
 			this.RaisePropertyChanged(nameof(this.SelectedItem));
 
 			this.LoadEvents();
+			this.PrepareTokenMenuItems();
 		}
 
 		private void LoadEvents()
@@ -117,6 +123,74 @@ namespace LegalLab.Models.Tokens
 			}, this.selectedItem.TokenId);
 		}
 
+		private void PrepareTokenMenuItems()
+		{
+			List<Control> Items = new();
+			TokenModel Model = this.selectedItem;
+
+			if (Model is not null)
+			{
+				Items.Add(new MenuItem()
+				{
+					Header = "Add Text Note...",
+					Command = this.addTextNote
+				});
+
+				Items.Add(new MenuItem()
+				{
+					Header = "Add XML Note...",
+					Command = this.addXmlNote
+				});
+				
+				Items.Add(new Separator());
+
+				Items.Add(new MenuItem()
+				{
+					Header = "Present State...",
+					Command = Model.ViewPresentReport
+				});
+
+				Items.Add(new MenuItem()
+				{
+					Header = "History...",
+					Command = Model.ViewHistoryReport
+				});
+
+				Items.Add(new MenuItem()
+				{
+					Header = "State Diagram...",
+					Command = Model.ViewStateDiagramReport
+				});
+
+				Items.Add(new MenuItem()
+				{
+					Header = "Profiling...",
+					Command = Model.ViewProfilingReport
+				});
+
+				if ((Model.NoteCommands?.Length ?? 0) > 0)
+				{
+					Items.Add(new Separator());
+
+					int i = 0;
+
+					foreach (NoteCommand Command in Model.NoteCommands)
+					{
+						Items.Add(new MenuItem()
+						{
+							Header = Command.Title?.Find("en"),
+							ToolTip = Command.ToolTip?.Find("en"),
+							Command = Model.NoteCommand,
+							CommandParameter = ++i
+						});
+					}
+				}
+			}
+
+			this.tokenMenuItems = Items.ToArray();
+			this.RaisePropertyChanged(nameof(this.TokenMenuItems));
+		}
+
 		private Task NeuroFeaturesClient_TokenRemoved(object Sender, TokenEventArgs e)
 		{
 			MainWindow.UpdateGui(() =>
@@ -138,7 +212,7 @@ namespace LegalLab.Models.Tokens
 				this.RaisePropertyChanged(nameof(this.Tokens));
 
 				Task _ = this.LoadTotals();
-		
+
 				return Task.CompletedTask;
 			});
 
@@ -183,6 +257,11 @@ namespace LegalLab.Models.Tokens
 		/// Events of selected item.
 		/// </summary>
 		public TokenEventDetail[] Events => this.events;
+
+		/// <summary>
+		/// Context-menu items for selected token.
+		/// </summary>
+		public Control[] TokenMenuItems => this.tokenMenuItems;
 
 		public IEnumerable<TokenTotal> Totals
 		{
@@ -261,7 +340,7 @@ namespace LegalLab.Models.Tokens
 
 			do
 			{
-				s = MainWindow.PromptUser("Add Text Note", "Enter text note to add to token:", s);
+				s = MainWindow.PromptUser("Add XML Note", "Enter XML note to add to token:", s);
 				if (string.IsNullOrEmpty(s))
 					return;
 			}

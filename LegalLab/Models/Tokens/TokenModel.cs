@@ -67,6 +67,31 @@ namespace LegalLab.Models.Tokens
 		/// </summary>
 		public NoteCommand[] NoteCommands => this.noteCommands;
 
+		/// <summary>
+		/// Command for showing the present report.
+		/// </summary>
+		public Command ViewPresentReport => this.viewPresentReport;
+
+		/// <summary>
+		/// Command for showing the history report.
+		/// </summary>
+		public Command ViewHistoryReport => this.viewHistoryReport;
+
+		/// <summary>
+		/// Command for showing the state diagram.
+		/// </summary>
+		public Command ViewStateDiagramReport => this.viewStateDiagramReport;
+
+		/// <summary>
+		/// Command for showing the profiling report.
+		/// </summary>
+		public Command ViewProfilingReport => this.viewProfilingReport;
+
+		/// <summary>
+		/// Command for executing a note command.
+		/// </summary>
+		public ParametrizedCommand NoteCommand => this.executeNoteCommand;
+
 		public static async Task<TokenModel> CreateAsync(NeuroFeaturesClient Client, Token Token, string Language)
 		{
 			TokenModel Result = new(Client, Token);

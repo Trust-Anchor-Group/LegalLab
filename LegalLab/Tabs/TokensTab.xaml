@@ -107,7 +107,7 @@
         </StackPanel>
         <StackPanel DockPanel.Dock="Bottom" Visibility="{Binding SelectedItem, Converter={conv:VisibleIfNotNull}}">
             <ListView HorizontalAlignment="Stretch" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Auto" 
-                  ItemsSource="{Binding Details}" SelectionMode="Single" DataContext="{Binding SelectedItem}" MaxHeight="300">
+                  ItemsSource="{Binding Details}" SelectionMode="Single" DataContext="{Binding SelectedItem}" MaxHeight="400">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -137,10 +137,7 @@
         <ListView HorizontalAlignment="Stretch" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible" 
                   ItemsSource="{Binding Tokens}" DockPanel.Dock="Right" SelectionMode="Single">
             <ListView.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Add Text Note..." Command="{Binding AddTextNote}"/>
-                    <MenuItem Header="Add XML Note..." Command="{Binding AddXmlNote}"/>
-                </ContextMenu>
+                <ContextMenu ItemsSource="{Binding TokenMenuItems}" />
             </ListView.ContextMenu>
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">

@@ -205,8 +205,7 @@ namespace LegalLab.Models.Legal
 
 					Parameters.Children.Add(CheckBox);
 
-					if (First is null)
-						First = CheckBox;
+					First ??= CheckBox;
 				}
 				else
 				{
@@ -291,8 +290,7 @@ namespace LegalLab.Models.Legal
 					Parameters.Children.Add(Label);
 					Parameters.Children.Add(TextBox);
 
-					if (First is null)
-						First = TextBox;
+					First ??= TextBox;
 				}
 
 				ParameterList.Add(ParameterInfo);
