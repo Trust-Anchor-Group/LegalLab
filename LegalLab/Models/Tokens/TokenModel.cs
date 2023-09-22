@@ -543,7 +543,7 @@ namespace LegalLab.Models.Tokens
 
 								Msg = Command.Success?.Find(this.language);
 								if (!string.IsNullOrEmpty(Msg))
-									await MainWindow.MessageBox("Success", Msg, MessageBoxButton.OK, MessageBoxImage.Information);
+									await MainWindow.MessageBox(Msg, "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 							}
 							catch (Exception ex)
 							{
