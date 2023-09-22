@@ -209,9 +209,14 @@
 					<End />
 				</Action>
 				<NoteCommand id="Poll" ownerNote="true">
-					<Title lang="en">Poll sensor</Title>
-					<ToolTip lang="en">Requests the sensor to be polled.</ToolTip>
+					<Title lang="en">Poll</Title>
+					<ToolTip lang="en">Polls the sensor.</ToolTip>
 					<Success lang="en">A request has been made to poll the sensor.</Success>
+					<NoteContextScript>
+						<![CDATA[
+						State="Active"
+						]]>
+					</NoteContextScript>
 					<NoteGenerationScript>
 						<![CDATA[
 						<Poll xmlns='https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd'/>
@@ -219,25 +224,63 @@
 					</NoteGenerationScript>
 				</NoteCommand>
 				<NoteCommand id="Reconfigure" ownerNote="true">
-					<Title lang="en">Reconfigure twin...</Title>
-					<ToolTip lang="en">Reconfigures the digital sensor twin.</ToolTip>
+					<Title lang="en">Reconfigure...</Title>
+					<ToolTip lang="en">Reconfigure digital sensor twin.</ToolTip>
 					<Success lang="en">The digital sensor twin has been successfully reconfigured.</Success>
 					<Parameters>
 						<DurationParameter name="PollingInterval" exp="PollingInterval&gt;=Duration('PT1S')" guide="Duration">
 							<Description lang="en">Polling Interval</Description>
 						</DurationParameter>
 					</Parameters>
+					<NoteContextScript>
+						<![CDATA[
+						State="Active"
+						]]>
+					</NoteContextScript>
 					<NoteGenerationScript>
 						<![CDATA[
 						<Reconfigure xmlns='https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd' pollingInterval=(PollingInterval)/>
 						]]>
 					</NoteGenerationScript>
 				</NoteCommand>
+				<NoteCommand id="Pause" ownerNote="true">
+					<Title lang="en">Pause</Title>
+					<ToolTip lang="en">Pauses sensor-data readout.</ToolTip>
+					<NoteContextScript>
+						<![CDATA[
+						State="Active"
+						]]>
+					</NoteContextScript>
+					<NoteGenerationScript>
+						<![CDATA[
+						<Pause xmlns='https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd'/>
+						]]>
+					</NoteGenerationScript>
+				</NoteCommand>
+				<NoteCommand id="Resume" ownerNote="true">
+					<Title lang="en">Resume</Title>
+					<ToolTip lang="en">Resumes sensor-data readout.</ToolTip>
+					<NoteContextScript>
+						<![CDATA[
+						State="Paused"
+						]]>
+					</NoteContextScript>
+					<NoteGenerationScript>
+						<![CDATA[
+						<Resume xmlns='https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd'/>
+						]]>
+					</NoteGenerationScript>
+				</NoteCommand>
 				<NoteCommand id="Terminate" ownerNote="true">
 					<Title lang="en">Terminate Digital Twin...</Title>
-					<ToolTip lang="en">Adds a note on the token requesting the digital twin to be terminated.</ToolTip>
+					<ToolTip lang="en">Terminates digital sensor twin.</ToolTip>
 					<Confirmation lang="en">Are you sure you want to terminate the digital sensor twin? This action cannot be undone.</Confirmation>
 					<Success lang="en">A request has been made to terminate the digital sensor twin.</Success>
+					<NoteContextScript>
+						<![CDATA[
+						State="Active" or State="Paused"
+						]]>
+					</NoteContextScript>
 					<NoteGenerationScript>
 						<![CDATA[
 						<Terminate xmlns='https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd'/>

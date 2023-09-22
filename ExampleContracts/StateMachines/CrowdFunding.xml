@@ -298,6 +298,11 @@
 					<Title lang="en">Start...</Title>
 					<ToolTip lang="en">Starts the project.</ToolTip>
 					<Confirmation lang="en">Are you sure you want to start the project? You cannot undo this operation.</Confirmation>
+					<NoteContextScript>
+						<![CDATA[
+						State="OpenForInvestment"
+						]]>
+					</NoteContextScript>
 					<NoteGenerationScript>
 						<![CDATA[
 						<Start xmlns='https://lab.tagroot.io/Downloads/CrowdFunding.xsd'/>
@@ -312,6 +317,11 @@
 							<Description lang="en">Funds to release:</Description>
 						</NumericalParameter>
 					</Parameters>
+					<NoteContextScript>
+						<![CDATA[
+						State="ProjectStarted"
+						]]>
+					</NoteContextScript>
 					<NoteGenerationScript>
 						<![CDATA[
 						<Release xmlns='https://lab.tagroot.io/Downloads/CrowdFunding.xsd'><[Amount]></Release>

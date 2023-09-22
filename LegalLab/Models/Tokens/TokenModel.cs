@@ -10,14 +10,17 @@ using NeuroFeatures.Tags;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Xml;
 using Waher.Content.Markdown;
 using Waher.Events;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Runtime.Language;
 using Waher.Script;
 using Waher.Script.Model;
 
@@ -34,6 +37,8 @@ namespace LegalLab.Models.Tokens
 		private readonly string language;
 		private TokenDetail[] details;
 		private BitmapImage glyph;
+		private string currentState = null;
+		private Variables currentVariables = null;
 
 		private readonly Command viewPresentReport;
 		private readonly Command viewHistoryReport;
@@ -46,12 +51,13 @@ namespace LegalLab.Models.Tokens
 		/// </summary>
 		/// <param name="Client">Client</param>
 		/// <param name="Token">Neuro-Feature token</param>
-		private TokenModel(NeuroFeaturesClient Client, Token Token)
+		/// <param name="Language">Language</param>
+		private TokenModel(NeuroFeaturesClient Client, Token Token, string Language)
 		{
 			this.client = Client;
 			this.token = Token;
 			this.noteCommands = this.token.GetNoteCommands();
-			this.language = "en";
+			this.language = Language;
 
 			this.viewPresentReport = new Command(this.CanExecuteViewStateMachineReport, this.ExecuteViewPresentReport);
 			this.viewHistoryReport = new Command(this.CanExecuteViewStateMachineReport, this.ExecuteViewHistoryReport);
@@ -97,71 +103,71 @@ namespace LegalLab.Models.Tokens
 
 		public static async Task<TokenModel> CreateAsync(NeuroFeaturesClient Client, Token Token, string Language)
 		{
-			TokenModel Result = new(Client, Token);
+			TokenModel Result = new(Client, Token, Language);
 
 			List<TokenDetail> Details = new()
 			{
-				new TokenDetail("Token ID", Result.token.TokenId),
-				new TokenDetail("Token ID Method", Result.token.TokenIdMethod),
-				new TokenDetail("Short ID", Result.token.ShortId),
-				new TokenDetail("Ordinal", Result.token.Ordinal),
-				new TokenDetail("Batch Size", Result.token.BatchSize),
-				new TokenDetail("Created", Result.token.Created),
-				new TokenDetail("Updated", Result.token.Updated),
-				new TokenDetail("Value", Result.token.Value),
-				new TokenDetail("Currency", Result.token.Currency),
-				new TokenDetail("Expires", Result.token.Expires),
-				new TokenDetail("Archivig time (Required)", Result.token.ArchiveRequired),
-				new TokenDetail("Archivig time (Optional)", Result.token.ArchiveOptional),
-				new TokenDetail("Signature Timestamp", Result.token.SignatureTimestamp),
-				new TokenDetail("Signature", Convert.ToBase64String(Result.token.Signature)),
-				new TokenDetail("Definition Schema Digest", Convert.ToBase64String(Result.token.DefinitionSchemaDigest)),
-				new TokenDetail("Definition Schema Hash Function", Result.token.DefinitionSchemaHashFunction),
-				new TokenDetail("Creator Can Destroy", Result.token.CreatorCanDestroy),
-				new TokenDetail("Owner Can Destroy Batch", Result.token.OwnerCanDestroyBatch),
-				new TokenDetail("Owner Can Destroy Individual", Result.token.OwnerCanDestroyIndividual),
-				new TokenDetail("Certifier Can Destroy", Result.token.CertifierCanDestroy),
-				new TokenDetail("Friendly Name", Result.token.FriendlyName),
-				new TokenDetail("Category", Result.token.Category),
-				new TokenDetail("Description", await MarkdownToXaml(Result.token.Description)),
-				new TokenDetail("Glyph", Convert.ToBase64String(Result.token.Glyph)),
-				new TokenDetail("Glyph Content Type", Result.token.GlyphContentType),
-				new TokenDetail("Glyph Width", Result.token.GlyphWidth),
-				new TokenDetail("Glyph Height", Result.token.GlyphHeight),
-				new TokenDetail("Visibility", Result.token.Visibility),
-				new TokenDetail("Creator", Result.token.Creator),
-				new TokenDetail("CreatorJid", Result.token.CreatorJid),
-				new TokenDetail("Owner", Result.token.Owner),
-				new TokenDetail("OwnerJid", Result.token.OwnerJid),
-				new TokenDetail("TrustProvider", Result.token.TrustProvider),
-				new TokenDetail("TrustProviderJid", Result.token.TrustProviderJid),
-				new TokenDetail("Reference", Result.token.Reference),
-				new TokenDetail("Definition", Result.token.Definition),
-				new TokenDetail("DefinitionNamespace", Result.token.DefinitionNamespace),
-				new TokenDetail("CreationContract", Result.token.CreationContract),
-				new TokenDetail("OwnershipContract", Result.token.OwnershipContract)
+				new TokenDetail("Token ID", Result.token.TokenId, false),
+				new TokenDetail("Token ID Method", Result.token.TokenIdMethod, false),
+				new TokenDetail("Short ID", Result.token.ShortId, false),
+				new TokenDetail("Ordinal", Result.token.Ordinal, false),
+				new TokenDetail("Batch Size", Result.token.BatchSize, false),
+				new TokenDetail("Created", Result.token.Created, false),
+				new TokenDetail("Updated", Result.token.Updated, false),
+				new TokenDetail("Value", Result.token.Value, false),
+				new TokenDetail("Currency", Result.token.Currency, false),
+				new TokenDetail("Expires", Result.token.Expires, false),
+				new TokenDetail("Archivig time (Required, false)", Result.token.ArchiveRequired, false),
+				new TokenDetail("Archivig time (Optional, false)", Result.token.ArchiveOptional, false),
+				new TokenDetail("Signature Timestamp", Result.token.SignatureTimestamp, false),
+				new TokenDetail("Signature", Convert.ToBase64String(Result.token.Signature), false),
+				new TokenDetail("Definition Schema Digest", Convert.ToBase64String(Result.token.DefinitionSchemaDigest), false),
+				new TokenDetail("Definition Schema Hash Function", Result.token.DefinitionSchemaHashFunction, false),
+				new TokenDetail("Creator Can Destroy", Result.token.CreatorCanDestroy, false),
+				new TokenDetail("Owner Can Destroy Batch", Result.token.OwnerCanDestroyBatch, false),
+				new TokenDetail("Owner Can Destroy Individual", Result.token.OwnerCanDestroyIndividual, false),
+				new TokenDetail("Certifier Can Destroy", Result.token.CertifierCanDestroy, false),
+				new TokenDetail("Friendly Name", Result.token.FriendlyName, false),
+				new TokenDetail("Category", Result.token.Category, false),
+				new TokenDetail("Description", await MarkdownToXaml(Result.token.Description), false),
+				new TokenDetail("Glyph", Convert.ToBase64String(Result.token.Glyph), false),
+				new TokenDetail("Glyph Content Type", Result.token.GlyphContentType, false),
+				new TokenDetail("Glyph Width", Result.token.GlyphWidth, false),
+				new TokenDetail("Glyph Height", Result.token.GlyphHeight, false),
+				new TokenDetail("Visibility", Result.token.Visibility, false),
+				new TokenDetail("Creator", Result.token.Creator, false),
+				new TokenDetail("CreatorJid", Result.token.CreatorJid, false),
+				new TokenDetail("Owner", Result.token.Owner, false),
+				new TokenDetail("OwnerJid", Result.token.OwnerJid, false),
+				new TokenDetail("TrustProvider", Result.token.TrustProvider, false),
+				new TokenDetail("TrustProviderJid", Result.token.TrustProviderJid, false),
+				new TokenDetail("Reference", Result.token.Reference, false),
+				new TokenDetail("Definition", Result.token.Definition, false),
+				new TokenDetail("DefinitionNamespace", Result.token.DefinitionNamespace, false),
+				new TokenDetail("CreationContract", Result.token.CreationContract, false),
+				new TokenDetail("OwnershipContract", Result.token.OwnershipContract, false)
 			};
 
 			foreach (string s in Result.token.Witness)
-				Details.Add(new TokenDetail("Witness", s));
+				Details.Add(new TokenDetail("Witness", s, false));
 
 			foreach (string s in Result.token.CertifierJids)
-				Details.Add(new TokenDetail("CertifierJid", s));
+				Details.Add(new TokenDetail("CertifierJid", s, false));
 
 			foreach (string s in Result.token.CertifierJids)
-				Details.Add(new TokenDetail("CertifierJid", s));
+				Details.Add(new TokenDetail("CertifierJid", s, false));
 
 			foreach (string s in Result.token.Certifier)
-				Details.Add(new TokenDetail("Certifier", s));
+				Details.Add(new TokenDetail("Certifier", s, false));
 
 			foreach (string s in Result.token.Valuator)
-				Details.Add(new TokenDetail("Valuator", s));
+				Details.Add(new TokenDetail("Valuator", s, false));
 
 			foreach (string s in Result.token.Assessor)
-				Details.Add(new TokenDetail("Assessor", s));
+				Details.Add(new TokenDetail("Assessor", s, false));
 
 			foreach (TokenTag Tag in Result.token.Tags)
-				Details.Add(new TokenDetail(Tag.Name, Tag.Value));
+				Details.Add(new TokenDetail(Tag.Name, Tag.Value, false));
 
 			if (Result.token.HasStateMachine)
 			{
@@ -171,7 +177,7 @@ namespace LegalLab.Models.Tokens
 					Content = "Present State...",
 					Margin = new Thickness(10, 2, 10, 2),
 					MinWidth = 150
-				}));
+				}, false));
 
 				Details.Add(new TokenDetail("State-Machine History", new Button()
 				{
@@ -179,7 +185,7 @@ namespace LegalLab.Models.Tokens
 					Content = "History...",
 					Margin = new Thickness(10, 2, 10, 2),
 					MinWidth = 150
-				}));
+				}, false));
 
 				Details.Add(new TokenDetail("State-Machine State Diagram", new Button()
 				{
@@ -187,7 +193,7 @@ namespace LegalLab.Models.Tokens
 					Content = "State Diagram...",
 					Margin = new Thickness(10, 2, 10, 2),
 					MinWidth = 150
-				}));
+				}, false));
 
 				Details.Add(new TokenDetail("State-Machine Profiling", new Button()
 				{
@@ -195,21 +201,9 @@ namespace LegalLab.Models.Tokens
 					Content = "Profiling...",
 					Margin = new Thickness(10, 2, 10, 2),
 					MinWidth = 150
-				}));
+				}, false));
 
-				int i = 0;
-
-				foreach (NoteCommand NoteCommand in Result.noteCommands)
-				{
-					Details.Add(new TokenDetail(NoteCommand.ToolTip?.Find(Language), new Button()
-					{
-						Command = Result.executeNoteCommand,
-						CommandParameter = i++,
-						Content = NoteCommand.Title?.Find(Language),
-						Margin = new Thickness(10, 2, 10, 2),
-						MinWidth = 150
-					}));
-				}
+				await Result.AddNoteCommands(Details);
 			}
 
 			Result.details = Details.ToArray();
@@ -217,6 +211,95 @@ namespace LegalLab.Models.Tokens
 			return Result;
 		}
 
+		/// <summary>
+		/// Updates visible note commands, based on the current context.
+		/// </summary>
+		public async Task UpdateNoteCommands()
+		{
+			List<TokenDetail> Details = new();
+
+			foreach (TokenDetail Detail in this.details)
+			{
+				if (!Detail.NoteCommand)
+					Details.Add(Detail);
+			}
+
+			await this.AddNoteCommands(Details);
+
+			MainWindow.UpdateGui(() =>
+			{
+				this.Details = Details.ToArray();
+				return Task.CompletedTask;
+			});
+		}
+
+		public async Task<KeyValuePair<NoteCommand, int>[]> GetContextSpecificNoteCommands(bool IsOwner)
+		{
+			Variables v = new()
+			{
+				["State"] = this.currentState,
+				["<State>"] = this.currentState
+			};
+			int i, c = this.noteCommands?.Length ?? 0;
+			List<KeyValuePair<NoteCommand, int>> Result = new List<KeyValuePair<NoteCommand, int>>();
+
+			this.currentVariables?.CopyTo(v);
+
+			for (i = 0; i < c; i++)
+			{
+				NoteCommand NoteCommand = this.noteCommands[i];
+
+				if (IsOwner)
+				{
+					if (!NoteCommand.OwnerNote)
+						continue;
+				}
+				else
+				{
+					if (!NoteCommand.ExternalNote)
+						continue;
+				}
+
+				if (NoteCommand.HasNoteContextScript)
+				{
+					try
+					{
+						object Obj = await NoteCommand.ParsedNoteContextScript.EvaluateAsync(v);
+						if (Obj is not bool b || !b)
+							continue;
+					}
+					catch (Exception ex)
+					{
+						Log.Critical(ex);
+						continue;
+					}
+				}
+
+				Result.Add(new KeyValuePair<NoteCommand, int>(NoteCommand, i));
+			}
+
+			return Result.ToArray();
+		}
+
+		private async Task AddNoteCommands(List<TokenDetail> Details)
+		{
+			KeyValuePair<NoteCommand, int>[] Commands = await this.GetContextSpecificNoteCommands(true);
+
+			foreach (KeyValuePair<NoteCommand, int> P in Commands)
+			{
+				NoteCommand NoteCommand = P.Key;
+				int i = P.Value;
+
+				Details.Add(new TokenDetail(NoteCommand.ToolTip?.Find(this.language), new Button()
+				{
+					Command = this.executeNoteCommand,
+					CommandParameter = i,
+					Content = NoteCommand.Title?.Find(this.language),
+					Margin = new Thickness(10, 2, 10, 2),
+					MinWidth = 150
+				}, true));
+			}
+		}
 
 		private static async Task<object> MarkdownToXaml(string Markdown)
 		{
@@ -301,7 +384,15 @@ namespace LegalLab.Models.Tokens
 		/// <summary>
 		/// Token details.
 		/// </summary>
-		public TokenDetail[] Details => this.details;
+		public TokenDetail[] Details
+		{
+			get => this.details;
+			set
+			{
+				this.details = value;
+				this.RaisePropertyChanged(nameof(this.Details));
+			}
+		}
 
 		private bool CanExecuteViewStateMachineReport()
 		{
@@ -478,5 +569,33 @@ namespace LegalLab.Models.Tokens
 		/// Event raised when a note has been added.
 		/// </summary>
 		public event EventHandler NoteAdded;
+
+		/// <summary>
+		/// Gets called when a new state has been reported.
+		/// </summary>
+		/// <param name="NewState">New state.</param>
+		public void StateUpdated(string NewState)
+		{
+			this.currentState = NewState;
+		}
+
+		/// <summary>
+		/// Gets called when the variables of a state-machine has been reported.
+		/// </summary>
+		/// <param name="NewVariables">New set of variables.</param>
+		public void VariablesUpdated(Variables NewVariables)
+		{
+			this.currentVariables = NewVariables;
+		}
+
+		/// <summary>
+		/// Current state of state-machine (if known).
+		/// </summary>
+		public string CurrentState => this.currentState;
+
+		/// <summary>
+		/// Current variables of state-machine (if known).
+		/// </summary>
+		public Variables CurrentVariables => this.currentVariables;
 	}
 }

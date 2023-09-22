@@ -147,6 +147,44 @@
 				<Action id="End">
 					<End/>
 				</Action>
+				<NoteCommand id="Set" ownerNote="true">
+					<Title lang="en">Set...</Title>
+					<ToolTip lang="en">Sets the current value.</ToolTip>
+					<Parameters>
+						<NumericalParameter name="Value">
+							<Description lang="en">Value to set:</Description>
+						</NumericalParameter>
+					</Parameters>
+					<NoteContextScript>
+						<![CDATA[
+						State="Calculating"
+						]]>
+					</NoteContextScript>
+					<NoteGenerationScript>
+						<![CDATA[
+						Str(Value)
+						]]>
+					</NoteGenerationScript>
+				</NoteCommand>
+				<NoteCommand id="Log" externalNote="true">
+					<Title lang="en">Log...</Title>
+					<ToolTip lang="en">Logs a message.</ToolTip>
+					<Parameters>
+						<StringParameter name="Value">
+							<Description lang="en">Message to log:</Description>
+						</StringParameter>
+					</Parameters>
+					<NoteContextScript>
+						<![CDATA[
+						State="Calculating"
+						]]>
+					</NoteContextScript>
+					<NoteGenerationScript>
+						<![CDATA[
+						Value
+						]]>
+					</NoteGenerationScript>
+				</NoteCommand>
 				<NoteCommand id="Add" ownerNote="true">
 					<Title lang="en">Add...</Title>
 					<ToolTip lang="en">Adds a number to the current value.</ToolTip>
@@ -155,6 +193,11 @@
 							<Description lang="en">Value to add:</Description>
 						</NumericalParameter>
 					</Parameters>
+					<NoteContextScript>
+						<![CDATA[
+						State="Calculating"
+						]]>
+					</NoteContextScript>
 					<NoteGenerationScript>
 						<![CDATA[
 						<Add xmlns='https://lab.tagroot.io/Downloads/Calculator.xsd'><[Value]></Add>
@@ -169,6 +212,11 @@
 							<Description lang="en">Value to subtract:</Description>
 						</NumericalParameter>
 					</Parameters>
+					<NoteContextScript>
+						<![CDATA[
+						State="Calculating"
+						]]>
+					</NoteContextScript>
 					<NoteGenerationScript>
 						<![CDATA[
 						<Subtract xmlns='https://lab.tagroot.io/Downloads/Calculator.xsd'><[Value]></Subtract>
@@ -183,6 +231,11 @@
 							<Description lang="en">Value to multiply:</Description>
 						</NumericalParameter>
 					</Parameters>
+					<NoteContextScript>
+						<![CDATA[
+						State="Calculating"
+						]]>
+					</NoteContextScript>
 					<NoteGenerationScript>
 						<![CDATA[
 						<Multiply xmlns='https://lab.tagroot.io/Downloads/Calculator.xsd'><[Value]></Multiply>
@@ -197,29 +250,25 @@
 							<Description lang="en">Value to divide with:</Description>
 						</NumericalParameter>
 					</Parameters>
+					<NoteContextScript>
+						<![CDATA[
+						State="Calculating"
+						]]>
+					</NoteContextScript>
 					<NoteGenerationScript>
 						<![CDATA[
 						<Divide xmlns='https://lab.tagroot.io/Downloads/Calculator.xsd'><[Value]></Divide>
 						]]>
 					</NoteGenerationScript>
 				</NoteCommand>
-				<NoteCommand id="Set" ownerNote="true">
-					<Title lang="en">Set...</Title>
-					<ToolTip lang="en">Sets the current value.</ToolTip>
-					<Parameters>
-						<NumericalParameter name="Value">
-							<Description lang="en">Value to set:</Description>
-						</NumericalParameter>
-					</Parameters>
-					<NoteGenerationScript>
-						<![CDATA[
-						<Set xmlns='https://lab.tagroot.io/Downloads/Calculator.xsd'><[Value]></Set>
-						]]>
-					</NoteGenerationScript>
-				</NoteCommand>
 				<NoteCommand id="Clear" ownerNote="true">
 					<Title lang="en">Clear</Title>
 					<ToolTip lang="en">Clears the current value.</ToolTip>
+					<NoteContextScript>
+						<![CDATA[
+						State="Calculating"
+						]]>
+					</NoteContextScript>
 					<NoteGenerationScript>
 						<![CDATA[
 						<Clear xmlns='https://lab.tagroot.io/Downloads/Calculator.xsd'/>
@@ -229,6 +278,11 @@
 				<NoteCommand id="Memory" ownerNote="true">
 					<Title lang="en">Memory</Title>
 					<ToolTip lang="en">Stores the current value in memory.</ToolTip>
+					<NoteContextScript>
+						<![CDATA[
+						State="Calculating"
+						]]>
+					</NoteContextScript>
 					<NoteGenerationScript>
 						<![CDATA[
 						<Memory xmlns='https://lab.tagroot.io/Downloads/Calculator.xsd'/>
@@ -238,6 +292,11 @@
 				<NoteCommand id="Recall" ownerNote="true">
 					<Title lang="en">Recall</Title>
 					<ToolTip lang="en">Recalls the value in memory.</ToolTip>
+					<NoteContextScript>
+						<![CDATA[
+						State="Calculating"
+						]]>
+					</NoteContextScript>
 					<NoteGenerationScript>
 						<![CDATA[
 						<Recall xmlns='https://lab.tagroot.io/Downloads/Calculator.xsd'/>
@@ -247,6 +306,11 @@
 				<NoteCommand id="Done" ownerNote="true">
 					<Title lang="en">Done</Title>
 					<ToolTip lang="en">Terminates the calculator token.</ToolTip>
+					<NoteContextScript>
+						<![CDATA[
+						State="Calculating"
+						]]>
+					</NoteContextScript>
 					<NoteGenerationScript>
 						<![CDATA[
 						<Done xmlns='https://lab.tagroot.io/Downloads/Calculator.xsd'/>

@@ -230,6 +230,11 @@
 							<Description lang="en">Account:</Description>
 						</StringParameter>
 					</Parameters>
+					<NoteContextScript>
+						<![CDATA[
+						State="Active"
+						]]>
+					</NoteContextScript>
 					<NoteGenerationScript>
 						<![CDATA[
 						<BuyEDaler xmlns='https://lab.tagroot.io/Downloads/BuyTransferSellEDaler.xsd' amount=(Amount) bank=(Bank) account=(Account)/>
@@ -244,6 +249,11 @@
 							<Description lang="en">Amount to transfer:</Description>
 						</NumericalParameter>
 					</Parameters>
+					<NoteContextScript>
+						<![CDATA[
+						State="Active"
+						]]>
+					</NoteContextScript>
 					<NoteGenerationScript>
 						<![CDATA[
 						<TransferEDaler xmlns='https://lab.tagroot.io/Downloads/BuyTransferSellEDaler.xsd' amount=(Amount)/>
@@ -261,6 +271,11 @@
 							<Description lang="en">Bank account:</Description>
 						</StringParameter>
 					</Parameters>
+					<NoteContextScript>
+						<![CDATA[
+						State="Active"
+						]]>
+					</NoteContextScript>
 					<NoteGenerationScript>
 						<![CDATA[
 						<SellEDaler xmlns='https://lab.tagroot.io/Downloads/BuyTransferSellEDaler.xsd' amount=(Amount) bankAccount=(BankAccount)/>

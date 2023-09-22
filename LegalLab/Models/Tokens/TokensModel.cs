@@ -97,13 +97,49 @@ namespace LegalLab.Models.Tokens
 			}
 		}
 
-		private void Token_Selected(object sender, EventArgs e)
+		private async void Token_Selected(object sender, EventArgs e)
 		{
-			this.selectedItem = sender as TokenModel;
-			this.RaisePropertyChanged(nameof(this.SelectedItem));
+			try
+			{
+				this.selectedItem = sender as TokenModel;
+				this.RaisePropertyChanged(nameof(this.SelectedItem));
 
-			this.LoadEvents();
-			this.PrepareTokenMenuItems();
+				bool PrepareMenuItems = true;
+
+				if (this.selectedItem is not null)
+				{
+					string TokenId = this.selectedItem.TokenId;
+
+					if (this.selectedItem.CurrentState is null || this.selectedItem.CurrentVariables is null)
+					{
+						this.neuroFeaturesClient.GetCurrentState(TokenId, async (sender2, e2) =>
+						{
+							if (e2.Ok && this.selectedItem is not null && this.selectedItem.TokenId == TokenId)
+							{
+								PrepareMenuItems = false;
+
+								this.selectedItem.StateUpdated(e2.CurrentState);
+								this.selectedItem.VariablesUpdated(e2.Variables);
+								await this.selectedItem.UpdateNoteCommands();
+
+								MainWindow.UpdateGui(async () =>
+								{
+									await this.PrepareTokenMenuItems();
+								});
+							}
+						}, null);
+					}
+				}
+
+				this.LoadEvents();
+
+				if (PrepareMenuItems)
+					await this.PrepareTokenMenuItems();
+			}
+			catch (Exception ex)
+			{
+				Log.Critical(ex);
+			}
 		}
 
 		private void LoadEvents()
@@ -134,7 +170,7 @@ namespace LegalLab.Models.Tokens
 			}, this.selectedItem.TokenId);
 		}
 
-		private void PrepareTokenMenuItems()
+		private async Task PrepareTokenMenuItems()
 		{
 			List<Control> Items = new();
 			TokenModel Model = this.selectedItem;
@@ -179,20 +215,23 @@ namespace LegalLab.Models.Tokens
 					Command = Model.ViewProfilingReport
 				});
 
-				if ((Model.NoteCommands?.Length ?? 0) > 0)
+				KeyValuePair<NoteCommand, int>[] Commands = await Model.GetContextSpecificNoteCommands(true);
+
+				if (Commands.Length > 0)
 				{
 					Items.Add(new Separator());
 
-					int i = 0;
-
-					foreach (NoteCommand Command in Model.NoteCommands)
+					foreach (KeyValuePair<NoteCommand, int> P in Commands)
 					{
+						NoteCommand Command = P.Key;
+						int i = P.Value;
+
 						Items.Add(new MenuItem()
 						{
 							Header = Command.Title?.Find("en"),
 							ToolTip = Command.ToolTip?.Find("en"),
 							Command = Model.NoteCommand,
-							CommandParameter = i++
+							CommandParameter = i
 						});
 					}
 				}
@@ -421,6 +460,20 @@ namespace LegalLab.Models.Tokens
 			{
 				try
 				{
+					foreach (TokenModel Token in this.tokens)
+					{
+						if (Token.TokenId == e.TokenId)
+						{
+							Token.VariablesUpdated(e.Variables);
+							await Token.UpdateNoteCommands();
+
+							if (this.selectedItem?.Token.TokenId == e.TokenId)
+							{
+								await this.PrepareTokenMenuItems();
+							}
+						}
+					}
+
 					foreach (object Control in MainWindow.currentInstance.TabControl.Items)
 					{
 						if (Control is not TabItem Tab)
@@ -450,6 +503,18 @@ namespace LegalLab.Models.Tokens
 			{
 				try
 				{
+					foreach (TokenModel Token in this.tokens)
+					{
+						if (Token.TokenId == e.TokenId)
+						{
+							Token.StateUpdated(e.NewState);
+							await Token.UpdateNoteCommands();
+
+							if (this.selectedItem?.Token.TokenId == e.TokenId)
+								await this.PrepareTokenMenuItems();
+						}
+					}
+
 					foreach (object Control in MainWindow.currentInstance.TabControl.Items)
 					{
 						if (Control is not TabItem Tab)
