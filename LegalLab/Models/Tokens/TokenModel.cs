@@ -495,16 +495,6 @@ namespace LegalLab.Models.Tokens
 								if (!Result.HasValue || !Result.Value)
 									return;
 
-								Msg = Command.Confirmation?.Find(this.language);
-								if (!string.IsNullOrEmpty(Msg))
-								{
-									MessageBoxResult Confirmation = await MainWindow.MessageBox("Confirmation", Msg,
-										MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
-
-									if (Confirmation != MessageBoxResult.Yes)
-										return;
-								}
-
 								NoteParameters = await Model.ValidateParameters()
 									?? throw new Exception("Invalid parameters.");
 							}
@@ -513,6 +503,16 @@ namespace LegalLab.Models.Tokens
 						}
 						else
 							NoteParameters = new Variables();
+
+						Msg = Command.Confirmation?.Find(this.language);
+						if (!string.IsNullOrEmpty(Msg))
+						{
+							MessageBoxResult Confirmation = await MainWindow.MessageBox(Msg, "Confirmation",
+								MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+
+							if (Confirmation != MessageBoxResult.Yes)
+								return;
+						}
 
 						Waher.Script.Expression Exp = Command.ParsedNoteGenerationScript
 							?? (string.IsNullOrEmpty(Command.NoteGenerationScript) ?
