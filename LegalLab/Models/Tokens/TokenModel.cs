@@ -438,23 +438,11 @@ namespace LegalLab.Models.Tokens
 								object Obj = await Exp.EvaluateAsync(NoteParameters);
 
 								if (Obj is string s)
-								{
-									await this.client.AddTextNoteAsync(this.TokenId, s);
-									// TODO: Load events.
-									// TODO: Personal.
-								}
+									await this.client.AddTextNoteAsync(this.TokenId, s, Command.Personal);
 								else if (Obj is XmlDocument Xml)
-								{
-									await this.client.AddXmlNoteAsync(this.TokenId, Xml.DocumentElement.OuterXml);
-									// TODO: Load events.
-									// TODO: Personal.
-								}
+									await this.client.AddXmlNoteAsync(this.TokenId, Xml.DocumentElement.OuterXml, Command.Personal);
 								else if (Obj is XmlElement E)
-								{
-									await this.client.AddXmlNoteAsync(this.TokenId, E.OuterXml);
-									// TODO: Load events.
-									// TODO: Personal.
-								}
+									await this.client.AddXmlNoteAsync(this.TokenId, E.OuterXml, Command.Personal);
 								else if (Obj is null)
 									throw new Exception("Note command returned null.");
 								else
