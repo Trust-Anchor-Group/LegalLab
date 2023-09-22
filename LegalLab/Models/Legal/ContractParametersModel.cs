@@ -161,11 +161,13 @@ namespace LegalLab.Models.Legal
 		/// <param name="Parameters">StackPanel to populate with parameters</param>
 		/// <param name="AdditionalCommands">StackPanel to populate with additional commends.</param>
 		/// <param name="PresetValues">Optional preset values. Can be null.</param>
-		public virtual async Task PopulateParameters(StackPanel Languages, StackPanel Parameters, StackPanel AdditionalCommands,
+		/// <returns>Reference to first editable control.</returns>
+		public virtual async Task<Control> PopulateParameters(StackPanel Languages, StackPanel Parameters, StackPanel AdditionalCommands,
 			Dictionary<CaseInsensitiveString, object> PresetValues)
 		{
 			List<ParameterInfo> ParameterList = new();
 			ParameterInfo ParameterInfo;
+			Control First = null;
 
 			this.languageOptions = Languages;
 			if (this.languageOptions is not null)
@@ -202,6 +204,9 @@ namespace LegalLab.Models.Legal
 					this.parametersByName[Parameter.Name] = ParameterInfo = new BooleanParameterInfo(this.contract, BP, CheckBox, null, this.parameters);
 
 					Parameters.Children.Add(CheckBox);
+
+					if (First is null)
+						First = CheckBox;
 				}
 				else
 				{
@@ -285,6 +290,9 @@ namespace LegalLab.Models.Legal
 
 					Parameters.Children.Add(Label);
 					Parameters.Children.Add(TextBox);
+
+					if (First is null)
+						First = TextBox;
 				}
 
 				ParameterList.Add(ParameterInfo);
@@ -301,6 +309,8 @@ namespace LegalLab.Models.Legal
 				this.additionalCommands.Visibility = Visibility.Visible;
 				this.additionalCommands.InvalidateVisual();
 			}
+
+			return First;
 		}
 
 		private async void Parameter_CheckedChanged(object sender, RoutedEventArgs e)
@@ -374,6 +384,7 @@ namespace LegalLab.Models.Legal
 				catch (Exception)
 				{
 					TextBox.Background = Brushes.Salmon;
+					this.ParametersOk = false;
 				}
 
 				await this.RaiseParametersChanged();

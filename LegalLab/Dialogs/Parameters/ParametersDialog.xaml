@@ -10,7 +10,7 @@
 	<DockPanel Margin="10,10,10,0" LastChildFill="True">
 		<StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Center" Margin="10">
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-				<Button Content="OK" Width="100" IsDefault="True" IsEnabled="{Binding ParametersOk}"/>
+				<Button Content="OK" Width="100" IsDefault="True" IsEnabled="{Binding ParametersOk}" Click="Button_Click"/>
 				<Button Content="Cancel" Width="100" Margin="10,0,0,0" IsCancel="True"/>
 			</StackPanel>
 		</StackPanel>

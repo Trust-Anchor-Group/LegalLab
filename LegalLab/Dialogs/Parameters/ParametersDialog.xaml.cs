@@ -8,6 +8,8 @@ namespace LegalLab.Dialogs.Parameters
 	/// </summary>
 	public partial class ParametersDialog : Window
 	{
+		private readonly ContractParametersModel model;
+
 		/// <summary>
 		/// Interaction logic for ParametersDialog.xaml
 		/// </summary>
@@ -17,8 +19,15 @@ namespace LegalLab.Dialogs.Parameters
 		{
 			this.InitializeComponent();
 
+			this.model = Model;
 			this.DataContext = Model;
 			this.Title = Title;
+		}
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			if (this.model.ParametersOk)
+				this.DialogResult = true;
 		}
 	}
 }

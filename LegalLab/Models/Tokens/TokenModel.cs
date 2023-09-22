@@ -362,11 +362,16 @@ namespace LegalLab.Models.Tokens
 						};
 
 						await Model.Start();
-						await Model.PopulateParameters(null, Dialog.ParametersPanel, null, null);
+						Control First = await Model.PopulateParameters(null, Dialog.ParametersPanel, null, null);
 
-						bool? Result = Dialog.ShowDialog();
-						if (!Result.HasValue || !Result.Value)
-							return;
+						if (First is not null)
+						{
+							First.Focus();
+
+							bool? Result = Dialog.ShowDialog();
+							if (!Result.HasValue || !Result.Value)
+								return;
+						}
 					}
 				}
 			}
