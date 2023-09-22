@@ -248,7 +248,7 @@ namespace LegalLab
 		/// <returns>Button pressed.</returns>
 		public static Task<MessageBoxResult> MessageBox(string Text, string Caption, MessageBoxButton Button, MessageBoxImage Icon)
 		{
-			TaskCompletionSource<MessageBoxResult> Result = new TaskCompletionSource<MessageBoxResult>();
+			TaskCompletionSource<MessageBoxResult> Result = new();
 
 			UpdateGui(() =>
 			{
