@@ -10,17 +10,14 @@ using NeuroFeatures.Tags;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Xml;
 using Waher.Content.Markdown;
 using Waher.Events;
 using Waher.Networking.XMPP.Contracts;
-using Waher.Runtime.Language;
 using Waher.Script;
 using Waher.Script.Model;
 
@@ -32,9 +29,9 @@ namespace LegalLab.Models.Tokens
 	public class TokenModel : SelectableItem
 	{
 		private readonly NeuroFeaturesClient client;
-		private readonly NoteCommand[] noteCommands;
 		private readonly Token token;
 		private readonly string language;
+		private NoteCommand[] noteCommands;
 		private TokenDetail[] details;
 		private BitmapImage glyph;
 		private string currentState = null;
@@ -56,7 +53,6 @@ namespace LegalLab.Models.Tokens
 		{
 			this.client = Client;
 			this.token = Token;
-			this.noteCommands = this.token.GetNoteCommands();
 			this.language = Language;
 
 			this.viewPresentReport = new Command(this.CanExecuteViewStateMachineReport, this.ExecuteViewPresentReport);
@@ -104,6 +100,8 @@ namespace LegalLab.Models.Tokens
 		public static async Task<TokenModel> CreateAsync(NeuroFeaturesClient Client, Token Token, string Language)
 		{
 			TokenModel Result = new(Client, Token, Language);
+
+			Result.noteCommands = await Result.token.GetNoteCommands();
 
 			List<TokenDetail> Details = new()
 			{
@@ -241,7 +239,7 @@ namespace LegalLab.Models.Tokens
 				["<State>"] = this.currentState
 			};
 			int i, c = this.noteCommands?.Length ?? 0;
-			List<KeyValuePair<NoteCommand, int>> Result = new List<KeyValuePair<NoteCommand, int>>();
+			List<KeyValuePair<NoteCommand, int>> Result = new();
 
 			this.currentVariables?.CopyTo(v);
 

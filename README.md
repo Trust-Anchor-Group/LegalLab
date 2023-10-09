@@ -17,6 +17,11 @@ To compile the project, you need to clone the [MicrosoftInterop](https://github.
 into a folder parallel to the LegalLab folder. The LegalLab application uses a library from this repository, that converts
 Microsoft Word to Markdown. This library allows LegalLab to create smart contracts from Word documents.
 
+Setup File
+-------------
+
+A setup file for LegalLab exists, and can be downloaded from <https://lab.tagroot.io/Downloads/LegalLab/setup.exe>.
+
 Example Contracts
 ----------------------
 
