@@ -1966,7 +1966,19 @@ namespace LegalLab.Models.Design
 				if (!Result.HasValue || !Result.Value)
 					return;
 
-				string Markdown = WordUtilities.ExtractAsMarkdown(Dialog.FileName, out string Language);
+				string Markdown;
+				string TempFileName = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString().Replace("-", string.Empty)) + ".docx";
+
+				try
+				{
+					File.Copy(Dialog.FileName, TempFileName, true);
+					Markdown = WordUtilities.ExtractAsMarkdown(TempFileName, out string Language);
+				}
+				finally
+				{
+					File.Delete(TempFileName);
+				}
+
 				await this.ExecuteNewContract(false);
 
 				if (ContractUtilities.ExtractParameters(ref Markdown, out Dictionary<string, ParameterInformation> HeaderInfo))
