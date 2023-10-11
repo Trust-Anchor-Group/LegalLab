@@ -2,8 +2,6 @@
 using LegalLab.Models.Design;
 using LegalLab.Models.Design.AvalonExtensions;
 using LegalLab.Models.Legal.Items;
-using LegalLab.Models.Legal.Items.Parameters;
-using LegalLab.Models.Standards;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -12,14 +10,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
-using System.Windows.Media;
 using Waher.Events;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
-using Waher.Persistence;
 using Waher.Runtime.Settings;
-using Waher.Script;
 
 namespace LegalLab.Models.Legal
 {
