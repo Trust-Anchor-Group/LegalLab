@@ -878,7 +878,8 @@ foreach Category in ByCategory.Keys do
 							<body>
 								<paragraph>
 									<text>The owner can add XML notes to the token, and thus control its operation. The following notes can be added (all empty XML elements with the indicated local name using the namespace </text>
-									<text>https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd).</text>
+									<text>https://lab.tagroot.io/Downloads/DigitalSensorTwin.xsd</text>
+									<text>).</text>
 								</paragraph>
 								<bulletItems>
 									<item>
