@@ -103,11 +103,15 @@ namespace LegalLab.Models.Legal
 
 			this.SetParameters(Contract.Parameters);
 
+			string Domain = this.contracts.Client.Domain;
+			if (string.IsNullOrEmpty(Domain))
+				Domain = "lab.tagroot.io";
+
 			this.ContractId = Contract.ContractId;
 			this.HasId = !string.IsNullOrEmpty(Contract.ContractId);
 			this.CanBeSigned = Contract.State == ContractState.Approved || Contract.State == ContractState.BeingSigned;
 			this.Uri = ContractsClient.ContractIdUriString(Contract.ContractId);
-			this.QrCodeUri = "https://" + this.contracts.Client.Domain + "/QR/" + this.Uri;
+			this.QrCodeUri = "https://" + Domain + "/QR/" + this.Uri;
 
 			List<GenInfo> GenInfo = new()
 			{

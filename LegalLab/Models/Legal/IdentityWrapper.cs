@@ -46,6 +46,15 @@ namespace LegalLab.Models.Legal
 		/// <summary>
 		/// URL for displaying a QR-code for the <see cref="URL"/>.
 		/// </summary>
-		public string QrCodeUrl => "https://" + this.domain + "/QR/" + this.URL;
+		public string QrCodeUrl
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(this.domain))
+					return "https://lab.tagroot.io/QR/" + this.URL;
+				else
+					return "https://" + this.domain + "/QR/" + this.URL;
+			}
+		}
 	}
 }

@@ -24,6 +24,10 @@ namespace LegalLab.Models.Legal.Items
         /// <param name="ClientSignature">Client Signature</param>
         public ClientSignatureInfo(ContractsClient Contracts, ClientSignature ClientSignature)
 		{
+			string Domain = Contracts.Client.Domain;
+			if (string.IsNullOrEmpty(Domain))
+				Domain = "lab.tagroot.io";
+
             this.bareJid = new Property<string>(nameof(this.BareJid), ClientSignature.BareJid, this);
             this.signature = new Property<byte[]>(nameof(this.Signature), ClientSignature.DigitalSignature, this);
             this.legalId = new Property<string>(nameof(this.LegalId), ClientSignature.LegalId, this);
@@ -31,7 +35,7 @@ namespace LegalLab.Models.Legal.Items
             this.role = new Property<string>(nameof(this.Role), ClientSignature.Role, this);
             this.timestamp = new Property<DateTime>(nameof(this.Timestamp), ClientSignature.Timestamp, this);
             this.transferable = new Property<bool>(nameof(this.Transferable), ClientSignature.Transferable, this);
-            this.legalIdQrCodeUri = new Property<string>(nameof(this.LegalIdQrCodeUri), "https://" + Contracts.Client.Domain + "/QR/" + ClientSignature.LegalIdUriString, this);
+            this.legalIdQrCodeUri = new Property<string>(nameof(this.LegalIdQrCodeUri), "https://" + Domain + "/QR/" + ClientSignature.LegalIdUriString, this);
         }
 
         /// <summary>
