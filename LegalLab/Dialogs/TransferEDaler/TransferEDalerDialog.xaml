@@ -7,17 +7,17 @@
         Width="300" Height="375" Background="#FFE5E5E5" Title="Transfer eDaler®">
     <DockPanel Margin="10,10,10,0" LastChildFill="True">
         <Label Content="Recipient: (JID)" DockPanel.Dock="Top"/>
-		<TextBox Name="Recipient" Text="{Binding Recipient}" DockPanel.Dock="Top"/>
+		<TextBox Name="Recipient" Text="{Binding Recipient, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Top"/>
 		<Label Content="Amount:" DockPanel.Dock="Top"/>
-		<TextBox Name="Amount" Text="{Binding Amount}" DockPanel.Dock="Top"/>
+		<TextBox Name="Amount" Text="{Binding Amount, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Top"/>
 		<Label Content="Amount Extra:" DockPanel.Dock="Top"/>
-		<TextBox Name="AmountExtra" Text="{Binding AmountExtra}" DockPanel.Dock="Top"/>
+		<TextBox Name="AmountExtra" Text="{Binding AmountExtra, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Top"/>
 		<Label Content="Currency:" DockPanel.Dock="Top"/>
-		<TextBox Name="Currency" Text="{Binding Currency}" DockPanel.Dock="Top"/>
+		<TextBox Name="Currency" Text="{Binding Currency, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Top"/>
 		<Label Content="URI expiry (#days):" DockPanel.Dock="Top"/>
-		<TextBox Name="ValidNrDays" Text="{Binding ValidNrDays}" DockPanel.Dock="Top"/>
+		<TextBox Name="ValidNrDays" Text="{Binding ValidNrDays, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Top"/>
 		<Label Content="Message:" DockPanel.Dock="Top"/>
-		<TextBox Name="Message" Text="{Binding Message}" DockPanel.Dock="Top"/>
+		<TextBox Name="Message" Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Top"/>
 		<StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Center">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Command="{Binding Transfer}" Content="Transfer" Width="100" IsDefault="True"/>
