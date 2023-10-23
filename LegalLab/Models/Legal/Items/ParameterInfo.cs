@@ -75,7 +75,7 @@ namespace LegalLab.Models.Legal.Items
 		/// <summary>
 		/// Generated control.
 		/// </summary>
-		public Control Control { get; }
+		public Control Control { get; internal set; }
 
 		/// <summary>
 		/// Name

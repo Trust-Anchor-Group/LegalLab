@@ -42,13 +42,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 				object Value = this.Parameter.ObjectValue;
 
 				this.value.Value = Value;
-
-				if (Value is decimal d)
-					this.textBox.Text = MoneyToString.ToString(d);
-				else if (Value is double d2)
-					this.textBox.Text = MoneyToString.ToString((decimal)d2);
-				else
-					this.textBox.Text = Value?.ToString() ?? string.Empty;
+				this.textBox.Text = MoneyToString.ToString(Value);
 
 				return true;
 			}

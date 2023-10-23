@@ -1,6 +1,7 @@
 ﻿using EDaler;
 using EDaler.Uris;
 using EDaler.Uris.Incomplete;
+using LegalLab.Converters;
 using LegalLab.Dialogs.BuyEDaler;
 using LegalLab.Dialogs.SellEDaler;
 using LegalLab.Dialogs.TransferEDaler;
@@ -46,6 +47,8 @@ namespace LegalLab.Models.Wallet
 		private readonly NetworkModel networkModel;
 		private Balance balance = null;
 		private AccountEventWrapper selectedItem = null;
+		private string optionsTransactionId = null;
+		private string optionsContractId = null;
 
 		/// <summary>
 		/// Wallet Model
@@ -214,7 +217,7 @@ namespace LegalLab.Models.Wallet
 		}
 
 		private async Task UpdateAmounts()
-		{ 
+		{
 			this.Amount = this.balance.Amount;
 			this.Reserved = this.balance.Reserved;
 			this.Currency = this.balance.Currency;
@@ -401,9 +404,11 @@ namespace LegalLab.Models.Wallet
 
 					MainWindow.MouseDefault();
 
-					string TransactionId = Guid.NewGuid().ToString();
+					this.optionsTransactionId = Guid.NewGuid().ToString();
+					this.optionsContractId = ServiceProvider.BuyEDalerTemplateContractId;
 
-					await this.eDalerClient.InitiateGetOptionsBuyEDalerAsync(ServiceProvider.Id, ServiceProvider.Type, TransactionId, null, null, null);
+					await this.eDalerClient.InitiateGetOptionsBuyEDalerAsync(ServiceProvider.Id, ServiceProvider.Type,
+						this.optionsTransactionId, null, null, null);
 				}
 			}
 			catch (Exception ex)
@@ -431,7 +436,7 @@ namespace LegalLab.Models.Wallet
 
 		private Task EDalerClient_BuyEDalerCompleted(object Sender, PaymentCompletedEventArgs e)
 		{
-			MainWindow.SuccessBox("Successfully bought " + e.Amount.ToString() + " " + e.Currency + " eDaler®.");
+			MainWindow.SuccessBox("Successfully bought " + MoneyToString.ToString(e.Amount) + " " + e.Currency + " eDaler®.");
 			return Task.CompletedTask;
 		}
 
@@ -449,7 +454,7 @@ namespace LegalLab.Models.Wallet
 
 		private Task EDalerClient_BuyEDalerOptionsCompleted(object Sender, PaymentOptionsEventArgs e)
 		{
-			ContractOptionsReceived(e.Options);
+			this.ContractOptionsReceived(e.TransactionId, e.Options);
 			return Task.CompletedTask;
 		}
 
@@ -537,9 +542,11 @@ namespace LegalLab.Models.Wallet
 
 					MainWindow.MouseDefault();
 
-					string TransactionId = Guid.NewGuid().ToString();
+					this.optionsTransactionId = Guid.NewGuid().ToString();
+					this.optionsContractId = ServiceProvider.SellEDalerTemplateContractId;
 
-					await this.eDalerClient.InitiateGetOptionsSellEDalerAsync(ServiceProvider.Id, ServiceProvider.Type, TransactionId, null, null, null);
+					await this.eDalerClient.InitiateGetOptionsSellEDalerAsync(ServiceProvider.Id, ServiceProvider.Type,
+						this.optionsTransactionId, null, null, null);
 				}
 			}
 			catch (Exception ex)
@@ -556,7 +563,7 @@ namespace LegalLab.Models.Wallet
 
 		private Task EDalerClient_SellEDalerCompleted(object Sender, PaymentCompletedEventArgs e)
 		{
-			MainWindow.SuccessBox("Successfully sold " + e.Amount.ToString() + " " + e.Currency + " eDaler®.");
+			MainWindow.SuccessBox("Successfully sold " + MoneyToString.ToString(e.Amount) + " " + e.Currency + " eDaler®.");
 			return Task.CompletedTask;
 		}
 
@@ -574,7 +581,7 @@ namespace LegalLab.Models.Wallet
 
 		private Task EDalerClient_SellEDalerOptionsCompleted(object Sender, PaymentOptionsEventArgs e)
 		{
-			ContractOptionsReceived(e.Options);
+			this.ContractOptionsReceived(e.TransactionId, e.Options);
 			return Task.CompletedTask;
 		}
 
@@ -614,9 +621,15 @@ namespace LegalLab.Models.Wallet
 			await base.Start();
 		}
 
-		private static void ContractOptionsReceived(IDictionary<CaseInsensitiveString, object>[] Options)
+		private void ContractOptionsReceived(string TransactionId, IDictionary<CaseInsensitiveString, object>[] Options)
 		{
-			// TODO
+			if (this.optionsTransactionId != TransactionId ||
+				this.networkModel.Legal.CurrentContract.ContractId != this.optionsContractId)
+			{
+				return;
+			}
+
+			MainWindow.UpdateGui(async () => await this.networkModel.Legal.CurrentContract.ShowContractOptions(Options));
 		}
 	}
 }

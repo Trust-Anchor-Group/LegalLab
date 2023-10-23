@@ -13,19 +13,29 @@ namespace LegalLab.Converters
 		/// <inheritdoc/>
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (value is decimal Money)
-				return ToString(Money);
-			else if (value is double d)
-				return ToString((decimal)d);
-			else
-				return value?.ToString();
+			return ToString(value);
 		}
 
 		/// <summary>
 		/// Converts a monetary value to a string, removing any round-off errors.
 		/// </summary>
-		/// <param name="Money"></param>
-		/// <returns></returns>
+		/// <param name="Value">Monetary value</param>
+		/// <returns>String representation of value.</returns>
+		public static string ToString(object Value)
+		{
+			if (Value is decimal Money)
+				return ToString(Money);
+			else if (Value is double d)
+				return ToString((decimal)d);
+			else
+				return Value?.ToString() ?? string.Empty;
+		}
+
+		/// <summary>
+		/// Converts a monetary value to a string, removing any round-off errors.
+		/// </summary>
+		/// <param name="Money">Monetary value</param>
+		/// <returns>String representation of value.</returns>
 		public static string ToString(decimal Money)
 		{
 			string s = Money.ToString("F9");
@@ -33,10 +43,10 @@ namespace LegalLab.Converters
 			while (c > 0 && s[c - 1] == '0')
 				c--;
 
-			s = s.Substring(0, c);
+			s = s[..c];
 
 			if (s.EndsWith(NumberFormatInfo.CurrentInfo.NumberDecimalSeparator))
-				s = s.Substring(0, c - NumberFormatInfo.CurrentInfo.NumberDecimalSeparator.Length);
+				s = s[..(c - NumberFormatInfo.CurrentInfo.NumberDecimalSeparator.Length)];
 
 			return s;
 		}

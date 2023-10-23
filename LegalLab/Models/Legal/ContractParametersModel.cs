@@ -1,4 +1,5 @@
-﻿using LegalLab.Extensions;
+﻿using LegalLab.Converters;
+using LegalLab.Extensions;
 using LegalLab.Models.Legal.Items;
 using LegalLab.Models.Legal.Items.Parameters;
 using LegalLab.Models.Standards;
@@ -28,7 +29,7 @@ namespace LegalLab.Models.Legal
 		private readonly Property<string> language;
 		private readonly Property<Iso__639_1.Record[]> languages;
 
-		private readonly Dictionary<string, ParameterInfo> parametersByName = new();
+		protected readonly Dictionary<CaseInsensitiveString, ParameterInfo> parametersByName = new();
 		private StackPanel languageOptions = null;
 		private StackPanel parameterOptions = null;
 		private StackPanel additionalCommands = null;
@@ -218,12 +219,12 @@ namespace LegalLab.Models.Legal
 					TextBox TextBox = new()
 					{
 						Tag = Parameter.Name,
-						Text = Parameter.ObjectValue?.ToString(),
+						Text = MoneyToString.ToString(Parameter.ObjectValue),
 						ToolTip = await Parameter.ToSimpleXAML(this.Language, this.contract)
 					};
 
 					if (PresetValues?.TryGetValue(Parameter.Name, out object PresetValue) ?? false)
-						TextBox.Text = PresetValue?.ToString() ?? string.Empty;
+						TextBox.Text = MoneyToString.ToString(PresetValue) ?? string.Empty;
 					else
 						PresetValue = null;
 

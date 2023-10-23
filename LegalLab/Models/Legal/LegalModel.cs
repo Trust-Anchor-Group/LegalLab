@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Waher.Content;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
@@ -108,6 +109,11 @@ namespace LegalLab.Models.Legal
 		/// Contracts client.
 		/// </summary>
 		public ContractsClient Contracts => this.contracts;
+
+		/// <summary>
+		/// Current contract model.
+		/// </summary>
+		public ContractModel CurrentContract => this.currentContract;
 
 		/// <inheritdoc/>
 		public override async Task Start()

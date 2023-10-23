@@ -1,19 +1,26 @@
-﻿using LegalLab.Extensions;
+﻿using LegalLab.Converters;
+using LegalLab.Extensions;
 using LegalLab.Models.Design;
 using LegalLab.Models.Design.AvalonExtensions;
 using LegalLab.Models.Legal.Items;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
+using System.Windows.Media;
+using Waher.Content;
+using Waher.Content.Xml;
 using Waher.Events;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
+using Waher.Persistence;
 using Waher.Runtime.Settings;
 
 namespace LegalLab.Models.Legal
@@ -66,6 +73,8 @@ namespace LegalLab.Models.Legal
 			this.machineReadable = new Property<string>(nameof(this.MachineReadable), string.Empty, this);
 			this.templateName = new Property<string>(nameof(this.TemplateName), string.Empty, this);
 			this.contractId = new Property<string>(nameof(this.ContractId), Contract.ContractId, this);
+
+			this.ParameterOptions = new ObservableCollection<ContractOption>();
 
 			this.addPart = new Command(this.ExecuteAddPart);
 			this.createContract = new Command(this.CanExecuteCreateContract, this.ExecuteCreateContract);
@@ -326,6 +335,11 @@ namespace LegalLab.Models.Legal
 			get => this.contractId.Value;
 			set => this.contractId.Value = value;
 		}
+
+		/// <summary>
+		/// The different parameter options available to choose from when creating a contract.
+		/// </summary>
+		public ObservableCollection<ContractOption> ParameterOptions { get; }
 
 		/// <summary>
 		/// Proposes the temaplte.
@@ -641,6 +655,338 @@ namespace LegalLab.Models.Legal
 			{
 				MainWindow.ErrorBox(ex.Message);
 			}
+		}
+
+		/// <summary>
+		/// Method called (from main thread) when contract options are made available.
+		/// </summary>
+		/// <param name="Page">Page currently being viewed</param>
+		/// <param name="Options">Available options, as dictionaries with contract parameters.</param>
+		public async Task ShowContractOptions(IDictionary<CaseInsensitiveString, object>[] Options)
+		{
+			if (Options.Length == 0)
+				return;
+
+			if (Options.Length == 1)
+			{
+				foreach (KeyValuePair<CaseInsensitiveString, object> Parameter in Options[0])
+				{
+					string ParameterName = Parameter.Key;
+
+					try
+					{
+						if (ParameterName.StartsWith("Max(", StringComparison.CurrentCultureIgnoreCase) && ParameterName.EndsWith(")"))
+						{
+							if (!this.parametersByName.TryGetValue(ParameterName[4..^1].Trim(), out ParameterInfo Info))
+								continue;
+
+							Info.Parameter.SetMaxValue(Parameter.Value, true);
+						}
+						else if (ParameterName.StartsWith("Min(", StringComparison.CurrentCultureIgnoreCase) && ParameterName.EndsWith(")"))
+						{
+							if (!this.parametersByName.TryGetValue(ParameterName[4..^1].Trim(), out ParameterInfo Info))
+								continue;
+
+							Info.Parameter.SetMinValue(Parameter.Value, true);
+						}
+						else
+						{
+							if (!this.parametersByName.TryGetValue(ParameterName, out ParameterInfo Info))
+								continue;
+
+							Info.Parameter.SetValue(Parameter.Value);
+
+							if (Info.Control is TextBox Entry)
+								Entry.Text = MoneyToString.ToString(Parameter.Value);
+							else if (Info.Control is CheckBox CheckBox)
+							{
+								if (Parameter.Value is bool b)
+									CheckBox.IsChecked = b;
+								else if (Parameter.Value is int i)
+									CheckBox.IsChecked = i != 0;
+								else if (Parameter.Value is double d)
+									CheckBox.IsChecked = d != 0;
+								else if (Parameter.Value is decimal d2)
+									CheckBox.IsChecked = d2 != 0;
+								else if (Parameter.Value is string s && CommonTypes.TryParse(s, out b))
+									CheckBox.IsChecked = b;
+								else
+								{
+									Log.Warning("Invalid option value.",
+										new KeyValuePair<string, object>("Parameter", ParameterName),
+										new KeyValuePair<string, object>("Value", Parameter.Value),
+										new KeyValuePair<string, object>("Type", Parameter.Value?.GetType().FullName ?? string.Empty));
+								}
+							}
+						}
+					}
+					catch (Exception ex)
+					{
+						Log.Warning("Invalid option value. Exception: " + ex.Message,
+							new KeyValuePair<string, object>("Parameter", ParameterName),
+							new KeyValuePair<string, object>("Value", Parameter.Value),
+							new KeyValuePair<string, object>("Type", Parameter.Value?.GetType().FullName ?? string.Empty));
+
+						continue;
+					}
+				}
+			}
+			else
+			{
+				CaseInsensitiveString PrimaryKey = this.GetPrimaryKey(Options);
+
+				if (CaseInsensitiveString.IsNullOrEmpty(PrimaryKey))
+				{
+					Log.Warning("Options not displayed. No primary key could be established.");
+					return;
+				}
+
+				if (!this.parametersByName.TryGetValue(PrimaryKey, out ParameterInfo Info))
+				{
+					Log.Warning("Options not displayed. Primary key not available in contract.");
+					return;
+				}
+
+				if (Info.Control is not TextBox Entry)
+				{
+					Log.Warning("Options not displayed. Parameter control not of a type that allows a selection control to be created.");
+					return;
+				}
+
+				this.ParameterOptions.Clear();
+
+				ContractOption SelectedOption = null;
+
+				foreach (IDictionary<CaseInsensitiveString, object> Option in Options)
+				{
+					string Name = MoneyToString.ToString(Option[PrimaryKey]);
+					ContractOption ContractOption = new(Name, Option);
+
+					this.ParameterOptions.Add(ContractOption);
+
+					if (Name == Entry.Text)
+						SelectedOption = ContractOption;
+				}
+
+				ComboBox Picker = new()
+				{
+					Tag = Info.Parameter.Name,
+					ItemsSource = this.ParameterOptions,
+					ToolTip = Info.Parameter.Guide
+				};
+
+				int ControlIndex;
+
+				if (Info.Control?.Parent is StackPanel Panel &&
+					(ControlIndex = Panel.Children.IndexOf(Info.Control)) >= 0)
+				{
+					Panel.Children.Remove(Info.Control);
+					Panel.Children.Insert(ControlIndex, Picker);
+				}
+				else
+					Log.Warning("Options not displayed. Primary Key Entry not found.");
+
+				Picker.SelectionChanged += this.Parameter_OptionSelectionChanged;
+				Info.Control = Picker;
+
+				if (SelectedOption is not null)
+					Picker.SelectedItem = SelectedOption;
+			}
+
+			await this.ValidateParameters();
+		}
+
+		private async void Parameter_OptionSelectionChanged(object Sender, EventArgs e)
+		{
+			if (Sender is not ComboBox Picker)
+				return;
+
+			if (Picker.SelectedItem is not ContractOption Option)
+				return;
+
+			try
+			{
+				foreach (KeyValuePair<CaseInsensitiveString, object> P in Option.Option)
+				{
+					string ParameterName = P.Key;
+
+					try
+					{
+						if (ParameterName.StartsWith("Max(", StringComparison.CurrentCultureIgnoreCase) && ParameterName.EndsWith(")"))
+						{
+							if (!this.parametersByName.TryGetValue(ParameterName[4..^1].Trim(), out ParameterInfo Info))
+								continue;
+
+							Info.Parameter.SetMaxValue(P.Value, true);
+						}
+						else if (ParameterName.StartsWith("Min(", StringComparison.CurrentCultureIgnoreCase) && ParameterName.EndsWith(")"))
+						{
+							if (!this.parametersByName.TryGetValue(ParameterName[4..^1].Trim(), out ParameterInfo Info))
+								continue;
+
+							Info.Parameter.SetMinValue(P.Value, true);
+						}
+						else
+						{
+							if (!this.parametersByName.TryGetValue(ParameterName, out ParameterInfo Info))
+								continue;
+
+							TextBox Entry = Info.Control as TextBox;
+
+							if (Info.Parameter is StringParameter SP)
+							{
+								string s = MoneyToString.ToString(P.Value);
+
+								SP.Value = s;
+
+								if (Entry is not null)
+								{
+									Entry.Text = s;
+									Entry.Background = null;
+								}
+							}
+							else if (Info.Parameter is NumericalParameter NP)
+							{
+								try
+								{
+									NP.Value = Waher.Script.Expression.ToDecimal(P.Value);
+
+									if (Entry is not null)
+										Entry.Background = null;
+								}
+								catch (Exception)
+								{
+									if (Entry is not null)
+										Entry.Background = Brushes.Salmon;
+								}
+							}
+							else if (Info.Parameter is BooleanParameter BP)
+							{
+								CheckBox CheckBox = Info.Control as CheckBox;
+
+								try
+								{
+									if (P.Value is bool b2)
+										BP.Value = b2;
+									else if (P.Value is string s && CommonTypes.TryParse(s, out b2))
+										BP.Value = b2;
+									else
+									{
+										if (CheckBox is not null)
+											CheckBox.Background = Brushes.Salmon;
+
+										continue;
+									}
+
+									if (CheckBox is not null)
+										CheckBox.Background = null;
+								}
+								catch (Exception)
+								{
+									if (CheckBox is not null)
+										CheckBox.Background = Brushes.Salmon;
+								}
+							}
+							else if (Info.Parameter is DateTimeParameter DTP)
+							{
+								if (P.Value is DateTime TP ||
+									(P.Value is string s && (DateTime.TryParse(s, out TP) || XML.TryParse(s, out TP))))
+								{
+									DTP.Value = TP;
+
+									if (Entry is not null)
+										Entry.Background = null;
+								}
+								else
+								{
+									if (Entry is not null)
+										Entry.Background = Brushes.Salmon;
+								}
+							}
+							else if (Info.Parameter is TimeParameter TSP)
+							{
+								if (P.Value is TimeSpan TS ||
+									(P.Value is string s && TimeSpan.TryParse(s, out TS)))
+								{
+									TSP.Value = TS;
+
+									if (Entry is not null)
+										Entry.Background = null;
+								}
+								else
+								{
+									if (Entry is not null)
+										Entry.Background = Brushes.Salmon;
+								}
+							}
+							else if (Info.Parameter is DurationParameter DP)
+							{
+								if (P.Value is Waher.Content.Duration D ||
+									(P.Value is string s && Waher.Content.Duration.TryParse(s, out D)))
+								{
+									DP.Value = D;
+
+									if (Entry is not null)
+										Entry.Background = null;
+								}
+								else
+								{
+									if (Entry is not null)
+										Entry.Background = Brushes.Salmon;
+
+									return;
+								}
+							}
+						}
+					}
+					catch (Exception ex)
+					{
+						Log.Critical(ex);
+					}
+				}
+
+				await this.ValidateParameters();
+				await this.PopulateHumanReadableText();
+			}
+			catch (Exception ex)
+			{
+				Log.Critical(ex);
+			}
+		}
+
+		private CaseInsensitiveString GetPrimaryKey(IDictionary<CaseInsensitiveString, object>[] Options)
+		{
+			Dictionary<CaseInsensitiveString, Dictionary<string, bool>> ByKeyAndValue = new();
+			LinkedList<CaseInsensitiveString> Keys = new();
+			int c = Options.Length;
+
+			foreach (IDictionary<CaseInsensitiveString, object> Option in Options)
+			{
+				foreach (KeyValuePair<CaseInsensitiveString, object> P in Option)
+				{
+					if (!ByKeyAndValue.TryGetValue(P.Key, out Dictionary<string, bool> Values))
+					{
+						Values = new Dictionary<string, bool>();
+						ByKeyAndValue[P.Key] = Values;
+						Keys.AddLast(P.Key);
+					}
+
+					if (P.Value is string s)
+						Values[s] = true;
+				}
+			}
+
+			foreach (CaseInsensitiveString Key in Keys)
+			{
+				if (ByKeyAndValue[Key].Count == c &&
+					this.parametersByName.TryGetValue(Key, out ParameterInfo Info) &&
+					Info.Parameter is StringParameter)
+				{
+					return Key;
+				}
+			}
+
+			return CaseInsensitiveString.Empty;
 		}
 	}
 }
