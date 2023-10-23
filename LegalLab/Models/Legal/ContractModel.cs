@@ -668,132 +668,145 @@ namespace LegalLab.Models.Legal
 				return;
 
 			if (Options.Length == 1)
+				this.ShowSingleContractOptions(Options[0]);
+			else
+				this.ShowMultipleContractOptions(Options);
+
+			await this.ValidateParameters();
+		}
+
+		private void ShowSingleContractOptions(IDictionary<CaseInsensitiveString, object> Option)
+		{
+			foreach (KeyValuePair<CaseInsensitiveString, object> Parameter in Option)
 			{
-				foreach (KeyValuePair<CaseInsensitiveString, object> Parameter in Options[0])
+				string ParameterName = Parameter.Key;
+
+				try
 				{
-					string ParameterName = Parameter.Key;
-
-					try
+					if (ParameterName.StartsWith("Max(", StringComparison.CurrentCultureIgnoreCase) && ParameterName.EndsWith(")"))
 					{
-						if (ParameterName.StartsWith("Max(", StringComparison.CurrentCultureIgnoreCase) && ParameterName.EndsWith(")"))
+						if (!this.parametersByName.TryGetValue(ParameterName[4..^1].Trim(), out ParameterInfo Info))
+							continue;
+
+						Info.Parameter.SetMaxValue(Parameter.Value, true);
+					}
+					else if (ParameterName.StartsWith("Min(", StringComparison.CurrentCultureIgnoreCase) && ParameterName.EndsWith(")"))
+					{
+						if (!this.parametersByName.TryGetValue(ParameterName[4..^1].Trim(), out ParameterInfo Info))
+							continue;
+
+						Info.Parameter.SetMinValue(Parameter.Value, true);
+					}
+					else
+					{
+						if (!this.parametersByName.TryGetValue(ParameterName, out ParameterInfo Info))
+							continue;
+
+						Info.Parameter.SetValue(Parameter.Value);
+
+						if (Info.Control is TextBox Entry)
+							Entry.Text = MoneyToString.ToString(Parameter.Value);
+						else if (Info.Control is CheckBox CheckBox)
 						{
-							if (!this.parametersByName.TryGetValue(ParameterName[4..^1].Trim(), out ParameterInfo Info))
-								continue;
-
-							Info.Parameter.SetMaxValue(Parameter.Value, true);
-						}
-						else if (ParameterName.StartsWith("Min(", StringComparison.CurrentCultureIgnoreCase) && ParameterName.EndsWith(")"))
-						{
-							if (!this.parametersByName.TryGetValue(ParameterName[4..^1].Trim(), out ParameterInfo Info))
-								continue;
-
-							Info.Parameter.SetMinValue(Parameter.Value, true);
-						}
-						else
-						{
-							if (!this.parametersByName.TryGetValue(ParameterName, out ParameterInfo Info))
-								continue;
-
-							Info.Parameter.SetValue(Parameter.Value);
-
-							if (Info.Control is TextBox Entry)
-								Entry.Text = MoneyToString.ToString(Parameter.Value);
-							else if (Info.Control is CheckBox CheckBox)
+							if (Parameter.Value is bool b)
+								CheckBox.IsChecked = b;
+							else if (Parameter.Value is int i)
+								CheckBox.IsChecked = i != 0;
+							else if (Parameter.Value is double d)
+								CheckBox.IsChecked = d != 0;
+							else if (Parameter.Value is decimal d2)
+								CheckBox.IsChecked = d2 != 0;
+							else if (Parameter.Value is string s && CommonTypes.TryParse(s, out b))
+								CheckBox.IsChecked = b;
+							else
 							{
-								if (Parameter.Value is bool b)
-									CheckBox.IsChecked = b;
-								else if (Parameter.Value is int i)
-									CheckBox.IsChecked = i != 0;
-								else if (Parameter.Value is double d)
-									CheckBox.IsChecked = d != 0;
-								else if (Parameter.Value is decimal d2)
-									CheckBox.IsChecked = d2 != 0;
-								else if (Parameter.Value is string s && CommonTypes.TryParse(s, out b))
-									CheckBox.IsChecked = b;
-								else
-								{
-									Log.Warning("Invalid option value.",
-										new KeyValuePair<string, object>("Parameter", ParameterName),
-										new KeyValuePair<string, object>("Value", Parameter.Value),
-										new KeyValuePair<string, object>("Type", Parameter.Value?.GetType().FullName ?? string.Empty));
-								}
+								Log.Warning("Invalid option value.",
+									new KeyValuePair<string, object>("Parameter", ParameterName),
+									new KeyValuePair<string, object>("Value", Parameter.Value),
+									new KeyValuePair<string, object>("Type", Parameter.Value?.GetType().FullName ?? string.Empty));
 							}
 						}
 					}
-					catch (Exception ex)
-					{
-						Log.Warning("Invalid option value. Exception: " + ex.Message,
-							new KeyValuePair<string, object>("Parameter", ParameterName),
-							new KeyValuePair<string, object>("Value", Parameter.Value),
-							new KeyValuePair<string, object>("Type", Parameter.Value?.GetType().FullName ?? string.Empty));
+				}
+				catch (Exception ex)
+				{
+					Log.Warning("Invalid option value. Exception: " + ex.Message,
+						new KeyValuePair<string, object>("Parameter", ParameterName),
+						new KeyValuePair<string, object>("Value", Parameter.Value),
+						new KeyValuePair<string, object>("Type", Parameter.Value?.GetType().FullName ?? string.Empty));
 
-						continue;
-					}
+					continue;
 				}
 			}
-			else
+		}
+
+		private void ShowMultipleContractOptions(IDictionary<CaseInsensitiveString, object>[] Options)
+		{
+			CaseInsensitiveString PrimaryKey = this.GetPrimaryKey(Options);
+
+			if (CaseInsensitiveString.IsNullOrEmpty(PrimaryKey))
 			{
-				CaseInsensitiveString PrimaryKey = this.GetPrimaryKey(Options);
-
-				if (CaseInsensitiveString.IsNullOrEmpty(PrimaryKey))
-				{
-					Log.Warning("Options not displayed. No primary key could be established.");
-					return;
-				}
-
-				if (!this.parametersByName.TryGetValue(PrimaryKey, out ParameterInfo Info))
-				{
-					Log.Warning("Options not displayed. Primary key not available in contract.");
-					return;
-				}
-
-				if (Info.Control is not TextBox Entry)
-				{
-					Log.Warning("Options not displayed. Parameter control not of a type that allows a selection control to be created.");
-					return;
-				}
-
-				this.ParameterOptions.Clear();
-
-				ContractOption SelectedOption = null;
+				Log.Warning("Options not displayed. No primary key could be established. Using only first option.");
 
 				foreach (IDictionary<CaseInsensitiveString, object> Option in Options)
 				{
-					string Name = MoneyToString.ToString(Option[PrimaryKey]);
-					ContractOption ContractOption = new(Name, Option);
-
-					this.ParameterOptions.Add(ContractOption);
-
-					if (Name == Entry.Text)
-						SelectedOption = ContractOption;
+					this.ShowSingleContractOptions(Option);
+					break;
 				}
 
-				ComboBox Picker = new()
-				{
-					Tag = Info.Parameter.Name,
-					ItemsSource = this.ParameterOptions,
-					ToolTip = Info.Parameter.Guide
-				};
-
-				int ControlIndex;
-
-				if (Info.Control?.Parent is StackPanel Panel &&
-					(ControlIndex = Panel.Children.IndexOf(Info.Control)) >= 0)
-				{
-					Panel.Children.Remove(Info.Control);
-					Panel.Children.Insert(ControlIndex, Picker);
-				}
-				else
-					Log.Warning("Options not displayed. Primary Key Entry not found.");
-
-				Picker.SelectionChanged += this.Parameter_OptionSelectionChanged;
-				Info.Control = Picker;
-
-				if (SelectedOption is not null)
-					Picker.SelectedItem = SelectedOption;
+				return;
 			}
 
-			await this.ValidateParameters();
+			if (!this.parametersByName.TryGetValue(PrimaryKey, out ParameterInfo Info))
+			{
+				Log.Warning("Options not displayed. Primary key not available in contract.");
+				return;
+			}
+
+			if (Info.Control is not TextBox Entry)
+			{
+				Log.Warning("Options not displayed. Parameter control not of a type that allows a selection control to be created.");
+				return;
+			}
+
+			this.ParameterOptions.Clear();
+
+			ContractOption SelectedOption = null;
+
+			foreach (IDictionary<CaseInsensitiveString, object> Option in Options)
+			{
+				string Name = MoneyToString.ToString(Option[PrimaryKey]);
+				ContractOption ContractOption = new(Name, Option);
+
+				this.ParameterOptions.Add(ContractOption);
+
+				if (Name == Entry.Text)
+					SelectedOption = ContractOption;
+			}
+
+			ComboBox Picker = new()
+			{
+				Tag = Info.Parameter.Name,
+				ItemsSource = this.ParameterOptions,
+				ToolTip = Info.Parameter.Guide
+			};
+
+			int ControlIndex;
+
+			if (Info.Control?.Parent is StackPanel Panel &&
+				(ControlIndex = Panel.Children.IndexOf(Info.Control)) >= 0)
+			{
+				Panel.Children.Remove(Info.Control);
+				Panel.Children.Insert(ControlIndex, Picker);
+			}
+			else
+				Log.Warning("Options not displayed. Primary Key Entry not found.");
+
+			Picker.SelectionChanged += this.Parameter_OptionSelectionChanged;
+			Info.Control = Picker;
+
+			if (SelectedOption is not null)
+				Picker.SelectedItem = SelectedOption;
 		}
 
 		private async void Parameter_OptionSelectionChanged(object Sender, EventArgs e)
@@ -971,8 +984,7 @@ namespace LegalLab.Models.Legal
 						Keys.AddLast(P.Key);
 					}
 
-					if (P.Value is string s)
-						Values[s] = true;
+					Values[MoneyToString.ToString(P.Value)] = true;
 				}
 			}
 
@@ -980,7 +992,7 @@ namespace LegalLab.Models.Legal
 			{
 				if (ByKeyAndValue[Key].Count == c &&
 					this.parametersByName.TryGetValue(Key, out ParameterInfo Info) &&
-					Info.Parameter is StringParameter)
+					Info.Control is TextBox)
 				{
 					return Key;
 				}
