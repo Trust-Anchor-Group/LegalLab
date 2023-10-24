@@ -27,6 +27,13 @@ namespace LegalLab.Converters
 				return ToString(Money);
 			else if (Value is double d)
 				return ToString((decimal)d);
+			else if (Value is DateTime TP)
+			{
+				if (TP.TimeOfDay == TimeSpan.Zero && TP.Kind != DateTimeKind.Utc)
+					return TP.ToShortDateString();
+				else
+					return TP.ToString();
+			}
 			else
 				return Value?.ToString() ?? string.Empty;
 		}
