@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Waher.Events;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
 using Waher.Persistence;
 using Waher.Script;
@@ -34,7 +35,7 @@ namespace LegalLab.Models.Legal
 		private StackPanel parameterOptions = null;
 		private StackPanel additionalCommands = null;
 
-		protected Contract contract;
+		private Contract contract;
 		private Parameter[] contractParameters;
 
 		/// <summary>
@@ -52,6 +53,25 @@ namespace LegalLab.Models.Legal
 			this.contract = Contract ?? emptyContract;
 
 			this.SetParameters(Parameters);
+		}
+
+		protected virtual Task SetContract(Contract Contract)
+		{
+			if (this.contract is not null)
+				this.contract.FormatParameterDisplay -= this.Contract_FormatParameterDisplay;
+
+			this.contract = Contract;
+			this.contract.FormatParameterDisplay += this.Contract_FormatParameterDisplay;
+
+			this.SetParameters(Contract.Parameters);
+
+			return Task.CompletedTask;
+		}
+
+		private void Contract_FormatParameterDisplay(object Sender, ParameterValueFormattingEventArgs e)
+		{
+			if (e.Value is Waher.Content.Duration D)
+				e.Value = DurationToString.ToString(D);
 		}
 
 		protected void SetParameters(Parameter[] ContractParameters)

@@ -106,11 +106,9 @@ namespace LegalLab.Models.Legal
 			return Result;
 		}
 
-		private async Task SetContract(Contract Contract)
+		protected override async Task SetContract(Contract Contract)
 		{
-			this.contract = Contract;
-
-			this.SetParameters(Contract.Parameters);
+			await base.SetContract(Contract);
 
 			string Domain = this.contracts.Client.Domain;
 			if (string.IsNullOrEmpty(Domain))
@@ -124,39 +122,39 @@ namespace LegalLab.Models.Legal
 
 			List<GenInfo> GenInfo = new()
 			{
-				new GenInfo("Created:", this.contract.Created.ToString(CultureInfo.CurrentUICulture))
+				new GenInfo("Created:", this.Contract.Created.ToString(CultureInfo.CurrentUICulture))
 			};
 
-			if (this.contract.Updated > DateTime.MinValue)
-				GenInfo.Add(new GenInfo("Updated:", this.contract.Updated.ToString(CultureInfo.CurrentUICulture)));
+			if (this.Contract.Updated > DateTime.MinValue)
+				GenInfo.Add(new GenInfo("Updated:", this.Contract.Updated.ToString(CultureInfo.CurrentUICulture)));
 
-			GenInfo.Add(new GenInfo("State:", this.contract.State.ToString()));
-			GenInfo.Add(new GenInfo("Visibility:", this.contract.Visibility.ToString()));
-			GenInfo.Add(new GenInfo("Duration:", this.contract.Duration.ToString()));
-			GenInfo.Add(new GenInfo("From:", this.contract.From.ToString(CultureInfo.CurrentUICulture)));
-			GenInfo.Add(new GenInfo("To:", this.contract.To.ToString(CultureInfo.CurrentUICulture)));
-			GenInfo.Add(new GenInfo("Archiving Optional:", this.contract.ArchiveOptional.ToString()));
-			GenInfo.Add(new GenInfo("Archiving Required:", this.contract.ArchiveRequired.ToString()));
-			GenInfo.Add(new GenInfo("Can act as a template:", this.contract.CanActAsTemplate.ToYesNo()));
-			GenInfo.Add(new GenInfo("Provider:", this.contract.Provider));
-			GenInfo.Add(new GenInfo("Parts:", this.contract.PartsMode.ToString()));
+			GenInfo.Add(new GenInfo("State:", this.Contract.State.ToString()));
+			GenInfo.Add(new GenInfo("Visibility:", this.Contract.Visibility.ToString()));
+			GenInfo.Add(new GenInfo("Duration:", this.Contract.Duration.ToString()));
+			GenInfo.Add(new GenInfo("From:", this.Contract.From.ToString(CultureInfo.CurrentUICulture)));
+			GenInfo.Add(new GenInfo("To:", this.Contract.To.ToString(CultureInfo.CurrentUICulture)));
+			GenInfo.Add(new GenInfo("Archiving Optional:", this.Contract.ArchiveOptional.ToString()));
+			GenInfo.Add(new GenInfo("Archiving Required:", this.Contract.ArchiveRequired.ToString()));
+			GenInfo.Add(new GenInfo("Can act as a template:", this.Contract.CanActAsTemplate.ToYesNo()));
+			GenInfo.Add(new GenInfo("Provider:", this.Contract.Provider));
+			GenInfo.Add(new GenInfo("Parts:", this.Contract.PartsMode.ToString()));
 
-			if (this.contract.SignAfter.HasValue)
-				GenInfo.Add(new GenInfo("Sign after:", this.contract.SignAfter.Value.ToStringTZ()));
+			if (this.Contract.SignAfter.HasValue)
+				GenInfo.Add(new GenInfo("Sign after:", this.Contract.SignAfter.Value.ToStringTZ()));
 
-			if (this.contract.SignBefore.HasValue)
-				GenInfo.Add(new GenInfo("Sign before:", this.contract.SignBefore.Value.ToStringTZ()));
+			if (this.Contract.SignBefore.HasValue)
+				GenInfo.Add(new GenInfo("Sign before:", this.Contract.SignBefore.Value.ToStringTZ()));
 
-			if (!string.IsNullOrEmpty(this.contract.TemplateId))
-				GenInfo.Add(new GenInfo("Template ID:", this.contract.TemplateId));
+			if (!string.IsNullOrEmpty(this.Contract.TemplateId))
+				GenInfo.Add(new GenInfo("Template ID:", this.Contract.TemplateId));
 
 			this.GeneralInformation = GenInfo.ToArray();
 
 			List<PartInfo> Parts = new();
 
-			if (this.contract.Parts is not null)
+			if (this.Contract.Parts is not null)
 			{
-				foreach (Part Part in this.contract.Parts)
+				foreach (Part Part in this.Contract.Parts)
 					Parts.Add(new PartInfo(Part, this, this.parts));
 			}
 
@@ -164,9 +162,9 @@ namespace LegalLab.Models.Legal
 
 			List<RoleInfo> Roles = new();
 
-			if (this.contract.Roles is not null)
+			if (this.Contract.Roles is not null)
 			{
-				foreach (Role Role in this.contract.Roles)
+				foreach (Role Role in this.Contract.Roles)
 					Roles.Add(new RoleInfo(this, Role, this.roles));
 			}
 
@@ -174,18 +172,18 @@ namespace LegalLab.Models.Legal
 
 			List<ClientSignatureInfo> ClientSignatures = new();
 
-			if (this.contract.ClientSignatures is not null)
+			if (this.Contract.ClientSignatures is not null)
 			{
-				foreach (ClientSignature ClientSignature in this.contract.ClientSignatures)
+				foreach (ClientSignature ClientSignature in this.Contract.ClientSignatures)
 					ClientSignatures.Add(new ClientSignatureInfo(this.contracts, ClientSignature));
 			}
 
 			this.ClientSignatures = ClientSignatures.ToArray();
 
-			if (this.contract.ServerSignature is null)
+			if (this.Contract.ServerSignature is null)
 				this.ServerSignatures = Array.Empty<ServerSignatureInfo>();
 			else
-				this.ServerSignatures = new ServerSignatureInfo[] { new ServerSignatureInfo(this.contract.ServerSignature) };
+				this.ServerSignatures = new ServerSignatureInfo[] { new ServerSignatureInfo(this.Contract.ServerSignature) };
 
 			await this.PopulateHumanReadableText();
 		}
@@ -240,7 +238,7 @@ namespace LegalLab.Models.Legal
 				if (!string.IsNullOrEmpty(Language))
 				{
 					foreach (RoleInfo RI in this.Roles)
-						RI.DescriptionAsMarkdown = (RI.Role.Descriptions.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
+						RI.DescriptionAsMarkdown = (RI.Role.Descriptions.Find(Language)?.GenerateMarkdown(this.Contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
 
 					await this.PopulateHumanReadableText();
 				}
@@ -356,10 +354,10 @@ namespace LegalLab.Models.Legal
 
 				MainWindow.MouseHourglass();
 
-				Contract Contract = await this.contracts.CreateContractAsync(this.contract.ForMachines, this.contract.ForHumans, this.contract.Roles,
-					this.contract.Parts, this.contract.Parameters, this.contract.Visibility, this.contract.PartsMode, this.contract.Duration,
-					this.contract.ArchiveRequired, this.contract.ArchiveOptional, this.contract.SignAfter, this.contract.SignBefore,
-					this.contract.CanActAsTemplate);
+				Contract Contract = await this.contracts.CreateContractAsync(this.Contract.ForMachines, this.Contract.ForHumans, this.Contract.Roles,
+					this.Contract.Parts, this.Contract.Parameters, this.Contract.Visibility, this.Contract.PartsMode, this.Contract.Duration,
+					this.Contract.ArchiveRequired, this.Contract.ArchiveOptional, this.Contract.SignAfter, this.Contract.SignBefore,
+					this.Contract.CanActAsTemplate);
 
 				await this.SetContract(Contract);
 
@@ -386,7 +384,7 @@ namespace LegalLab.Models.Legal
 
 			this.humanReadableText.Children.Clear();
 
-			if (XamlReader.Parse(await this.contract.ToXAML(this.Language)) is StackPanel Panel)
+			if (XamlReader.Parse(await this.Contract.ToXAML(this.Language)) is StackPanel Panel)
 			{
 				LinkedList<UIElement> Elements = new();
 
@@ -449,7 +447,7 @@ namespace LegalLab.Models.Legal
 			set
 			{
 				this.parts.Value = value;
-				this.contract.Parts = value.ToParts();
+				this.Contract.Parts = value.ToParts();
 			}
 		}
 
@@ -474,7 +472,7 @@ namespace LegalLab.Models.Legal
 		/// <summary>
 		/// If a contract is loaded.
 		/// </summary>
-		public bool ContractLoaded => this.contract is not null;
+		public bool ContractLoaded => this.Contract is not null;
 
 		/// <summary>
 		/// Displays the contents of the contract
@@ -514,14 +512,14 @@ namespace LegalLab.Models.Legal
 
 			this.Parts = Parts;
 
-			if (this.contract.PartsMode != ContractParts.ExplicitlyDefined)
+			if (this.Contract.PartsMode != ContractParts.ExplicitlyDefined)
 			{
-				this.contract.PartsMode = ContractParts.ExplicitlyDefined;
+				this.Contract.PartsMode = ContractParts.ExplicitlyDefined;
 
 				foreach (GenInfo GI in this.GeneralInformation)
 				{
 					if (GI.Name == "Parts:")
-						GI.Value = this.contract.PartsMode.ToString();
+						GI.Value = this.Contract.PartsMode.ToString();
 				}
 
 				this.RaisePropertyChanged(nameof(this.GeneralInformation));
@@ -582,10 +580,10 @@ namespace LegalLab.Models.Legal
 
 				string TemplateId = this.legalModel.Template.ContractId;
 
-				Contract Contract = await this.contracts.CreateContractAsync(TemplateId, this.contract.Parts, this.contract.Parameters,
-					this.contract.Visibility, this.Parts.Length > 0 ? ContractParts.ExplicitlyDefined : ContractParts.Open,
-					this.contract.Duration, this.contract.ArchiveRequired, this.contract.ArchiveOptional, this.contract.SignAfter,
-					this.contract.SignBefore, false);
+				Contract Contract = await this.contracts.CreateContractAsync(TemplateId, this.Contract.Parts, this.Contract.Parameters,
+					this.Contract.Visibility, this.Parts.Length > 0 ? ContractParts.ExplicitlyDefined : ContractParts.Open,
+					this.Contract.Duration, this.Contract.ArchiveRequired, this.Contract.ArchiveOptional, this.Contract.SignAfter,
+					this.Contract.SignBefore, false);
 
 				await this.SetContract(Contract);
 
@@ -613,7 +611,7 @@ namespace LegalLab.Models.Legal
 
 				MainWindow.MouseHourglass();
 
-				Contract Contract = await this.contracts.SignContractAsync(this.contract, Role, false);
+				Contract Contract = await this.contracts.SignContractAsync(this.Contract, Role, false);
 
 				await this.SetContract(Contract);
 
@@ -647,7 +645,7 @@ namespace LegalLab.Models.Legal
 						MainWindow.ErrorBox("Not a Bare JID.");
 				}
 
-				this.contracts.SendContractProposal(this.contract.ContractId, Role, BareJid);
+				this.contracts.SendContractProposal(this.Contract.ContractId, Role, BareJid);
 
 				MainWindow.SuccessBox("Proposal successfully sent.");
 			}

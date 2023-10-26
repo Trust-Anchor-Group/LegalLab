@@ -26,6 +26,7 @@ using Waher.Content.Xml;
 using Waher.Events;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
@@ -172,7 +173,12 @@ namespace LegalLab.Models.Design
 
 		public async Task SetContract(Contract Contract)
 		{
+			if(this.contract is not null)
+				this.contract.FormatParameterDisplay -= this.Contract_FormatParameterDisplay;
+
 			this.contract = Contract;
+			this.contract.FormatParameterDisplay += this.Contract_FormatParameterDisplay;
+
 			this.ContractId = Contract.ContractId;
 			this.ArchiveOptional = Contract.ArchiveOptional;
 			this.ArchiveRequired = Contract.ArchiveRequired;
@@ -255,6 +261,12 @@ namespace LegalLab.Models.Design
 			}
 
 			this.HumanReadableMarkdown = Contract.ToMarkdown(this.Language, MarkdownType.ForEditing)?.Trim() ?? string.Empty;
+		}
+
+		private void Contract_FormatParameterDisplay(object Sender, ParameterValueFormattingEventArgs e)
+		{
+			if (e.Value is Waher.Content.Duration D)
+				e.Value = DurationToString.ToString(D);
 		}
 
 		/// <summary>
@@ -1968,11 +1980,12 @@ namespace LegalLab.Models.Design
 
 				string Markdown;
 				string TempFileName = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString().Replace("-", string.Empty)) + ".docx";
+				string Language;
 
 				try
 				{
 					File.Copy(Dialog.FileName, TempFileName, true);
-					Markdown = WordUtilities.ExtractAsMarkdown(TempFileName, out string Language);
+					Markdown = WordUtilities.ExtractAsMarkdown(TempFileName, out Language);
 				}
 				finally
 				{
