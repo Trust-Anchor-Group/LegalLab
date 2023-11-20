@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Waher.Content;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
@@ -32,6 +31,7 @@ namespace LegalLab.Models.Legal
 		private readonly PersistedProperty<string> city;
 		private readonly PersistedProperty<string> region;
 		private readonly PersistedProperty<string> country;
+		private readonly PersistedProperty<string> eMail;
 
 		private readonly PersistedProperty<string> orgName;
 		private readonly PersistedProperty<string> orgDepartment;
@@ -75,6 +75,7 @@ namespace LegalLab.Models.Legal
 			this.Add(this.city = new PersistedProperty<string>("Legal", nameof(this.City), true, string.Empty, this));
 			this.Add(this.region = new PersistedProperty<string>("Legal", nameof(this.Region), true, string.Empty, this));
 			this.Add(this.country = new PersistedProperty<string>("Legal", nameof(this.Country), true, string.Empty, this));
+			this.Add(this.eMail = new PersistedProperty<string>("Legal", nameof(this.EMail), true, string.Empty, this));
 
 			this.Add(this.orgName = new PersistedProperty<string>("Legal", nameof(this.OrgName), true, string.Empty, this));
 			this.Add(this.orgDepartment = new PersistedProperty<string>("Legal", nameof(this.OrgDepartment), true, string.Empty, this));
@@ -263,6 +264,15 @@ namespace LegalLab.Models.Legal
 		}
 
 		/// <summary>
+		/// e-Mail address
+		/// </summary>
+		public string EMail
+		{
+			get => this.eMail.Value;
+			set => this.eMail.Value = value;
+		}
+
+		/// <summary>
 		/// Organization name
 		/// </summary>
 		public string OrgName
@@ -432,6 +442,7 @@ namespace LegalLab.Models.Legal
 				AddProperty(Properties, "CITY", this.City);
 				AddProperty(Properties, "REGION", this.Region);
 				AddProperty(Properties, "COUNTRY", this.Country);
+				AddProperty(Properties, "EMAIL", this.EMail);
 
 				AddProperty(Properties, "ORGNAME", this.OrgName);
 				AddProperty(Properties, "ORGDEPT", this.OrgDepartment);
