@@ -166,7 +166,7 @@ namespace LegalLab.Models.Legal.Items
 		/// </summary>
 		public virtual async Task<bool> ValidateParameter(Variables Variables)
 		{
-			return await this.Parameter.IsParameterValid(Variables, this.designModel.Network.Legal.Contracts);
+			return await this.Parameter.IsParameterValid(Variables, this.designModel?.Network.Legal.Contracts);
 		}
 
 		/// <summary>
