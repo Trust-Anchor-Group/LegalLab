@@ -37,7 +37,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		/// </summary>
 		public override async Task<bool> ValidateParameter(Variables Variables)
 		{
-			if (await this.calcParameter.IsParameterValid(Variables, this.designModel.Network.Legal.Contracts))
+			if (await this.calcParameter.IsParameterValid(Variables, this.designModel?.Network.Legal.Contracts))
 			{
 				object Value = this.Parameter.ObjectValue;
 
