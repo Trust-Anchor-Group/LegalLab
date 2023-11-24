@@ -33,8 +33,9 @@ namespace LegalLab.Extensions
 		/// Converts XML to a contract.
 		/// </summary>
 		/// <param name="Xml">XML string</param>
+		/// <param name="ContractsClient">Contracts client</param>
 		/// <returns>Contract</returns>
-		public static async Task<Contract> ToContract(this string Xml)
+		public static async Task<Contract> ToContract(this string Xml, ContractsClient ContractsClient)
 		{
 			XmlDocument Doc = new()
 			{
@@ -43,7 +44,7 @@ namespace LegalLab.Extensions
 
 			Doc.LoadXml(Xml);
 
-			ParsedContract Parsed = await Contract.Parse(Doc);
+			ParsedContract Parsed = await Contract.Parse(Doc, ContractsClient);
 			return Parsed.Contract;
 		}
 

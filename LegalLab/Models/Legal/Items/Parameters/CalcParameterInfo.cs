@@ -37,7 +37,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		/// </summary>
 		public override async Task<bool> ValidateParameter(Variables Variables)
 		{
-			if (await this.Parameter.IsParameterValid(Variables))
+			if (await this.calcParameter.IsParameterValid(Variables, this.designModel.Network.Legal.Contracts))
 			{
 				object Value = this.Parameter.ObjectValue;
 
@@ -61,11 +61,6 @@ namespace LegalLab.Models.Legal.Items.Parameters
 
 		/// <inheritdoc/>
 		public override void SetValue(string Value)
-		{
-			throw new InvalidOperationException("Read-only parameter.");
-		}
-
-		private static decimal? Parse(string Value)
 		{
 			throw new InvalidOperationException("Read-only parameter.");
 		}

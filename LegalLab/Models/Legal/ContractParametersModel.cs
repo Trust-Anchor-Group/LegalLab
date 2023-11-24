@@ -230,7 +230,7 @@ namespace LegalLab.Models.Legal
 				}
 				else
 				{
-					Label Label = new()
+					System.Windows.Controls.Label Label = new()
 					{
 						Content = Parameter.GetLabel(),
 						Margin = new Thickness(0, 10, 0, 0)

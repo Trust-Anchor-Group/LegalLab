@@ -1901,7 +1901,7 @@ namespace LegalLab.Models.Design
 
 				Doc.Load(Dialog.FileName);
 
-				ParsedContract Parsed = await Waher.Networking.XMPP.Contracts.Contract.Parse(Doc);
+				ParsedContract Parsed = await Waher.Networking.XMPP.Contracts.Contract.Parse(Doc, this.Network.Legal.Contracts);
 				Contract Contract = Parsed.Contract
 					?? throw new InvalidOperationException("Not a valid Smart Contract file.");
 
