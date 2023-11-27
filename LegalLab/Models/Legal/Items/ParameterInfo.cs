@@ -22,6 +22,7 @@ namespace LegalLab.Models.Legal.Items
 		protected readonly Property<object> value;
 		private readonly Property<string> expression;
 		private readonly Property<string> guide;
+		private readonly Property<bool> transient;
 
 		private readonly Command removeParameter;
 		protected readonly DesignModel designModel;
@@ -45,6 +46,7 @@ namespace LegalLab.Models.Legal.Items
 			this.value = new Property<object>(nameof(this.Value), Parameter.ObjectValue, this);
 			this.expression = new Property<string>(nameof(this.Expression), Parameter.Expression, this);
 			this.guide = new Property<string>(nameof(this.Guide), Parameter.Guide, this);
+			this.transient = new Property<bool>(nameof(this.Transient), Parameter.Transient, this);
 
 			this.Parameter = Parameter;
 			this.Control = Control;
@@ -179,6 +181,19 @@ namespace LegalLab.Models.Legal.Items
 			{
 				this.Parameter.Guide = value;
 				this.guide.Value = value;
+			}
+		}
+
+		/// <summary>
+		/// If parameter is transient or not.
+		/// </summary>
+		public bool Transient
+		{
+			get => this.transient.Value;
+			set
+			{
+				this.Parameter.Transient = value;
+				this.transient.Value = value;
 			}
 		}
 

@@ -101,6 +101,58 @@ namespace LegalLab.Extensions
 		}
 
 		/// <summary>
+		/// Converts Markdown to Human-readable text for use in smart contracts.
+		/// </summary>
+		/// <param name="Markdown">Markdown text</param>
+		/// <param name="Language">Language code</param>
+		/// <returns>Human-readable text.</returns>
+		public static async Task<Label[]> ToHumanReadableLabel(this string[] Markdown, string Language)
+		{
+			List<Label> Result = new();
+
+			foreach (string s in Markdown)
+			{
+				if (!string.IsNullOrEmpty(s))
+					Result.Add(await s.ToHumanReadableLabel(Language));
+			}
+
+			return Result.ToArray();
+		}
+
+		/// <summary>
+		/// Converts Markdown to Human-readable text for use in smart contracts.
+		/// </summary>
+		/// <param name="Markdown">Markdown text</param>
+		/// <param name="Language">Language code</param>
+		/// <returns>Human-readable text.</returns>
+		public static async Task<Label> ToHumanReadableLabel(this string Markdown, string Language)
+		{
+			if (string.IsNullOrEmpty(Markdown))
+				return null;
+
+			MarkdownDocument ParsedMarkdown = await MarkdownDocument.CreateAsync(Markdown);
+			StringBuilder sb = new();
+			using XmlWriter w = XmlWriter.Create(sb);
+
+			w.WriteStartElement("Root", ContractsClient.NamespaceSmartContracts);
+			await ParsedMarkdown.GenerateSmartContractXml(w);
+			w.WriteEndElement();
+			w.Flush();
+
+			string Xml = sb.ToString();
+			XmlDocument ParsedXml = new()
+			{
+				PreserveWhitespace = true
+			};
+			ParsedXml.LoadXml(Xml);
+
+			Label Result = Label.Parse(ParsedXml.DocumentElement);
+			Result.Language = Language;
+
+			return Result;
+		}
+
+		/// <summary>
 		/// Gets the label text for a parameter.
 		/// </summary>
 		/// <param name="P">Parameter</param>
@@ -289,6 +341,57 @@ namespace LegalLab.Extensions
 			if (Texts is not null)
 			{
 				foreach (HumanReadableText Old in Texts)
+				{
+					if (Old.Language != Language)
+						Result.Add(Old);
+				}
+			}
+
+			return Result.ToArray();
+		}
+
+		/// <summary>
+		/// Appends a localization to a set of localized texts.
+		/// </summary>
+		/// <param name="Texts">Set of localized texts</param>
+		/// <param name="Text">New addition</param>
+		/// <returns>Sorted array of updated texts.</returns>
+		public static Label[] Append(this Label[] Texts, Label Text)
+		{
+			SortedDictionary<string, Label> Sorted = new();
+
+			if (Texts is not null)
+			{
+				foreach (Label Old in Texts)
+				{
+					if (Old.Language is not null)
+						Sorted[Old.Language] = Old;
+				}
+			}
+
+			Sorted[Text.Language ?? string.Empty] = Text;
+
+			int c = Sorted.Count;
+			Label[] Result = new Label[c];
+
+			Sorted.Values.CopyTo(Result, 0);
+
+			return Result;
+		}
+
+		/// <summary>
+		/// Removes a language from an array of localized texts.
+		/// </summary>
+		/// <param name="Texts">Set of localized texts.</param>
+		/// <param name="Language">Language to remove</param>
+		/// <returns>Updated array</returns>
+		public static Label[] Remove(this Label[] Texts, string Language)
+		{
+			List<Label> Result = new();
+
+			if (Texts is not null)
+			{
+				foreach (Label Old in Texts)
 				{
 					if (Old.Language != Language)
 						Result.Add(Old);

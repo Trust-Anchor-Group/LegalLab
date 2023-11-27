@@ -41,6 +41,7 @@ namespace LegalLab.Models.Design
 	public class DesignModel : ConnectionSensitiveModel, IPartsModel, ITranslatable
 	{
 		private const string defaultParameterDescription = "Enter parameter description as **Markdown**";
+		private const string defaultParameterLabel = "Enter label as **Markdown**";
 
 		private readonly Property<Waher.Content.Duration?> archiveOptional;
 		private readonly Property<Waher.Content.Duration?> archiveRequired;
@@ -56,7 +57,8 @@ namespace LegalLab.Models.Design
 		private readonly Property<RoleInfo[]> roles;
 		private readonly Property<PartInfo[]> parts;
 		private readonly Property<ParameterInfo[]> parameters;
-		private readonly Property<RoleParameterInfo[]> roleParameters;
+		private readonly Property<RoleReferenceParameterInfo[]> roleReferenceParameters;
+		private readonly Property<ContractReferenceParameterInfo[]> contractReferenceParameters;
 		private readonly DelayedActionProperty<string> machineReadable;
 		private readonly Property<string> forMachinesLocalName;
 		private readonly Property<string> forMachinesNamespace;
@@ -76,6 +78,7 @@ namespace LegalLab.Models.Design
 		private readonly Command addDurationParameter;
 		private readonly Command addCalcParameter;
 		private readonly Command addRoleReference;
+		private readonly Command addContractReference;
 		private readonly Command @new;
 		private readonly Command load;
 		private readonly Command import;
@@ -105,7 +108,8 @@ namespace LegalLab.Models.Design
 			this.roles = new Property<RoleInfo[]>(nameof(this.Roles), Array.Empty<RoleInfo>(), this);
 			this.parts = new Property<PartInfo[]>(nameof(this.Parts), Array.Empty<PartInfo>(), this);
 			this.parameters = new Property<ParameterInfo[]>(nameof(this.Parameters), Array.Empty<ParameterInfo>(), this);
-			this.roleParameters = new Property<RoleParameterInfo[]>(nameof(this.RoleParameters), Array.Empty<RoleParameterInfo>(), this);
+			this.roleReferenceParameters = new Property<RoleReferenceParameterInfo[]>(nameof(this.RoleReferenceParameters), Array.Empty<RoleReferenceParameterInfo>(), this);
+			this.contractReferenceParameters = new Property<ContractReferenceParameterInfo[]>(nameof(this.ContractReferenceParameters), Array.Empty<ContractReferenceParameterInfo>(), this);
 			this.machineReadable = new DelayedActionProperty<string>(nameof(this.MachineReadable), TimeSpan.FromSeconds(1), string.Empty, this);
 			this.forMachines = new Property<XmlElement>(nameof(this.ForMachines), null, this);
 			this.forMachinesLocalName = new Property<string>(nameof(this.ForMachinesLocalName), string.Empty, this);
@@ -116,7 +120,8 @@ namespace LegalLab.Models.Design
 
 			this.roles.PropertyChanged += this.Roles_PropertyChanged;
 			this.parameters.PropertyChanged += this.Parameters_PropertyChanged;
-			this.roleParameters.PropertyChanged += this.Parameters_PropertyChanged;
+			this.roleReferenceParameters.PropertyChanged += this.Parameters_PropertyChanged;
+			this.contractReferenceParameters.PropertyChanged += this.Parameters_PropertyChanged;
 			this.parts.PropertyChanged += this.Parts_PropertyChanged;
 
 			this.Add(this.openAiKey = new PersistedProperty<string>("Design", nameof(this.OpenAiKey), true, string.Empty, this));
@@ -135,6 +140,7 @@ namespace LegalLab.Models.Design
 			this.addDurationParameter = new Command(this.ExecuteAddDurationParameter);
 			this.addCalcParameter = new Command(this.ExecuteAddCalcParameter);
 			this.addRoleReference = new Command(this.ExecuteAddRoleReference);
+			this.addContractReference = new Command(this.ExecuteAddContractReference);
 			this.@new = new Command(this.ExecuteNewContract);
 			this.load = new Command(this.ExecuteLoadContract);
 			this.import = new Command(this.ExecuteImportContract);
@@ -173,7 +179,7 @@ namespace LegalLab.Models.Design
 
 		public async Task SetContract(Contract Contract)
 		{
-			if(this.contract is not null)
+			if (this.contract is not null)
 				this.contract.FormatParameterDisplay -= this.Contract_FormatParameterDisplay;
 
 			this.contract = Contract;
@@ -209,7 +215,8 @@ namespace LegalLab.Models.Design
 			this.Roles = Roles.ToArray();
 
 			List<ParameterInfo> ParameterList = new();
-			List<RoleParameterInfo> RoleParameterList = new();
+			List<RoleReferenceParameterInfo> RoleReferenceParameterList = new();
+			List<ContractReferenceParameterInfo> ContractReferenceParameterList = new();
 			ParameterInfo ParameterInfo;
 
 			foreach (Parameter Parameter in this.contract.Parameters)
@@ -232,7 +239,12 @@ namespace LegalLab.Models.Design
 					ParameterInfo = this.GetParameterInfo(CP);
 				else if (Parameter is RoleParameter RP)
 				{
-					RoleParameterList.Add(this.GetParameterInfo(RP));
+					RoleReferenceParameterList.Add(this.GetParameterInfo(RP));
+					continue;
+				}
+				else if (Parameter is ContractReferenceParameter CRP)
+				{
+					ContractReferenceParameterList.Add(this.GetParameterInfo(CRP));
 					continue;
 				}
 				else
@@ -242,7 +254,8 @@ namespace LegalLab.Models.Design
 			}
 
 			this.Parameters = ParameterList.ToArray();
-			this.RoleParameters = RoleParameterList.ToArray();
+			this.RoleReferenceParameters = RoleReferenceParameterList.ToArray();
+			this.ContractReferenceParameters = ContractReferenceParameterList.ToArray();
 
 			await this.ValidateParameters();
 
@@ -660,7 +673,8 @@ namespace LegalLab.Models.Design
 					else
 					{
 						this.contract.ForHumans = this.contract.ForHumans.Append(Text);
-						this.HumanReadable = XamlReader.Parse(await Text.GenerateXAML(this.Contract));
+						string Xaml = await Text.GenerateXAML(this.Contract);
+						this.HumanReadable = XamlReader.Parse(Xaml);
 					}
 				}
 				catch (Exception ex)
@@ -784,14 +798,23 @@ namespace LegalLab.Models.Design
 		/// <summary>
 		/// Role reference Parameters defined the contract.
 		/// </summary>
-		public RoleParameterInfo[] RoleParameters
+		public RoleReferenceParameterInfo[] RoleReferenceParameters
 		{
-			get => this.roleParameters.Value;
-			set => this.roleParameters.Value = value;
+			get => this.roleReferenceParameters.Value;
+			set => this.roleReferenceParameters.Value = value;
 		}
 
 		/// <summary>
-		/// An array of both <see cref="Parameters"/> and <see cref="RoleParameters"/>.
+		/// Contract reference Parameters defined the contract.
+		/// </summary>
+		public ContractReferenceParameterInfo[] ContractReferenceParameters
+		{
+			get => this.contractReferenceParameters.Value;
+			set => this.contractReferenceParameters.Value = value;
+		}
+
+		/// <summary>
+		/// An array of both <see cref="Parameters"/> and <see cref="RoleReferenceParameters"/>.
 		/// </summary>
 		public ParameterInfo[] AllParameterInfos
 		{
@@ -799,15 +822,16 @@ namespace LegalLab.Models.Design
 			{
 				List<ParameterInfo> Parameters = new();
 
+				Parameters.AddRange(this.contractReferenceParameters.Value);
 				Parameters.AddRange(this.parameters.Value);
-				Parameters.AddRange(this.roleParameters.Value);
+				Parameters.AddRange(this.roleReferenceParameters.Value);
 
 				return Parameters.ToArray();
 			}
 		}
 
 		/// <summary>
-		/// An array of both <see cref="Parameters"/> and <see cref="RoleParameters"/>.
+		/// An array of both <see cref="Parameters"/> and <see cref="RoleReferenceParameters"/>.
 		/// </summary>
 		public Parameter[] AllParameters
 		{
@@ -815,8 +839,9 @@ namespace LegalLab.Models.Design
 			{
 				List<Parameter> Parameters = new();
 
+				Parameters.AddRange(this.contractReferenceParameters.Value.ToParameters());
 				Parameters.AddRange(this.parameters.Value.ToParameters());
-				Parameters.AddRange(this.roleParameters.Value.ToParameters());
+				Parameters.AddRange(this.roleReferenceParameters.Value.ToParameters());
 
 				return Parameters.ToArray();
 			}
@@ -852,9 +877,9 @@ namespace LegalLab.Models.Design
 
 			this.Roles = Roles;
 
-			foreach (ParameterInfo RoleRef in this.roleParameters.Value)
+			foreach (ParameterInfo RoleRef in this.roleReferenceParameters.Value)
 			{
-				if (RoleRef is RoleParameterInfo RoleRefInfo)
+				if (RoleRef is RoleReferenceParameterInfo RoleRefInfo)
 					RoleRefInfo.RaisePropertyChanged(nameof(RoleRefInfo.Roles));
 			}
 		}
@@ -980,7 +1005,8 @@ namespace LegalLab.Models.Design
 				MaxIncluded = false,
 				Min = null,
 				MinIncluded = false,
-				Value = Value
+				Value = Value,
+				Transient = false
 			};
 
 			this.AddParameter(this.GetParameterInfo(NP));
@@ -1064,7 +1090,8 @@ namespace LegalLab.Models.Design
 				Value = null,
 				MinLength = null,
 				MaxLength = MaxLength,
-				RegEx = RegEx
+				RegEx = RegEx,
+				Transient = false
 			};
 
 			this.AddParameter(this.GetParameterInfo(SP));
@@ -1301,7 +1328,8 @@ namespace LegalLab.Models.Design
 				Descriptions = await MarkdownDescription.ToHumanReadableText("en"),
 				Expression = string.Empty,
 				Guide = string.Empty,
-				Value = Value
+				Value = Value,
+				Transient = false
 			};
 
 			this.AddParameter(this.GetParameterInfo(BP));
@@ -1402,7 +1430,8 @@ namespace LegalLab.Models.Design
 				MaxIncluded = false,
 				Min = null,
 				MinIncluded = false,
-				Value = Value
+				Value = Value,
+				Transient = false
 			};
 
 			this.AddParameter(this.GetParameterInfo(DP));
@@ -1475,7 +1504,8 @@ namespace LegalLab.Models.Design
 				MaxIncluded = false,
 				Min = null,
 				MinIncluded = false,
-				Value = null
+				Value = null,
+				Transient = false
 			};
 
 			this.AddParameter(this.GetParameterInfo(DP));
@@ -1553,7 +1583,8 @@ namespace LegalLab.Models.Design
 				MaxIncluded = false,
 				Min = null,
 				MinIncluded = false,
-				Value = Value
+				Value = Value,
+				Transient = false
 			};
 
 			this.AddParameter(this.GetParameterInfo(DP));
@@ -1626,7 +1657,8 @@ namespace LegalLab.Models.Design
 				MaxIncluded = false,
 				Min = null,
 				MinIncluded = false,
-				Value = null
+				Value = null,
+				Transient = false
 			};
 
 			this.AddParameter(this.GetParameterInfo(DP));
@@ -1694,7 +1726,8 @@ namespace LegalLab.Models.Design
 				Name = FindNewName("Calc", this.AllParameterInfos),
 				Descriptions = new HumanReadableText[] { await defaultParameterDescription.ToHumanReadableText("en") },
 				Expression = string.Empty,
-				Guide = string.Empty
+				Guide = string.Empty,
+				Transient = false
 			};
 
 			this.AddParameter(this.GetParameterInfo(CP));
@@ -1716,10 +1749,70 @@ namespace LegalLab.Models.Design
 				Descriptions = new HumanReadableText[] { await defaultParameterDescription.ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
-				Index = 1
+				Index = 1,
+				Property = string.Empty,
+				Role = string.Empty,
+				Required = false,
+				Transient = false
 			};
 
-			this.AddRoleParameter(this.GetParameterInfo(RP));
+			this.AddRoleReferenceParameter(this.GetParameterInfo(RP));
+		}
+
+		private RoleReferenceParameterInfo GetParameterInfo(RoleParameter RP)
+		{
+			TextBox ValueControl = new()
+			{
+				IsReadOnly = true
+			};
+
+			RoleReferenceParameterInfo ParameterInfo = new(this.contract, RP, ValueControl, this, this.roleReferenceParameters);
+			ValueControl.Tag = ParameterInfo;
+
+			return ParameterInfo;
+		}
+
+		/// <summary>
+		/// Command for adding a contract reference parameter
+		/// </summary>
+		public ICommand AddContractReference => this.addContractReference;
+
+		/// <summary>
+		/// Adds a contract reference parameter to the design.
+		/// </summary>
+		public async Task ExecuteAddContractReference()
+		{
+			ContractReferenceParameter CRP = new()
+			{
+				Name = FindNewName("ContractRef", this.AllParameterInfos),
+				Descriptions = new HumanReadableText[] { await defaultParameterDescription.ToHumanReadableText("en") },
+				Labels = new Waher.Networking.XMPP.Contracts.HumanReadable.Label[] { await defaultParameterLabel.ToHumanReadableLabel("en") },
+				Expression = string.Empty,
+				Guide = string.Empty,
+				CreatorRole = string.Empty,
+				LocalName = string.Empty,
+				Namespace = string.Empty,
+				Provider = string.Empty,
+				Required = false,
+				TemplateId = string.Empty,
+				Transient = false,
+				Value = string.Empty
+			};
+
+			this.AddContractReferenceParameter(this.GetParameterInfo(CRP));
+		}
+
+		private ContractReferenceParameterInfo GetParameterInfo(ContractReferenceParameter CRP)
+		{
+			TextBox ValueControl = new()
+			{
+				IsReadOnly = true
+			};
+
+			ContractReferenceParameterInfo ParameterInfo = new(this.contract, CRP, ValueControl, this, this.contractReferenceParameters);
+			ValueControl.Tag = ParameterInfo;
+
+			return ParameterInfo;
 		}
 
 		private ParameterInfo GetParameterInfo(CalcParameter CP)
@@ -1735,24 +1828,6 @@ namespace LegalLab.Models.Design
 			ValueControl.SetBinding(TextBox.TextProperty, Binding);
 
 			ParameterInfo ParameterInfo = new CalcParameterInfo(this.contract, CP, ValueControl, this, this.parameters);
-			ValueControl.Tag = ParameterInfo;
-
-			return ParameterInfo;
-		}
-
-		private RoleParameterInfo GetParameterInfo(RoleParameter RP)
-		{
-			TextBox ValueControl = new()
-			{
-				IsReadOnly = true
-			};
-			Binding Binding = new("Value")
-			{
-				Converter = new MoneyToString()
-			};
-			ValueControl.SetBinding(TextBox.TextProperty, Binding);
-
-			RoleParameterInfo ParameterInfo = new(this.contract, RP, ValueControl, this, this.roleParameters);
 			ValueControl.Tag = ParameterInfo;
 
 			return ParameterInfo;
@@ -1790,24 +1865,24 @@ namespace LegalLab.Models.Design
 			this.Parameters = Parameters;
 		}
 
-		private void AddRoleParameter(RoleParameterInfo Parameter)
+		private void AddRoleReferenceParameter(RoleReferenceParameterInfo Parameter)
 		{
-			RoleParameterInfo[] Parameters = this.RoleParameters;
+			RoleReferenceParameterInfo[] Parameters = this.RoleReferenceParameters;
 			int c = Parameters.Length;
 
 			Array.Resize(ref Parameters, c + 1);
 			Parameters[c] = Parameter;
 
-			this.RoleParameters = Parameters;
+			this.RoleReferenceParameters = Parameters;
 		}
 
 		/// <summary>
 		/// Removes a role reference parameter from the design
 		/// </summary>
 		/// <param name="Parameter">Parameter to remove</param>
-		public void RemoveRoleParameter(RoleParameterInfo Parameter)
+		public void RemoveRoleReferenceParameter(RoleReferenceParameterInfo Parameter)
 		{
-			RoleParameterInfo[] Parameters = this.RoleParameters;
+			RoleReferenceParameterInfo[] Parameters = this.RoleReferenceParameters;
 			int i = Array.IndexOf(Parameters, Parameter);
 			if (i < 0)
 				return;
@@ -1819,7 +1894,39 @@ namespace LegalLab.Models.Design
 
 			Array.Resize(ref Parameters, c - 1);
 
-			this.RoleParameters = Parameters;
+			this.RoleReferenceParameters = Parameters;
+		}
+
+		private void AddContractReferenceParameter(ContractReferenceParameterInfo Parameter)
+		{
+			ContractReferenceParameterInfo[] Parameters = this.ContractReferenceParameters;
+			int c = Parameters.Length;
+
+			Array.Resize(ref Parameters, c + 1);
+			Parameters[c] = Parameter;
+
+			this.ContractReferenceParameters = Parameters;
+		}
+
+		/// <summary>
+		/// Removes a contract reference parameter from the design
+		/// </summary>
+		/// <param name="Parameter">Parameter to remove</param>
+		public void RemoveContractReferenceParameter(ContractReferenceParameterInfo Parameter)
+		{
+			ContractReferenceParameterInfo[] Parameters = this.ContractReferenceParameters;
+			int i = Array.IndexOf(Parameters, Parameter);
+			if (i < 0)
+				return;
+
+			int c = Parameters.Length;
+
+			if (i < c - 1)
+				Array.Copy(Parameters, i + 1, Parameters, i, c - i - 1);
+
+			Array.Resize(ref Parameters, c - 1);
+
+			this.ContractReferenceParameters = Parameters;
 		}
 
 		/// <summary>
@@ -1855,7 +1962,7 @@ namespace LegalLab.Models.Design
 				this.Roles = Array.Empty<RoleInfo>();
 				this.Parts = Array.Empty<PartInfo>();
 				this.Parameters = Array.Empty<ParameterInfo>();
-				this.RoleParameters = Array.Empty<RoleParameterInfo>();
+				this.RoleReferenceParameters = Array.Empty<RoleReferenceParameterInfo>();
 				this.MachineReadable = string.Empty;
 				this.ForMachines = null;
 				this.ContractId = string.Empty;

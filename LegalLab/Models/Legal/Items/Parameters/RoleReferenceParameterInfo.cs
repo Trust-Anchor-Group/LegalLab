@@ -9,7 +9,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 	/// <summary>
 	/// Contains information about a role reference parameter
 	/// </summary>
-	public class RoleParameterInfo : ParameterInfo
+	public class RoleReferenceParameterInfo : ParameterInfo
 	{
 		private readonly Property<string> role;
 		private readonly Property<string> property;
@@ -24,7 +24,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		/// <param name="Control">Edit control</param>
 		/// <param name="DesignModel">Design model</param>
 		/// <param name="Parameters">Collection of parameters.</param>
-		public RoleParameterInfo(Contract Contract, RoleParameter Parameter, Control Control, DesignModel DesignModel, Property<RoleParameterInfo[]> Parameters)
+		public RoleReferenceParameterInfo(Contract Contract, RoleParameter Parameter, Control Control, DesignModel DesignModel, Property<RoleReferenceParameterInfo[]> Parameters)
 			: base(Contract, Parameter, Control, DesignModel, Parameters)
 		{
 			this.role = new Property<string>(nameof(this.Role), Parameter.Role, this);
@@ -106,7 +106,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		/// </summary>
 		public override Task ExecuteRemoveParameter()
 		{
-			this.designModel?.RemoveRoleParameter(this);
+			this.designModel?.RemoveRoleReferenceParameter(this);
 			return Task.CompletedTask;
 		}
 	}

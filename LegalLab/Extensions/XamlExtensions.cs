@@ -65,6 +65,30 @@ namespace LegalLab.Extensions
 		/// <summary>
 		/// Converts the human-readable description of a parameter to simple XAML.
 		/// </summary>
+		/// <param name="Text">Human-readable description.</param>
+		/// <param name="Language">Language</param>
+		/// <param name="Contract">Contract</param>
+		/// <returns>Simple XAML</returns>
+		public static async Task<object> ToSimpleXAML(this HumanReadableText[] Text, string Language, Contract Contract)
+		{
+			return (await Contract.ToXAML(Text, Language)).ParseSimple();
+		}
+
+		/// <summary>
+		/// Converts the human-readable label of a parameter to simple XAML.
+		/// </summary>
+		/// <param name="Label">Human-readable label.</param>
+		/// <param name="Language">Language</param>
+		/// <param name="Contract">Contract</param>
+		/// <returns>Simple XAML</returns>
+		public static async Task<object> ToSimpleXAML(this Waher.Networking.XMPP.Contracts.HumanReadable.Label[] Label, string Language, Contract Contract)
+		{
+			return (await Contract.ToXAML(Label, Language)).ParseSimple();
+		}
+
+		/// <summary>
+		/// Converts the human-readable description of a parameter to simple XAML.
+		/// </summary>
 		/// <param name="Markdown">Markdown text</param>
 		/// <param name="Contract">Contract</param>
 		/// <param name="Language">Language code</param>

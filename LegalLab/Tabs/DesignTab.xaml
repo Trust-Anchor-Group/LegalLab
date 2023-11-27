@@ -195,6 +195,123 @@
 				</design:NonScrollingDataGrid>
 				<Button Width="100" HorizontalAlignment="Left" Margin="0,5,0,0" Command="{Binding AddPart}">Add</Button>
 
+				<Label FontSize="20" Margin="0,10,0,0">Contract References</Label>
+				<Label>Following are available contract reference parameters defined in the contract:</Label>
+				<design:NonScrollingDataGrid ItemsSource="{Binding ContractReferenceParameters}" Width="Auto" HorizontalAlignment="Left" 
+											 AutoGenerateColumns="False" GridLinesVisibility="None">
+					<DataGrid.Columns>
+						<DataGridTextColumn Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Header="Parameter"/>
+						<DataGridTemplateColumn Header="Value">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<ContentControl Content="{Binding Control}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTemplateColumn Header="Description">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<ContentControl Content="{Binding Description}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+							<DataGridTemplateColumn.CellEditingTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding DescriptionAsMarkdown}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellEditingTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTemplateColumn Header="Label">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<ContentControl Content="{Binding Label}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+							<DataGridTemplateColumn.CellEditingTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding LabelAsMarkdown}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellEditingTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTextColumn Binding="{Binding Guide}" Header="Guide"/>
+						<DataGridTextColumn Binding="{Binding Expression, UpdateSourceTrigger=PropertyChanged}" Header="Expression"/>
+						<DataGridTemplateColumn Header="Local Name">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<ContentControl Content="{Binding LocalName}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTemplateColumn Header="Namespace">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<ContentControl Content="{Binding Namespace}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTemplateColumn Header="Template ID">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<ContentControl Content="{Binding TemplateId}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTemplateColumn Header="Provider">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<ContentControl Content="{Binding Provider}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTemplateColumn Header="Creator Role">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<ContentControl Content="{Binding CretorRole}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						<DataGridCheckBoxColumn Binding="{Binding Required}" Header="Required"/>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderStyle>
+								<Style TargetType="DataGridColumnHeader">
+									<Setter Property="Background" Value="{Binding Path=Background, ElementName=ContractId}"/>
+								</Style>
+							</DataGridTemplateColumn.HeaderStyle>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<Button Command="{Binding MoveUp}" Padding="5,0,5,0">Up</Button>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderStyle>
+								<Style TargetType="DataGridColumnHeader">
+									<Setter Property="Background" Value="{Binding Path=Background, ElementName=ContractId}"/>
+								</Style>
+							</DataGridTemplateColumn.HeaderStyle>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<Button Command="{Binding MoveDown}" Padding="5,0,5,0">Down</Button>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderStyle>
+								<Style TargetType="DataGridColumnHeader">
+									<Setter Property="Background" Value="{Binding Path=Background, ElementName=ContractId}"/>
+								</Style>
+							</DataGridTemplateColumn.HeaderStyle>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<Button Command="{Binding RemoveParameter}" Padding="5,0,5,0">Remove</Button>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+					</DataGrid.Columns>
+				</design:NonScrollingDataGrid>
+				<WrapPanel Orientation="Horizontal">
+					<Button Width="100" HorizontalAlignment="Left" Margin="0,5,5,0" Command="{Binding AddContractReference}">Add Contract Reference</Button>
+				</WrapPanel>
+
 				<Label FontSize="20" Margin="0,10,0,0">Editable Parameters</Label>
 				<Label>Following are the editable parameters defined in the contract:</Label>
 				<design:NonScrollingDataGrid ItemsSource="{Binding Parameters}" Width="Auto" HorizontalAlignment="Left" 
@@ -325,7 +442,7 @@
 				<Label>
 					<TextBlock TextWrapping="Wrap">Following are role reference parameters defined in the contract. They take the values from the identities of the signatories signing the contract:</TextBlock>
 				</Label>
-				<design:NonScrollingDataGrid ItemsSource="{Binding RoleParameters}" Width="Auto" HorizontalAlignment="Left" 
+				<design:NonScrollingDataGrid ItemsSource="{Binding RoleReferenceParameters}" Width="Auto" HorizontalAlignment="Left" 
 											 AutoGenerateColumns="False" GridLinesVisibility="None">
 					<DataGrid.Columns>
 						<DataGridTextColumn Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Header="Parameter"/>
