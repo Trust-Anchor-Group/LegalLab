@@ -56,10 +56,10 @@ namespace LegalLab.Models.Legal
 		/// </summary>
 		/// <param name="Contracts">Contracts Client</param>
 		/// <param name="Contract">Contract</param>
-		/// <param name="LegalModel">Legal Model</param>
+		/// <param name="DesignModel">Design Model</param>
 		/// <param name="XmlEditor">XML Editor</param>
-		private ContractModel(ContractsClient Contracts, Contract Contract, LegalModel LegalModel, NonScrollingTextEditor XmlEditor)
-			: base(Contract.Parameters, Contract, "en")
+		private ContractModel(ContractsClient Contracts, Contract Contract, DesignModel DesignModel, NonScrollingTextEditor XmlEditor)
+			: base(Contract.Parameters, Contract, "en", DesignModel)
 		{
 			this.generalInformation = new Property<GenInfo[]>(nameof(this.GeneralInformation), Array.Empty<GenInfo>(), this);
 			this.roles = new Property<RoleInfo[]>(nameof(this.Roles), Array.Empty<RoleInfo>(), this);
@@ -80,7 +80,7 @@ namespace LegalLab.Models.Legal
 			this.createContract = new Command(this.CanExecuteCreateContract, this.ExecuteCreateContract);
 
 			this.xmlEditor = XmlEditor;
-			this.legalModel = LegalModel;
+			this.legalModel = DesignModel.Network.Legal;
 			this.contracts = Contracts;
 
 			this.TemplateName = Contract.ContractId;
@@ -91,13 +91,13 @@ namespace LegalLab.Models.Legal
 		/// </summary>
 		/// <param name="Contracts">Contracts Client</param>
 		/// <param name="Contract">Contract</param>
-		/// <param name="LegalModel">Legal Model</param>
+		/// <param name="DesignModel">Design Model</param>
 		/// <param name="XmlEditor">XML Editor</param>
 		/// <returns>Contract object model.</returns>
-		public static async Task<ContractModel> CreateAsync(ContractsClient Contracts, Contract Contract, LegalModel LegalModel,
+		public static async Task<ContractModel> CreateAsync(ContractsClient Contracts, Contract Contract, DesignModel DesignModel,
 			NonScrollingTextEditor XmlEditor)
 		{
-			ContractModel Result = new(Contracts, Contract, LegalModel, XmlEditor);
+			ContractModel Result = new(Contracts, Contract, DesignModel, XmlEditor);
 			(string s, _) = Contract.ForMachines.ToPrettyXml();
 
 			await Result.SetContract(Contract);

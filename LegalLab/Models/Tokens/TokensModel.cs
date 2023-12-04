@@ -59,7 +59,7 @@ namespace LegalLab.Models.Tokens
 		{
 			MainWindow.UpdateGui(async () =>
 			{
-				TokenModel Token = await TokenModel.CreateAsync(this.neuroFeaturesClient, e.Token, "en");
+				TokenModel Token = await TokenModel.CreateAsync(this.neuroFeaturesClient, e.Token, "en", MainWindow.DesignModel);
 				Token.Selected += this.Token_Selected;
 				Token.Deselected += this.Token_Deselected;
 				Token.NoteAdded += this.Token_NoteAdded;
@@ -431,7 +431,7 @@ namespace LegalLab.Models.Tokens
 			{
 				foreach (Token Token in e2.Tokens)
 				{
-					TokenModel TokenModel = await TokenModel.CreateAsync(this.neuroFeaturesClient, Token, "en");
+					TokenModel TokenModel = await TokenModel.CreateAsync(this.neuroFeaturesClient, Token, "en", MainWindow.DesignModel);
 					TokenModel.Selected += this.Token_Selected;
 					TokenModel.Deselected += this.Token_Deselected;
 					TokenModel.NoteAdded += this.Token_NoteAdded;

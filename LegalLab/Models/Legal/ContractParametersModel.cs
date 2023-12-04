@@ -1,5 +1,6 @@
 ﻿using LegalLab.Converters;
 using LegalLab.Extensions;
+using LegalLab.Models.Design;
 using LegalLab.Models.Legal.Items;
 using LegalLab.Models.Legal.Items.Parameters;
 using LegalLab.Models.Standards;
@@ -31,6 +32,7 @@ namespace LegalLab.Models.Legal
 		private readonly Property<Iso__639_1.Record[]> languages;
 
 		protected readonly Dictionary<CaseInsensitiveString, ParameterInfo> parametersByName = new();
+		private readonly DesignModel designModel;
 		private StackPanel languageOptions = null;
 		private StackPanel parameterOptions = null;
 		private StackPanel additionalCommands = null;
@@ -44,13 +46,15 @@ namespace LegalLab.Models.Legal
 		/// <param name="Parameters">Contract parameters.</param>
 		/// <param name="Contract">Optional contract.</param>
 		/// <param name="Language">Language</param>
-		public ContractParametersModel(Parameter[] Parameters, Contract Contract, string Language)
+		/// <param name="LegalModel">Reference to the legal model.</param>
+		public ContractParametersModel(Parameter[] Parameters, Contract Contract, string Language, DesignModel DesignModel)
 		{
 			this.parametersOk = new Property<bool>(nameof(this.ParametersOk), false, this);
 			this.parameters = new Property<ParameterInfo[]>(nameof(this.Parameters), Array.Empty<ParameterInfo>(), this);
 			this.language = new Property<string>(nameof(this.Language), Language, this);
 			this.languages = new Property<Iso__639_1.Record[]>(nameof(this.Languages), Array.Empty<Iso__639_1.Record>(), this);
 			this.contract = Contract ?? emptyContract;
+			this.designModel = DesignModel;
 
 			this.SetParameters(Parameters);
 		}
@@ -256,7 +260,7 @@ namespace LegalLab.Models.Legal
 							NP.Value = d;
 
 						this.parametersByName[Parameter.Name] = ParameterInfo = new NumericalParameterInfo(this.contract, NP, TextBox,
-							null, null, null, null, null, this.parameters);
+							null, null, null, null, this.designModel, this.parameters);
 					}
 					else if (Parameter is StringParameter SP)
 					{
@@ -264,7 +268,7 @@ namespace LegalLab.Models.Legal
 							SP.Value = s;
 
 						this.parametersByName[Parameter.Name] = ParameterInfo = new StringParameterInfo(this.contract, SP, TextBox,
-							null, null, null, null, null, null, null, null, this.parameters);
+							null, null, null, null, null, null, null, this.designModel, this.parameters);
 					}
 					else if (Parameter is DateParameter DP)
 					{
@@ -272,7 +276,7 @@ namespace LegalLab.Models.Legal
 							DP.Value = TP;
 
 						this.parametersByName[Parameter.Name] = ParameterInfo = new DateParameterInfo(this.contract, DP, TextBox,
-							null, null, null, null, null, this.parameters);
+							null, null, null, null, this.designModel, this.parameters);
 					}
 					else if (Parameter is DateTimeParameter DTP)
 					{
@@ -280,7 +284,7 @@ namespace LegalLab.Models.Legal
 							DTP.Value = TP;
 
 						this.parametersByName[Parameter.Name] = ParameterInfo = new DateTimeParameterInfo(this.contract, DTP, TextBox,
-							null, null, null, null, null, this.parameters);
+							null, null, null, null, this.designModel, this.parameters);
 					}
 					else if (Parameter is TimeParameter TP)
 					{
@@ -288,7 +292,7 @@ namespace LegalLab.Models.Legal
 							TP.Value = TS;
 
 						this.parametersByName[Parameter.Name] = ParameterInfo = new TimeParameterInfo(this.contract, TP, TextBox,
-							null, null, null, null, null, this.parameters);
+							null, null, null, null, this.designModel, this.parameters);
 					}
 					else if (Parameter is DurationParameter DrP)
 					{
@@ -296,14 +300,14 @@ namespace LegalLab.Models.Legal
 							DrP.Value = D;
 
 						this.parametersByName[Parameter.Name] = ParameterInfo = new DurationParameterInfo(this.contract, DrP, TextBox,
-							null, null, null, null, null, this.parameters);
+							null, null, null, null, this.designModel, this.parameters);
 					}
 					else if (Parameter is CalcParameter CP)
 					{
 						TextBox.IsReadOnly = true;
 
 						this.parametersByName[Parameter.Name] = ParameterInfo = new CalcParameterInfo(this.contract, CP, TextBox,
-							null, this.parameters);
+							this.designModel, this.parameters);
 					}
 					else if (Parameter is ContractReferenceParameter CRP)
 					{
@@ -311,7 +315,7 @@ namespace LegalLab.Models.Legal
 							CRP.Value = s;
 
 						this.parametersByName[Parameter.Name] = ParameterInfo = new ContractReferenceParameterInfo(this.contract, CRP, TextBox,
-							null, this.parameters);
+							this.designModel, this.parameters);
 					}
 					else
 						continue;

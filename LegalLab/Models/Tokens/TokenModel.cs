@@ -1,5 +1,6 @@
 ﻿using LegalLab.Dialogs.Parameters;
 using LegalLab.Extensions;
+using LegalLab.Models.Design;
 using LegalLab.Models.Items;
 using LegalLab.Models.Legal;
 using LegalLab.Models.Tokens.Reports;
@@ -28,6 +29,7 @@ namespace LegalLab.Models.Tokens
 	/// </summary>
 	public class TokenModel : SelectableItem
 	{
+		private readonly DesignModel designModel;
 		private readonly NeuroFeaturesClient client;
 		private readonly Token token;
 		private readonly string language;
@@ -49,8 +51,10 @@ namespace LegalLab.Models.Tokens
 		/// <param name="Client">Client</param>
 		/// <param name="Token">Neuro-Feature token</param>
 		/// <param name="Language">Language</param>
-		private TokenModel(NeuroFeaturesClient Client, Token Token, string Language)
+		/// <param name="DesignModel">Reference to the design model.</param>
+		private TokenModel(NeuroFeaturesClient Client, Token Token, string Language, DesignModel DesignModel)
 		{
+			this.designModel = DesignModel;
 			this.client = Client;
 			this.token = Token;
 			this.language = Language;
@@ -97,9 +101,9 @@ namespace LegalLab.Models.Tokens
 		/// </summary>
 		public ParametrizedCommand NoteCommand => this.executeNoteCommand;
 
-		public static async Task<TokenModel> CreateAsync(NeuroFeaturesClient Client, Token Token, string Language)
+		public static async Task<TokenModel> CreateAsync(NeuroFeaturesClient Client, Token Token, string Language, DesignModel DesignModel)
 		{
-			TokenModel Result = new(Client, Token, Language);
+			TokenModel Result = new(Client, Token, Language, DesignModel);
 
 			Result.noteCommands = await Result.token.GetNoteCommands();
 
@@ -476,7 +480,7 @@ namespace LegalLab.Models.Tokens
 					{
 						if (Command.HasParameters)
 						{
-							ContractParametersModel Model = new(Command.Parameters, null, this.language);
+							ContractParametersModel Model = new(Command.Parameters, null, this.language, this.designModel);
 							ParametersDialog Dialog = new(Command.Title.Find(this.language), Model)
 							{
 								Owner = MainWindow.currentInstance
