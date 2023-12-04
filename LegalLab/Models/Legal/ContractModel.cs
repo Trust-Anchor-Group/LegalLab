@@ -948,6 +948,18 @@ namespace LegalLab.Models.Legal
 									return;
 								}
 							}
+							else if (Info.Parameter is ContractReferenceParameter CRP)
+							{
+								string s = MoneyToString.ToString(P.Value);
+
+								CRP.Value = s;
+
+								if (Entry is not null)
+								{
+									Entry.Text = s;
+									Entry.Background = null;
+								}
+							}
 						}
 					}
 					catch (Exception ex)

@@ -305,6 +305,14 @@ namespace LegalLab.Models.Legal
 						this.parametersByName[Parameter.Name] = ParameterInfo = new CalcParameterInfo(this.contract, CP, TextBox,
 							null, this.parameters);
 					}
+					else if (Parameter is ContractReferenceParameter CRP)
+					{
+						if (PresetValue is string s)
+							CRP.Value = s;
+
+						this.parametersByName[Parameter.Name] = ParameterInfo = new ContractReferenceParameterInfo(this.contract, CRP, TextBox,
+							null, this.parameters);
+					}
 					else
 						continue;
 

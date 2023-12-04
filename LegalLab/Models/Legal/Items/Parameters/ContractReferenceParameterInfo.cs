@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
-using Waher.Persistence;
 
 namespace LegalLab.Models.Legal.Items.Parameters
 {
@@ -33,7 +32,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		/// <param name="Control">Edit control</param>
 		/// <param name="DesignModel">Design model</param>
 		/// <param name="Parameters">Collection of parameters.</param>
-		public ContractReferenceParameterInfo(Contract Contract, ContractReferenceParameter Parameter, Control Control, DesignModel DesignModel, Property<ContractReferenceParameterInfo[]> Parameters)
+		public ContractReferenceParameterInfo(Contract Contract, ContractReferenceParameter Parameter, Control Control, DesignModel DesignModel, IProperty Parameters)
 			: base(Contract, Parameter, Control, DesignModel, Parameters)
 		{
 			string Language = DesignModel?.Language ?? Contract.DefaultLanguage;
