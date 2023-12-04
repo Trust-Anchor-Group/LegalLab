@@ -94,7 +94,7 @@
 							</DataGridTemplateColumn.CellTemplate>
 							<DataGridTemplateColumn.CellEditingTemplate>
 								<DataTemplate>
-									<TextBox Text="{Binding DescriptionAsMarkdown}"/>
+									<TextBox Text="{Binding DescriptionAsMarkdown, UpdateSourceTrigger=PropertyChanged}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellEditingTemplate>
 						</DataGridTemplateColumn>
@@ -216,7 +216,7 @@
 							</DataGridTemplateColumn.CellTemplate>
 							<DataGridTemplateColumn.CellEditingTemplate>
 								<DataTemplate>
-									<TextBox Text="{Binding DescriptionAsMarkdown}"/>
+									<TextBox Text="{Binding DescriptionAsMarkdown, UpdateSourceTrigger=PropertyChanged}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellEditingTemplate>
 						</DataGridTemplateColumn>
@@ -228,47 +228,17 @@
 							</DataGridTemplateColumn.CellTemplate>
 							<DataGridTemplateColumn.CellEditingTemplate>
 								<DataTemplate>
-									<TextBox Text="{Binding LabelAsMarkdown}"/>
+									<TextBox Text="{Binding LabelAsMarkdown, UpdateSourceTrigger=PropertyChanged}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellEditingTemplate>
 						</DataGridTemplateColumn>
 						<DataGridTextColumn Binding="{Binding Guide}" Header="Guide"/>
 						<DataGridTextColumn Binding="{Binding Expression, UpdateSourceTrigger=PropertyChanged}" Header="Expression"/>
-						<DataGridTemplateColumn Header="Local Name">
-							<DataGridTemplateColumn.CellTemplate>
-								<DataTemplate>
-									<ContentControl Content="{Binding LocalName}"/>
-								</DataTemplate>
-							</DataGridTemplateColumn.CellTemplate>
-						</DataGridTemplateColumn>
-						<DataGridTemplateColumn Header="Namespace">
-							<DataGridTemplateColumn.CellTemplate>
-								<DataTemplate>
-									<ContentControl Content="{Binding Namespace}"/>
-								</DataTemplate>
-							</DataGridTemplateColumn.CellTemplate>
-						</DataGridTemplateColumn>
-						<DataGridTemplateColumn Header="Template ID">
-							<DataGridTemplateColumn.CellTemplate>
-								<DataTemplate>
-									<ContentControl Content="{Binding TemplateId}"/>
-								</DataTemplate>
-							</DataGridTemplateColumn.CellTemplate>
-						</DataGridTemplateColumn>
-						<DataGridTemplateColumn Header="Provider">
-							<DataGridTemplateColumn.CellTemplate>
-								<DataTemplate>
-									<ContentControl Content="{Binding Provider}"/>
-								</DataTemplate>
-							</DataGridTemplateColumn.CellTemplate>
-						</DataGridTemplateColumn>
-						<DataGridTemplateColumn Header="Creator Role">
-							<DataGridTemplateColumn.CellTemplate>
-								<DataTemplate>
-									<ContentControl Content="{Binding CretorRole}"/>
-								</DataTemplate>
-							</DataGridTemplateColumn.CellTemplate>
-						</DataGridTemplateColumn>
+						<DataGridTextColumn Binding="{Binding LocalName}" Header="Local Name"/>
+						<DataGridTextColumn Binding="{Binding Namespace}" Header="Namespace"/>
+						<DataGridTextColumn Binding="{Binding TemplateId}" Header="Template ID"/>
+						<DataGridTextColumn Binding="{Binding Provider}" Header="Provider"/>
+						<DataGridTextColumn Binding="{Binding CreatorRole}" Header="Creator Role"/>
 						<DataGridCheckBoxColumn Binding="{Binding Required}" Header="Required"/>
 						<DataGridTemplateColumn>
 							<DataGridTemplateColumn.HeaderStyle>
@@ -309,7 +279,7 @@
 					</DataGrid.Columns>
 				</design:NonScrollingDataGrid>
 				<WrapPanel Orientation="Horizontal">
-					<Button Width="100" HorizontalAlignment="Left" Margin="0,5,5,0" Command="{Binding AddContractReference}">Add Contract Reference</Button>
+					<Button Width="200" HorizontalAlignment="Left" Margin="0,5,5,0" Command="{Binding AddContractReference}">Add Contract Reference</Button>
 				</WrapPanel>
 
 				<Label FontSize="20" Margin="0,10,0,0">Editable Parameters</Label>
@@ -333,7 +303,7 @@
 							</DataGridTemplateColumn.CellTemplate>
 							<DataGridTemplateColumn.CellEditingTemplate>
 								<DataTemplate>
-									<TextBox Text="{Binding DescriptionAsMarkdown}"/>
+									<TextBox Text="{Binding DescriptionAsMarkdown, UpdateSourceTrigger=PropertyChanged}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellEditingTemplate>
 						</DataGridTemplateColumn>
@@ -454,7 +424,7 @@
 							</DataGridTemplateColumn.CellTemplate>
 							<DataGridTemplateColumn.CellEditingTemplate>
 								<DataTemplate>
-									<TextBox Text="{Binding DescriptionAsMarkdown}"/>
+									<TextBox Text="{Binding DescriptionAsMarkdown, UpdateSourceTrigger=PropertyChanged}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellEditingTemplate>
 						</DataGridTemplateColumn>
