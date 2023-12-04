@@ -1804,10 +1804,9 @@ namespace LegalLab.Models.Design
 
 		private ContractReferenceParameterInfo GetParameterInfo(ContractReferenceParameter CRP)
 		{
-			TextBox ValueControl = new()
-			{
-				IsReadOnly = true
-			};
+			TextBox ValueControl = new();
+			ValueControl.SetBinding(TextBox.TextProperty, "ContractId");
+			ValueControl.TextChanged += this.Parameter_TextChanged;
 
 			ContractReferenceParameterInfo ParameterInfo = new(this.contract, CRP, ValueControl, this, this.contractReferenceParameters);
 			ValueControl.Tag = ParameterInfo;

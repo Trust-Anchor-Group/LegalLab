@@ -17,7 +17,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 	{
 		private readonly Property<object> label;
 		private readonly Property<string> labelAsMarkdown;
-		private readonly Property<CaseInsensitiveString> contractId;
+		private readonly Property<string> contractId;
 		private readonly Property<string> localName;
 		private readonly Property<string> @namespace;
 		private readonly Property<string> templateId;
@@ -40,7 +40,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 
 			this.label = new Property<object>(nameof(this.Label), Parameter.ToSimpleXAML(Language, Contract).Result, this);
 			this.labelAsMarkdown = new Property<string>(nameof(this.LabelAsMarkdown), Parameter.ToMarkdown(Language, Contract, MarkdownType.ForEditing).Trim(), this);
-			this.contractId = new Property<CaseInsensitiveString>(nameof(this.Value), Parameter.Value, this);
+			this.contractId = new Property<string>(nameof(this.Value), Parameter.Value?.Value, this);
 			this.localName = new Property<string>(nameof(this.LocalName), Parameter.LocalName, this);
 			this.@namespace = new Property<string>(nameof(this.Namespace), Parameter.Namespace, this);
 			this.templateId = new Property<string>(nameof(this.TemplateId), Parameter.TemplateId, this);
@@ -83,17 +83,20 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		/// <summary>
 		/// ID of referenced contract.
 		/// </summary>
-		public CaseInsensitiveString ContractId
+		public string ContractId
 		{
 			get => this.contractId.Value;
 			set
 			{
 				if (string.IsNullOrEmpty(value))
-					this.contractId.Value = CaseInsensitiveString.Empty;
+					this.contractId.Value = string.Empty;
 				else if (!XmppClient.BareJidRegEx.IsMatch(value))
 					throw new Exception("Invalid contract reference.");
 				else
+				{
+					this.Parameter.SetValue(value);
 					this.contractId.Value = value;
+				}
 			}
 		}
 
