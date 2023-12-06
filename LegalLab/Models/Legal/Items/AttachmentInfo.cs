@@ -129,7 +129,7 @@ namespace LegalLab.Models.Legal.Items
 		/// <returns>If command can be executed.</returns>
 		public bool CanExecuteDownloadAttachment()
 		{
-			return this.contractModel?.CanUploadAttachment ?? false;
+			return this.contractModel?.CanDownloadAttachment ?? false;
 		}
 
 		/// <summary>

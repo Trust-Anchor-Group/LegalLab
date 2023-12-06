@@ -40,6 +40,7 @@ namespace LegalLab.Models.Legal
 		private readonly Property<bool> hasId;
 		private readonly Property<bool> canBeSigned;
 		private readonly Property<bool> canUploadAttachment;
+		private readonly Property<bool> canDownloadAttachment;
 		private readonly Property<string> uri;
 		private readonly Property<string> qrCodeUri;
 		private readonly Property<string> machineReadable;
@@ -74,6 +75,7 @@ namespace LegalLab.Models.Legal
 			this.hasId = new Property<bool>(nameof(this.HasId), false, this);
 			this.canBeSigned = new Property<bool>(nameof(this.CanBeSigned), false, this);
 			this.canUploadAttachment = new Property<bool>(nameof(this.CanUploadAttachment), false, this);
+			this.canDownloadAttachment = new Property<bool>(nameof(this.CanDownloadAttachment), false, this);
 			this.uri = new Property<string>(nameof(this.Uri), string.Empty, this);
 			this.qrCodeUri = new Property<string>(nameof(this.QrCodeUri), string.Empty, this);
 			this.machineReadable = new Property<string>(nameof(this.MachineReadable), string.Empty, this);
@@ -137,7 +139,9 @@ namespace LegalLab.Models.Legal
 			this.CanUploadAttachment = Contract.State == ContractState.Approved && 
 				this.legalModel.FileUpload is not null &&
 				this.legalModel.FileUpload.MaxFileSize.HasValue;
-			
+
+			this.CanDownloadAttachment = (Contract.Attachments?.Length ?? 0) > 0;
+
 			this.Uri = ContractsClient.ContractIdUriString(Contract.ContractId);
 			this.QrCodeUri = "https://" + Domain + "/QR/" + this.Uri;
 
@@ -321,6 +325,15 @@ namespace LegalLab.Models.Legal
 		{
 			get => this.canUploadAttachment.Value;
 			set => this.canUploadAttachment.Value = value;
+		}
+
+		/// <summary>
+		/// If the user can download attachments.
+		/// </summary>
+		public bool CanDownloadAttachment
+		{
+			get => this.canDownloadAttachment.Value;
+			set => this.canDownloadAttachment.Value = value;
 		}
 
 		/// <summary>
