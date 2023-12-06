@@ -59,7 +59,11 @@ namespace LegalLab.Models.Legal
 			this.SetParameters(Parameters);
 		}
 
-		protected virtual Task SetContract(Contract Contract)
+		/// <summary>
+		/// Sets the current contract.
+		/// </summary>
+		/// <param name="Contract">Contract object.</param>
+		public virtual Task SetContract(Contract Contract)
 		{
 			if (this.contract is not null)
 				this.contract.FormatParameterDisplay -= this.Contract_FormatParameterDisplay;
@@ -82,8 +86,24 @@ namespace LegalLab.Models.Legal
 		{
 			this.contractParameters = ContractParameters;
 
+			string PrevLanguage = this.Language;
+			bool Found = false;
+
 			this.Languages = this.contract.GetLanguages().ToIso639_1();
-			this.Language = this.contract.DefaultLanguage;
+
+			if (!string.IsNullOrWhiteSpace(PrevLanguage))
+			{
+				foreach (Iso__639_1.Record Rec in this.Languages)
+				{
+					if (Rec.Code == PrevLanguage)
+					{
+						Found = true;
+						break;
+					}
+				}
+			}
+
+			this.Language = Found ? PrevLanguage : this.contract.DefaultLanguage;
 
 			if (string.IsNullOrEmpty(this.Language) && (this.Languages?.Length ?? 0) == 0)
 			{

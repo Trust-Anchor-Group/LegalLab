@@ -34,6 +34,7 @@ namespace LegalLab.Models.Legal
 		private readonly Property<GenInfo[]> generalInformation;
 		private readonly Property<RoleInfo[]> roles;
 		private readonly Property<PartInfo[]> parts;
+		private readonly Property<AttachmentInfo[]> attachments;
 		private readonly Property<ClientSignatureInfo[]> clientSignatures;
 		private readonly Property<ServerSignatureInfo[]> serverSignatures;
 		private readonly Property<bool> hasId;
@@ -67,6 +68,7 @@ namespace LegalLab.Models.Legal
 			this.generalInformation = new Property<GenInfo[]>(nameof(this.GeneralInformation), Array.Empty<GenInfo>(), this);
 			this.roles = new Property<RoleInfo[]>(nameof(this.Roles), Array.Empty<RoleInfo>(), this);
 			this.parts = new Property<PartInfo[]>(nameof(this.Parts), Array.Empty<PartInfo>(), this);
+			this.attachments = new Property<AttachmentInfo[]>(nameof(this.Attachments), Array.Empty<AttachmentInfo>(), this);
 			this.clientSignatures = new Property<ClientSignatureInfo[]>(nameof(this.ClientSignatures), Array.Empty<ClientSignatureInfo>(), this);
 			this.serverSignatures = new Property<ServerSignatureInfo[]>(nameof(this.ServerSignatures), Array.Empty<ServerSignatureInfo>(), this);
 			this.hasId = new Property<bool>(nameof(this.HasId), false, this);
@@ -92,6 +94,11 @@ namespace LegalLab.Models.Legal
 		}
 
 		/// <summary>
+		/// Reference to the current contracts client.
+		/// </summary>
+		public ContractsClient ContractsClient => this.contracts;
+
+		/// <summary>
 		/// Creates the contract model
 		/// </summary>
 		/// <param name="Contracts">Contracts Client</param>
@@ -111,7 +118,11 @@ namespace LegalLab.Models.Legal
 			return Result;
 		}
 
-		protected override async Task SetContract(Contract Contract)
+		/// <summary>
+		/// Sets the current contract.
+		/// </summary>
+		/// <param name="Contract">Contract object.</param>
+		public override async Task SetContract(Contract Contract)
 		{
 			await base.SetContract(Contract);
 
@@ -179,6 +190,16 @@ namespace LegalLab.Models.Legal
 			}
 
 			this.Roles = Roles.ToArray();
+
+			List<AttachmentInfo> Attachments = new();
+
+			if (this.Contract.Attachments is not null)
+			{
+				foreach (Attachment Attachment in this.Contract.Attachments)
+					Attachments.Add(new AttachmentInfo(this, Attachment));
+			}
+
+			this.Attachments = Attachments.ToArray();
 
 			List<ClientSignatureInfo> ClientSignatures = new();
 
@@ -435,6 +456,15 @@ namespace LegalLab.Models.Legal
 				this.parts.Value = value;
 				this.Contract.Parts = value.ToParts();
 			}
+		}
+
+		/// <summary>
+		/// Attachments defined the contract.
+		/// </summary>
+		public AttachmentInfo[] Attachments
+		{
+			get => this.attachments.Value;
+			set => this.attachments.Value = value;
 		}
 
 		/// <summary>

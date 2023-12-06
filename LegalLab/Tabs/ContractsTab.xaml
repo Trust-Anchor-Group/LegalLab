@@ -169,12 +169,38 @@
 				</StackPanel>
 
 				<Label FontSize="20" Margin="0,10,0,0">Attachments</Label>
-				<Button Width="100" HorizontalAlignment="Left" Margin="0,5,0,0" Command="{Binding UploadAttachment}">Upload</Button>
+				<Label>Following attachments have been uploaded to the contract:</Label>
+				<design:NonScrollingDataGrid ItemsSource="{Binding Attachments}" Width="Auto" HorizontalAlignment="Left" 
+												 AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
+					<DataGrid.Columns>
+						<DataGridTextColumn Binding="{Binding Id}" Header="Attachment ID"/>
+						<DataGridTextColumn Binding="{Binding FileName}" Header="Filename"/>
+						<DataGridTextColumn Binding="{Binding ContentType}" Header="Content-Type"/>
+						<DataGridTextColumn Binding="{Binding Timestamp, Converter={conv:DateTimeToString}}" Header="Timestamp"/>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<Button Command="{Binding DownloadAttachment}" IsEnabled="{Binding CanDownloadAttachment}">Download</Button>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<Button Command="{Binding RemoveAttachment}" IsEnabled="{Binding CanRemoveAttachment}">Remove</Button>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTextColumn Binding="{Binding LegalId}" Header="Legal ID"/>
+						<DataGridTextColumn Binding="{Binding Signature, Converter={conv:ToBase64}}" Header="Signature"/>
+					</DataGrid.Columns>
+				</design:NonScrollingDataGrid>
+				<Button Width="100" HorizontalAlignment="Left" Margin="0,5,0,0" Command="{Binding UploadAttachment}" IsEnabled="{Binding CanUploadAttachment}">Upload</Button>
 
 				<Label FontSize="20" Margin="0,10,0,0">Client Signatures</Label>
 				<Label>Following are client signatures available in the contract:</Label>
 				<design:NonScrollingDataGrid ItemsSource="{Binding ClientSignatures}" Width="Auto" HorizontalAlignment="Left" 
-												 AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
+											 AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
 					<DataGrid.Columns>
 						<DataGridTextColumn Binding="{Binding BareJid}" Header="Network JID"/>
 						<DataGridTextColumn Binding="{Binding LegalId}" Header="Legal ID"/>
