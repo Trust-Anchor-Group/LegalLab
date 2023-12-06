@@ -18,6 +18,7 @@ using Waher.Networking.DNS;
 using Waher.Networking.DNS.ResourceRecords;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Networking.XMPP.ServiceDiscovery;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
@@ -41,6 +42,8 @@ namespace LegalLab.Models.Network
 		private readonly PersistedProperty<string> legalComponentJid;
 		private readonly PersistedProperty<string> eDalerComponentJid;
 		private readonly PersistedProperty<string> neuroFeaturesComponentJid;
+		private readonly PersistedProperty<string> httpFileUploadComponentJid;
+		private readonly PersistedProperty<long> httpFileUploadMaxSize;
 		private readonly PersistedProperty<bool> createAccount;
 		private readonly PersistedProperty<bool> trustServerCertificate;
 		private readonly PersistedProperty<bool> allowInsecureAlgorithms;
@@ -91,6 +94,8 @@ namespace LegalLab.Models.Network
 				this.Add(this.legalComponentJid = new PersistedProperty<string>("XMPP", nameof(this.LegalComponentJid), true, string.Empty, this));
 				this.Add(this.eDalerComponentJid = new PersistedProperty<string>("XMPP", nameof(this.EDalerComponentJid), true, string.Empty, this));
 				this.Add(this.neuroFeaturesComponentJid = new PersistedProperty<string>("XMPP", nameof(this.NeuroFeaturesComponentJid), true, string.Empty, this));
+				this.Add(this.httpFileUploadComponentJid = new PersistedProperty<string>("XMPP", nameof(this.HttpFileUploadComponentJid), true, string.Empty, this));
+				this.Add(this.httpFileUploadMaxSize = new PersistedProperty<long>("XMPP", nameof(this.HttpFileUploadMaxSize), true, 0L, this));
 
 				this.password2 = new Property<string>(nameof(this.Password2), string.Empty, this);
 				this.state = new Property<XmppState>(nameof(this.State), XmppState.Offline, this);
@@ -180,7 +185,8 @@ namespace LegalLab.Models.Network
 			this.LegalComponentJid = await RuntimeSettings.GetAsync(Prefix + "LegalComponentJid", string.Empty);
 			this.EDalerComponentJid = await RuntimeSettings.GetAsync(Prefix + "EDalerComponentJid", string.Empty);
 			this.NeuroFeaturesComponentJid = await RuntimeSettings.GetAsync(Prefix + "NeuroFeaturesComponentJid", string.Empty);
-			this.EDalerComponentJid = await RuntimeSettings.GetAsync(Prefix + "EDalerComponentJid", string.Empty);
+			this.HttpFileUploadComponentJid = await RuntimeSettings.GetAsync(Prefix + "HttpFileUploadComponentJid", string.Empty);
+			this.HttpFileUploadMaxSize = await RuntimeSettings.GetAsync(Prefix + "HttpFileUploadMaxSize", 0L);
 			this.TrustServerCertificate = await RuntimeSettings.GetAsync(Prefix + "TrustServerCertificate", false);
 			this.AllowInsecureAlgorithms = await RuntimeSettings.GetAsync(Prefix + "AllowInsecureAlgorithms", false);
 			this.StorePasswordInsteadOfDigest = await RuntimeSettings.GetAsync(Prefix + "StorePasswordInsteadOfDigest", false);
@@ -331,6 +337,24 @@ namespace LegalLab.Models.Network
 		{
 			get => this.neuroFeaturesComponentJid.Value;
 			set => this.neuroFeaturesComponentJid.Value = value;
+		}
+
+		/// <summary>
+		/// HTTP File Upload Component JID
+		/// </summary>
+		public string HttpFileUploadComponentJid
+		{
+			get => this.httpFileUploadComponentJid.Value;
+			set => this.httpFileUploadComponentJid.Value = value;
+		}
+
+		/// <summary>
+		/// HTTP File Upload Maximum size
+		/// </summary>
+		public long HttpFileUploadMaxSize
+		{
+			get => this.httpFileUploadMaxSize.Value;
+			set => this.httpFileUploadMaxSize.Value = value;
 		}
 
 		/// <summary>
@@ -629,11 +653,13 @@ namespace LegalLab.Models.Network
 
 						if (this.legalModel is null || this.legalModel.Contracts.ComponentAddress != this.LegalComponentJid || 
 							this.walletModel is null || this.walletModel.EDaler.ComponentAddress != this.EDalerComponentJid ||
-							this.tokensModel is null || this.tokensModel.NeuroFeaturesClient.ComponentAddress != this.NeuroFeaturesComponentJid)
+							this.tokensModel is null || this.tokensModel.NeuroFeaturesClient.ComponentAddress != this.NeuroFeaturesComponentJid ||
+							this.legalModel.FileUpload.FileUploadJid != this.HttpFileUploadComponentJid)
 						{
 							if (string.IsNullOrEmpty(this.LegalComponentJid) ||
 								string.IsNullOrEmpty(this.EDalerComponentJid) ||
-								string.IsNullOrEmpty(this.NeuroFeaturesComponentJid))
+								string.IsNullOrEmpty(this.NeuroFeaturesComponentJid) ||
+								string.IsNullOrEmpty(this.HttpFileUploadComponentJid))
 							{
 								ServiceItemsDiscoveryEventArgs e = await this.client.ServiceItemsDiscoveryAsync(string.Empty);
 								if (e.Ok)
@@ -653,6 +679,12 @@ namespace LegalLab.Models.Network
 
 										if (e2.HasFeature(NeuroFeaturesClient.NamespaceNeuroFeatures))
 											this.NeuroFeaturesComponentJid = Component.JID;
+
+										if (e2.HasFeature(HttpFileUploadClient.Namespace))
+										{
+											this.HttpFileUploadComponentJid = Component.JID;
+											this.HttpFileUploadMaxSize = HttpFileUploadClient.FindMaxFileSize(this.client, e2) ?? 0;
+										}
 									}
 								}
 							}
@@ -664,7 +696,9 @@ namespace LegalLab.Models.Network
 									this.legalModel?.Dispose();
 									this.legalModel = null;
 
-									this.legalModel = new LegalModel(this.client, this.LegalComponentJid);
+									this.legalModel = new LegalModel(this.client, this.LegalComponentJid, this.HttpFileUploadComponentJid,
+										this.HttpFileUploadMaxSize <= 0 ? null : this.HttpFileUploadMaxSize);
+
 									await this.legalModel.Load();
 									await this.legalModel.Start();
 								}
@@ -843,7 +877,8 @@ namespace LegalLab.Models.Network
 			await RuntimeSettings.SetAsync(Prefix + "LegalComponentJid", this.LegalComponentJid);
 			await RuntimeSettings.SetAsync(Prefix + "EDalerComponentJid", this.EDalerComponentJid);
 			await RuntimeSettings.SetAsync(Prefix + "NeuroFeaturesComponentJid", this.NeuroFeaturesComponentJid);
-			await RuntimeSettings.SetAsync(Prefix + "EDalerComponentJid", this.EDalerComponentJid);
+			await RuntimeSettings.SetAsync(Prefix + "HttpFileUploadComponentJid", this.HttpFileUploadComponentJid);
+			await RuntimeSettings.SetAsync(Prefix + "HttpFileUploadMaxSize", this.HttpFileUploadMaxSize);
 			await RuntimeSettings.SetAsync(Prefix + "TrustServerCertificate", this.TrustServerCertificate);
 			await RuntimeSettings.SetAsync(Prefix + "AllowInsecureAlgorithms", this.AllowInsecureAlgorithms);
 			await RuntimeSettings.SetAsync(Prefix + "StorePasswordInsteadOfDigest", this.StorePasswordInsteadOfDigest);

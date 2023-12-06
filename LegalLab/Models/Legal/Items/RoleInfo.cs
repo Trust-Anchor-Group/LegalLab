@@ -191,7 +191,7 @@ namespace LegalLab.Models.Legal.Items
 		/// <summary>
 		/// If the sign as role command can be exeucted.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>If command can be executed.</returns>
 		public bool CanExecuteSignAsRole()
 		{
 			return this.contractModel?.CanBeSigned ?? false;
@@ -221,7 +221,7 @@ namespace LegalLab.Models.Legal.Items
 		/// <summary>
 		/// If the propose for role command can be exeucted.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>If command can be executed.</returns>
 		public bool CanExecuteProposeForRole()
 		{
 			return this.contractModel?.CanBeSigned ?? false;
@@ -244,7 +244,7 @@ namespace LegalLab.Models.Legal.Items
 		/// <summary>
 		/// If the remove role command can be exeucted.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>If command can be executed.</returns>
 		public bool CanExecuteRemoveRole()
 		{
 			return this.designModel is not null;

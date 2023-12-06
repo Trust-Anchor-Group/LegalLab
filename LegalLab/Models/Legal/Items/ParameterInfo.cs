@@ -240,7 +240,7 @@ namespace LegalLab.Models.Legal.Items
 		/// <summary>
 		/// If the remove parameter command can be exeucted.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>If command can be executed.</returns>
 		public bool CanExecuteRemoveParameter()
 		{
 			return this.designModel is not null;

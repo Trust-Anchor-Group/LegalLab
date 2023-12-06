@@ -3,11 +3,12 @@ using LegalLab.Extensions;
 using LegalLab.Models.Design;
 using LegalLab.Models.Design.AvalonExtensions;
 using LegalLab.Models.Legal.Items;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,8 +21,8 @@ using Waher.Events;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
+using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Persistence;
-using Waher.Runtime.Settings;
 
 namespace LegalLab.Models.Legal
 {
@@ -37,6 +38,7 @@ namespace LegalLab.Models.Legal
 		private readonly Property<ServerSignatureInfo[]> serverSignatures;
 		private readonly Property<bool> hasId;
 		private readonly Property<bool> canBeSigned;
+		private readonly Property<bool> canUploadAttachment;
 		private readonly Property<string> uri;
 		private readonly Property<string> qrCodeUri;
 		private readonly Property<string> machineReadable;
@@ -45,6 +47,7 @@ namespace LegalLab.Models.Legal
 
 		private readonly Command addPart;
 		private readonly Command createContract;
+		private readonly Command uploadAttachment;
 
 		private readonly NonScrollingTextEditor xmlEditor = null;
 		private readonly ContractsClient contracts;
@@ -68,6 +71,7 @@ namespace LegalLab.Models.Legal
 			this.serverSignatures = new Property<ServerSignatureInfo[]>(nameof(this.ServerSignatures), Array.Empty<ServerSignatureInfo>(), this);
 			this.hasId = new Property<bool>(nameof(this.HasId), false, this);
 			this.canBeSigned = new Property<bool>(nameof(this.CanBeSigned), false, this);
+			this.canUploadAttachment = new Property<bool>(nameof(this.CanUploadAttachment), false, this);
 			this.uri = new Property<string>(nameof(this.Uri), string.Empty, this);
 			this.qrCodeUri = new Property<string>(nameof(this.QrCodeUri), string.Empty, this);
 			this.machineReadable = new Property<string>(nameof(this.MachineReadable), string.Empty, this);
@@ -78,6 +82,7 @@ namespace LegalLab.Models.Legal
 
 			this.addPart = new Command(this.ExecuteAddPart);
 			this.createContract = new Command(this.CanExecuteCreateContract, this.ExecuteCreateContract);
+			this.uploadAttachment = new Command(this.CanExecuteUploadAttachment, this.ExecuteUploadAttachment);
 
 			this.xmlEditor = XmlEditor;
 			this.legalModel = DesignModel.Network.Legal;
@@ -117,6 +122,11 @@ namespace LegalLab.Models.Legal
 			this.ContractId = Contract.ContractId;
 			this.HasId = !string.IsNullOrEmpty(Contract.ContractId);
 			this.CanBeSigned = Contract.State == ContractState.Approved || Contract.State == ContractState.BeingSigned;
+			
+			this.CanUploadAttachment = Contract.State == ContractState.Approved && 
+				this.legalModel.FileUpload is not null &&
+				this.legalModel.FileUpload.MaxFileSize.HasValue;
+			
 			this.Uri = ContractsClient.ContractIdUriString(Contract.ContractId);
 			this.QrCodeUri = "https://" + Domain + "/QR/" + this.Uri;
 
@@ -284,6 +294,15 @@ namespace LegalLab.Models.Legal
 		}
 
 		/// <summary>
+		/// If contract can receive new attachments.
+		/// </summary>
+		public bool CanUploadAttachment
+		{
+			get => this.canUploadAttachment.Value;
+			set => this.canUploadAttachment.Value = value;
+		}
+
+		/// <summary>
 		/// URI to contract
 		/// </summary>
 		public string Uri
@@ -338,39 +357,6 @@ namespace LegalLab.Models.Legal
 		/// The different parameter options available to choose from when creating a contract.
 		/// </summary>
 		public ObservableCollection<ContractOption> ParameterOptions { get; }
-
-		/// <summary>
-		/// Proposes the template.
-		/// </summary>
-		public async void ExecuteProposeTemplate()
-		{
-			try
-			{
-				if (MessageBox.Show("Are you sure you want to propose the loaded template to " + this.contracts.ComponentAddress + "?", "Confirm",
-					MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
-				{
-					return;
-				}
-
-				MainWindow.MouseHourglass();
-
-				Contract Contract = await this.contracts.CreateContractAsync(this.Contract.ForMachines, this.Contract.ForHumans, this.Contract.Roles,
-					this.Contract.Parts, this.Contract.Parameters, this.Contract.Visibility, this.Contract.PartsMode, this.Contract.Duration,
-					this.Contract.ArchiveRequired, this.Contract.ArchiveOptional, this.Contract.SignAfter, this.Contract.SignBefore,
-					this.Contract.CanActAsTemplate);
-
-				await this.SetContract(Contract);
-
-				await RuntimeSettings.SetAsync("Contract.Template." + this.TemplateName, Contract.ContractId);
-				this.legalModel.ContractTemplateAdded(this.TemplateName, Contract);
-
-				MainWindow.SuccessBox("Template successfully proposed.");
-			}
-			catch (Exception ex)
-			{
-				MainWindow.ErrorBox(ex.Message);
-			}
-		}
 
 		protected override Task ParametersChanged()
 		{
@@ -557,7 +543,7 @@ namespace LegalLab.Models.Legal
 		/// <summary>
 		/// If the create contract command can be exeucted.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>If command can be executed.</returns>
 		public bool CanExecuteCreateContract()
 		{
 			return this.ParametersOk;
@@ -1010,5 +996,69 @@ namespace LegalLab.Models.Legal
 
 			return CaseInsensitiveString.Empty;
 		}
+
+		/// <summary>
+		/// Command for uploading an attachment to a contract.
+		/// </summary>
+		public ICommand UploadAttachment => this.uploadAttachment;
+
+		/// <summary>
+		/// If the upload attachment command can be executed.
+		/// </summary>
+		/// <returns>If command can be executed.</returns>
+		public bool CanExecuteUploadAttachment()
+		{
+			return this.canUploadAttachment.Value;
+		}
+
+		/// <summary>
+		/// Uploads an attachment to a contract.
+		/// </summary>
+		public async Task ExecuteUploadAttachment()
+		{
+			try
+			{
+				OpenFileDialog Dialog = new()
+				{
+					CheckFileExists = true,
+					CheckPathExists = true,
+					Filter = "All Files (*.*)|*.*",
+					Multiselect = false,
+					ShowReadOnly = true,
+					Title = "Upload Attachment"
+				};
+
+				bool? Result = Dialog.ShowDialog(MainWindow.currentInstance);
+				if (!Result.HasValue || !Result.Value)
+					return;
+
+				if (!InternetContent.TryGetContentType(Path.GetExtension(Dialog.FileName), out string ContentType))
+					throw new Exception("File type not recognized.");
+
+				MainWindow.MouseHourglass();
+
+				string FileName = Path.GetFileName(Dialog.FileName);
+				byte[] Data = await Resources.ReadAllBytesAsync(Dialog.FileName);
+				long Size = Data.Length;
+				byte[] Signature = await this.contracts.SignAsync(Data, SignWith.CurrentKeys);
+
+				HttpFileUploadEventArgs Slot = await this.legalModel.FileUpload.RequestUploadSlotAsync(FileName, ContentType, Size, true);
+				if (!Slot.Ok)
+					throw Slot.StanzaError;
+
+				await Slot.PUT(Data, ContentType, 30000);
+
+				Contract Contract = await this.contracts.AddContractAttachmentAsync(this.Contract.ContractId, Slot.GetUrl, Signature);
+
+				await this.SetContract(Contract);
+
+				MainWindow.SuccessBox("File successfully uploaded.");
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
+		}
+
 	}
 }

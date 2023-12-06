@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Input;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Persistence;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
@@ -54,6 +55,7 @@ namespace LegalLab.Models.Legal
 		private readonly Command apply;
 
 		private readonly ContractsClient contracts;
+		private readonly HttpFileUploadClient httpFileUploadClient;
 		private ContractModel currentContract;
 
 		/// <summary>
@@ -61,7 +63,9 @@ namespace LegalLab.Models.Legal
 		/// </summary>
 		/// <param name="Client">XMPP Client</param>
 		/// <param name="ComponentJid">Component JID</param>
-		public LegalModel(XmppClient Client, string ComponentJid)
+		/// <param name="FileUploadJid">HTTP File Upload JID.</param>
+		/// <param name="MaxFileSize">Maximum file size for file uploads.</param>
+		public LegalModel(XmppClient Client, string ComponentJid, string FileUploadJid, long? MaxFileSize)
 			: base()
 		{
 			this.Add(this.firstName = new PersistedProperty<string>("Legal", nameof(this.FirstName), true, string.Empty, this));
@@ -98,6 +102,8 @@ namespace LegalLab.Models.Legal
 			this.contracts = new ContractsClient(Client, ComponentJid);
 			this.contracts.IdentityUpdated += this.Contracts_IdentityUpdated;
 			this.contracts.PetitionForIdentityReceived += this.Contracts_PetitionForIdentityReceived;
+
+			this.httpFileUploadClient = new HttpFileUploadClient(Client, FileUploadJid, MaxFileSize);
 		}
 
 		/// <inheritdoc/>
@@ -110,6 +116,11 @@ namespace LegalLab.Models.Legal
 		/// Contracts client.
 		/// </summary>
 		public ContractsClient Contracts => this.contracts;
+
+		/// <summary>
+		/// HTTP File Upload client.
+		/// </summary>
+		public HttpFileUploadClient FileUpload => this.httpFileUploadClient;
 
 		/// <summary>
 		/// Current contract model.

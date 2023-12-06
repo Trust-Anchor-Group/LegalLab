@@ -90,7 +90,7 @@ namespace LegalLab.Models.Legal.Items
 		/// <summary>
 		/// If the remove part command can be exeucted.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>If command can be executed.</returns>
 		public bool CanExecuteRemovePart()
 		{
 			return this.partsModel is not null;

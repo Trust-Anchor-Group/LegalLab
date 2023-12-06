@@ -168,6 +168,9 @@
 					<StackPanel Name="ContractToCreateHumanReadable" Margin="10"/>
 				</StackPanel>
 
+				<Label FontSize="20" Margin="0,10,0,0">Attachments</Label>
+				<Button Width="100" HorizontalAlignment="Left" Margin="0,5,0,0" Command="{Binding UploadAttachment}">Upload</Button>
+
 				<Label FontSize="20" Margin="0,10,0,0">Client Signatures</Label>
 				<Label>Following are client signatures available in the contract:</Label>
 				<design:NonScrollingDataGrid ItemsSource="{Binding ClientSignatures}" Width="Auto" HorizontalAlignment="Left" 
