@@ -340,7 +340,7 @@ namespace LegalLab.Models.Legal
 		public ObservableCollection<ContractOption> ParameterOptions { get; }
 
 		/// <summary>
-		/// Proposes the temaplte.
+		/// Proposes the template.
 		/// </summary>
 		public async void ExecuteProposeTemplate()
 		{
