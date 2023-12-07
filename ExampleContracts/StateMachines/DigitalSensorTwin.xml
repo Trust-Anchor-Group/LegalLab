@@ -384,6 +384,66 @@ OK
 
 There's currently no error reported.
 [[}}
+
+{{Attachments:=LoadAttachments([
+	"text/markdown", 
+	"text/plain", 
+	"application/vnd.openxmlformats-officedocument.wordprocessingml.document", 
+	"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+	"image/*"]);
+
+if count(Attachments)>0 then
+(
+	]]Attached Information
+----------------------------
+
+[[;
+
+	foreach Attachment in Attachments do
+	(
+		if Attachment is Waher.Content.Markdown.MarkdownDocument then
+		(
+			]]
+
+((Attachment.GenerateMarkdown() ))
+
+[[
+		)
+		else if Attachment is System.String then
+		(
+			]]
+
+((MarkdownEncode(Attachment) ))
+
+[[
+		)
+		else if exists(DocumentFormat.OpenXml.Packaging.WordprocessingDocument) and Attachment is DocumentFormat.OpenXml.Packaging.WordprocessingDocument then
+		(
+			]]
+
+((WordToMarkdown(Attachment) ))
+
+[[
+		)
+		else if exists(DocumentFormat.OpenXml.Packaging.SpreadsheetDocument) and Attachment is DocumentFormat.OpenXml.Packaging.SpreadsheetDocument then
+		(
+			]]
+
+((eval(ExcelToScript(Attachment) ) ))
+
+[[
+		)
+		else
+		(
+			]]
+
+((Attachment))
+
+[[
+		)
+	)
+)
+}}
 ]]>
 				</ReportPresent>
 				<ReportHistory>
@@ -466,7 +526,7 @@ foreach Category in ByCategory.Keys do
 			G.Title:=Category;
 
 			]]```graph
-((G.ToXml();))
+((G.ToXml() ))
 [[;
 			]]```
 
@@ -482,7 +542,7 @@ foreach Category in ByCategory.Keys do
 				(
 					Info:=NameByIndex[Index];
 					]]
-  <SolidBackground id="Color((Index))" color="#((HexEncode(Info.Color.Red,1);))((HexEncode(Info.Color.Green,1);))((HexEncode(Info.Color.Blue,1);))((HexEncode(Info.Color.Alpha,1);))"/>[[
+  <SolidBackground id="Color((Index))" color="#((HexEncode(Info.Color.Red,1) ))((HexEncode(Info.Color.Green,1) ))((HexEncode(Info.Color.Blue,1) ))((HexEncode(Info.Color.Alpha,1) ))"/>[[
 				);
 
 				]]
