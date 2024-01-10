@@ -43,7 +43,7 @@ namespace LegalLab.Converters
 				}
 				else
 				{
-					if (DateTime.TryParse(s.Substring(0, i).Trim(), out DateTime TP) &&
+					if (DateTime.TryParse(s[..i].Trim(), out DateTime TP) &&
 						TimeSpan.TryParse(s[(i + 1)..].Trim(), out TimeSpan TS))
 						return new DateTime((TP + TS).Ticks, Kind);
 					else if (DateTime.TryParse(s, out TP))
