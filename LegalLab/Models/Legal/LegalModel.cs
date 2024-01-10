@@ -32,7 +32,10 @@ namespace LegalLab.Models.Legal
 		private readonly PersistedProperty<string> city;
 		private readonly PersistedProperty<string> region;
 		private readonly PersistedProperty<string> country;
+		private readonly PersistedProperty<string> nationality;
+		private readonly PersistedProperty<string> gender;
 		private readonly PersistedProperty<string> eMail;
+		private readonly PersistedProperty<DateTime?> birthDate;
 
 		private readonly PersistedProperty<string> orgName;
 		private readonly PersistedProperty<string> orgDepartment;
@@ -79,7 +82,10 @@ namespace LegalLab.Models.Legal
 			this.Add(this.city = new PersistedProperty<string>("Legal", nameof(this.City), true, string.Empty, this));
 			this.Add(this.region = new PersistedProperty<string>("Legal", nameof(this.Region), true, string.Empty, this));
 			this.Add(this.country = new PersistedProperty<string>("Legal", nameof(this.Country), true, string.Empty, this));
+			this.Add(this.nationality = new PersistedProperty<string>("Legal", nameof(this.Nationality), true, string.Empty, this));
+			this.Add(this.gender = new PersistedProperty<string>("Legal", nameof(this.Gender), true, string.Empty, this));
 			this.Add(this.eMail = new PersistedProperty<string>("Legal", nameof(this.EMail), true, string.Empty, this));
+			this.Add(this.birthDate = new PersistedProperty<DateTime?>("Legal", nameof(this.BirthDate), true, null, this));
 
 			this.Add(this.orgName = new PersistedProperty<string>("Legal", nameof(this.OrgName), true, string.Empty, this));
 			this.Add(this.orgDepartment = new PersistedProperty<string>("Legal", nameof(this.OrgDepartment), true, string.Empty, this));
@@ -269,9 +275,38 @@ namespace LegalLab.Models.Legal
 		/// <summary>
 		/// ISO 3166-1 country codes
 		/// </summary>
-		public static Iso_3166_1.Record[] CountryCodes
+		public static Iso_3166_1.Record[] CountryCodes => Iso_3166_1.Data;
+
+		/// <summary>
+		/// ISO 5218 gender codes
+		/// </summary>
+		public static Iso_5218.Record[] GenderCodes => Iso_5218.Data;
+
+		/// <summary>
+		/// Nationality
+		/// </summary>
+		public string Nationality
 		{
-			get => Iso_3166_1.Data;
+			get => this.nationality.Value;
+			set => this.nationality.Value = value;
+		}
+
+		/// <summary>
+		/// Gender
+		/// </summary>
+		public string Gender
+		{
+			get => this.gender.Value;
+			set => this.gender.Value = value;
+		}
+
+		/// <summary>
+		/// Birth Date
+		/// </summary>
+		public DateTime? BirthDate
+		{
+			get => this.birthDate.Value;
+			set => this.birthDate.Value = value;
 		}
 
 		/// <summary>
@@ -453,7 +488,16 @@ namespace LegalLab.Models.Legal
 				AddProperty(Properties, "CITY", this.City);
 				AddProperty(Properties, "REGION", this.Region);
 				AddProperty(Properties, "COUNTRY", this.Country);
+				AddProperty(Properties, "NATIONALITY", this.Nationality);
+				AddProperty(Properties, "GENDER", this.Gender);
 				AddProperty(Properties, "EMAIL", this.EMail);
+
+				if (this.BirthDate.HasValue)
+				{
+					AddProperty(Properties, "BDAY", this.BirthDate.Value.Day.ToString());
+					AddProperty(Properties, "BMONTH", this.BirthDate.Value.Month.ToString());
+					AddProperty(Properties, "BYEAR", this.BirthDate.Value.Year.ToString());
+				}
 
 				AddProperty(Properties, "ORGNAME", this.OrgName);
 				AddProperty(Properties, "ORGDEPT", this.OrgDepartment);
@@ -516,7 +560,7 @@ namespace LegalLab.Models.Legal
 			Append(Question, e.RequestorIdentity["CITY"], " ", string.Empty);
 			Append(Question, e.RequestorIdentity["REGION"], " ", string.Empty);
 
-			string s = e.RequestorIdentity["ADDR"];
+			string s = e.RequestorIdentity["COUNTRY"];
 			if (!string.IsNullOrEmpty(s))
 			{
 				if (Iso_3166_1.CodeToCountry(s, out string Country))

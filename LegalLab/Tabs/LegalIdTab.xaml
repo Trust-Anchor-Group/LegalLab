@@ -34,6 +34,12 @@
                 <TextBox Text="{Binding Region}"/>
                 <Label Padding="0,10,0,0">Country:</Label>
                 <ComboBox ItemsSource="{Binding CountryCodes}" DisplayMemberPath="Country" SelectedValuePath="Code" SelectedValue="{Binding Country}"/>
+				<Label Padding="0,10,0,0">Nationality:</Label>
+				<ComboBox ItemsSource="{Binding CountryCodes}" DisplayMemberPath="Country" SelectedValuePath="Code" SelectedValue="{Binding Nationality}"/>
+				<Label Padding="0,10,0,0">Gender:</Label>
+				<ComboBox ItemsSource="{Binding GenderCodes}" DisplayMemberPath="Gender" SelectedValuePath="LegalId" SelectedValue="{Binding Gender}"/>
+				<Label Padding="0,10,0,0">Birth Date:</Label>
+				<TextBox Text="{Binding BirthDate, Converter={conv:DateToString}}"/>
 				<Label Padding="0,10,0,0">E-mail address:</Label>
 				<TextBox Text="{Binding EMail}"/>
 				<Label FontWeight="Bold" FontSize="16" HorizontalContentAlignment="Center">

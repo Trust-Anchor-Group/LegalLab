@@ -456,6 +456,11 @@
 										<ComboBoxItem>REGION</ComboBoxItem>
 										<ComboBoxItem>COUNTRY</ComboBoxItem>
 										<ComboBoxItem>FULLADDR</ComboBoxItem>
+										<ComboBoxItem>NATIONALITY</ComboBoxItem>
+										<ComboBoxItem>GENDER</ComboBoxItem>
+										<ComboBoxItem>BDAY</ComboBoxItem>
+										<ComboBoxItem>BMONTH</ComboBoxItem>
+										<ComboBoxItem>BYEAR</ComboBoxItem>
 										<ComboBoxItem>PHONE</ComboBoxItem>
 										<ComboBoxItem>JID</ComboBoxItem>
 										<ComboBoxItem>AGENT</ComboBoxItem>
