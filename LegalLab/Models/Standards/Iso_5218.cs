@@ -46,9 +46,9 @@ namespace LegalLab.Models.Standards
 		/// <summary>
 		/// Tries to get the gender label corresponding to an ISO 5218 gender code.
 		/// </summary>
-		/// <param name="Code">Country code</param>
-		/// <param name="Country">Country, if found.</param>
-		/// <returns>If a corresponding country code was found.</returns>
+		/// <param name="Code">Gender code</param>
+		/// <param name="Gender">Gender, if found.</param>
+		/// <returns>If a corresponding gender code was found.</returns>
 		public static bool CodeToGender(int Code, out string Gender)
 		{
 			if (genderByCode is null)
