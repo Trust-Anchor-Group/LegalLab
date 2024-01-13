@@ -8,7 +8,7 @@ namespace LegalLab.Models.Standards
 	public static class Iso_5218
 	{
 		/// <summary>
-		/// Contains one record of the ISO 3166-1 data set.
+		/// Contains one record of the ISO 5218 data set.
 		/// </summary>
 		public class Record
 		{
@@ -44,7 +44,7 @@ namespace LegalLab.Models.Standards
 		private static Dictionary<int, string> genderByCode = null;
 
 		/// <summary>
-		/// Tries to get the country name corresponding to an ISO 3166-1 country code.
+		/// Tries to get the gender label corresponding to an ISO 5218 gender code.
 		/// </summary>
 		/// <param name="Code">Country code</param>
 		/// <param name="Country">Country, if found.</param>
