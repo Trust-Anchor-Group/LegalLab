@@ -62,26 +62,29 @@ namespace LegalLab.Models.Design
 				object ResponseObj = await InternetContent.PostAsync(openAiChatCompletions,
 					new Dictionary<string, object>()
 					{
-					{ "model", "gpt-3.5-turbo" },
-					{ "messages", new Dictionary<string,object>[]
 						{
-							new()
+							"model", "gpt-3.5-turbo" 
+						},
+						{ 
+							"messages", new Dictionary<string,object>[]
 							{
-								{ "role", "system" },
-								{ "content", "You help to translate Markdown text from language code " +
-									From + " to language code " + To + ". Input is in raw Markdown. " +
-									"Output must be in raw Markdown, keeping the Markdown formatting of the input. "+
-									"No descriptive text or additional formatting must be included. No examples added. "+
-									"Result must only include the translation. If the message is a question, "+
-									"don't answer the question, only translate the question." }
-							},
-							new()
-							{
-								{ "role", "user" },
-								{ "content", Text }
+								new()
+								{
+									{ "role", "system" },
+									{ "content", "You help to translate Markdown text from language code " +
+										From + " to language code " + To + ". Input is in raw Markdown. " +
+										"Output must be in raw Markdown, keeping the Markdown formatting of the input. "+
+										"No descriptive text or additional formatting must be included. No examples added. "+
+										"Result must only include the translation. If the message is a question, "+
+										"don't answer the question, only translate the question." }
+								},
+								new()
+								{
+									{ "role", "user" },
+									{ "content", Text }
+								}
 							}
 						}
-					}
 					},
 					new KeyValuePair<string, string>[]
 					{
