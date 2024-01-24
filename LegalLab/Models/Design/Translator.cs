@@ -65,7 +65,7 @@ namespace LegalLab.Models.Design
 					{ "model", "gpt-3.5-turbo" },
 					{ "messages", new Dictionary<string,object>[]
 						{
-							new Dictionary<string, object>()
+							new()
 							{
 								{ "role", "system" },
 								{ "content", "You help to translate Markdown text from language code " +
@@ -75,7 +75,7 @@ namespace LegalLab.Models.Design
 									"Result must only include the translation. If the message is a question, "+
 									"don't answer the question, only translate the question." }
 							},
-							new Dictionary<string, object>()
+							new()
 							{
 								{ "role", "user" },
 								{ "content", Text }
@@ -85,8 +85,8 @@ namespace LegalLab.Models.Design
 					},
 					new KeyValuePair<string, string>[]
 					{
-						new KeyValuePair<string, string>("Accept", "application/json"),
-						new KeyValuePair<string, string>("Authorization", "Bearer " + Key),
+						new("Accept", "application/json"),
+						new("Authorization", "Bearer " + Key),
 					});
 
 				if (ResponseObj is Dictionary<string, object> Response &&
