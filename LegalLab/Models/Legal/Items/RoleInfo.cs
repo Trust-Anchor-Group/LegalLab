@@ -230,10 +230,10 @@ namespace LegalLab.Models.Legal.Items
 		/// <summary>
 		/// Proposes the contract for a given role.
 		/// </summary>
-		public Task ExecuteProposeForRole()
+		public async Task ExecuteProposeForRole()
 		{
-			this.contractModel?.ProposeForRole(this.Name);
-			return Task.CompletedTask;
+			if (this.contractModel is not null)
+				await this.contractModel.ProposeForRole(this.Name);
 		}
 
 		/// <summary>

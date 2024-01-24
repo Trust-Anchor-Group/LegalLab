@@ -135,8 +135,8 @@ namespace LegalLab.Models.Legal
 			this.ContractId = Contract.ContractId;
 			this.HasId = !string.IsNullOrEmpty(Contract.ContractId);
 			this.CanBeSigned = Contract.State == ContractState.Approved || Contract.State == ContractState.BeingSigned;
-			
-			this.CanUploadAttachment = Contract.State == ContractState.Approved && 
+
+			this.CanUploadAttachment = Contract.State == ContractState.Approved &&
 				this.legalModel.FileUpload is not null &&
 				this.legalModel.FileUpload.MaxFileSize.HasValue;
 
@@ -218,7 +218,7 @@ namespace LegalLab.Models.Legal
 			if (this.Contract.ServerSignature is null)
 				this.ServerSignatures = Array.Empty<ServerSignatureInfo>();
 			else
-				this.ServerSignatures = new ServerSignatureInfo[] { new ServerSignatureInfo(this.Contract.ServerSignature) };
+				this.ServerSignatures = new ServerSignatureInfo[] { new(this.Contract.ServerSignature) };
 
 			await this.PopulateHumanReadableText();
 		}
@@ -656,7 +656,7 @@ namespace LegalLab.Models.Legal
 		/// Recommends the contract to someone else.
 		/// </summary>
 		/// <param name="Role">Role to propose the contract as.</param>
-		public void ProposeForRole(string Role)
+		public async Task ProposeForRole(string Role)
 		{
 			try
 			{
@@ -674,6 +674,7 @@ namespace LegalLab.Models.Legal
 						MainWindow.ErrorBox("Not a Bare JID.");
 				}
 
+				await this.contracts.AuthorizeAccessToContractAsync(this.Contract.ContractId, BareJid, true);
 				this.contracts.SendContractProposal(this.Contract.ContractId, Role, BareJid);
 
 				MainWindow.SuccessBox("Proposal successfully sent.");
