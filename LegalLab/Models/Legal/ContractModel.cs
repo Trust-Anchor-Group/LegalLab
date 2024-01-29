@@ -894,11 +894,15 @@ namespace LegalLab.Models.Legal
 
 									if (Entry is not null)
 										Entry.Background = null;
+									
+									Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());
 								}
-								catch (Exception)
+								catch (Exception ex)
 								{
 									if (Entry is not null)
 										Entry.Background = Brushes.Salmon;
+
+									Log.Error("Unable to set parameter " + Info.Parameter.Name + " to " + P.Value?.ToString() + ": " + ex.Message);
 								}
 							}
 							else if (Info.Parameter is BooleanParameter BP)
@@ -916,16 +920,22 @@ namespace LegalLab.Models.Legal
 										if (CheckBox is not null)
 											CheckBox.Background = Brushes.Salmon;
 
+										Log.Error("Unable to set parameter " + Info.Parameter.Name + " to " + P.Value?.ToString());
+
 										continue;
 									}
 
 									if (CheckBox is not null)
 										CheckBox.Background = null;
+
+									Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());
 								}
-								catch (Exception)
+								catch (Exception ex)
 								{
 									if (CheckBox is not null)
 										CheckBox.Background = Brushes.Salmon;
+
+									Log.Error("Unable to set parameter " + Info.Parameter.Name + " to " + P.Value?.ToString() + ": " + ex.Message);
 								}
 							}
 							else if (Info.Parameter is DateTimeParameter DTP)
@@ -937,11 +947,15 @@ namespace LegalLab.Models.Legal
 
 									if (Entry is not null)
 										Entry.Background = null;
+
+									Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());
 								}
 								else
 								{
 									if (Entry is not null)
 										Entry.Background = Brushes.Salmon;
+
+									Log.Error("Unable to set parameter " + Info.Parameter.Name + " to " + P.Value?.ToString());
 								}
 							}
 							else if (Info.Parameter is TimeParameter TSP)
@@ -953,11 +967,15 @@ namespace LegalLab.Models.Legal
 
 									if (Entry is not null)
 										Entry.Background = null;
+
+									Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());
 								}
 								else
 								{
 									if (Entry is not null)
 										Entry.Background = Brushes.Salmon;
+
+									Log.Error("Unable to set parameter " + Info.Parameter.Name + " to " + P.Value?.ToString());
 								}
 							}
 							else if (Info.Parameter is DurationParameter DP)
@@ -969,13 +987,15 @@ namespace LegalLab.Models.Legal
 
 									if (Entry is not null)
 										Entry.Background = null;
+
+									Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());
 								}
 								else
 								{
 									if (Entry is not null)
 										Entry.Background = Brushes.Salmon;
 
-									return;
+									Log.Error("Unable to set parameter " + Info.Parameter.Name + " to " + P.Value?.ToString());
 								}
 							}
 							else if (Info.Parameter is ContractReferenceParameter CRP)
@@ -989,6 +1009,8 @@ namespace LegalLab.Models.Legal
 									Entry.Text = s;
 									Entry.Background = null;
 								}
+
+								Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());
 							}
 						}
 					}

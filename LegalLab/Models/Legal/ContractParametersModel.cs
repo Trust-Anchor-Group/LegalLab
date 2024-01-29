@@ -430,12 +430,17 @@ namespace LegalLab.Models.Legal
 						ParameterInfo.Value = TextBox.Text;
 
 					TextBox.Background = null;
+
+					Log.Informational("Parameter " + ParameterInfo.Parameter.Name + " set to " + TextBox.Text.ToString());
+
 					await this.ValidateParameters();
 				}
-				catch (Exception)
+				catch (Exception ex)
 				{
 					TextBox.Background = Brushes.Salmon;
 					this.ParametersOk = false;
+
+					Log.Error("Unable to set parameter " + ParameterInfo.Parameter.Name + " to " + TextBox.Text.ToString() + ": " + ex.Message);
 				}
 
 				await this.RaiseParametersChanged();
@@ -463,10 +468,14 @@ namespace LegalLab.Models.Legal
 			foreach (ParameterInfo P in this.parametersByName.Values)
 			{
 				if (await P.ValidateParameter(Variables))
+				{
 					P.Control.Background = null;
+					Log.Informational("Parameter " + P.Name + " is OK.");
+				}
 				else
 				{
 					P.Control.Background = Brushes.Salmon;
+					Log.Informational("Parameter " + P.Name + " contains errors.");
 					Ok = false;
 				}
 			}
