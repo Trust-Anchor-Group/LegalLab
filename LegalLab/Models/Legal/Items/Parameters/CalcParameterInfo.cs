@@ -37,17 +37,20 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		/// </summary>
 		public override async Task<bool> ValidateParameter(Variables Variables)
 		{
-			if (await this.calcParameter.IsParameterValid(Variables, this.designModel?.Network.Legal.Contracts))
+			bool Result = await this.calcParameter.IsParameterValid(Variables, this.designModel?.Network.Legal.Contracts);
+
+			this.ErrorReason = this.Parameter.ErrorReason;
+			this.ErrorText = this.Parameter.ErrorText;
+
+			if (Result)
 			{
 				object Value = this.Parameter.ObjectValue;
 
 				this.value.Value = Value;
 				this.textBox.Text = MoneyToString.ToString(Value);
-
-				return true;
 			}
-			else
-				return false;
+
+			return Result;
 		}
 
 		/// <summary>

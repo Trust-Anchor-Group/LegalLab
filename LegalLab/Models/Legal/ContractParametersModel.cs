@@ -6,6 +6,7 @@ using LegalLab.Models.Legal.Items.Parameters;
 using LegalLab.Models.Standards;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -474,8 +475,26 @@ namespace LegalLab.Models.Legal
 				}
 				else
 				{
+					StringBuilder Msg = new StringBuilder();
+
+					Msg.Append("Parameter ");
+					Msg.Append(P.Name);
+					Msg.Append(" contains errors.");
+
+					if (P.ErrorReason.HasValue)
+					{
+						Msg.Append(" Reason: ");
+						Msg.Append(P.ErrorReason.Value.ToString());
+					}
+
+					if (!string.IsNullOrEmpty(P.ErrorText))
+					{
+						Msg.Append(", Text: ");
+						Msg.Append(P.ErrorText);
+					}
+
 					P.Control.Background = Brushes.Salmon;
-					Log.Informational("Parameter " + P.Name + " contains errors.");
+					Log.Error(Msg.ToString());
 					Ok = false;
 				}
 			}

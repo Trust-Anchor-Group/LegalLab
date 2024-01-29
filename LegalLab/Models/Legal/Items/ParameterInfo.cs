@@ -23,6 +23,8 @@ namespace LegalLab.Models.Legal.Items
 		private readonly Property<string> expression;
 		private readonly Property<string> guide;
 		private readonly Property<bool> transient;
+		private readonly Property<ParameterErrorReason?> errorReason;
+		private readonly Property<string> errorText;
 
 		private readonly Command removeParameter;
 		protected readonly DesignModel designModel;
@@ -47,6 +49,8 @@ namespace LegalLab.Models.Legal.Items
 			this.expression = new Property<string>(nameof(this.Expression), Parameter.Expression, this);
 			this.guide = new Property<string>(nameof(this.Guide), Parameter.Guide, this);
 			this.transient = new Property<bool>(nameof(this.Transient), Parameter.Transient, this);
+			this.errorReason = new Property<ParameterErrorReason?>(nameof(this.ErrorReason), Parameter.ErrorReason, this);
+			this.errorText = new Property<string>(nameof(this.ErrorText), Parameter.ErrorText, this);
 
 			this.Parameter = Parameter;
 			this.Control = Control;
@@ -136,6 +140,24 @@ namespace LegalLab.Models.Legal.Items
 		}
 
 		/// <summary>
+		/// Error reason enumeration.
+		/// </summary>
+		public ParameterErrorReason? ErrorReason
+		{
+			get => this.errorReason.Value;
+			set => this.errorReason.Value = value;
+		}
+
+		/// <summary>
+		/// Error text specification, in case <see cref="ErrorReason"/> dictates so.
+		/// </summary>
+		public string ErrorText
+		{
+			get => this.errorText.Value;
+			set => this.errorText.Value = value;
+		}
+
+		/// <summary>
 		/// Optional Validation expression
 		/// </summary>
 		public string Expression
@@ -168,7 +190,12 @@ namespace LegalLab.Models.Legal.Items
 		/// </summary>
 		public virtual async Task<bool> ValidateParameter(Variables Variables)
 		{
-			return await this.Parameter.IsParameterValid(Variables, this.designModel?.Network.Legal.Contracts);
+			bool Result = await this.Parameter.IsParameterValid(Variables, this.designModel?.Network.Legal.Contracts);
+			
+			this.ErrorReason = this.Parameter.ErrorReason;
+			this.ErrorText = this.Parameter.ErrorText;
+			
+			return Result;
 		}
 
 		/// <summary>
