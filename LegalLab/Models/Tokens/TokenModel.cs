@@ -17,6 +17,7 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Xml;
 using Waher.Content.Markdown;
+using Waher.Content.Markdown.Wpf;
 using Waher.Events;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Script;

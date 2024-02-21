@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using Waher.Content.Markdown;
+using Waher.Content.Markdown.Contracts;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
@@ -79,15 +80,11 @@ namespace LegalLab.Extensions
 				return null;
 
 			MarkdownDocument ParsedMarkdown = await MarkdownDocument.CreateAsync(Markdown);
-			StringBuilder sb = new();
-			using XmlWriter w = XmlWriter.Create(sb);
+			using ContractsRenderer Renderer = new(XML.WriterSettings(false, true), "Root", ContractsClient.NamespaceSmartContracts);
+			
+			await ParsedMarkdown.RenderDocument(Renderer);
 
-			w.WriteStartElement("Root", ContractsClient.NamespaceSmartContracts);
-			await ParsedMarkdown.GenerateSmartContractXml(w);
-			w.WriteEndElement();
-			w.Flush();
-
-			string Xml = sb.ToString();
+			string Xml = Renderer.ToString();
 			XmlDocument ParsedXml = new()
 			{
 				PreserveWhitespace = true
@@ -131,15 +128,11 @@ namespace LegalLab.Extensions
 				return null;
 
 			MarkdownDocument ParsedMarkdown = await MarkdownDocument.CreateAsync(Markdown);
-			StringBuilder sb = new();
-			using XmlWriter w = XmlWriter.Create(sb);
+			using ContractsRenderer Renderer = new(XML.WriterSettings(false, true), "Root", ContractsClient.NamespaceSmartContracts);
+			
+			await ParsedMarkdown.RenderDocument(Renderer);
 
-			w.WriteStartElement("Root", ContractsClient.NamespaceSmartContracts);
-			await ParsedMarkdown.GenerateSmartContractXml(w);
-			w.WriteEndElement();
-			w.Flush();
-
-			string Xml = sb.ToString();
+			string Xml = Renderer.ToString();
 			XmlDocument ParsedXml = new()
 			{
 				PreserveWhitespace = true

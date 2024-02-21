@@ -2,6 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using Waher.Content.Markdown;
+using Waher.Content.Markdown.Wpf;
 
 namespace LegalLab.Models.Tokens.Reports
 {

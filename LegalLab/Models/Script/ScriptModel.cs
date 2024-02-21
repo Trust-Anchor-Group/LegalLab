@@ -10,6 +10,8 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Waher.Content.Markdown;
+using Waher.Content.Markdown.Rendering;
+using Waher.Content.Markdown.Wpf;
 using Waher.Events;
 using Waher.Script;
 using Waher.Script.Abstraction.Elements;
@@ -238,7 +240,7 @@ namespace LegalLab.Models.Script
 					}
 
 					MarkdownDocument Doc = await MarkdownDocument.CreateAsync(Markdown.ToString(), GetMarkdownSettings());
-					string XAML = await Doc.GenerateXAML();
+					string XAML = await Doc.GenerateXAML(GetXamlSettings());
 
 					if (XamlReader.Parse(XAML) is UIElement Parsed)
 						return this.AddBlock(ScriptBlock, Parsed);
@@ -268,17 +270,23 @@ namespace LegalLab.Models.Script
 
 		public static MarkdownSettings GetMarkdownSettings()
 		{
-			return new MarkdownSettings(null, false)
+			return new MarkdownSettings(null, false);
+		}
+
+		public static HtmlSettings GetHtmlSettings()
+		{
+			return new HtmlSettings()
 			{
-				HtmlSettings = new HtmlSettings()
-				{
-					XmlEntitiesOnly = true
-				},
-				XamlSettings = new XamlSettings()
-				{
-					TableCellRowBackgroundColor1 = "#20404040",
-					TableCellRowBackgroundColor2 = "#10808080"
-				}
+				XmlEntitiesOnly = true
+			};
+		}
+
+		public static XamlSettings GetXamlSettings()
+		{
+			return new XamlSettings()
+			{
+				TableCellRowBackgroundColor1 = "#20404040",
+				TableCellRowBackgroundColor2 = "#10808080"
 			};
 		}
 
