@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Syntax", "Syntax", "{A151F6
 	ProjectSection(SolutionItems) = preProject
 		ExampleContracts\Syntax\CalculatedParameters.xml = ExampleContracts\Syntax\CalculatedParameters.xml
 		ExampleContracts\Syntax\Markdown.xml = ExampleContracts\Syntax\Markdown.xml
+		ExampleContracts\Syntax\ParameterTypes.xml = ExampleContracts\Syntax\ParameterTypes.xml
 		ExampleContracts\Syntax\RoleReferenceParameters.xml = ExampleContracts\Syntax\RoleReferenceParameters.xml
 	EndProjectSection
 EndProject
@@ -73,9 +74,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StateMachines", "StateMachi
 		ExampleContracts\StateMachines\Calculator.xsd = ExampleContracts\StateMachines\Calculator.xsd
 		ExampleContracts\StateMachines\CrowdFunding.xml = ExampleContracts\StateMachines\CrowdFunding.xml
 		ExampleContracts\StateMachines\CrowdFunding.xsd = ExampleContracts\StateMachines\CrowdFunding.xsd
+		ExampleContracts\StateMachines\DigitalSensorTwin.xml = ExampleContracts\StateMachines\DigitalSensorTwin.xml
 		ExampleContracts\StateMachines\DigitalSensorTwin.xsd = ExampleContracts\StateMachines\DigitalSensorTwin.xsd
 		ExampleContracts\StateMachines\MicroLoan.xml = ExampleContracts\StateMachines\MicroLoan.xml
-		ExampleContracts\StateMachines\DigitalSensorTwin.xml = ExampleContracts\StateMachines\DigitalSensorTwin.xml
 		ExampleContracts\StateMachines\ProjectEscrow.xml = ExampleContracts\StateMachines\ProjectEscrow.xml
 	EndProjectSection
 EndProject

@@ -1,0 +1,83 @@
+<contract archiveOpt="P1D" archiveReq="P1D" canActAsTemplate="true" duration="P1D" id="ParameterExamples" visibility="PublicSearchable" xmlns="urn:ieee:iot:leg:sc:1.0">
+	<Nop xmlns="https://paiwise.tagroot.io/Schema/PaymentInstructions.xsd" />
+	<role maxCount="1" minCount="1" name="Creator">
+		<description xml:lang="en">
+			<paragraph>
+				<text>Creator of contract.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<templateOnly />
+	</parts>
+	<parameters>
+		<numericalParameter name="Numeric1" min="1" minIncluded="true" max="10" maxIncluded="true">
+			<description xml:lang="en">
+				<paragraph>
+					<text>A numeric parameter between 1 and 10.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<stringParameter name="String1" regEx="A.*Z">
+			<description xml:lang="en">
+				<paragraph>
+					<text>A string parameter that must begin with A and end with Z.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<booleanParameter name="Boolean1" exp="Boolean1=((Round(Numeric1) &amp; 1) = 1)">
+			<description xml:lang="en">
+				<paragraph>
+					<text>A Boolean parameter that must be checked if Numeric is odd, and unchecked if even.</text>
+				</paragraph>
+			</description>
+		</booleanParameter>
+		<dateParameter name="Date1" exp="Date1&gt;Today">
+			<description xml:lang="en">
+				<paragraph>
+					<text>A future date.</text>
+				</paragraph>
+			</description>
+		</dateParameter>
+		<dateTimeParameter name="DateTime1" exp="DateTime1&lt;Now">
+			<description xml:lang="en">
+				<paragraph>
+					<text>A historic date and time.</text>
+				</paragraph>
+			</description>
+		</dateTimeParameter>
+		<timeParameter name="Time1" exp="Hours(Time1)&lt;12">
+			<description xml:lang="en">
+				<paragraph>
+					<text>A time of day, before noon.</text>
+				</paragraph>
+			</description>
+		</timeParameter>
+		<durationParameter name="Duration1" exp="Hours(Duration1)&gt;1">
+			<description xml:lang="en">
+				<paragraph>
+					<text>A duration larger than an hour.</text>
+				</paragraph>
+			</description>
+		</durationParameter>
+		<calcParameter name="Calc1" exp="Numeric1*2">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Twice the value of Numeric1.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Test</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This contract contains parameters of different types, for test-purposes.</text>
+				</paragraph>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>
