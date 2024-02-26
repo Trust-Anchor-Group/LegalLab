@@ -85,6 +85,9 @@ TAG technologies.
 
 	* [CalculatedParameters.xml](ExampleContracts/Syntax/CalculatedParameters.xml) shows how calculated parameters can be used in contracts.
 
+	* [ParameterTypes.xml](ExampleContracts/Syntax/ParameterTypes.xml) contains contract parameters of different types. Can be used to
+	test contract interfaces under development.
+
 	* [RoleReferenceParameters.xml](ExampleContracts/Syntax/RoleReferenceParameters.xml) shows how to use role reference parameters.
 	This allows you to create contracts where you include information from the signatories into the contract text, without having
 	to define separate parameters the users have to edit. This simplifies contract creation, and improves integrity of the information
