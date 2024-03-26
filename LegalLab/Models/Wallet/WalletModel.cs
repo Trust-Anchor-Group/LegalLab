@@ -309,7 +309,7 @@ namespace LegalLab.Models.Wallet
 				MainWindow.MouseDefault();
 
 				TransferEDalerDialog Dialog = new();
-				TransferEDalerModel Model = new(Dialog, DefaultArgs.Currency);
+				TransferEDalerModel Model = new(Dialog, string.IsNullOrEmpty(this.currency.Value) ? DefaultArgs.Currency : this.currency.Value);
 
 				bool? Result = Dialog.ShowDialog();
 				if (!Result.HasValue || !Result.Value)
@@ -343,12 +343,15 @@ namespace LegalLab.Models.Wallet
 				MainWindow.MouseHourglass();
 
 				IBuyEDalerServiceProvider[] Providers = await this.eDalerClient.GetServiceProvidersForBuyingEDalerAsync();
+				if (Providers.Length == 0)
+					throw new Exception("No providers available for buying eDaler®.");
+
 				CreationAttributesEventArgs DefaultArgs = await this.networkModel.Tokens.NeuroFeaturesClient.GetCreationAttributesAsync();
 
 				MainWindow.MouseDefault();
 
 				BuyEDalerDialog Dialog = new();
-				BuyEDalerModel Model = new(Dialog, Providers, DefaultArgs.Currency);
+				BuyEDalerModel Model = new(Dialog, Providers, string.IsNullOrEmpty(this.currency.Value) ? DefaultArgs.Currency : this.currency.Value);
 
 				bool? Result = Dialog.ShowDialog();
 				if (!Result.HasValue || !Result.Value)
@@ -481,12 +484,15 @@ namespace LegalLab.Models.Wallet
 				MainWindow.MouseHourglass();
 
 				ISellEDalerServiceProvider[] Providers = await this.eDalerClient.GetServiceProvidersForSellingEDalerAsync();
+				if (Providers.Length == 0)
+					throw new Exception("No providers available for selling eDaler®.");
+
 				CreationAttributesEventArgs DefaultArgs = await this.networkModel.Tokens.NeuroFeaturesClient.GetCreationAttributesAsync();
 
 				MainWindow.MouseDefault();
 
 				SellEDalerDialog Dialog = new();
-				SellEDalerModel Model = new(Dialog, Providers, DefaultArgs.Currency);
+				SellEDalerModel Model = new(Dialog, Providers, string.IsNullOrEmpty(this.currency.Value) ? DefaultArgs.Currency : this.currency.Value);
 
 				bool? Result = Dialog.ShowDialog();
 				if (!Result.HasValue || !Result.Value)
