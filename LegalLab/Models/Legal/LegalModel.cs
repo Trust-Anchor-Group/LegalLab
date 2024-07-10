@@ -52,6 +52,7 @@ namespace LegalLab.Models.Legal
 		private readonly Property<Contract> template;
 		private readonly Property<TemplateReferenceModel[]> templates;
 		private readonly Property<string> contractTemplateName;
+        private readonly Property<string> contractIdInput;
 
 		private readonly Dictionary<string, IdentityWrapper> identities = new();
 
@@ -102,6 +103,7 @@ namespace LegalLab.Models.Legal
 			this.template = new Property<Contract>(nameof(this.Template), null, this);
 			this.templates = new Property<TemplateReferenceModel[]>(nameof(this.Templates), Array.Empty<TemplateReferenceModel>(), this);
 			this.contractTemplateName = new Property<string>(nameof(this.ContractTemplateName), string.Empty, this);
+            this.contractIdInput = new Property<string>(nameof(this.ContractTemplateName), string.Empty, this);
 
 			this.apply = new Command(this.CanExecuteApply, this.ExecuteApply);
 
@@ -628,12 +630,22 @@ namespace LegalLab.Models.Legal
 			}
 		}
 
-		/// <summary>
-		/// Selects the template to use.
-		/// </summary>
-		/// <param name="Name">Name of contract template to select.</param>
-		/// <param name="PresetValues">Optional preset values. Can be null.</param>
-		public async Task SetContractTemplateName(string Name, Dictionary<CaseInsensitiveString, object> PresetValues)
+        public string ContractIdInput
+        {
+            get => this.contractIdInput.Value;
+            set
+            {
+                this.contractIdInput.Value = value;
+                MainWindow.UpdateGui(() => this.LoadTemplate(value, null));
+            }
+        }
+
+        /// <summary>
+        /// Selects the template to use.
+        /// </summary>
+        /// <param name="Name">Name of contract template to select.</param>
+        /// <param name="PresetValues">Optional preset values. Can be null.</param>
+        public async Task SetContractTemplateName(string Name, Dictionary<CaseInsensitiveString, object> PresetValues)
 		{
 			this.contractTemplateName.Value = Name;
 			this.RaisePropertyChanged(nameof(this.ContractTemplateName));
@@ -668,6 +680,44 @@ namespace LegalLab.Models.Legal
 
 		private async Task LoadTemplate(string TemplateName, Dictionary<CaseInsensitiveString, object> PresetValues)
 		{
+			if (contractIdInput.Value != "")
+			{
+                try
+                {
+					string ContractId = contractIdInput.Value;
+                    if (string.IsNullOrEmpty(ContractId))
+                        return;
+
+                    MainWindow.MouseHourglass();
+                    this.Template = await this.contracts.GetContractAsync(ContractId);
+                    MainWindow.MouseDefault();
+
+                    if (this.currentContract is not null)
+                        await this.currentContract.Stop();
+
+                    this.currentContract = await ContractModel.CreateAsync(this.contracts, this.Template, MainWindow.DesignModel,
+                        MainWindow.currentInstance.ContractsTab.MachineReadableXmlEditor);
+
+                    await this.currentContract.Start();
+
+                    await this.currentContract.PopulateParameters(
+                        MainWindow.currentInstance.ContractsTab.LanguageOptions,
+                        MainWindow.currentInstance.ContractsTab.CreateParameters,
+                        MainWindow.currentInstance.ContractsTab.CreateCommands,
+                        PresetValues);
+
+                    await this.currentContract.PopulateContract(
+                        MainWindow.currentInstance.ContractsTab.ContractToCreate,
+                        MainWindow.currentInstance.ContractsTab.ContractToCreateHumanReadable);
+                }
+                catch (Exception ex)
+                {
+                    MainWindow.ErrorBox(ex.Message);
+                }
+
+				return;
+            }
+
 			try
 			{
 				string ContractId = await RuntimeSettings.GetAsync("Contract.Template." + TemplateName, string.Empty);
