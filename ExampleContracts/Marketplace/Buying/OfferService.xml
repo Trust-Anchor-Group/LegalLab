@@ -1,4 +1,4 @@
-<contract archiveOpt="P3M" archiveReq="P1M" canActAsTemplate="true" duration="P1M" id="OfferServiceExampleTemplate" visibility="PublicSearchable" xmlns="urn:ieee:iot:leg:sc:1.0">
+<contract archiveOpt="P3M" archiveReq="P1M" canActAsTemplate="true" duration="P1M" id="OfferServiceExampleTemplate" visibility="PublicSearchable" xmlns="urn:nf:iot:leg:sc:1.0">
 	<Offer xmlns="https://paiwise.tagroot.io/Schema/Marketplace.xsd">
 		<ItemReference>
 			<ParameterReference parameter="RequestForTendersId" />
