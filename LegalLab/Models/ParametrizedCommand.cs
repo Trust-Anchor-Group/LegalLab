@@ -64,7 +64,7 @@ namespace LegalLab.Models
 				}
 				catch (Exception ex)
 				{
-					Log.Critical(ex);
+					Log.Exception(ex);
 				}
 
 				return Task.CompletedTask;
@@ -88,7 +88,7 @@ namespace LegalLab.Models
 				}
 				catch (Exception ex)
 				{
-					Log.Critical(ex);
+					Log.Exception(ex);
 					return false;
 				}
 			}
@@ -108,7 +108,7 @@ namespace LegalLab.Models
 				}
 				catch (Exception ex)
 				{
-					Log.Critical(ex);
+					Log.Exception(ex);
 					MainWindow.ErrorBox(ex.Message);
 				}
 			}

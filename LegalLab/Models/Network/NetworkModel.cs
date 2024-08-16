@@ -549,7 +549,7 @@ namespace LegalLab.Models.Network
 				}
 				catch (Exception ex)
 				{
-					Log.Critical(ex);
+					Log.Exception(ex);
 
 					Host = this.XmppServer;
 					Port = 5222;    // Default XMPP Client-to-Server port.
@@ -740,7 +740,7 @@ namespace LegalLab.Models.Network
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 

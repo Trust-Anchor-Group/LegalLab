@@ -79,7 +79,7 @@ namespace LegalLab.Models.Network
 				}
 				catch (Exception ex)
 				{
-					Log.Critical(ex);
+					Log.Exception(ex);
 				}
 			});
 

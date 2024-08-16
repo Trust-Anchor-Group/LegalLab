@@ -282,7 +282,7 @@ namespace LegalLab.Models.Legal
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 				MainWindow.ErrorBox(ex.Message);
 
 				return false;
@@ -1016,7 +1016,7 @@ namespace LegalLab.Models.Legal
 					}
 					catch (Exception ex)
 					{
-						Log.Critical(ex);
+						Log.Exception(ex);
 					}
 				}
 
@@ -1025,7 +1025,7 @@ namespace LegalLab.Models.Legal
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 

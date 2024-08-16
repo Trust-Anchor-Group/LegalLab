@@ -403,7 +403,7 @@ namespace LegalLab
 					}
 					catch (Exception ex)
 					{
-						Log.Critical(ex);
+						Log.Exception(ex);
 					}
 					finally
 					{
@@ -420,7 +420,7 @@ namespace LegalLab
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 
 				lock (guiUpdateQueue)
 				{
@@ -455,7 +455,7 @@ namespace LegalLab
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 				MainWindow.ErrorBox(ex.Message);
 			}
 		}

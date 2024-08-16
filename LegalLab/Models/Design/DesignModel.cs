@@ -458,7 +458,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 				MainWindow.ErrorBox(ex.Message);
 			}
 		}
@@ -586,7 +586,7 @@ namespace LegalLab.Models.Design
 				catch (Exception ex)
 				{
 					this.contract.ForMachines = null;
-					Log.Critical(ex);
+					Log.Exception(ex);
 				}
 
 				this.propose.RaiseCanExecuteChanged();
@@ -679,7 +679,7 @@ namespace LegalLab.Models.Design
 				}
 				catch (Exception ex)
 				{
-					Log.Critical(ex);
+					Log.Exception(ex);
 				}
 			});
 		}
@@ -1168,7 +1168,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -1193,7 +1193,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -1218,7 +1218,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -1248,7 +1248,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -1278,7 +1278,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -1303,7 +1303,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -1367,7 +1367,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -1384,7 +1384,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -1401,7 +1401,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -1972,7 +1972,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex.Message);
+				Log.Exception(ex);
 			}
 		}
 

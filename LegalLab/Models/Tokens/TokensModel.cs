@@ -138,7 +138,7 @@ namespace LegalLab.Models.Tokens
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -342,7 +342,7 @@ namespace LegalLab.Models.Tokens
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 

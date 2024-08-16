@@ -115,7 +115,7 @@ namespace LegalLab.Models.Network.Sniffer
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
