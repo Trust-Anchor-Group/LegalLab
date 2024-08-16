@@ -80,7 +80,7 @@ namespace LegalLab.Extensions
 				return null;
 
 			MarkdownDocument ParsedMarkdown = await MarkdownDocument.CreateAsync(Markdown);
-			using ContractsRenderer Renderer = new(XML.WriterSettings(false, true), "Root", ContractsClient.NamespaceSmartContracts);
+			using ContractsRenderer Renderer = new(XML.WriterSettings(false, true), "Root", ContractsClient.NamespaceSmartContractsCurrent);
 			
 			await ParsedMarkdown.RenderDocument(Renderer);
 
@@ -128,7 +128,7 @@ namespace LegalLab.Extensions
 				return null;
 
 			MarkdownDocument ParsedMarkdown = await MarkdownDocument.CreateAsync(Markdown);
-			using ContractsRenderer Renderer = new(XML.WriterSettings(false, true), "Root", ContractsClient.NamespaceSmartContracts);
+			using ContractsRenderer Renderer = new(XML.WriterSettings(false, true), "Root", ContractsClient.NamespaceSmartContractsCurrent);
 			
 			await ParsedMarkdown.RenderDocument(Renderer);
 
@@ -240,7 +240,7 @@ namespace LegalLab.Extensions
 				return (string.Empty, null);
 
 			StringBuilder sb = new();
-			Contract.NormalizeXml(Xml, sb, ContractsClient.NamespaceSmartContracts);
+			Contract.NormalizeXml(Xml, sb, ContractsClient.NamespaceSmartContractsCurrent);
 
 			XmlDocument Doc = new()
 			{
@@ -281,7 +281,7 @@ namespace LegalLab.Extensions
 				return null;
 
 			StringBuilder sb = new();
-			Contract.NormalizeXml(Doc.DocumentElement, sb, ContractsClient.NamespaceSmartContracts);
+			Contract.NormalizeXml(Doc.DocumentElement, sb, ContractsClient.NamespaceSmartContractsCurrent);
 
 			Doc = new XmlDocument()
 			{

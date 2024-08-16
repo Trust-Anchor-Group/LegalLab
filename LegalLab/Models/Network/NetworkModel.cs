@@ -668,8 +668,8 @@ namespace LegalLab.Models.Network
 									{
 										ServiceDiscoveryEventArgs e2 = await this.client.ServiceDiscoveryAsync(Component.JID);
 
-										if (e2.HasFeature(ContractsClient.NamespaceLegalIdentities) &&
-											e2.HasFeature(ContractsClient.NamespaceSmartContracts))
+										if (e2.HasAnyFeature(ContractsClient.NamespacesLegalIdentities) &&
+											e2.HasAnyFeature(ContractsClient.NamespacesSmartContracts))
 										{
 											this.LegalComponentJid = Component.JID;
 										}
