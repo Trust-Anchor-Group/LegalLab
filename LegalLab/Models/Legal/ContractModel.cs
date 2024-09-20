@@ -883,7 +883,7 @@ namespace LegalLab.Models.Legal
 								if (Entry is not null)
 								{
 									Entry.Text = s;
-									Entry.Background = null;
+									Entry.Background = Info.Protection.DefaultBrush();
 								}
 							}
 							else if (Info.Parameter is NumericalParameter NP)
@@ -893,7 +893,7 @@ namespace LegalLab.Models.Legal
 									NP.Value = Waher.Script.Expression.ToDecimal(P.Value);
 
 									if (Entry is not null)
-										Entry.Background = null;
+										Entry.Background = Info.Protection.DefaultBrush();
 									
 									Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());
 								}
@@ -926,7 +926,7 @@ namespace LegalLab.Models.Legal
 									}
 
 									if (CheckBox is not null)
-										CheckBox.Background = null;
+										CheckBox.Background = Info.Protection.DefaultBrush();
 
 									Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());
 								}
@@ -946,7 +946,7 @@ namespace LegalLab.Models.Legal
 									DTP.Value = TP;
 
 									if (Entry is not null)
-										Entry.Background = null;
+										Entry.Background = Info.Protection.DefaultBrush();
 
 									Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());
 								}
@@ -966,7 +966,7 @@ namespace LegalLab.Models.Legal
 									TSP.Value = TS;
 
 									if (Entry is not null)
-										Entry.Background = null;
+										Entry.Background = Info.Protection.DefaultBrush();
 
 									Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());
 								}
@@ -986,7 +986,7 @@ namespace LegalLab.Models.Legal
 									DP.Value = D;
 
 									if (Entry is not null)
-										Entry.Background = null;
+										Entry.Background = Info.Protection.DefaultBrush();
 
 									Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());
 								}
@@ -1007,7 +1007,7 @@ namespace LegalLab.Models.Legal
 								if (Entry is not null)
 								{
 									Entry.Text = s;
-									Entry.Background = null;
+									Entry.Background = Info.Protection.DefaultBrush();
 								}
 
 								Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());

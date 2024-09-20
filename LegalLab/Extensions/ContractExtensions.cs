@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Xml;
 using Waher.Content.Markdown;
 using Waher.Content.Markdown.Contracts;
@@ -528,6 +529,27 @@ namespace LegalLab.Extensions
 			}
 
 			return string.Empty;
+		}
+
+		/// <summary>
+		/// Converts a <see cref="ProtectionLevel"/> enumeration to a Brush color.
+		/// </summary>
+		/// <param name="Protection">Protection level.</param>
+		/// <returns>Default color brush.</returns>
+		public static Brush DefaultBrush(this ProtectionLevel Protection)
+		{
+			switch (Protection)
+			{
+				case ProtectionLevel.Normal:
+				default:
+					return null;
+
+				case ProtectionLevel.Transient:
+					return Brushes.LightBlue;
+
+				case ProtectionLevel.Encrypted:
+					return Brushes.LightGreen;
+			}
 		}
 	}
 }

@@ -700,7 +700,7 @@ namespace LegalLab.Models.Design
 			foreach (ParameterInfo P in this.AllParameterInfos)
 			{
 				if (await P.ValidateParameter(Variables))
-					P.Control.Background = null;
+					P.Control.Background = P.Protection.DefaultBrush();
 				else
 				{
 					P.Control.Background = Brushes.Salmon;
@@ -1156,7 +1156,7 @@ namespace LegalLab.Models.Design
 				{
 					ParameterInfo.SetValue(TextBox.Text);
 
-					TextBox.Background = null;
+					TextBox.Background = ParameterInfo.Protection.DefaultBrush();
 					await this.ValidateParameters();
 				}
 				catch (Exception)
@@ -1183,7 +1183,7 @@ namespace LegalLab.Models.Design
 				{
 					ParameterInfo.SetMin(TextBox.Text);
 
-					TextBox.Background = null;
+					TextBox.Background = ParameterInfo.Protection.DefaultBrush();
 					await this.ValidateParameters();
 				}
 				catch (Exception)
@@ -1208,7 +1208,7 @@ namespace LegalLab.Models.Design
 				{
 					ParameterInfo.SetMax(TextBox.Text);
 
-					TextBox.Background = null;
+					TextBox.Background = ParameterInfo.Protection.DefaultBrush();
 					await this.ValidateParameters();
 				}
 				catch (Exception)
@@ -1238,7 +1238,7 @@ namespace LegalLab.Models.Design
 					else
 						ParameterInfo.MinLength = int.Parse(Value);
 
-					TextBox.Background = null;
+					TextBox.Background = ParameterInfo.Protection.DefaultBrush();
 					await this.ValidateParameters();
 				}
 				catch (Exception)
@@ -1268,7 +1268,7 @@ namespace LegalLab.Models.Design
 					else
 						ParameterInfo.MinLength = int.Parse(Value);
 
-					TextBox.Background = null;
+					TextBox.Background = ParameterInfo.Protection.DefaultBrush();
 					await this.ValidateParameters();
 				}
 				catch (Exception)
@@ -1293,7 +1293,7 @@ namespace LegalLab.Models.Design
 				{
 					ParameterInfo.RegEx = TextBox.Text;
 
-					TextBox.Background = null;
+					TextBox.Background = ParameterInfo.Protection.DefaultBrush();
 					await this.ValidateParameters();
 				}
 				catch (Exception)

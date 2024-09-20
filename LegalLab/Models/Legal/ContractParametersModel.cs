@@ -1,4 +1,5 @@
-﻿using LegalLab.Converters;
+﻿using DocumentFormat.OpenXml.EMMA;
+using LegalLab.Converters;
 using LegalLab.Extensions;
 using LegalLab.Models.Design;
 using LegalLab.Models.Legal.Items;
@@ -430,7 +431,7 @@ namespace LegalLab.Models.Legal
 					else if (ParameterInfo.Parameter is not CalcParameter)
 						ParameterInfo.Value = TextBox.Text;
 
-					TextBox.Background = null;
+					TextBox.Background = ParameterInfo.Protection.DefaultBrush();
 
 					Log.Informational("Parameter " + ParameterInfo.Parameter.Name + " set to " + TextBox.Text.ToString());
 
@@ -470,7 +471,7 @@ namespace LegalLab.Models.Legal
 			{
 				if (await P.ValidateParameter(Variables))
 				{
-					P.Control.Background = null;
+					P.Control.Background = P.Protection.DefaultBrush();
 					Log.Informational("Parameter " + P.Name + " is OK.");
 				}
 				else
