@@ -2,6 +2,7 @@
 using LegalLab.Items;
 using LegalLab.Models.Design;
 using LegalLab.Models.Items;
+using System;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -223,6 +224,11 @@ namespace LegalLab.Models.Legal.Items
 				this.protection.Value = value;
 			}
 		}
+
+		/// <summary>
+		/// Protection levels
+		/// </summary>
+		public static string[] ProtectionLevels => Enum.GetNames(typeof(ProtectionLevel));
 
 		/// <summary>
 		/// Control for editing Minimum value

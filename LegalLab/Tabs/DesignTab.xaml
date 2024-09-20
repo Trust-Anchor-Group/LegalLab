@@ -308,6 +308,14 @@
 							</DataGridTemplateColumn.CellEditingTemplate>
 						</DataGridTemplateColumn>
 						<DataGridTextColumn Binding="{Binding Guide}" Header="Guide"/>
+						<DataGridTemplateColumn Header="Protection">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<ComboBox SelectedItem="{Binding Protection, Converter={conv:ProtectionLevelToString}, UpdateSourceTrigger=PropertyChanged}" 
+										ItemsSource="{Binding ProtectionLevels}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 						<DataGridTextColumn Binding="{Binding Expression, UpdateSourceTrigger=PropertyChanged}" Header="Expression"/>
 						<DataGridTemplateColumn Header="Min">
 							<DataGridTemplateColumn.CellTemplate>
