@@ -1006,7 +1006,7 @@ namespace LegalLab.Models.Design
 				Min = null,
 				MinIncluded = false,
 				Value = Value,
-				Transient = false
+				Protection = ProtectionLevel.Normal
 			};
 
 			this.AddParameter(this.GetParameterInfo(NP));
@@ -1091,7 +1091,7 @@ namespace LegalLab.Models.Design
 				MinLength = null,
 				MaxLength = MaxLength,
 				RegEx = RegEx,
-				Transient = false
+				Protection = ProtectionLevel.Normal
 			};
 
 			this.AddParameter(this.GetParameterInfo(SP));
@@ -1329,7 +1329,7 @@ namespace LegalLab.Models.Design
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Value = Value,
-				Transient = false
+				Protection = ProtectionLevel.Normal
 			};
 
 			this.AddParameter(this.GetParameterInfo(BP));
@@ -1431,7 +1431,7 @@ namespace LegalLab.Models.Design
 				Min = null,
 				MinIncluded = false,
 				Value = Value,
-				Transient = false
+				Protection = ProtectionLevel.Normal
 			};
 
 			this.AddParameter(this.GetParameterInfo(DP));
@@ -1505,7 +1505,7 @@ namespace LegalLab.Models.Design
 				Min = null,
 				MinIncluded = false,
 				Value = null,
-				Transient = false
+				Protection = ProtectionLevel.Normal
 			};
 
 			this.AddParameter(this.GetParameterInfo(DP));
@@ -1584,7 +1584,7 @@ namespace LegalLab.Models.Design
 				Min = null,
 				MinIncluded = false,
 				Value = Value,
-				Transient = false
+				Protection = ProtectionLevel.Normal
 			};
 
 			this.AddParameter(this.GetParameterInfo(DP));
@@ -1658,7 +1658,7 @@ namespace LegalLab.Models.Design
 				Min = null,
 				MinIncluded = false,
 				Value = null,
-				Transient = false
+				Protection = ProtectionLevel.Normal
 			};
 
 			this.AddParameter(this.GetParameterInfo(DP));
@@ -1727,7 +1727,7 @@ namespace LegalLab.Models.Design
 				Descriptions = new HumanReadableText[] { await defaultParameterDescription.ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
-				Transient = false
+				Protection = ProtectionLevel.Normal
 			};
 
 			this.AddParameter(this.GetParameterInfo(CP));
@@ -1753,7 +1753,7 @@ namespace LegalLab.Models.Design
 				Property = string.Empty,
 				Role = string.Empty,
 				Required = false,
-				Transient = false
+				Protection = ProtectionLevel.Normal
 			};
 
 			this.AddRoleReferenceParameter(this.GetParameterInfo(RP));
@@ -1795,7 +1795,7 @@ namespace LegalLab.Models.Design
 				Provider = string.Empty,
 				Required = false,
 				TemplateId = string.Empty,
-				Transient = false,
+				Protection = ProtectionLevel.Normal,
 				Value = string.Empty
 			};
 

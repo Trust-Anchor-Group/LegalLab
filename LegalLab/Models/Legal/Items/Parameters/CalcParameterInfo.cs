@@ -46,7 +46,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 			{
 				object Value = this.Parameter.ObjectValue;
 
-				this.value.Value = Value;
+				this.@value.Value = Value;
 				this.textBox.Text = MoneyToString.ToString(Value);
 			}
 
@@ -58,8 +58,8 @@ namespace LegalLab.Models.Legal.Items.Parameters
 		/// </summary>
 		public override object Value
 		{
-			get => this.value.Value;
-			set => this.value.Value = value;
+			get => this.@value.Value;
+			set => this.@value.Value = value;
 		}
 
 		/// <inheritdoc/>

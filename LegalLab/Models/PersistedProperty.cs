@@ -44,7 +44,7 @@ namespace LegalLab.Models
 		/// </summary>
 		public async Task Load()
 		{
-			this.value = (T)await RuntimeSettings.GetAsync(this.category + "." + this.Name, this.value);
+			this.@value = (T)await RuntimeSettings.GetAsync(this.category + "." + this.Name, this.@value);
 		}
 
 		/// <summary>
@@ -54,7 +54,7 @@ namespace LegalLab.Models
 		{
 			if (this.Changed)
 			{
-				await RuntimeSettings.SetAsync(this.category + "." + this.Name, this.value);
+				await RuntimeSettings.SetAsync(this.category + "." + this.Name, this.@value);
 
 				this.Changed = false;
 				DelayedActions.Remove(this);	// In case saved manually
