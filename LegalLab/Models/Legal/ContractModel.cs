@@ -675,7 +675,7 @@ namespace LegalLab.Models.Legal
 				}
 
 				await this.contracts.AuthorizeAccessToContractAsync(this.Contract.ContractId, BareJid, true);
-				this.contracts.SendContractProposal(this.Contract.ContractId, Role, BareJid);
+				await this.contracts.SendContractProposal(this.Contract, Role, BareJid);
 
 				MainWindow.SuccessBox("Proposal successfully sent.");
 			}
