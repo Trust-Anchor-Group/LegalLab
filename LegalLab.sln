@@ -83,6 +83,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TAG.Content.Microsoft", "..\MicrosoftInterop\TAG.Content.Microsoft\TAG.Content.Microsoft.csproj", "{058A6BB8-9C37-4460-B1A0-038DCBA04302}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logistics", "Logistics", "{14E69444-5843-4DE2-A11F-DF3CC5997531}"
+	ProjectSection(SolutionItems) = preProject
+		ExampleContracts\Logistics\SimpleOrder.xml = ExampleContracts\Logistics\SimpleOrder.xml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
