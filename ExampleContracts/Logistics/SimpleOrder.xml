@@ -394,6 +394,18 @@
 						</cell>
 					</row>
 				</table>
+				<section>
+					<header>
+						<text>Token</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Placing an order will create a token in your wallet. This token can be used to track the order. The token will expire </text>
+							<parameter name="Expires" />
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
 			</body>
 		</section>
 	</humanReadableText>
