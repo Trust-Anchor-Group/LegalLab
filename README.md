@@ -145,5 +145,5 @@ TAG technologies.
 
 * [Logistics](ExampleContracts/Logistics) contains examples related to logistics.
 
-	* [SimpleOrder.xml](ExampleContracts/SimpleOrder.xml) shows how to use a contract with calculated parameters and role-reference parameters
+	* [SimpleOrder.xml](ExampleContracts/Logistics/SimpleOrder.xml) shows how to use a contract with calculated parameters and role-reference parameters
 	to simplify the process of collecting order information and providing validated infomration, in a decentralized manner.
