@@ -22,7 +22,7 @@
 	<role maxCount="1" minCount="1" name="Buyer">
 		<description xml:lang="en">
 			<paragraph>
-				<text>The entity that places an order, in accordance with rules set forth in the contract.</text>
+				<text>The entity that places an order, in accordance with rules set forth in the contract. Payment will be initiated as soon as the order has been signed.</text>
 			</paragraph>
 		</description>
 	</role>
