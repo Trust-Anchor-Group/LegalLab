@@ -1,5 +1,12 @@
 <contract archiveOpt="P1Y" archiveReq="P1Y" canActAsTemplate="true" duration="P1M" id="SimpleOrder" visibility="CreatorAndParts" xmlns="urn:nf:iot:leg:sc:1.0">
-	<Nop xmlns="https://paiwise.tagroot.io/Schema/PaymentInstructions.xsd" />
+	<Payment xmlns="https://paiwise.tagroot.io/Schema/PaymentInstructions.xsd">
+		<From>   </From>
+		<To>   </To>
+		<Amount>   </Amount>
+		<Currency>   </Currency>
+		<ValidDays>   </ValidDays>
+		<Reference>   </Reference>
+	</Payment>
 	<role maxCount="1" minCount="1" name="Buyer">
 		<description xml:lang="en">
 			<paragraph>
@@ -91,70 +98,70 @@
 				</paragraph>
 			</description>
 		</calcParameter>
-		<roleParameter index="1" name="ReferenceName" property="" role="">
+		<roleParameter index="1" name="ReferenceName" property="FULLNAME" role="Buyer">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Full name of person placing the order.</text>
 				</paragraph>
 			</description>
 		</roleParameter>
-		<roleParameter index="1" name="ReferencePNr" property="" role="">
+		<roleParameter index="1" name="ReferencePNr" property="PNR" role="Buyer">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Personal number of reference person.</text>
 				</paragraph>
 			</description>
 		</roleParameter>
-		<roleParameter index="1" name="ReferenceCountry" property="" role="">
+		<roleParameter index="1" name="ReferenceCountry" property="COUNTRY" role="Buyer">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Country of reference person.</text>
 				</paragraph>
 			</description>
 		</roleParameter>
-		<roleParameter index="1" name="ReferencePhoneNr" property="" role="">
+		<roleParameter index="1" name="ReferencePhoneNr" property="PHONE" role="Buyer">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Phone number of reference person.</text>
 				</paragraph>
 			</description>
 		</roleParameter>
-		<roleParameter index="1" name="OrgName" property="" role="">
+		<roleParameter index="1" name="OrgName" property="ORGNAME" role="Buyer">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Full name of organization placing the order.</text>
 				</paragraph>
 			</description>
 		</roleParameter>
-		<roleParameter index="1" name="OrgNr" property="" role="">
+		<roleParameter index="1" name="OrgNr" property="ORGNR" role="Buyer">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Organization number of organization placing the order.</text>
 				</paragraph>
 			</description>
 		</roleParameter>
-		<roleParameter index="1" name="OrgAddress" property="" role="">
+		<roleParameter index="1" name="OrgAddress" property="FULLORGADDR" role="Buyer">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Full address of organization placing the order.</text>
 				</paragraph>
 			</description>
 		</roleParameter>
-		<roleParameter index="1" name="OrgZip" property="" role="">
+		<roleParameter index="1" name="OrgZip" property="ORGZIP" role="Buyer">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Postal code of organization placing the order.</text>
 				</paragraph>
 			</description>
 		</roleParameter>
-		<roleParameter index="1" name="OrgCity" property="" role="">
+		<roleParameter index="1" name="OrgCity" property="ORGCITY" role="Buyer">
 			<description xml:lang="en">
 				<paragraph>
 					<text>City of organization placing the order.</text>
 				</paragraph>
 			</description>
 		</roleParameter>
-		<roleParameter index="1" name="OrgCountry" property="" role="">
+		<roleParameter index="1" name="OrgCountry" property="ORGCOUNTRY" role="Buyer">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Country of organization placing the order.</text>
