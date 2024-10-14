@@ -142,3 +142,8 @@ TAG technologies.
 		* [TransferTokenContract5.xml](ExampleContracts/Tokens/Transfer/TransferTokenContract5.xml) can be used to transfer the ownership of a
 		batch of five tokens from the current owner to a new owner. The process includes assigning a new value for the tokens, as well as 
 		performing instant payments.
+
+* [Logistics](ExampleContracts/Logistics) contains examples related to logistics.
+
+	* [SimpleOrder.xml](ExampleContracts/SimpleOrder.xml) shows how to use a contract with calculated parameters and role-reference parameters
+	to simplify the process of collecting order information and providing validated infomration, in a decentralized manner.
