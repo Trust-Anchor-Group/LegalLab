@@ -1,4 +1,4 @@
-<contract archiveOpt="P1Y" archiveReq="P1Y" canActAsTemplate="true" duration="P1M" id="SimpleOrder" visibility="CreatorAndParts" xmlns="urn:nf:iot:leg:sc:1.0">
+<contract archiveOpt="P1Y" archiveReq="P1Y" canActAsTemplate="true" duration="P1M" id="SimpleOrder" visibility="Public" xmlns="urn:nf:iot:leg:sc:1.0">
 	<Payment xmlns="https://paiwise.tagroot.io/Schema/PaymentInstructions.xsd">
 		<From>   </From>
 		<To>   </To>
