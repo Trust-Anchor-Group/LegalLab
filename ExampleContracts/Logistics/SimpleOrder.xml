@@ -1,11 +1,23 @@
 <contract archiveOpt="P1Y" archiveReq="P1Y" canActAsTemplate="true" duration="P1M" id="SimpleOrder" visibility="Public" xmlns="urn:nf:iot:leg:sc:1.0">
 	<Payment xmlns="https://paiwise.tagroot.io/Schema/PaymentInstructions.xsd">
-		<From>   </From>
-		<To>   </To>
-		<Amount>   </Amount>
-		<Currency>   </Currency>
-		<ValidDays>   </ValidDays>
-		<Reference>   </Reference>
+		<From>
+			<RoleReference role="Buyer"/>
+		</From>
+		<To>
+			<RoleReference role="TrustProvider"/>
+		</To>
+		<Amount>
+			<ParameterReference parameter="Total"/>
+		</Amount>
+		<Currency>
+			<ParameterReference parameter="PriceUnit"/>
+		</Currency>
+		<ValidDays>
+			<ParameterReference parameter="DeliveryDays"/>
+		</ValidDays>
+		<Reference>
+			<ContractID/>
+		</Reference>
 	</Payment>
 	<role maxCount="1" minCount="1" name="Buyer">
 		<description xml:lang="en">
