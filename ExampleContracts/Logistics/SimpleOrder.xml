@@ -47,10 +47,7 @@
 		<calcParameter exp="&quot;Bottle(s) of excellent beverage&quot;" name="ItemName">
 			<description xml:lang="en">
 				<paragraph>
-					<text>Enter parameter description as </text>
-					<bold>
-						<text>Markdown</text>
-					</bold>
+					<text>The most exquisite beverage on the market.</text>
 				</paragraph>
 			</description>
 		</calcParameter>
