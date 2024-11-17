@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Input;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Persistence;
 using Waher.Runtime.Inventory;

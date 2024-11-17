@@ -2,6 +2,7 @@
 using LegalLab.Models.Tokens.Events;
 using LegalLab.Tabs;
 using NeuroFeatures;
+using NeuroFeatures.EventArguments;
 using NeuroFeatures.NoteCommands;
 using System;
 using System.Collections.Generic;
@@ -112,7 +113,7 @@ namespace LegalLab.Models.Tokens
 
 					if (this.selectedItem.CurrentState is null || this.selectedItem.CurrentVariables is null)
 					{
-						this.neuroFeaturesClient.GetCurrentState(TokenId, async (sender2, e2) =>
+						await this.neuroFeaturesClient.GetCurrentState(TokenId, async (sender2, e2) =>
 						{
 							if (e2.Ok && this.selectedItem is not null && this.selectedItem.TokenId == TokenId)
 							{

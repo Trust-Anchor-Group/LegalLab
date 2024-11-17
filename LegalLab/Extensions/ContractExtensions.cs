@@ -514,18 +514,18 @@ namespace LegalLab.Extensions
 		/// <param name="Texts">Localized set of texts.</param>
 		/// <param name="Language">Language</param>
 		/// <returns>Editable markdown</returns>
-		public static string ToMarkdown(this Contract Contract, HumanReadableText[] Texts, string Language)
+		public static async Task<string> ToMarkdown(this Contract Contract, HumanReadableText[] Texts, string Language)
 		{
 			foreach (HumanReadableText Text in Texts)
 			{
 				if (Text.Language == Language)
-					return Text.GenerateMarkdown(Contract, MarkdownType.ForEditing);
+					return await Text.GenerateMarkdown(Contract, MarkdownType.ForEditing);
 			}
 
 			foreach (HumanReadableText Text in Texts)
 			{
 				if (Text.Language == Contract.DefaultLanguage)
-					return Text.GenerateMarkdown(Contract, MarkdownType.ForEditing);
+					return await Text.GenerateMarkdown(Contract, MarkdownType.ForEditing);
 			}
 
 			return string.Empty;
@@ -538,18 +538,12 @@ namespace LegalLab.Extensions
 		/// <returns>Default color brush.</returns>
 		public static Brush DefaultBrush(this ProtectionLevel Protection)
 		{
-			switch (Protection)
+			return Protection switch
 			{
-				case ProtectionLevel.Normal:
-				default:
-					return null;
-
-				case ProtectionLevel.Transient:
-					return Brushes.LightBlue;
-
-				case ProtectionLevel.Encrypted:
-					return Brushes.LightGreen;
-			}
+				ProtectionLevel.Transient => Brushes.LightBlue,
+				ProtectionLevel.Encrypted => Brushes.LightGreen,
+				_ => null,
+			};
 		}
 	}
 }

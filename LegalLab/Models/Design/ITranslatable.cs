@@ -1,4 +1,6 @@
-﻿namespace LegalLab.Models.Design
+﻿using System.Threading.Tasks;
+
+namespace LegalLab.Models.Design
 {
 	/// <summary>
 	/// Interface for translatable objects.
@@ -10,7 +12,7 @@
 		/// </summary>
 		/// <param name="Language">Language to translate from.</param>
 		/// <returns>Array of translatable texts, or null if none.</returns>
-		string[] GetTranslatableTexts(string Language);
+		Task<string[]> GetTranslatableTexts(string Language);
 
 		/// <summary>
 		/// Sets translated texts.

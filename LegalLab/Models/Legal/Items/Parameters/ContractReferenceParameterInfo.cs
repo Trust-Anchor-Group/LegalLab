@@ -38,7 +38,7 @@ namespace LegalLab.Models.Legal.Items.Parameters
 			string Language = DesignModel?.Language ?? Contract.DefaultLanguage;
 
 			this.label = new Property<object>(nameof(this.Label), Parameter.ToSimpleXAML(Language, Contract).Result, this);
-			this.labelAsMarkdown = new Property<string>(nameof(this.LabelAsMarkdown), Parameter.ToMarkdown(Language, Contract, MarkdownType.ForEditing).Trim(), this);
+			this.labelAsMarkdown = new Property<string>(nameof(this.LabelAsMarkdown), Parameter.ToMarkdown(Language, Contract, MarkdownType.ForEditing).Result.Trim(), this);
 			this.contractId = new Property<string>(nameof(this.Value), Parameter.Value?.Value, this);
 			this.localName = new Property<string>(nameof(this.LocalName), Parameter.LocalName, this);
 			this.@namespace = new Property<string>(nameof(this.Namespace), Parameter.Namespace, this);

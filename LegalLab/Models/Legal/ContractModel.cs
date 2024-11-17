@@ -20,6 +20,7 @@ using Waher.Content.Xml;
 using Waher.Events;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
 using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Persistence;
@@ -273,7 +274,14 @@ namespace LegalLab.Models.Legal
 				if (!string.IsNullOrEmpty(Language))
 				{
 					foreach (RoleInfo RI in this.Roles)
-						RI.DescriptionAsMarkdown = (RI.Role.Descriptions.Find(Language)?.GenerateMarkdown(this.Contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
+					{
+						HumanReadableText Text = RI.Role.Descriptions.Find(Language);
+
+						if (Text is null)
+							RI.DescriptionAsMarkdown = string.Empty;
+						else
+							RI.DescriptionAsMarkdown = (await Text.GenerateMarkdown(this.Contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
+					}
 
 					await this.PopulateHumanReadableText();
 				}

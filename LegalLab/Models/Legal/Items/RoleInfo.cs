@@ -73,7 +73,7 @@ namespace LegalLab.Models.Legal.Items
 
 			this.name = new Property<string>(nameof(this.Name), Role.Name, this);
 			this.description = new Property<object>(nameof(this.Description), Role.ToSimpleXAML(Language, this.contract).Result, this);
-			this.descriptionAsMarkdown = new Property<string>(nameof(this.DescriptionAsMarkdown), Role.ToMarkdown(Language, this.contract, MarkdownType.ForEditing).Trim(), this);
+			this.descriptionAsMarkdown = new Property<string>(nameof(this.DescriptionAsMarkdown), Role.ToMarkdown(Language, this.contract, MarkdownType.ForEditing).Result.Trim(), this);
 			this.minCount = new Property<int>(nameof(this.MaxCount), Role.MinCount, this);
 			this.maxCount = new Property<int>(nameof(this.MinCount), Role.MaxCount, this);
 			this.canRevoke = new Property<bool>(nameof(this.CanRevoke), Role.CanRevoke, this);
@@ -264,13 +264,13 @@ namespace LegalLab.Models.Legal.Items
 		/// </summary>
 		/// <param name="Language">Language to translate from.</param>
 		/// <returns>Array of translatable texts, or null if none.</returns>
-		public string[] GetTranslatableTexts(string Language)
+		public async Task<string[]> GetTranslatableTexts(string Language)
 		{
 			HumanReadableText Text = this.Role.Descriptions.Find(Language);
 			if (Text is null)
 				return null;
 			else
-				return new string[] { Text.GenerateMarkdown(this.contract, MarkdownType.ForEditing) };
+				return new string[] { await Text.GenerateMarkdown(this.contract, MarkdownType.ForEditing) };
 		}
 
 		/// <summary>

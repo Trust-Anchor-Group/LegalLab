@@ -45,7 +45,7 @@ namespace LegalLab.Models.Legal.Items
 
 			this.name = new Property<string>(nameof(this.Name), Parameter.Name, this);
 			this.description = new Property<object>(nameof(this.Description), Parameter.ToSimpleXAML(Language, Contract).Result, this);
-			this.descriptionAsMarkdown = new Property<string>(nameof(this.DescriptionAsMarkdown), Parameter.ToMarkdown(Language, Contract, MarkdownType.ForEditing).Trim(), this);
+			this.descriptionAsMarkdown = new Property<string>(nameof(this.DescriptionAsMarkdown), Parameter.ToMarkdown(Language, Contract, MarkdownType.ForEditing).Result.Trim(), this);
 			this.@value = new Property<object>(nameof(this.Value), Parameter.ObjectValue, this);
 			this.expression = new Property<string>(nameof(this.Expression), Parameter.Expression, this);
 			this.guide = new Property<string>(nameof(this.Guide), Parameter.Guide, this);
@@ -299,13 +299,13 @@ namespace LegalLab.Models.Legal.Items
 		/// </summary>
 		/// <param name="Language">Language to translate from.</param>
 		/// <returns>Array of translatable texts, or null if none.</returns>
-		public string[] GetTranslatableTexts(string Language)
+		public async Task<string[]> GetTranslatableTexts(string Language)
 		{
 			HumanReadableText Text = this.Parameter.Descriptions.Find(Language);
 			if (Text is null)
 				return null;
 			else
-				return new string[] { Text.GenerateMarkdown(this.Contract, MarkdownType.ForEditing) };
+				return new string[] { await Text.GenerateMarkdown(this.Contract, MarkdownType.ForEditing) };
 		}
 
 		/// <summary>

@@ -78,10 +78,12 @@ namespace LegalLab.Models.Legal
 			return Task.CompletedTask;
 		}
 
-		private void Contract_FormatParameterDisplay(object Sender, ParameterValueFormattingEventArgs e)
+		private Task Contract_FormatParameterDisplay(object Sender, ParameterValueFormattingEventArgs e)
 		{
 			if (e.Value is Waher.Content.Duration D)
 				e.Value = DurationToString.ToString(D);
+
+			return Task.CompletedTask;
 		}
 
 		protected void SetParameters(Parameter[] ContractParameters)
@@ -166,7 +168,14 @@ namespace LegalLab.Models.Legal
 				if (!string.IsNullOrEmpty(Language))
 				{
 					foreach (ParameterInfo PI in this.Parameters)
-						PI.DescriptionAsMarkdown = (PI.Parameter.Descriptions.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
+					{
+						HumanReadableText Text = PI.Parameter.Descriptions.Find(Language);
+
+						if (Text is null)
+							PI.DescriptionAsMarkdown = string.Empty;
+						else
+							PI.DescriptionAsMarkdown = (await Text.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
+					}
 
 					if (this.languageOptions is not null)
 						await this.PopulateParameters(this.languageOptions, this.parameterOptions, this.additionalCommands, null);
@@ -476,7 +485,7 @@ namespace LegalLab.Models.Legal
 				}
 				else
 				{
-					StringBuilder Msg = new StringBuilder();
+					StringBuilder Msg = new();
 
 					Msg.Append("Parameter ");
 					Msg.Append(P.Name);
