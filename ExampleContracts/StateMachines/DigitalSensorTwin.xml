@@ -772,7 +772,7 @@ report.</String>
 				</paragraph>
 			</description>
 		</numericalParameter>
-		<stringParameter name="Currency" guide="Currency" regEx="\w{3}" minLength="3" maxLength="3">
+		<stringParameter name="Currency" guide="Currency" regEx="[A-Z]{3}" minLength="3" maxLength="3">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The currency of the token.</text>

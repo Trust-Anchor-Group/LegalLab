@@ -339,7 +339,7 @@
 				</paragraph>
 			</description>
 		</numericalParameter>
-		<stringParameter name="Currency" guide="Currency" regEx="\w{3}" minLength="3" maxLength="3">
+		<stringParameter name="Currency" guide="Currency" regEx="[A-Z]{3}" minLength="3" maxLength="3">
 			<description xml:lang="da">
 				<paragraph>
 					<text>Valutaen for den aftalte pris på tokenet.</text>

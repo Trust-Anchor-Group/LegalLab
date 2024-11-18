@@ -111,7 +111,7 @@
 				</paragraph>
 			</description>
 		</numericalParameter>
-		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="\w{3}">
+		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="[A-Z]{3}">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The currency of the agreed upon price of the token.</text>
