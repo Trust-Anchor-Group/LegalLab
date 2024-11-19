@@ -542,7 +542,7 @@ namespace LegalLab.Models.Tokens
 								else
 									throw new Exception("Command generated note of uncompatible type: " + Obj.GetType().FullName);
 
-								this.NoteAdded?.Invoke(this, EventArgs.Empty);
+								this.NoteAdded.Raise(this, EventArgs.Empty);
 
 								Msg = Command.Success?.Find(this.language);
 								if (!string.IsNullOrEmpty(Msg))

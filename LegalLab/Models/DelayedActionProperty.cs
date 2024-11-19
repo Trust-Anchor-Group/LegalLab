@@ -92,18 +92,8 @@ namespace LegalLab.Models
 		/// </summary>
 		public virtual Task Action()
 		{
-			try
-			{
-				this.OnAction?.Invoke(this, EventArgs.Empty);
-			}
-			catch (Exception ex)
-			{
-				Log.Exception(ex);
-			}
-			finally
-			{
+			if (!this.OnAction.Raise(this, EventArgs.Empty))
 				this.changed = false;
-			}
 
 			return Task.CompletedTask;
 		}

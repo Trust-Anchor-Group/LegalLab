@@ -58,15 +58,7 @@ namespace LegalLab.Models
 		{
 			MainWindow.UpdateGui(() =>
 			{
-				try
-				{
-					this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-				}
-				catch (Exception ex)
-				{
-					Log.Exception(ex);
-				}
-
+				this.CanExecuteChanged.Raise(this, EventArgs.Empty);
 				return Task.CompletedTask;
 			});
 		}

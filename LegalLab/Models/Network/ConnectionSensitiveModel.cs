@@ -90,11 +90,9 @@ namespace LegalLab.Models.Network
 		/// Method called when connection state has changed.
 		/// </summary>
 		/// <param name="NewState">New connection state.</param>
-		protected virtual async Task StateChanged(XmppState NewState)
+		protected virtual Task StateChanged(XmppState NewState)
 		{
-			EventHandlerAsync<XmppState> h = this.OnStateChanged;
-			if (h is not null)
-				await h(this, NewState);
+			return this.OnStateChanged.Raise(this, NewState);
 		}
 
 		/// <summary>

@@ -740,9 +740,7 @@ namespace LegalLab.Models.Network
 						break;
 				}
 
-				EventHandlerAsync<XmppState> h = this.OnStateChanged;
-				if (h is not null)
-					await h(this, NewState);
+				await this.OnStateChanged.Raise(this, NewState);
 			}
 			catch (Exception ex)
 			{
