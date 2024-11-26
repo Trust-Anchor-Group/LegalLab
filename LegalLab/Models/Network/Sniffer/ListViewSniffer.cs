@@ -53,7 +53,7 @@ namespace LegalLab.Models.Network.Sniffer
 
 		internal static string HexToString(byte[] Data)
 		{
-			StringBuilder Output = new StringBuilder();
+			StringBuilder Output = new();
 			int i = 0;
 
 			foreach (byte b in Data)
@@ -109,14 +109,7 @@ namespace LegalLab.Models.Network.Sniffer
 
 		public void RaiseSelectionChanged()
 		{
-			try
-			{
-				this.SelectionChanged?.Invoke(this, EventArgs.Empty);
-			}
-			catch (Exception ex)
-			{
-				Log.Critical(ex);
-			}
+			this.SelectionChanged.Raise(this, EventArgs.Empty);
 		}
 
 		/// <summary>

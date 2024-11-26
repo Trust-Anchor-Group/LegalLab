@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Input;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Persistence;
 using Waher.Runtime.Inventory;
@@ -108,6 +109,7 @@ namespace LegalLab.Models.Legal
 			this.apply = new Command(this.CanExecuteApply, this.ExecuteApply);
 
 			this.contracts = new ContractsClient(Client, ComponentJid);
+			this.contracts.EnableE2eEncryption(true);
 			this.contracts.IdentityUpdated += this.Contracts_IdentityUpdated;
 			this.contracts.PetitionForIdentityReceived += this.Contracts_PetitionForIdentityReceived;
 

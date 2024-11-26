@@ -9,7 +9,7 @@ namespace LegalLab.Models
 	/// </summary>
 	public class Property<T> : IProperty
 	{
-		protected T value = default;
+		protected T @value = default;
 		private readonly string name;
 		private readonly IModel model;
 
@@ -24,7 +24,7 @@ namespace LegalLab.Models
 		public Property(string Name, T DefaultValue, IModel Model)
 		{
 			this.name = Name;
-			this.value = DefaultValue;
+			this.@value = DefaultValue;
 			this.model = Model;
 		}
 
@@ -58,16 +58,16 @@ namespace LegalLab.Models
 		/// </summary>
 		public virtual T Value
 		{
-			get => this.value;
+			get => this.@value;
 			set
 			{
-				if (this.value is null && value is null)
+				if (this.@value is null && value is null)
 					return;
 
-				if (this.value?.Equals(value) ?? false)
+				if (this.@value?.Equals(value) ?? false)
 					return;
 
-				this.value = value;
+				this.@value = value;
 
 				PropertyChangedEventHandler h = this.PropertyChanged;
 				if (h is not null)
@@ -78,7 +78,7 @@ namespace LegalLab.Models
 					}
 					catch (Exception ex)
 					{
-						Log.Critical(ex);
+						Log.Exception(ex);
 					}
 				}
 

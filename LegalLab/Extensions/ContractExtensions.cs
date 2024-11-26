@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Xml;
 using Waher.Content.Markdown;
 using Waher.Content.Markdown.Contracts;
@@ -80,7 +81,7 @@ namespace LegalLab.Extensions
 				return null;
 
 			MarkdownDocument ParsedMarkdown = await MarkdownDocument.CreateAsync(Markdown);
-			using ContractsRenderer Renderer = new(XML.WriterSettings(false, true), "Root", ContractsClient.NamespaceSmartContracts);
+			using ContractsRenderer Renderer = new(XML.WriterSettings(false, true), "Root", ContractsClient.NamespaceSmartContractsCurrent);
 			
 			await ParsedMarkdown.RenderDocument(Renderer);
 
@@ -128,7 +129,7 @@ namespace LegalLab.Extensions
 				return null;
 
 			MarkdownDocument ParsedMarkdown = await MarkdownDocument.CreateAsync(Markdown);
-			using ContractsRenderer Renderer = new(XML.WriterSettings(false, true), "Root", ContractsClient.NamespaceSmartContracts);
+			using ContractsRenderer Renderer = new(XML.WriterSettings(false, true), "Root", ContractsClient.NamespaceSmartContractsCurrent);
 			
 			await ParsedMarkdown.RenderDocument(Renderer);
 
@@ -240,7 +241,7 @@ namespace LegalLab.Extensions
 				return (string.Empty, null);
 
 			StringBuilder sb = new();
-			Contract.NormalizeXml(Xml, sb, ContractsClient.NamespaceSmartContracts);
+			Contract.NormalizeXml(Xml, sb, ContractsClient.NamespaceSmartContractsCurrent);
 
 			XmlDocument Doc = new()
 			{
@@ -281,7 +282,7 @@ namespace LegalLab.Extensions
 				return null;
 
 			StringBuilder sb = new();
-			Contract.NormalizeXml(Doc.DocumentElement, sb, ContractsClient.NamespaceSmartContracts);
+			Contract.NormalizeXml(Doc.DocumentElement, sb, ContractsClient.NamespaceSmartContractsCurrent);
 
 			Doc = new XmlDocument()
 			{
@@ -513,21 +514,36 @@ namespace LegalLab.Extensions
 		/// <param name="Texts">Localized set of texts.</param>
 		/// <param name="Language">Language</param>
 		/// <returns>Editable markdown</returns>
-		public static string ToMarkdown(this Contract Contract, HumanReadableText[] Texts, string Language)
+		public static async Task<string> ToMarkdown(this Contract Contract, HumanReadableText[] Texts, string Language)
 		{
 			foreach (HumanReadableText Text in Texts)
 			{
 				if (Text.Language == Language)
-					return Text.GenerateMarkdown(Contract, MarkdownType.ForEditing);
+					return await Text.GenerateMarkdown(Contract, MarkdownType.ForEditing);
 			}
 
 			foreach (HumanReadableText Text in Texts)
 			{
 				if (Text.Language == Contract.DefaultLanguage)
-					return Text.GenerateMarkdown(Contract, MarkdownType.ForEditing);
+					return await Text.GenerateMarkdown(Contract, MarkdownType.ForEditing);
 			}
 
 			return string.Empty;
+		}
+
+		/// <summary>
+		/// Converts a <see cref="ProtectionLevel"/> enumeration to a Brush color.
+		/// </summary>
+		/// <param name="Protection">Protection level.</param>
+		/// <returns>Default color brush.</returns>
+		public static Brush DefaultBrush(this ProtectionLevel Protection)
+		{
+			return Protection switch
+			{
+				ProtectionLevel.Transient => Brushes.LightBlue,
+				ProtectionLevel.Encrypted => Brushes.LightGreen,
+				_ => null,
+			};
 		}
 	}
 }

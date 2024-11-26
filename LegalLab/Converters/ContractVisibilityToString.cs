@@ -20,7 +20,7 @@ namespace LegalLab.Converters
 		/// <inheritdoc/>
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (value is string s && ContractVisibility.TryParse(s, out ContractVisibility Visibility))
+			if (value is string s && Enum.TryParse(s, out ContractVisibility Visibility))
 				return Visibility;
 
 			return value;

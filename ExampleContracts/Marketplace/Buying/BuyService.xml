@@ -1,4 +1,4 @@
-<contract archiveOpt="P3M" archiveReq="P1M" canActAsTemplate="true" duration="P1M" id="BuyServiceExampleTemplate" visibility="PublicSearchable" xmlns="urn:ieee:iot:leg:sc:1.0">
+<contract archiveOpt="P3M" archiveReq="P1M" canActAsTemplate="true" duration="P1M" id="BuyServiceExampleTemplate" visibility="PublicSearchable" xmlns="urn:nf:iot:leg:sc:1.0">
 	<ToBuy xmlns="https://paiwise.tagroot.io/Schema/Marketplace.xsd">
 		<Description>
 			<Type>
@@ -278,7 +278,7 @@
 				</paragraph>
 			</description>
 		</numericalParameter>
-		<stringParameter name="Currency" guide="Currency" regEx="\w{3}" minLength="3" maxLength="3">
+		<stringParameter name="Currency" guide="Currency" regEx="[A-Z]{3}" minLength="3" maxLength="3">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Currency of instant payments.</text>

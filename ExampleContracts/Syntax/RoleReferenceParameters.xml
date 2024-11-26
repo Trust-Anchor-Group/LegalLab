@@ -1,4 +1,4 @@
-<contract archiveOpt="P3M" archiveReq="P1M" canActAsTemplate="true" duration="P1M" id="RoleReferenceContract1" visibility="Public" xmlns="urn:ieee:iot:leg:sc:1.0">
+<contract archiveOpt="P3M" archiveReq="P1M" canActAsTemplate="true" duration="P1M" id="RoleReferenceContract1" visibility="Public" xmlns="urn:nf:iot:leg:sc:1.0">
 	<Nop xmlns="https://paiwise.tagroot.io/Schema/PaymentInstructions.xsd" />
 	<role maxCount="1" minCount="1" name="Seller">
 		<description xml:lang="en">

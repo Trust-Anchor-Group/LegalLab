@@ -20,6 +20,7 @@ using Waher.Content.Xml;
 using Waher.Events;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
 using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Persistence;
@@ -273,7 +274,14 @@ namespace LegalLab.Models.Legal
 				if (!string.IsNullOrEmpty(Language))
 				{
 					foreach (RoleInfo RI in this.Roles)
-						RI.DescriptionAsMarkdown = (RI.Role.Descriptions.Find(Language)?.GenerateMarkdown(this.Contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
+					{
+						HumanReadableText Text = RI.Role.Descriptions.Find(Language);
+
+						if (Text is null)
+							RI.DescriptionAsMarkdown = string.Empty;
+						else
+							RI.DescriptionAsMarkdown = (await Text.GenerateMarkdown(this.Contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
+					}
 
 					await this.PopulateHumanReadableText();
 				}
@@ -282,7 +290,7 @@ namespace LegalLab.Models.Legal
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 				MainWindow.ErrorBox(ex.Message);
 
 				return false;
@@ -675,7 +683,7 @@ namespace LegalLab.Models.Legal
 				}
 
 				await this.contracts.AuthorizeAccessToContractAsync(this.Contract.ContractId, BareJid, true);
-				this.contracts.SendContractProposal(this.Contract.ContractId, Role, BareJid);
+				await this.contracts.SendContractProposal(this.Contract, Role, BareJid);
 
 				MainWindow.SuccessBox("Proposal successfully sent.");
 			}
@@ -883,7 +891,7 @@ namespace LegalLab.Models.Legal
 								if (Entry is not null)
 								{
 									Entry.Text = s;
-									Entry.Background = null;
+									Entry.Background = Info.Protection.DefaultBrush();
 								}
 							}
 							else if (Info.Parameter is NumericalParameter NP)
@@ -893,7 +901,7 @@ namespace LegalLab.Models.Legal
 									NP.Value = Waher.Script.Expression.ToDecimal(P.Value);
 
 									if (Entry is not null)
-										Entry.Background = null;
+										Entry.Background = Info.Protection.DefaultBrush();
 									
 									Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());
 								}
@@ -926,7 +934,7 @@ namespace LegalLab.Models.Legal
 									}
 
 									if (CheckBox is not null)
-										CheckBox.Background = null;
+										CheckBox.Background = Info.Protection.DefaultBrush();
 
 									Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());
 								}
@@ -946,7 +954,7 @@ namespace LegalLab.Models.Legal
 									DTP.Value = TP;
 
 									if (Entry is not null)
-										Entry.Background = null;
+										Entry.Background = Info.Protection.DefaultBrush();
 
 									Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());
 								}
@@ -966,7 +974,7 @@ namespace LegalLab.Models.Legal
 									TSP.Value = TS;
 
 									if (Entry is not null)
-										Entry.Background = null;
+										Entry.Background = Info.Protection.DefaultBrush();
 
 									Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());
 								}
@@ -986,7 +994,7 @@ namespace LegalLab.Models.Legal
 									DP.Value = D;
 
 									if (Entry is not null)
-										Entry.Background = null;
+										Entry.Background = Info.Protection.DefaultBrush();
 
 									Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());
 								}
@@ -1007,7 +1015,7 @@ namespace LegalLab.Models.Legal
 								if (Entry is not null)
 								{
 									Entry.Text = s;
-									Entry.Background = null;
+									Entry.Background = Info.Protection.DefaultBrush();
 								}
 
 								Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());
@@ -1016,7 +1024,7 @@ namespace LegalLab.Models.Legal
 					}
 					catch (Exception ex)
 					{
-						Log.Critical(ex);
+						Log.Exception(ex);
 					}
 				}
 
@@ -1025,7 +1033,7 @@ namespace LegalLab.Models.Legal
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 

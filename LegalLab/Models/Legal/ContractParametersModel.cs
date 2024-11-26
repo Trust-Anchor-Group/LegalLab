@@ -1,4 +1,5 @@
-﻿using LegalLab.Converters;
+﻿using DocumentFormat.OpenXml.EMMA;
+using LegalLab.Converters;
 using LegalLab.Extensions;
 using LegalLab.Models.Design;
 using LegalLab.Models.Legal.Items;
@@ -77,10 +78,12 @@ namespace LegalLab.Models.Legal
 			return Task.CompletedTask;
 		}
 
-		private void Contract_FormatParameterDisplay(object Sender, ParameterValueFormattingEventArgs e)
+		private Task Contract_FormatParameterDisplay(object Sender, ParameterValueFormattingEventArgs e)
 		{
 			if (e.Value is Waher.Content.Duration D)
 				e.Value = DurationToString.ToString(D);
+
+			return Task.CompletedTask;
 		}
 
 		protected void SetParameters(Parameter[] ContractParameters)
@@ -165,7 +168,14 @@ namespace LegalLab.Models.Legal
 				if (!string.IsNullOrEmpty(Language))
 				{
 					foreach (ParameterInfo PI in this.Parameters)
-						PI.DescriptionAsMarkdown = (PI.Parameter.Descriptions.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
+					{
+						HumanReadableText Text = PI.Parameter.Descriptions.Find(Language);
+
+						if (Text is null)
+							PI.DescriptionAsMarkdown = string.Empty;
+						else
+							PI.DescriptionAsMarkdown = (await Text.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
+					}
 
 					if (this.languageOptions is not null)
 						await this.PopulateParameters(this.languageOptions, this.parameterOptions, this.additionalCommands, null);
@@ -175,7 +185,7 @@ namespace LegalLab.Models.Legal
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 				MainWindow.ErrorBox(ex.Message);
 
 				return false;
@@ -378,7 +388,7 @@ namespace LegalLab.Models.Legal
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 
 			await this.RaiseParametersChanged();
@@ -392,7 +402,7 @@ namespace LegalLab.Models.Legal
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -430,7 +440,7 @@ namespace LegalLab.Models.Legal
 					else if (ParameterInfo.Parameter is not CalcParameter)
 						ParameterInfo.Value = TextBox.Text;
 
-					TextBox.Background = null;
+					TextBox.Background = ParameterInfo.Protection.DefaultBrush();
 
 					Log.Informational("Parameter " + ParameterInfo.Parameter.Name + " set to " + TextBox.Text.ToString());
 
@@ -448,7 +458,7 @@ namespace LegalLab.Models.Legal
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -470,12 +480,12 @@ namespace LegalLab.Models.Legal
 			{
 				if (await P.ValidateParameter(Variables))
 				{
-					P.Control.Background = null;
+					P.Control.Background = P.Protection.DefaultBrush();
 					Log.Informational("Parameter " + P.Name + " is OK.");
 				}
 				else
 				{
-					StringBuilder Msg = new StringBuilder();
+					StringBuilder Msg = new();
 
 					Msg.Append("Parameter ");
 					Msg.Append(P.Name);

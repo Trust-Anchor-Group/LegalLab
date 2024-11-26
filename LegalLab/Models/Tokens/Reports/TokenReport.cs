@@ -1,6 +1,7 @@
 ﻿using LegalLab.Extensions;
 using LegalLab.Tabs;
 using NeuroFeatures;
+using NeuroFeatures.EventArguments;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -55,10 +56,10 @@ namespace LegalLab.Models.Tokens.Reports
 		/// </summary>
 		/// <param name="Xaml">String-representation of XAML</param>
 		/// <returns>Parsed XAML</returns>
-		public UIElement ParseReport(string Xaml)
+		public static UIElement ParseReport(string Xaml)
 		{
-			List<DynamicImageRef> DynamicImages = new List<DynamicImageRef>();
-			StringBuilder sb = new StringBuilder();
+			List<DynamicImageRef> DynamicImages = new();
+			StringBuilder sb = new();
 			int i = 0;
 			int c = Xaml.Length;
 
@@ -72,11 +73,11 @@ namespace LegalLab.Models.Tokens.Reports
 				}
 				else
 				{
-					sb.Append(Xaml.Substring(i, M.Index - i));
+					sb.Append(Xaml[i..M.Index]);
 					i = M.Index + M.Length;
 
 					sb.Append("<InlineUIContainer><Image Name=\"DynamicImage");
-					sb.Append(DynamicImages.Count.ToString());
+					sb.Append(DynamicImages.Count);
 					sb.Append("\"/></InlineUIContainer>");
 
 					DynamicImages.Add(new DynamicImageRef()
@@ -95,16 +96,16 @@ namespace LegalLab.Models.Tokens.Reports
 
 			if (Parsed is Panel Panel)
 			{
-				LinkedList<Panel> ToProcess = new LinkedList<Panel>();
-				LinkedList<Image> Images = new LinkedList<Image>();
+				LinkedList<Panel> ToProcess = new();
+				LinkedList<Image> Images = new();
 				ToProcess.AddLast(Panel);
 
-				while (!(ToProcess.First is null))
+				while (ToProcess.First is not null)
 				{
 					Panel = ToProcess.First.Value;
 					ToProcess.RemoveFirst();
 
-					if (!(Panel.Children is null))
+					if (Panel.Children is not null)
 					{
 						foreach (UIElement Element in Panel.Children)
 						{
@@ -114,7 +115,7 @@ namespace LegalLab.Models.Tokens.Reports
 								Images.AddLast(Image);
 							else if (Element is TextBlock TextBlock)
 							{
-								if (!(TextBlock.Inlines is null))
+								if (TextBlock.Inlines is not null)
 								{
 									foreach (Inline Inline in TextBlock.Inlines)
 									{
@@ -152,9 +153,9 @@ namespace LegalLab.Models.Tokens.Reports
 
 						byte[] Bin = Convert.FromBase64String(Ref.Base64);
 
-						using MemoryStream ms = new MemoryStream(Bin);
+						using MemoryStream ms = new(Bin);
 
-						BitmapImage BitmapImage = new BitmapImage();
+						BitmapImage BitmapImage = new();
 						BitmapImage.BeginInit();
 						BitmapImage.CacheOption = BitmapCacheOption.OnLoad;
 						BitmapImage.StreamSource = ms;
@@ -168,7 +169,7 @@ namespace LegalLab.Models.Tokens.Reports
 			return (UIElement)Parsed;
 		}
 
-		private static readonly Regex dynamicImage = new Regex("<!--<img(\\s+((border=[\"'](?'Border'\\d+)[\"'])|(width=[\"'](?'Width'\\d+)[\"'])|(height=[\"'](?'Height'\\d+)[\"'])|(alt=[\"'](?'Alt'[^\"']*)[\"'])|(src=[\"']data:(?'ContentType'\\w+\\/\\w+);base64,(?'Base64'[A-Za-z0-9+-\\/_=]+)[\"'])))*\\s*\\/>-->", RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled);
+		private static readonly Regex dynamicImage = new("<!--<img(\\s+((border=[\"'](?'Border'\\d+)[\"'])|(width=[\"'](?'Width'\\d+)[\"'])|(height=[\"'](?'Height'\\d+)[\"'])|(alt=[\"'](?'Alt'[^\"']*)[\"'])|(src=[\"']data:(?'ContentType'\\w+\\/\\w+);base64,(?'Base64'[A-Za-z0-9+-\\/_=]+)[\"'])))*\\s*\\/>-->", RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled);
 
 		private class DynamicImageRef
 		{
@@ -212,7 +213,7 @@ namespace LegalLab.Models.Tokens.Reports
 		/// </summary>
 		public async Task Action()
 		{
-			if (!(this.tab is null))
+			if (this.tab is not null)
 				await this.GenerateReport(this.tab);
 		}
 
@@ -228,7 +229,7 @@ namespace LegalLab.Models.Tokens.Reports
 
 			MainWindow.UpdateGui(() =>
 			{
-				UIElement Report = this.ParseReport(Xaml);
+				UIElement Report = ParseReport(Xaml);
 
 				Tab.ReportPanel.Children.Clear();
 				Tab.ReportPanel.Children.Add(Report);

@@ -56,15 +56,7 @@ namespace LegalLab.Models
 		{
 			MainWindow.UpdateGui(() =>
 			{
-				try
-				{
-					this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-				}
-				catch (Exception ex)
-				{
-					Log.Critical(ex);
-				}
-
+				this.CanExecuteChanged.Raise(this, EventArgs.Empty);
 				return Task.CompletedTask;
 			});
 		}
@@ -86,7 +78,7 @@ namespace LegalLab.Models
 				}
 				catch (Exception ex)
 				{
-					Log.Critical(ex);
+					Log.Exception(ex);
 					return false;
 				}
 			}
@@ -98,7 +90,7 @@ namespace LegalLab.Models
 		/// <param name="parameter">Data used by the command. If the command does not require data to be passed, this object can be set to null.</param>
 		public async void Execute(object parameter)
 		{
-			if (!(this.executeCallback is null))
+			if (this.executeCallback is not null)
 			{
 				try
 				{
@@ -106,7 +98,7 @@ namespace LegalLab.Models
 				}
 				catch (Exception ex)
 				{
-					Log.Critical(ex);
+					Log.Exception(ex);
 					MainWindow.ErrorBox(ex.Message);
 				}
 			}

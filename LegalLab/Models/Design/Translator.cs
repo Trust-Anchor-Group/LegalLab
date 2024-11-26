@@ -109,7 +109,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 				Translations[Index] = Text;
 			}
 		}

@@ -87,7 +87,7 @@ namespace LegalLab.Models.Script
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 				MainWindow.ErrorBox(ex.Message);
 			}
 		}
@@ -132,12 +132,14 @@ namespace LegalLab.Models.Script
 				{
 					IElement Ans;
 
-					void Preview(object sender2, PreviewEventArgs e2)
+					Task Preview(object sender2, PreviewEventArgs e2)
 					{
 						MainWindow.UpdateGui(async () =>
 						{
 							ResultBlock = await this.ShowResult(ResultBlock, e2.Preview, ScriptBlock);
 						});
+
+						return Task.CompletedTask;
 					}
 
 					this.variables.OnPreview += Preview;

@@ -1,0 +1,412 @@
+<contract archiveOpt="P1Y" archiveReq="P1Y" canActAsTemplate="true" duration="P1M" id="SimpleOrder" visibility="Public" xmlns="urn:nf:iot:leg:sc:1.0">
+	<Create xmlns="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd">
+		<TokenID>
+			<Random />
+		</TokenID>
+		<Creator>
+			<RoleReference role="Buyer" />
+		</Creator>
+		<Owner>
+			<RoleReference role="Buyer" />
+		</Owner>
+		<TrustProvider>
+			<RoleReference role="TrustProvider" />
+		</TrustProvider>
+		<Value>
+			<ParameterReference parameter="Total" />
+		</Value>
+		<Currency>
+			<ParameterReference parameter="PriceUnit" />
+		</Currency>
+		<CommissionPercent>
+			<Number>100</Number>
+		</CommissionPercent>
+		<Expires>
+			<ParameterReference parameter="Expires" />
+		</Expires>
+		<CreatorCanDestroy>
+			<Boolean>false</Boolean>
+		</CreatorCanDestroy>
+		<OwnerCanDestroyIndividual>
+			<Boolean>false</Boolean>
+		</OwnerCanDestroyIndividual>
+		<Definition>
+			<Nop xmlns="https://paiwise.tagroot.io/Schema/PaymentInstructions.xsd" />
+		</Definition>
+		<FriendlyName>
+			<String>Simple Order Demo</String>
+		</FriendlyName>
+		<Category>
+			<String>Example</String>
+		</Category>
+		<Description>
+			<String>Example token used for testing purposes.</String>
+		</Description>
+		<Glyph contentType="image/png">iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAABFFJREFUeJztWU1IMlsYfrqTFmgLIb5yEURlLQo3YVZUCi1qFUFQUKt2QURWm7IgIkhqJ9IP1EIIWkWuIugPLIh0GVFUBC5SocCkEM2/uYvv3oPDNNM43Thwv3lgYM77d57zeI7nzEwBy7Is/mD8RZsAbSgC0CZAG4oAtAnQhiIAbQK0oQhAmwBtKALQJkAbigC0CdCGIgBtArShCECbAG0oAtAmQBuKALQJ0EahkCMYDGJpaQklJSV5F43H4+jr60NHRwfPNz8/j3g8jmw2i5qaGoyMjORdHwBSqRScTicODg5wfX2N19dXqNVqVFRUoLGxET09Pejv7/+6ECsAn8/HApB9LS4u8mo+PT3x4vJFJpNh29vbJfPY2dkRrSe4BL77uSCTyfBs4+PjPNvCwoLkmqenp2AYBufn55JzHh8fRf0FQh9G3t7ecHx8jOLiYo69tLQUZrOZtLe3t/Hr1y+k02liSyaTMBqNqKqq4nZWUAAA0Gg0iMVixC5FbK/XC6vVyrE1Nzdjbm4O3d3dYBiG2O/v77G7u4vZ2VlMT0/D4XAIF857Dv5mS65oNCopx+FwkBy73c5arVbS3t/fz6tPAOzt7a2kfgOBgHhdSVVEyITD4bxzYrEYe3R0RNoGg0E0d2BggJOfTCbl0P6cl6ykPAXIHWx1dfWndV5eXiT153K55FAWri0rKU8BGhoaSLzH4yF2u91O7ENDQ5/mer3eb+0aX+HHBYhGo6ID+GpwKysrxF9fXy+Hrih+/CRos9nI/dTUFM+fe1hyOp08fygUIvcGg0Fyv3V1dWhtbYXJZBIPlKMa8pgBubHpdJrn9/v9xM8wDM9vs9mIv7e3VxZHMfzoDFhdXSX3FouFs1f/C5PJBI1GA+D34eni4oLjLysrI/eBQOA/5yh4EBJN+udAAwDhcBjl5eWfxhUVFSGZTAIAlpeX0dbWhkQiwYnRarXY2trC5uYmAKCpqQk+n4/4Dw8P0dXVRdpS6eZyFM2RPKcEppfQEri8vJT9HPHx8SHY397eXt4cReOkDVm4uJAALS0tsgUYHR3l1LJYLHlvhVLjf2QJpNNpqFQq0na73UilUoJTkWEYPD8/Y2ZmhthyY6PRKHQ6HWmr1WrEYjEUFgo+zdNdAmNjY8RvNpsl19VqtSTP7XZzfGtra7yZMjg4yPr9fl4dj8dDdwnk+s/OziTXXV9fJ3k6nY7ndzqdspaU6Fgks8tNyikeDAY5PpfL9a2ja27uZ79uKBRia2trJQ++srJStD/hRSSCiYkJqFQqvL+/816ZJRIJTE5OIpvNcrYvqXC73bi6ukI2m8XDwwPvJKfX63F3d4dIJIKNjQ2cnJzg5uYGkUgEDMNAr9fDaDSis7MTw8PD5IwhBFl/gv8n/PFvhRUBaBOgDUUA2gRoQxGANgHaUASgTYA2FAFoE6ANRQDaBGhDEYA2AdpQBKBNgDYUAWgToA1FANoEaONve9o8PVvYS2AAAAAASUVORK5CYII=</Glyph>
+	</Create>
+	<role maxCount="1" minCount="1" name="Buyer">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The entity that places an order, in accordance with rules set forth in the contract. Payment will be initiated as soon as the order has been signed.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role maxCount="1" minCount="1" name="TrustProvider">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The entity that validates the identity of the buyer, performs transaction, and ensures the legality of the agreement.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<templateOnly />
+	</parts>
+	<parameters>
+		<numericalParameter exp="floor(NrItems)=NrItems" guide="#Items" max="1000" maxIncluded="true" min="1" minIncluded="true" name="NrItems" value="100">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Number of items to order</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<calcParameter exp="&quot;Bottle(s) of excellent beverage&quot;" name="ItemName">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The most exquisite beverage on the market.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+		<calcParameter exp="5" name="PricePerItem">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Price per item</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+		<calcParameter exp="&quot;TST&quot;" name="PriceUnit">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Price currency</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+		<calcParameter exp="17" name="VatPercent">
+			<description xml:lang="en">
+				<paragraph>
+					<text>VAT rate, in percent.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+		<calcParameter exp="NrItems*PricePerItem" name="TotalNoVat">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Total, before tax.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+		<calcParameter exp="TotalNoVat*VatPercent%" name="Vat">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Value Added Tax.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+		<calcParameter exp="100" name="Transport">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Transport fee.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+		<calcParameter exp="TotalNoVat+Vat+Transport" name="Total">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Total amount for order</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+		<calcParameter exp="5" name="DeliveryDays">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Number of days for delivery.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+		<calcParameter exp="Today+Duration('P1M')" name="Expires">
+			<description xml:lang="en">
+				<paragraph>
+					<text>When delivery token expires.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+		<roleParameter index="1" name="ReferenceName" property="FULLNAME" role="Buyer">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Full name of person placing the order.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter index="1" name="ReferencePNr" property="PNR" role="Buyer">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Personal number of reference person.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter index="1" name="ReferenceCountry" property="COUNTRY" role="Buyer">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Country of reference person.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter index="1" name="ReferencePhoneNr" property="PHONE" role="Buyer">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Phone number of reference person.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter index="1" name="OrgName" property="ORGNAME" role="Buyer">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Full name of organization placing the order.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter index="1" name="OrgNr" property="ORGNR" role="Buyer">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Organization number of organization placing the order.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter index="1" name="OrgAddress" property="FULLORGADDR" role="Buyer">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Full address of organization placing the order.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter index="1" name="OrgZip" property="ORGZIP" role="Buyer">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Postal code of organization placing the order.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter index="1" name="OrgCity" property="ORGCITY" role="Buyer">
+			<description xml:lang="en">
+				<paragraph>
+					<text>City of organization placing the order.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter index="1" name="OrgCountry" property="ORGCOUNTRY" role="Buyer">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Country of organization placing the order.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Simple Order Demo</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>I hereby order </text>
+					<bold>
+						<parameter name="NrItems" />
+					</bold>
+					<text> of </text>
+					<bold>
+						<parameter name="ItemName" />
+					</bold>
+					<text> to be delivered to me within </text>
+					<bold>
+						<parameter name="DeliveryDays" />
+					</bold>
+					<text> days.</text>
+				</paragraph>
+				<table>
+					<row>
+						<cell alignment="Right" colSpan="2" header="true">
+							<text>Price details</text>
+						</cell>
+					</row>
+					<row>
+						<cell alignment="Left" colSpan="1" header="false">
+							<text>Number of items</text>
+						</cell>
+						<cell alignment="Right" colSpan="1" header="false">
+							<parameter name="NrItems" />
+						</cell>
+					</row>
+					<row>
+						<cell alignment="Left" colSpan="1" header="false">
+							<text>Price per item</text>
+						</cell>
+						<cell alignment="Right" colSpan="1" header="false">
+							<parameter name="PricePerItem" />
+							<text> </text>
+							<parameter name="PriceUnit" />
+						</cell>
+					</row>
+					<row>
+						<cell alignment="Left" colSpan="1" header="false">
+							<bold>
+								<text>Item Total</text>
+							</bold>
+						</cell>
+						<cell alignment="Right" colSpan="1" header="false">
+							<bold>
+								<parameter name="TotalNoVat" />
+								<text> </text>
+								<parameter name="PriceUnit" />
+							</bold>
+						</cell>
+					</row>
+					<row>
+						<cell alignment="Left" colSpan="1" header="false">
+							<text>Value added tax (</text>
+							<parameter name="VatPercent" />
+							<text> %)</text>
+						</cell>
+						<cell alignment="Right" colSpan="1" header="false">
+							<parameter name="Vat" />
+							<text> </text>
+							<parameter name="PriceUnit" />
+						</cell>
+					</row>
+					<row>
+						<cell alignment="Left" colSpan="1" header="false">
+							<text>Transport fee</text>
+						</cell>
+						<cell alignment="Right" colSpan="1" header="false">
+							<parameter name="Transport" />
+							<text> </text>
+							<parameter name="PriceUnit" />
+						</cell>
+					</row>
+					<row>
+						<cell alignment="Left" colSpan="1" header="false">
+							<bold>
+								<text>Total</text>
+							</bold>
+						</cell>
+						<cell alignment="Right" colSpan="1" header="false">
+							<bold>
+								<parameter name="Total" />
+								<text> </text>
+								<parameter name="PriceUnit" />
+							</bold>
+						</cell>
+					</row>
+				</table>
+				<table>
+					<row>
+						<cell alignment="Left" colSpan="2" header="true">
+							<text>Your reference</text>
+						</cell>
+					</row>
+					<row>
+						<cell alignment="Left" colSpan="1" header="false">
+							<text>Person placing order</text>
+						</cell>
+						<cell alignment="Left" colSpan="1" header="false">
+							<parameter name="ReferenceName" />
+						</cell>
+					</row>
+					<row>
+						<cell alignment="Left" colSpan="1" header="false">
+							<text>Personal number</text>
+						</cell>
+						<cell alignment="Left" colSpan="1" header="false">
+							<parameter name="ReferencePNr" />
+						</cell>
+					</row>
+					<row>
+						<cell alignment="Left" colSpan="1" header="false">
+							<text>Country</text>
+						</cell>
+						<cell alignment="Left" colSpan="1" header="false">
+							<parameter name="ReferenceCountry" />
+						</cell>
+					</row>
+					<row>
+						<cell alignment="Left" colSpan="1" header="false">
+							<text>Phone number</text>
+						</cell>
+						<cell alignment="Left" colSpan="1" header="false">
+							<parameter name="ReferencePhoneNr" />
+						</cell>
+					</row>
+				</table>
+				<table>
+					<row>
+						<cell alignment="Left" colSpan="2" header="true">
+							<text>Delivery details</text>
+						</cell>
+					</row>
+					<row>
+						<cell alignment="Left" colSpan="1" header="false">
+							<text>Organization</text>
+						</cell>
+						<cell alignment="Left" colSpan="1" header="false">
+							<parameter name="OrgName" />
+						</cell>
+					</row>
+					<row>
+						<cell alignment="Left" colSpan="1" header="false">
+							<text>Organization number</text>
+						</cell>
+						<cell alignment="Left" colSpan="1" header="false">
+							<parameter name="OrgNr" />
+						</cell>
+					</row>
+					<row>
+						<cell alignment="Left" colSpan="1" header="false">
+							<text>Address</text>
+						</cell>
+						<cell alignment="Left" colSpan="1" header="false">
+							<parameter name="OrgAddress" />
+						</cell>
+					</row>
+					<row>
+						<cell alignment="Left" colSpan="1" header="false">
+							<text>Postal address</text>
+						</cell>
+						<cell alignment="Left" colSpan="1" header="false">
+							<parameter name="OrgZip" />
+							<text> </text>
+							<parameter name="OrgCity" />
+						</cell>
+					</row>
+					<row>
+						<cell alignment="Left" colSpan="1" header="false">
+							<text>Country</text>
+						</cell>
+						<cell alignment="Left" colSpan="1" header="false">
+							<parameter name="OrgCountry" />
+						</cell>
+					</row>
+				</table>
+				<section>
+					<header>
+						<text>Token</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Placing an order will create a token in your wallet. This token can be used to track the order. The token will expire </text>
+							<parameter name="Expires" />
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>

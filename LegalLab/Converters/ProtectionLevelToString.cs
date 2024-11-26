@@ -7,9 +7,9 @@ using Waher.Networking.XMPP.Contracts;
 namespace LegalLab.Converters
 {
 	/// <summary>
-	/// Converts <see cref="ContractParts"/> values to strings.
+	/// Converts <see cref="ProtectionLevel"/> values to strings.
 	/// </summary>
-	public class ContractPartsToString : MarkupExtension, IValueConverter
+	public class ProtectionLevelToString : MarkupExtension, IValueConverter
 	{
 		/// <inheritdoc/>
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -20,8 +20,8 @@ namespace LegalLab.Converters
 		/// <inheritdoc/>
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (value is string s && Enum.TryParse(s, out ContractParts Parts))
-				return Parts;
+			if (value is string s && Enum.TryParse(s, out ProtectionLevel Protection))
+				return Protection;
 
 			return value;
 		}

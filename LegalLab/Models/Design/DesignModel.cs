@@ -273,13 +273,15 @@ namespace LegalLab.Models.Design
 				this.Language = "en";
 			}
 
-			this.HumanReadableMarkdown = Contract.ToMarkdown(this.Language, MarkdownType.ForEditing)?.Trim() ?? string.Empty;
+			this.HumanReadableMarkdown = (await Contract.ToMarkdown(this.Language, MarkdownType.ForEditing))?.Trim() ?? string.Empty;
 		}
 
-		private void Contract_FormatParameterDisplay(object Sender, ParameterValueFormattingEventArgs e)
+		private Task Contract_FormatParameterDisplay(object Sender, ParameterValueFormattingEventArgs e)
 		{
 			if (e.Value is Waher.Content.Duration D)
 				e.Value = DurationToString.ToString(D);
+
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -397,13 +399,33 @@ namespace LegalLab.Models.Design
 					{
 						if (!string.IsNullOrEmpty(Language))
 						{
+							HumanReadableText Text;
+
 							foreach (ParameterInfo PI in this.AllParameterInfos)
-								PI.DescriptionAsMarkdown = (PI.Parameter.Descriptions.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
+							{
+								Text = PI.Parameter.Descriptions.Find(Language);
+
+								if (Text is null)
+									PI.DescriptionAsMarkdown = string.Empty;
+								else
+									PI.DescriptionAsMarkdown = (await Text.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
+							}
 
 							foreach (RoleInfo RI in this.Roles)
-								RI.DescriptionAsMarkdown = (RI.Role.Descriptions.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
+							{
+								Text = RI.Role.Descriptions.Find(Language);
 
-							this.HumanReadableMarkdown = (this.contract.ForHumans.Find(Language)?.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
+								if (Text is null)
+									RI.DescriptionAsMarkdown = string.Empty;
+								else
+									RI.DescriptionAsMarkdown = (await Text.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
+							}
+
+							Text = this.contract.ForHumans.Find(Language);
+							if (Text is null)
+								this.HumanReadableMarkdown = string.Empty;
+							else
+								this.HumanReadableMarkdown = (await Text.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
 
 							this.lastLanguage = Language;
 						}
@@ -415,12 +437,12 @@ namespace LegalLab.Models.Design
 						List<TranslationItem> Items = new();
 
 						foreach (ParameterInfo PI in this.AllParameterInfos)
-							Add(Items, PI, FromLanguage, Language);
+							await Add(Items, PI, FromLanguage, Language);
 
 						foreach (RoleInfo RI in this.Roles)
-							Add(Items, RI, FromLanguage, Language);
+							await Add(Items, RI, FromLanguage, Language);
 
-						Add(Items, this, FromLanguage, Language);
+						await Add(Items, this, FromLanguage, Language);
 
 						if (Items.Count > 0)
 						{
@@ -458,19 +480,19 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 				MainWindow.ErrorBox(ex.Message);
 			}
 		}
 
-		private static void Add(List<TranslationItem> Items, ITranslatable Translatable, string From, string To)
+		private static async Task Add(List<TranslationItem> Items, ITranslatable Translatable, string From, string To)
 		{
-			string[] Texts = Translatable.GetTranslatableTexts(To);
+			string[] Texts = await Translatable.GetTranslatableTexts(To);
 			if (Texts is not null)
 				Translatable.SetTranslatableTexts(Texts, To);
 			else
 			{
-				Texts = Translatable.GetTranslatableTexts(From);
+				Texts = await Translatable.GetTranslatableTexts(From);
 				if (Texts is not null)
 				{
 					Items.Add(new TranslationItem()
@@ -493,13 +515,13 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		/// <param name="Language">Language to translate from.</param>
 		/// <returns>Array of translatable texts, or null if none.</returns>
-		public string[] GetTranslatableTexts(string Language)
+		public async Task<string[]> GetTranslatableTexts(string Language)
 		{
 			HumanReadableText Text = this.contract.ForHumans.Find(Language);
 			if (Text is null)
 				return null;
 			else
-				return new string[] { Text.GenerateMarkdown(this.Contract, MarkdownType.ForEditing) };
+				return new string[] { await Text.GenerateMarkdown(this.Contract, MarkdownType.ForEditing) };
 		}
 
 		/// <summary>
@@ -586,7 +608,7 @@ namespace LegalLab.Models.Design
 				catch (Exception ex)
 				{
 					this.contract.ForMachines = null;
-					Log.Critical(ex);
+					Log.Exception(ex);
 				}
 
 				this.propose.RaiseCanExecuteChanged();
@@ -679,7 +701,7 @@ namespace LegalLab.Models.Design
 				}
 				catch (Exception ex)
 				{
-					Log.Critical(ex);
+					Log.Exception(ex);
 				}
 			});
 		}
@@ -700,7 +722,7 @@ namespace LegalLab.Models.Design
 			foreach (ParameterInfo P in this.AllParameterInfos)
 			{
 				if (await P.ValidateParameter(Variables))
-					P.Control.Background = null;
+					P.Control.Background = P.Protection.DefaultBrush();
 				else
 				{
 					P.Control.Background = Brushes.Salmon;
@@ -1006,7 +1028,7 @@ namespace LegalLab.Models.Design
 				Min = null,
 				MinIncluded = false,
 				Value = Value,
-				Transient = false
+				Protection = ProtectionLevel.Normal
 			};
 
 			this.AddParameter(this.GetParameterInfo(NP));
@@ -1091,7 +1113,7 @@ namespace LegalLab.Models.Design
 				MinLength = null,
 				MaxLength = MaxLength,
 				RegEx = RegEx,
-				Transient = false
+				Protection = ProtectionLevel.Normal
 			};
 
 			this.AddParameter(this.GetParameterInfo(SP));
@@ -1156,7 +1178,7 @@ namespace LegalLab.Models.Design
 				{
 					ParameterInfo.SetValue(TextBox.Text);
 
-					TextBox.Background = null;
+					TextBox.Background = ParameterInfo.Protection.DefaultBrush();
 					await this.ValidateParameters();
 				}
 				catch (Exception)
@@ -1168,7 +1190,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -1183,7 +1205,7 @@ namespace LegalLab.Models.Design
 				{
 					ParameterInfo.SetMin(TextBox.Text);
 
-					TextBox.Background = null;
+					TextBox.Background = ParameterInfo.Protection.DefaultBrush();
 					await this.ValidateParameters();
 				}
 				catch (Exception)
@@ -1193,7 +1215,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -1208,7 +1230,7 @@ namespace LegalLab.Models.Design
 				{
 					ParameterInfo.SetMax(TextBox.Text);
 
-					TextBox.Background = null;
+					TextBox.Background = ParameterInfo.Protection.DefaultBrush();
 					await this.ValidateParameters();
 				}
 				catch (Exception)
@@ -1218,7 +1240,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -1238,7 +1260,7 @@ namespace LegalLab.Models.Design
 					else
 						ParameterInfo.MinLength = int.Parse(Value);
 
-					TextBox.Background = null;
+					TextBox.Background = ParameterInfo.Protection.DefaultBrush();
 					await this.ValidateParameters();
 				}
 				catch (Exception)
@@ -1248,7 +1270,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -1268,7 +1290,7 @@ namespace LegalLab.Models.Design
 					else
 						ParameterInfo.MinLength = int.Parse(Value);
 
-					TextBox.Background = null;
+					TextBox.Background = ParameterInfo.Protection.DefaultBrush();
 					await this.ValidateParameters();
 				}
 				catch (Exception)
@@ -1278,7 +1300,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -1293,7 +1315,7 @@ namespace LegalLab.Models.Design
 				{
 					ParameterInfo.RegEx = TextBox.Text;
 
-					TextBox.Background = null;
+					TextBox.Background = ParameterInfo.Protection.DefaultBrush();
 					await this.ValidateParameters();
 				}
 				catch (Exception)
@@ -1303,7 +1325,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -1329,7 +1351,7 @@ namespace LegalLab.Models.Design
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Value = Value,
-				Transient = false
+				Protection = ProtectionLevel.Normal
 			};
 
 			this.AddParameter(this.GetParameterInfo(BP));
@@ -1367,7 +1389,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -1384,7 +1406,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -1401,7 +1423,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -1431,7 +1453,7 @@ namespace LegalLab.Models.Design
 				Min = null,
 				MinIncluded = false,
 				Value = Value,
-				Transient = false
+				Protection = ProtectionLevel.Normal
 			};
 
 			this.AddParameter(this.GetParameterInfo(DP));
@@ -1505,7 +1527,7 @@ namespace LegalLab.Models.Design
 				Min = null,
 				MinIncluded = false,
 				Value = null,
-				Transient = false
+				Protection = ProtectionLevel.Normal
 			};
 
 			this.AddParameter(this.GetParameterInfo(DP));
@@ -1584,7 +1606,7 @@ namespace LegalLab.Models.Design
 				Min = null,
 				MinIncluded = false,
 				Value = Value,
-				Transient = false
+				Protection = ProtectionLevel.Normal
 			};
 
 			this.AddParameter(this.GetParameterInfo(DP));
@@ -1658,7 +1680,7 @@ namespace LegalLab.Models.Design
 				Min = null,
 				MinIncluded = false,
 				Value = null,
-				Transient = false
+				Protection = ProtectionLevel.Normal
 			};
 
 			this.AddParameter(this.GetParameterInfo(DP));
@@ -1727,7 +1749,7 @@ namespace LegalLab.Models.Design
 				Descriptions = new HumanReadableText[] { await defaultParameterDescription.ToHumanReadableText("en") },
 				Expression = string.Empty,
 				Guide = string.Empty,
-				Transient = false
+				Protection = ProtectionLevel.Normal
 			};
 
 			this.AddParameter(this.GetParameterInfo(CP));
@@ -1753,7 +1775,7 @@ namespace LegalLab.Models.Design
 				Property = string.Empty,
 				Role = string.Empty,
 				Required = false,
-				Transient = false
+				Protection = ProtectionLevel.Normal
 			};
 
 			this.AddRoleReferenceParameter(this.GetParameterInfo(RP));
@@ -1795,7 +1817,7 @@ namespace LegalLab.Models.Design
 				Provider = string.Empty,
 				Required = false,
 				TemplateId = string.Empty,
-				Transient = false,
+				Protection = ProtectionLevel.Normal,
 				Value = string.Empty
 			};
 
@@ -1972,7 +1994,7 @@ namespace LegalLab.Models.Design
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex.Message);
+				Log.Exception(ex);
 			}
 		}
 
@@ -2195,7 +2217,7 @@ namespace LegalLab.Models.Design
 				}
 
 				HumanReadableText Text = await Markdown.ToHumanReadableText(Language);
-				Markdown = Text.GenerateMarkdown(this.Contract);
+				Markdown = await Text.GenerateMarkdown(this.Contract);
 
 				StringBuilder sb = new();
 				Text.Serialize(sb);

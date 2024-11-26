@@ -52,7 +52,7 @@ namespace LegalLab.Models.Network
 			await base.Start();
 
 			this.networkModel = await MainWindow.InstantiateModel<NetworkModel>();
-			this.networkModel.OnStateChanged += NetworkModel_OnStateChanged;
+			this.networkModel.OnStateChanged += this.NetworkModel_OnStateChanged;
 
 			MainWindow.UpdateGui(() =>
 			{
@@ -64,7 +64,7 @@ namespace LegalLab.Models.Network
 		/// <inheritdoc/>
 		public override async Task Stop()
 		{
-			this.networkModel.OnStateChanged -= NetworkModel_OnStateChanged;
+			this.networkModel.OnStateChanged -= this.NetworkModel_OnStateChanged;
 			await base.Stop();
 		}
 
@@ -79,7 +79,7 @@ namespace LegalLab.Models.Network
 				}
 				catch (Exception ex)
 				{
-					Log.Critical(ex);
+					Log.Exception(ex);
 				}
 			});
 
@@ -90,16 +90,14 @@ namespace LegalLab.Models.Network
 		/// Method called when connection state has changed.
 		/// </summary>
 		/// <param name="NewState">New connection state.</param>
-		protected virtual async Task StateChanged(XmppState NewState)
+		protected virtual Task StateChanged(XmppState NewState)
 		{
-			StateChangedEventHandler h = this.OnStateChanged;
-			if (!(h is null))
-				await h(this, NewState);
+			return this.OnStateChanged.Raise(this, NewState);
 		}
 
 		/// <summary>
 		/// Event raised when connection state changes.
 		/// </summary>
-		public event StateChangedEventHandler OnStateChanged;
+		public event EventHandlerAsync<XmppState> OnStateChanged;
 	}
 }

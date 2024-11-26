@@ -29,7 +29,7 @@ namespace LegalLab.Models
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 

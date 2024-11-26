@@ -94,6 +94,12 @@ namespace LegalLab
 
 				// Event logs
 
+				Log.RegisterAlertExceptionType(true,
+					typeof(OutOfMemoryException),
+					typeof(StackOverflowException),
+					typeof(AccessViolationException),
+					typeof(InsufficientMemoryException));
+
 				Log.RegisterExceptionToUnnest(typeof(System.Runtime.InteropServices.ExternalException));
 				Log.RegisterExceptionToUnnest(typeof(System.Security.Authentication.AuthenticationException));
 
@@ -403,7 +409,7 @@ namespace LegalLab
 					}
 					catch (Exception ex)
 					{
-						Log.Critical(ex);
+						Log.Exception(ex);
 					}
 					finally
 					{
@@ -420,7 +426,7 @@ namespace LegalLab
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 
 				lock (guiUpdateQueue)
 				{
@@ -455,7 +461,7 @@ namespace LegalLab
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 				MainWindow.ErrorBox(ex.Message);
 			}
 		}

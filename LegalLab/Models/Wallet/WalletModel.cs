@@ -1,4 +1,5 @@
 ﻿using EDaler;
+using EDaler.Events;
 using EDaler.Uris;
 using EDaler.Uris.Incomplete;
 using LegalLab.Converters;
@@ -7,6 +8,7 @@ using LegalLab.Dialogs.SellEDaler;
 using LegalLab.Dialogs.TransferEDaler;
 using LegalLab.Models.Network;
 using NeuroFeatures;
+using NeuroFeatures.EventArguments;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

@@ -50,16 +50,16 @@ namespace LegalLab.Models
 		/// </summary>
 		public override T Value
 		{
-			get => this.value;
+			get => this.@value;
 			set
 			{
-				if (this.value is null && value is null)
+				if (this.@value is null && value is null)
 					return;
 
-				if (this.value?.Equals(value) ?? false)
+				if (this.@value?.Equals(value) ?? false)
 					return;
 
-				this.value = value;
+				this.@value = value;
 				this.changed = true;
 
 				if (this.liveUpdates)
@@ -92,18 +92,8 @@ namespace LegalLab.Models
 		/// </summary>
 		public virtual Task Action()
 		{
-			try
-			{
-				this.OnAction?.Invoke(this, EventArgs.Empty);
-			}
-			catch (Exception ex)
-			{
-				Log.Critical(ex);
-			}
-			finally
-			{
+			if (!this.OnAction.Raise(this, EventArgs.Empty))
 				this.changed = false;
-			}
 
 			return Task.CompletedTask;
 		}

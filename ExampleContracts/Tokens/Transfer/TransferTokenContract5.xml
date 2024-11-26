@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<contract xmlns="urn:ieee:iot:leg:sc:1.0"
+<contract xmlns="urn:nf:iot:leg:sc:1.0"
           id="TransferTokenContract5"
           archiveOpt="P3M"
           archiveReq="P1M"
@@ -111,7 +111,7 @@
 				</paragraph>
 			</description>
 		</numericalParameter>
-		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="\w{3}">
+		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="[A-Z]{3}">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The currency of the agreed upon price of the token.</text>

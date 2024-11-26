@@ -18,6 +18,7 @@ using Waher.Networking.DNS;
 using Waher.Networking.DNS.ResourceRecords;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Events;
 using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Networking.XMPP.ServiceDiscovery;
 using Waher.Runtime.Inventory;
@@ -479,8 +480,11 @@ namespace LegalLab.Models.Network
 				this.walletModel = null;
 			}
 
-			this.client?.Dispose();
-			this.client = null;
+			if (this.client is not null)
+			{
+				await this.client.DisposeAsync();
+				this.client = null;
+			}
 
 			await base.Stop();
 		}
@@ -549,7 +553,7 @@ namespace LegalLab.Models.Network
 				}
 				catch (Exception ex)
 				{
-					Log.Critical(ex);
+					Log.Exception(ex);
 
 					Host = this.XmppServer;
 					Port = 5222;    // Default XMPP Client-to-Server port.
@@ -595,7 +599,7 @@ namespace LegalLab.Models.Network
 				this.client.OnConnectionError += this.Client_OnConnectionError;
 				this.client.OnChatMessage += this.Client_OnChatMessage;
 
-				this.client.Connect(this.XmppServer);
+				await this.client.Connect(this.XmppServer);
 			}
 			catch (Exception ex)
 			{
@@ -610,18 +614,20 @@ namespace LegalLab.Models.Network
 			return Task.CompletedTask;
 		}
 
-		private Task Client_OnConnectionError(object Sender, Exception Exception)
+		private async Task Client_OnConnectionError(object Sender, Exception Exception)
 		{
 			if (this.CreateAccount || !this.ConnectOnStartup)
 			{
-				this.client.Dispose();
-				this.client = null;
+				if (this.client is not null)
+				{
+					await this.client.DisposeAsync();
+					this.client = null;
+				}
 			}
 
 			this.connect.RaiseCanExecuteChanged();
 
 			MainWindow.ErrorBox(Exception.Message);
-			return Task.CompletedTask;
 		}
 
 		private async Task Client_OnStateChanged(object Sender, XmppState NewState)
@@ -668,8 +674,8 @@ namespace LegalLab.Models.Network
 									{
 										ServiceDiscoveryEventArgs e2 = await this.client.ServiceDiscoveryAsync(Component.JID);
 
-										if (e2.HasFeature(ContractsClient.NamespaceLegalIdentities) &&
-											e2.HasFeature(ContractsClient.NamespaceSmartContracts))
+										if (e2.HasAnyFeature(ContractsClient.NamespacesLegalIdentities) &&
+											e2.HasAnyFeature(ContractsClient.NamespacesSmartContracts))
 										{
 											this.LegalComponentJid = Component.JID;
 										}
@@ -734,20 +740,18 @@ namespace LegalLab.Models.Network
 						break;
 				}
 
-				StateChangedEventHandler h = this.OnStateChanged;
-				if (h is not null)
-					await h(this, NewState);
+				await this.OnStateChanged.Raise(this, NewState);
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
 		/// <summary>
 		/// Event raised when connection state changes.
 		/// </summary>
-		public event StateChangedEventHandler OnStateChanged;
+		public event EventHandlerAsync<XmppState> OnStateChanged;
 
 		private bool CanExecuteDisconnect()
 		{
@@ -757,7 +761,7 @@ namespace LegalLab.Models.Network
 		/// <summary>
 		/// Disconnects from the network
 		/// </summary>
-		public Task ExecuteDisconnect()
+		public async Task ExecuteDisconnect()
 		{
 			this.LegalComponentJid = string.Empty;
 			this.EDalerComponentJid = string.Empty;
@@ -766,14 +770,15 @@ namespace LegalLab.Models.Network
 			this.legalModel?.Dispose();
 			this.legalModel = null;
 
-			this.client?.Dispose();
-			this.client = null;
+			if (this.client is not null)
+			{
+				await this.client.DisposeAsync();
+				this.client = null;
+			}
 
 			this.State = XmppState.Offline;
 			this.Connected = false;
 			this.ConnectOnStartup = false;
-
-			return Task.CompletedTask;
 		}
 
 		/// <summary>

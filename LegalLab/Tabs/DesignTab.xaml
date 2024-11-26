@@ -291,70 +291,81 @@
 						<DataGridTemplateColumn Header="Value">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<ContentControl Content="{Binding Control}"/>
+									<ContentControl Content="{Binding Control}" Background="{Binding Protection, Converter={conv:ProtectionLevelToBrush}}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 						<DataGridTemplateColumn Header="Description">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<ContentControl Content="{Binding Description}"/>
+									<ContentControl Content="{Binding Description}" Background="{Binding Protection, Converter={conv:ProtectionLevelToBrush}}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 							<DataGridTemplateColumn.CellEditingTemplate>
 								<DataTemplate>
-									<TextBox Text="{Binding DescriptionAsMarkdown, UpdateSourceTrigger=PropertyChanged}"/>
+									<TextBox Text="{Binding DescriptionAsMarkdown, UpdateSourceTrigger=PropertyChanged}" 
+											 Background="{Binding Protection, Converter={conv:ProtectionLevelToBrush}}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellEditingTemplate>
 						</DataGridTemplateColumn>
 						<DataGridTextColumn Binding="{Binding Guide}" Header="Guide"/>
+						<DataGridTemplateColumn Header="Protection">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<ComboBox SelectedItem="{Binding Protection, Converter={conv:ProtectionLevelToString}, UpdateSourceTrigger=PropertyChanged}"
+											  ItemsSource="{Binding ProtectionLevels}" Background="{Binding Protection, Converter={conv:ProtectionLevelToBrush}}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 						<DataGridTextColumn Binding="{Binding Expression, UpdateSourceTrigger=PropertyChanged}" Header="Expression"/>
 						<DataGridTemplateColumn Header="Min">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<ContentControl Content="{Binding MinControl}"/>
+									<ContentControl Content="{Binding MinControl}" Background="{Binding Protection, Converter={conv:ProtectionLevelToBrush}}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 						<DataGridTemplateColumn Header="(incl)">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<ContentControl Content="{Binding MinIncludedControl}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+									<ContentControl Content="{Binding MinIncludedControl}" HorizontalAlignment="Center" VerticalAlignment="Center" 
+													Background="{Binding Protection, Converter={conv:ProtectionLevelToBrush}}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 						<DataGridTemplateColumn Header="Max">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<ContentControl Content="{Binding MaxControl}"/>
+									<ContentControl Content="{Binding MaxControl}" Background="{Binding Protection, Converter={conv:ProtectionLevelToBrush}}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 						<DataGridTemplateColumn Header="(incl)">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<ContentControl Content="{Binding MaxIncludedControl}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+									<ContentControl Content="{Binding MaxIncludedControl}" HorizontalAlignment="Center" VerticalAlignment="Center" 
+													Background="{Binding Protection, Converter={conv:ProtectionLevelToBrush}}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 						<DataGridTemplateColumn Header="Min Len">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<ContentControl Content="{Binding MinLengthControl}"/>
+									<ContentControl Content="{Binding MinLengthControl}" Background="{Binding Protection, Converter={conv:ProtectionLevelToBrush}}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 						<DataGridTemplateColumn Header="Max Len">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<ContentControl Content="{Binding MaxLengthControl}"/>
+									<ContentControl Content="{Binding MaxLengthControl}" Background="{Binding Protection, Converter={conv:ProtectionLevelToBrush}}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 						<DataGridTemplateColumn Header="RegEx">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<ContentControl Content="{Binding RegExControl}"/>
+									<ContentControl Content="{Binding RegExControl}" Background="{Binding Protection, Converter={conv:ProtectionLevelToBrush}}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>

@@ -2,6 +2,7 @@
 using LegalLab.Items;
 using LegalLab.Models.Design;
 using LegalLab.Models.Items;
+using System;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -19,10 +20,10 @@ namespace LegalLab.Models.Legal.Items
 		private readonly Property<string> name;
 		private readonly Property<object> description;
 		private readonly Property<string> descriptionAsMarkdown;
-		protected readonly Property<object> value;
+		protected readonly Property<object> @value;
 		private readonly Property<string> expression;
 		private readonly Property<string> guide;
-		private readonly Property<bool> transient;
+		private readonly Property<ProtectionLevel> protection;
 		private readonly Property<ParameterErrorReason?> errorReason;
 		private readonly Property<string> errorText;
 
@@ -44,11 +45,11 @@ namespace LegalLab.Models.Legal.Items
 
 			this.name = new Property<string>(nameof(this.Name), Parameter.Name, this);
 			this.description = new Property<object>(nameof(this.Description), Parameter.ToSimpleXAML(Language, Contract).Result, this);
-			this.descriptionAsMarkdown = new Property<string>(nameof(this.DescriptionAsMarkdown), Parameter.ToMarkdown(Language, Contract, MarkdownType.ForEditing).Trim(), this);
-			this.value = new Property<object>(nameof(this.Value), Parameter.ObjectValue, this);
+			this.descriptionAsMarkdown = new Property<string>(nameof(this.DescriptionAsMarkdown), Parameter.ToMarkdown(Language, Contract, MarkdownType.ForEditing).Result.Trim(), this);
+			this.@value = new Property<object>(nameof(this.Value), Parameter.ObjectValue, this);
 			this.expression = new Property<string>(nameof(this.Expression), Parameter.Expression, this);
 			this.guide = new Property<string>(nameof(this.Guide), Parameter.Guide, this);
-			this.transient = new Property<bool>(nameof(this.Transient), Parameter.Transient, this);
+			this.protection = new Property<ProtectionLevel>(nameof(this.Protection), Parameter.Protection, this);
 			this.errorReason = new Property<ParameterErrorReason?>(nameof(this.ErrorReason), Parameter.ErrorReason, this);
 			this.errorText = new Property<string>(nameof(this.ErrorText), Parameter.ErrorText, this);
 
@@ -131,11 +132,11 @@ namespace LegalLab.Models.Legal.Items
 		/// </summary>
 		public virtual object Value
 		{
-			get => this.value.Value;
+			get => this.@value.Value;
 			set
 			{
 				this.Parameter.SetValue(value);
-				this.value.Value = value;
+				this.@value.Value = value;
 			}
 		}
 
@@ -212,17 +213,22 @@ namespace LegalLab.Models.Legal.Items
 		}
 
 		/// <summary>
-		/// If parameter is transient or not.
+		/// Parameter protection level
 		/// </summary>
-		public bool Transient
+		public ProtectionLevel Protection
 		{
-			get => this.transient.Value;
+			get => this.protection.Value;
 			set
 			{
-				this.Parameter.Transient = value;
-				this.transient.Value = value;
+				this.Parameter.Protection = value;
+				this.protection.Value = value;
 			}
 		}
+
+		/// <summary>
+		/// Protection levels
+		/// </summary>
+		public static string[] ProtectionLevels => Enum.GetNames(typeof(ProtectionLevel));
 
 		/// <summary>
 		/// Control for editing Minimum value
@@ -293,13 +299,13 @@ namespace LegalLab.Models.Legal.Items
 		/// </summary>
 		/// <param name="Language">Language to translate from.</param>
 		/// <returns>Array of translatable texts, or null if none.</returns>
-		public string[] GetTranslatableTexts(string Language)
+		public async Task<string[]> GetTranslatableTexts(string Language)
 		{
 			HumanReadableText Text = this.Parameter.Descriptions.Find(Language);
 			if (Text is null)
 				return null;
 			else
-				return new string[] { Text.GenerateMarkdown(this.Contract, MarkdownType.ForEditing) };
+				return new string[] { await Text.GenerateMarkdown(this.Contract, MarkdownType.ForEditing) };
 		}
 
 		/// <summary>
