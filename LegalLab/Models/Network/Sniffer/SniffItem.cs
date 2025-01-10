@@ -20,35 +20,22 @@ namespace LegalLab.Models.Network.Sniffer
 	/// Represents one item in a sniffer output.
 	/// From the IoTGateway project, with permission.
 	/// </summary>
-	public class SniffItem : ColorableItem
+	/// <param name="Timestamp">Timestamp of event.</param>
+	/// <param name="Type">Type of sniff record.</param>
+	/// <param name="Message">Message</param>
+	/// <param name="Data">Optional binary data.</param>
+	/// <param name="ForegroundColor">Foreground Color</param>
+	/// <param name="BackgroundColor">Background Color</param>
+	/// <param name="Sniffer">Sniffer owning the item.</param>
+	public class SniffItem(DateTime Timestamp, SniffItemType Type, string Message,
+		byte[] Data, Color ForegroundColor, Color BackgroundColor, ListViewSniffer Sniffer) 
+		: ColorableItem(ForegroundColor, BackgroundColor)
 	{
-		private readonly SniffItemType type;
-		private readonly DateTime timestamp;
-		private readonly string message;
-		private readonly byte[] data;
-		private readonly ListViewSniffer sniffer;
-
-		/// <summary>
-		/// Represents one item in a sniffer output.
-		/// From the IoTGateway project, with permission.
-		/// </summary>
-		/// <param name="Timestamp">Timestamp of event.</param>
-		/// <param name="Type">Type of sniff record.</param>
-		/// <param name="Message">Message</param>
-		/// <param name="Data">Optional binary data.</param>
-		/// <param name="ForegroundColor">Foreground Color</param>
-		/// <param name="BackgroundColor">Background Color</param>
-		/// <param name="Sniffer">Sniffer owning the item.</param>
-		public SniffItem(DateTime Timestamp, SniffItemType Type, string Message, byte[] Data, Color ForegroundColor, Color BackgroundColor,
-			ListViewSniffer Sniffer)
-			: base(ForegroundColor, BackgroundColor)
-		{
-			this.type = Type;
-			this.timestamp = Timestamp;
-			this.message = Message;
-			this.data = Data;
-			this.sniffer = Sniffer;
-		}
+		private readonly SniffItemType type = Type;
+		private readonly DateTime timestamp = Timestamp;
+		private readonly string message = Message;
+		private readonly byte[] data = Data;
+		private readonly ListViewSniffer sniffer = Sniffer;
 
 		/// <summary>
 		/// Timestamp of event.

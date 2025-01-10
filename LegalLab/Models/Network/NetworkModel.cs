@@ -127,7 +127,7 @@ namespace LegalLab.Models.Network
 			{
 				string s = this.savedAccounts.Value;
 				if (string.IsNullOrEmpty(s))
-					return Array.Empty<string>();
+					return [];
 				else
 					return s.Split('|');
 			}
@@ -436,7 +436,7 @@ namespace LegalLab.Models.Network
 		/// </summary>
 		public override async Task Start()
 		{
-			MainWindow.UpdateGui(() =>
+			await MainWindow.UpdateGui(() =>
 			{
 				MainWindow.currentInstance.NetworkTab.DataContext = this;
 				MainWindow.currentInstance.XmppState.DataContext = this;
@@ -865,7 +865,7 @@ namespace LegalLab.Models.Network
 
 		private async Task ExecuteSaveCredentials()
 		{
-			SortedDictionary<string, bool> Sorted = new();
+			SortedDictionary<string, bool> Sorted = [];
 
 			foreach (string Account in this.SavedAccounts)
 				Sorted[Account] = true;
@@ -945,7 +945,7 @@ namespace LegalLab.Models.Network
 
 		private async Task ExecuteDeleteCredentials()
 		{
-			SortedDictionary<string, bool> Sorted = new();
+			SortedDictionary<string, bool> Sorted = [];
 
 			foreach (string Account in this.SavedAccounts)
 			{

@@ -11,28 +11,19 @@ namespace LegalLab.Models.Standards
 		/// <summary>
 		/// Contains one record of the ISO 3166-1 data set.
 		/// </summary>
-		public class Record
+		/// <param name="Country">Country name</param>
+		/// <param name="Code">Country Code</param>
+		public class Record(string Country, string Code)
 		{
-			/// <summary>
-			/// Contains one record of the ISO 3166-1 data set.
-			/// </summary>
-			/// <param name="Country">Country name</param>
-			/// <param name="Code">Country Code</param>
-			public Record(string Country, string Code)
-			{
-				this.Country = Country;
-				this.Code = Code;
-			}
-
 			/// <summary>
 			/// Country
 			/// </summary>
-			public string Country { get; set; }
+			public string Country { get; set; } = Country;
 
 			/// <summary>
 			/// ISO 3166-1 country code
 			/// </summary>
-			public string Code { get; set; }
+			public string Code { get; set; } = Code;
 		}
 
 		private static Dictionary<string, string> countryByCode = null;
@@ -61,8 +52,8 @@ namespace LegalLab.Models.Standards
 		/// <summary>
 		/// Available country codes
 		/// </summary>
-		public static readonly Record[] Data = new Record[]
-		{
+		public static readonly Record[] Data =
+		[
 			new("AFGHANISTAN", "AF"),
 			new("ÅLAND ISLANDS", "AX"),
 			new("ALBANIA", "AL"),
@@ -307,6 +298,6 @@ namespace LegalLab.Models.Standards
 			new("YEMEN", "YE"),
 			new("ZAMBIA", "ZM"),
 			new("ZIMBABWE", "ZW")
-		};
+		];
 	}
 }

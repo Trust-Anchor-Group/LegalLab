@@ -93,10 +93,10 @@ namespace LegalLab.Dialogs.BuyEDaler
 		private bool CanExecuteBuy()
 		{
 			return
-				!(this.SelectedServiceProvider is null) &&
+				this.SelectedServiceProvider is not null &&
 				this.Amount > 0 &&
 				this.Currency.Length == 3 &&
-				this.Currency.ToUpper() == this.Currency;
+				this.Currency.Equals(this.Currency, System.StringComparison.CurrentCultureIgnoreCase);
 		}
 
 		private Task ExecuteBuy()

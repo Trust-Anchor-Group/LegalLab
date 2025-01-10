@@ -68,7 +68,7 @@ namespace LegalLab.Converters
 				else
 					sb.Append(", ");
 
-				sb.Append(Nr.ToString());
+				sb.Append(Nr);
 				sb.Append(' ');
 
 				if (Nr == 1)
@@ -87,7 +87,7 @@ namespace LegalLab.Converters
 				else
 					sb.Append(", ");
 
-				sb.Append(Nr.ToString());
+				sb.Append(Nr);
 				sb.Append(' ');
 
 				if (Nr == 1)

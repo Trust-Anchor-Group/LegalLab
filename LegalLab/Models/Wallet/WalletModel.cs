@@ -7,7 +7,6 @@ using LegalLab.Dialogs.BuyEDaler;
 using LegalLab.Dialogs.SellEDaler;
 using LegalLab.Dialogs.TransferEDaler;
 using LegalLab.Models.Network;
-using NeuroFeatures;
 using NeuroFeatures.EventArguments;
 using System;
 using System.Collections.Generic;
@@ -37,7 +36,7 @@ namespace LegalLab.Models.Wallet
 		private readonly Property<DateTime> timestamp;
 		private readonly Property<string> uri;
 
-		private readonly List<AccountEventWrapper> events = new();
+		private readonly List<AccountEventWrapper> events = [];
 
 		private readonly Command sendUri;
 		private readonly Command transferEDaler;
@@ -240,7 +239,7 @@ namespace LegalLab.Models.Wallet
 			{
 				lock (this.events)
 				{
-					return this.events.ToArray();
+					return [.. this.events];
 				}
 			}
 		}
@@ -602,7 +601,7 @@ namespace LegalLab.Models.Wallet
 		/// <inheritdoc/>
 		public override async Task Start()
 		{
-			MainWindow.UpdateGui(() =>
+			await MainWindow.UpdateGui(() =>
 			{
 				MainWindow.currentInstance.WalletTab.DataContext = this;
 				return Task.CompletedTask;

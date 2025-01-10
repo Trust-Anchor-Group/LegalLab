@@ -1,4 +1,4 @@
-﻿namespace LegalLab.Items
+﻿namespace LegalLab.Models.Items
 {
 	/// <summary>
 	/// Interface for named items

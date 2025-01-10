@@ -5,17 +5,10 @@ namespace LegalLab.Models.Tokens.Events
 	/// <summary>
 	/// Contains information about a token create event.
 	/// </summary>
-	public class CreatedDetail : OwnershipDetail
+	/// <param name="Event">Token Event object.</param>
+	public class CreatedDetail(Created Event) 
+		: OwnershipDetail(Event)
 	{
-		/// <summary>
-		/// Contains information about a token create event.
-		/// </summary>
-		/// <param name="Event">Token Event object.</param>
-		public CreatedDetail(Created Event)
-			: base(Event)
-		{
-		}
-
 		/// <summary>
 		/// Event message
 		/// </summary>

@@ -58,7 +58,7 @@ namespace LegalLab.Extensions
 		/// <returns>Human-readable text.</returns>
 		public static async Task<HumanReadableText[]> ToHumanReadableText(this string[] Markdown, string Language)
 		{
-			List<HumanReadableText> Result = new();
+			List<HumanReadableText> Result = [];
 
 			foreach (string s in Markdown)
 			{
@@ -66,7 +66,7 @@ namespace LegalLab.Extensions
 					Result.Add(await s.ToHumanReadableText(Language));
 			}
 
-			return Result.ToArray();
+			return [.. Result];
 		}
 
 		/// <summary>
@@ -106,7 +106,7 @@ namespace LegalLab.Extensions
 		/// <returns>Human-readable text.</returns>
 		public static async Task<Label[]> ToHumanReadableLabel(this string[] Markdown, string Language)
 		{
-			List<Label> Result = new();
+			List<Label> Result = [];
 
 			foreach (string s in Markdown)
 			{
@@ -114,7 +114,7 @@ namespace LegalLab.Extensions
 					Result.Add(await s.ToHumanReadableLabel(Language));
 			}
 
-			return Result.ToArray();
+			return [.. Result];
 		}
 
 		/// <summary>
@@ -301,7 +301,7 @@ namespace LegalLab.Extensions
 		/// <returns>Sorted array of updated texts.</returns>
 		public static HumanReadableText[] Append(this HumanReadableText[] Texts, HumanReadableText Text)
 		{
-			SortedDictionary<string, HumanReadableText> Sorted = new();
+			SortedDictionary<string, HumanReadableText> Sorted = [];
 
 			if (Texts is not null)
 			{
@@ -330,7 +330,7 @@ namespace LegalLab.Extensions
 		/// <returns>Updated array</returns>
 		public static HumanReadableText[] Remove(this HumanReadableText[] Texts, string Language)
 		{
-			List<HumanReadableText> Result = new();
+			List<HumanReadableText> Result = [];
 
 			if (Texts is not null)
 			{
@@ -341,7 +341,7 @@ namespace LegalLab.Extensions
 				}
 			}
 
-			return Result.ToArray();
+			return [.. Result];
 		}
 
 		/// <summary>
@@ -352,7 +352,7 @@ namespace LegalLab.Extensions
 		/// <returns>Sorted array of updated texts.</returns>
 		public static Label[] Append(this Label[] Texts, Label Text)
 		{
-			SortedDictionary<string, Label> Sorted = new();
+			SortedDictionary<string, Label> Sorted = [];
 
 			if (Texts is not null)
 			{
@@ -381,7 +381,7 @@ namespace LegalLab.Extensions
 		/// <returns>Updated array</returns>
 		public static Label[] Remove(this Label[] Texts, string Language)
 		{
-			List<Label> Result = new();
+			List<Label> Result = [];
 
 			if (Texts is not null)
 			{
@@ -392,7 +392,7 @@ namespace LegalLab.Extensions
 				}
 			}
 
-			return Result.ToArray();
+			return [.. Result];
 		}
 
 		/// <summary>
@@ -461,7 +461,7 @@ namespace LegalLab.Extensions
 		/// <returns>Sorted array of updated texts.</returns>
 		public static string[] Append(this string[] Texts, string Text)
 		{
-			SortedDictionary<string, string> Sorted = new();
+			SortedDictionary<string, string> Sorted = [];
 
 			if (Texts is not null)
 			{
@@ -494,7 +494,7 @@ namespace LegalLab.Extensions
 
 			int c = Texts.Length;
 			if (c == 1)
-				return Array.Empty<string>();
+				return [];
 
 			string[] Result = new string[c - 1];
 

@@ -21,10 +21,13 @@ namespace LegalLab.Models
 	/// <summary>
 	/// Defines a custom parametrized command.
 	/// </summary>
-	public class ParametrizedCommand : ICommand
+	/// <param name="CanExecuteCallback">Method called to determine if the command can be executed.</param>
+	/// <param name="ExecuteCallback">Method called when the command is executed.</param>
+	public class ParametrizedCommand(CanExecuteParametrizedHandler CanExecuteCallback, ExecuteParametrizedHandler ExecuteCallback) 
+		: ICommand
 	{
-		private readonly CanExecuteParametrizedHandler canExecuteCallback;
-		private readonly ExecuteParametrizedHandler executeCallback;
+		private readonly CanExecuteParametrizedHandler canExecuteCallback = CanExecuteCallback;
+		private readonly ExecuteParametrizedHandler executeCallback = ExecuteCallback;
 
 		/// <summary>
 		/// Defines a custom parametrized command.
@@ -33,17 +36,6 @@ namespace LegalLab.Models
 		public ParametrizedCommand(ExecuteParametrizedHandler ExecuteCallback)
 			: this(null, ExecuteCallback)
 		{
-		}
-
-		/// <summary>
-		/// Defines a custom parametrized command.
-		/// </summary>
-		/// <param name="CanExecuteCallback">Method called to determine if the command can be executed.</param>
-		/// <param name="ExecuteCallback">Method called when the command is executed.</param>
-		public ParametrizedCommand(CanExecuteParametrizedHandler CanExecuteCallback, ExecuteParametrizedHandler ExecuteCallback)
-		{
-			this.canExecuteCallback = CanExecuteCallback;
-			this.executeCallback = ExecuteCallback;
 		}
 
 		/// <summary>

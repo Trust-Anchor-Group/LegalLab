@@ -6,28 +6,19 @@ namespace LegalLab.Models.Legal
 	/// <summary>
 	/// The data model for contract visibility.
 	/// </summary>
-	public class ContractOption
+	/// <param name="Name">The contract name.</param>
+	/// <param name="Option">Parameter dictionary of option.</param>
+	public class ContractOption(string Name, IDictionary<CaseInsensitiveString, object> Option)
 	{
-		/// <summary>
-		/// Create an instance of the <see cref="ContractVisibilityModel"/> class.
-		/// </summary>
-		/// <param name="Name">The contract name.</param>
-		/// <param name="Option">Parameter dictionary of option.</param>
-		public ContractOption(string Name, IDictionary<CaseInsensitiveString, object> Option)
-		{
-			this.Name = Name;
-			this.Option = Option;
-		}
-
 		/// <summary>
 		/// The contract visibility.
 		/// </summary>
-		public IDictionary<CaseInsensitiveString, object> Option { get; }
+		public IDictionary<CaseInsensitiveString, object> Option { get; } = Option;
 
 		/// <summary>
 		/// The contract name.
 		/// </summary>
-		public string Name { get; }
+		public string Name { get; } = Name;
 
 		/// <summary>
 		/// Returns the string representation, i.e. name, of this contract option.

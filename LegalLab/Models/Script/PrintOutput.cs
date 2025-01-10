@@ -7,19 +7,11 @@ namespace LegalLab.Models.Script
 	/// Redirects script print output to the script tab output.
 	/// From the IoTGateway project, with permission.
 	/// </summary>
-	public class PrintOutput : TextWriter
+	/// <param name="ScriptModel">Script model</param>
+	public class PrintOutput(ScriptModel ScriptModel) 
+		: TextWriter
 	{
-		private readonly ScriptModel scriptModel;
-
-		/// <summary>
-		/// Redirects script print output to the script tab output.
-		/// From the IoTGateway project, with permission.
-		/// </summary>
-		/// <param name="ScriptModel">Script model</param>
-		public PrintOutput(ScriptModel ScriptModel)
-		{
-			this.scriptModel = ScriptModel;
-		}
+		private readonly ScriptModel scriptModel = ScriptModel;
 
 		/// <inheritdoc/>
 		public override Encoding Encoding => Encoding.UTF8;

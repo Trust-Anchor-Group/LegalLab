@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.EMMA;
-using LegalLab.Converters;
+﻿using LegalLab.Converters;
 using LegalLab.Extensions;
 using LegalLab.Models.Design;
 using LegalLab.Models.Legal.Items;
@@ -33,7 +32,7 @@ namespace LegalLab.Models.Legal
 		private readonly Property<string> language;
 		private readonly Property<Iso__639_1.Record[]> languages;
 
-		protected readonly Dictionary<CaseInsensitiveString, ParameterInfo> parametersByName = new();
+		protected readonly Dictionary<CaseInsensitiveString, ParameterInfo> parametersByName = [];
 		private readonly DesignModel designModel;
 		private StackPanel languageOptions = null;
 		private StackPanel parameterOptions = null;
@@ -52,9 +51,9 @@ namespace LegalLab.Models.Legal
 		public ContractParametersModel(Parameter[] Parameters, Contract Contract, string Language, DesignModel DesignModel)
 		{
 			this.parametersOk = new Property<bool>(nameof(this.ParametersOk), false, this);
-			this.parameters = new Property<ParameterInfo[]>(nameof(this.Parameters), Array.Empty<ParameterInfo>(), this);
+			this.parameters = new Property<ParameterInfo[]>(nameof(this.Parameters), [], this);
 			this.language = new Property<string>(nameof(this.Language), Language, this);
-			this.languages = new Property<Iso__639_1.Record[]>(nameof(this.Languages), Array.Empty<Iso__639_1.Record>(), this);
+			this.languages = new Property<Iso__639_1.Record[]>(nameof(this.Languages), [], this);
 			this.contract = Contract ?? emptyContract;
 			this.designModel = DesignModel;
 
@@ -111,11 +110,11 @@ namespace LegalLab.Models.Legal
 
 			if (string.IsNullOrEmpty(this.Language) && (this.Languages?.Length ?? 0) == 0)
 			{
-				this.Languages = new string[] { "en" }.ToIso639_1();
+				this.Languages = DesignModel.English;
 				this.Language = "en";
 			}
 
-			List<ParameterInfo> Parameters = new();
+			List<ParameterInfo> Parameters = [];
 
 			if (ContractParameters is not null)
 			{
@@ -129,7 +128,7 @@ namespace LegalLab.Models.Legal
 				}
 			}
 
-			this.Parameters = Parameters.ToArray();
+			this.Parameters = [.. Parameters];
 		}
 
 		/// <summary>
@@ -221,7 +220,7 @@ namespace LegalLab.Models.Legal
 		public virtual async Task<Control> PopulateParameters(StackPanel Languages, StackPanel Parameters, StackPanel AdditionalCommands,
 			Dictionary<CaseInsensitiveString, object> PresetValues)
 		{
-			List<ParameterInfo> ParameterList = new();
+			List<ParameterInfo> ParameterList = [];
 			ParameterInfo ParameterInfo;
 			Control First = null;
 
@@ -360,7 +359,7 @@ namespace LegalLab.Models.Legal
 				ParameterList.Add(ParameterInfo);
 			}
 
-			this.Parameters = ParameterList.ToArray();
+			this.Parameters = [.. ParameterList];
 
 			await this.ValidateParameters();
 
@@ -468,7 +467,7 @@ namespace LegalLab.Models.Legal
 		/// <returns>Collection of parameter values, if ok, null otherwise.</returns>
 		public virtual async Task<Variables> ValidateParameters()
 		{
-			Variables Variables = new();
+			Variables Variables = [];
 			bool Ok = true;
 
 			Variables["Duration"] = this.contract.Duration;

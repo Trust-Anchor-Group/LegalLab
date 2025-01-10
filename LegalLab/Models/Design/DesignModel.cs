@@ -1,7 +1,7 @@
 ﻿using LegalLab.Converters;
 using LegalLab.Dialogs.AddLanguage;
 using LegalLab.Extensions;
-using LegalLab.Items;
+using LegalLab.Models.Items;
 using LegalLab.Models.Legal;
 using LegalLab.Models.Legal.Items;
 using LegalLab.Models.Legal.Items.Parameters;
@@ -101,15 +101,15 @@ namespace LegalLab.Models.Design
 			this.archiveRequired = new Property<Waher.Content.Duration?>(nameof(this.ArchiveRequired), Waher.Content.Duration.Zero, this);
 			this.duration = new Property<Waher.Content.Duration?>(nameof(this.Duration), Waher.Content.Duration.Zero, this);
 			this.language = new Property<string>(nameof(this.Language), "en", this);
-			this.languages = new Property<Iso__639_1.Record[]>(nameof(this.Languages), Array.Empty<Iso__639_1.Record>(), this);
+			this.languages = new Property<Iso__639_1.Record[]>(nameof(this.Languages), [], this);
 			this.signBefore = new Property<DateTime?>(nameof(this.SignBefore), null, this);
 			this.signAfter = new Property<DateTime?>(nameof(this.SignAfter), null, this);
 			this.parametersOk = new Property<bool>(nameof(this.ParametersOk), false, this);
-			this.roles = new Property<RoleInfo[]>(nameof(this.Roles), Array.Empty<RoleInfo>(), this);
-			this.parts = new Property<PartInfo[]>(nameof(this.Parts), Array.Empty<PartInfo>(), this);
-			this.parameters = new Property<ParameterInfo[]>(nameof(this.Parameters), Array.Empty<ParameterInfo>(), this);
-			this.roleReferenceParameters = new Property<RoleReferenceParameterInfo[]>(nameof(this.RoleReferenceParameters), Array.Empty<RoleReferenceParameterInfo>(), this);
-			this.contractReferenceParameters = new Property<ContractReferenceParameterInfo[]>(nameof(this.ContractReferenceParameters), Array.Empty<ContractReferenceParameterInfo>(), this);
+			this.roles = new Property<RoleInfo[]>(nameof(this.Roles), [], this);
+			this.parts = new Property<PartInfo[]>(nameof(this.Parts), [], this);
+			this.parameters = new Property<ParameterInfo[]>(nameof(this.Parameters), [], this);
+			this.roleReferenceParameters = new Property<RoleReferenceParameterInfo[]>(nameof(this.RoleReferenceParameters), [], this);
+			this.contractReferenceParameters = new Property<ContractReferenceParameterInfo[]>(nameof(this.ContractReferenceParameters), [], this);
 			this.machineReadable = new DelayedActionProperty<string>(nameof(this.MachineReadable), TimeSpan.FromSeconds(1), string.Empty, this);
 			this.forMachines = new Property<XmlElement>(nameof(this.ForMachines), null, this);
 			this.forMachinesLocalName = new Property<string>(nameof(this.ForMachinesLocalName), string.Empty, this);
@@ -158,17 +158,17 @@ namespace LegalLab.Models.Design
 			{
 				ArchiveOptional = this.ArchiveOptional,
 				ArchiveRequired = this.ArchiveRequired,
-				Attachments = Array.Empty<Attachment>(),
+				Attachments = [],
 				CanActAsTemplate = true,
-				ClientSignatures = Array.Empty<ClientSignature>(),
+				ClientSignatures = [],
 				ContractId = this.ContractId,
 				Duration = this.Duration,
-				ForHumans = Array.Empty<HumanReadableText>(),
+				ForHumans = [],
 				ForMachines = this.ForMachines,
-				Parameters = Array.Empty<Parameter>(),
-				Parts = Array.Empty<Part>(),
+				Parameters = [],
+				Parts = [],
 				PartsMode = ContractParts.TemplateOnly,
-				Roles = Array.Empty<Role>(),
+				Roles = [],
 				ServerSignature = null,
 				SignAfter = this.SignAfter,
 				SignBefore = this.SignBefore,
@@ -194,7 +194,7 @@ namespace LegalLab.Models.Design
 			this.Visibility = Contract.Visibility;
 			this.PartsMode = Contract.PartsMode;
 
-			List<PartInfo> Parts = new();
+			List<PartInfo> Parts = [];
 
 			if (Contract.Parts is not null)
 			{
@@ -202,9 +202,9 @@ namespace LegalLab.Models.Design
 					Parts.Add(new PartInfo(Part, this, this.parts));
 			}
 
-			this.Parts = Parts.ToArray();
+			this.Parts = [.. Parts];
 
-			List<RoleInfo> Roles = new();
+			List<RoleInfo> Roles = [];
 
 			if (Contract.Roles is not null)
 			{
@@ -212,11 +212,11 @@ namespace LegalLab.Models.Design
 					Roles.Add(new RoleInfo(this, Role, this.roles));
 			}
 
-			this.Roles = Roles.ToArray();
+			this.Roles = [.. Roles];
 
-			List<ParameterInfo> ParameterList = new();
-			List<RoleReferenceParameterInfo> RoleReferenceParameterList = new();
-			List<ContractReferenceParameterInfo> ContractReferenceParameterList = new();
+			List<ParameterInfo> ParameterList = [];
+			List<RoleReferenceParameterInfo> RoleReferenceParameterList = [];
+			List<ContractReferenceParameterInfo> ContractReferenceParameterList = [];
 			ParameterInfo ParameterInfo;
 
 			foreach (Parameter Parameter in this.contract.Parameters)
@@ -253,9 +253,9 @@ namespace LegalLab.Models.Design
 				ParameterList.Add(ParameterInfo);
 			}
 
-			this.Parameters = ParameterList.ToArray();
-			this.RoleReferenceParameters = RoleReferenceParameterList.ToArray();
-			this.ContractReferenceParameters = ContractReferenceParameterList.ToArray();
+			this.Parameters = [.. ParameterList];
+			this.RoleReferenceParameters = [.. RoleReferenceParameterList];
+			this.ContractReferenceParameters = [.. ContractReferenceParameterList];
 
 			await this.ValidateParameters();
 
@@ -269,12 +269,14 @@ namespace LegalLab.Models.Design
 
 			if (string.IsNullOrEmpty(this.Language) && this.Languages.Length == 0)
 			{
-				this.Languages = new string[] { "en" }.ToIso639_1();
+				this.Languages = English;
 				this.Language = "en";
 			}
 
 			this.HumanReadableMarkdown = (await Contract.ToMarkdown(this.Language, MarkdownType.ForEditing))?.Trim() ?? string.Empty;
 		}
+
+		public static readonly Iso__639_1.Record[] English = new string[] { "en" }.ToIso639_1();
 
 		private Task Contract_FormatParameterDisplay(object Sender, ParameterValueFormattingEventArgs e)
 		{
@@ -434,7 +436,7 @@ namespace LegalLab.Models.Design
 					{
 						this.lastLanguage = Language;
 
-						List<TranslationItem> Items = new();
+						List<TranslationItem> Items = [];
 
 						foreach (ParameterInfo PI in this.AllParameterInfos)
 							await Add(Items, PI, FromLanguage, Language);
@@ -446,14 +448,14 @@ namespace LegalLab.Models.Design
 
 						if (Items.Count > 0)
 						{
-							List<string> AllTexts = new();
+							List<string> AllTexts = [];
 
 							foreach (TranslationItem Item in Items)
 								AllTexts.AddRange(Item.Original);
 
-							string[] AllTranslated = await Translator.Translate(AllTexts.ToArray(), FromLanguage, Language, this.OpenAiKey);
+							string[] AllTranslated = await Translator.Translate([.. AllTexts], FromLanguage, Language, this.OpenAiKey);
 
-							MainWindow.UpdateGui(() =>
+							await MainWindow.UpdateGui(() =>
 							{
 								int i = 0;
 								int c;
@@ -521,7 +523,7 @@ namespace LegalLab.Models.Design
 			if (Text is null)
 				return null;
 			else
-				return new string[] { await Text.GenerateMarkdown(this.Contract, MarkdownType.ForEditing) };
+				return [await Text.GenerateMarkdown(this.Contract, MarkdownType.ForEditing)];
 		}
 
 		/// <summary>
@@ -711,7 +713,7 @@ namespace LegalLab.Models.Design
 		/// </summary>
 		public async Task ValidateParameters()
 		{
-			Variables Variables = new();
+			Variables Variables = [];
 			bool Ok = true;
 
 			Variables["Duration"] = this.Duration;
@@ -752,7 +754,7 @@ namespace LegalLab.Models.Design
 				RoleInfo[] Roles = this.Roles;
 
 				if (Roles is null)
-					return Array.Empty<string>();
+					return [];
 
 				int i, c = Roles.Length;
 				string[] Result = new string[c];
@@ -842,13 +844,13 @@ namespace LegalLab.Models.Design
 		{
 			get
 			{
-				List<ParameterInfo> Parameters = new();
+				List<ParameterInfo> Parameters = [];
 
 				Parameters.AddRange(this.contractReferenceParameters.Value);
 				Parameters.AddRange(this.parameters.Value);
 				Parameters.AddRange(this.roleReferenceParameters.Value);
 
-				return Parameters.ToArray();
+				return [.. Parameters];
 			}
 		}
 
@@ -859,13 +861,13 @@ namespace LegalLab.Models.Design
 		{
 			get
 			{
-				List<Parameter> Parameters = new();
+				List<Parameter> Parameters = [];
 
 				Parameters.AddRange(this.contractReferenceParameters.Value.ToParameters());
 				Parameters.AddRange(this.parameters.Value.ToParameters());
 				Parameters.AddRange(this.roleReferenceParameters.Value.ToParameters());
 
-				return Parameters.ToArray();
+				return [.. Parameters];
 			}
 		}
 
@@ -891,7 +893,7 @@ namespace LegalLab.Models.Design
 			Roles[c] = new RoleInfo(this, new Role()
 			{
 				Name = FindNewName("Role", this.Roles),
-				Descriptions = new HumanReadableText[] { await "Enter role description as **Markdown**".ToHumanReadableText("en") },
+				Descriptions = [await "Enter role description as **Markdown**".ToHumanReadableText("en")],
 				MinCount = 1,
 				MaxCount = 1,
 				CanRevoke = false
@@ -1519,7 +1521,7 @@ namespace LegalLab.Models.Design
 			DateTimeParameter DP = new()
 			{
 				Name = FindNewName("DateTime", this.AllParameterInfos),
-				Descriptions = new HumanReadableText[] { await defaultParameterDescription.ToHumanReadableText("en") },
+				Descriptions = [await defaultParameterDescription.ToHumanReadableText("en")],
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Max = null,
@@ -1672,7 +1674,7 @@ namespace LegalLab.Models.Design
 			DurationParameter DP = new()
 			{
 				Name = FindNewName("Duration", this.AllParameterInfos),
-				Descriptions = new HumanReadableText[] { await defaultParameterDescription.ToHumanReadableText("en") },
+				Descriptions = [await defaultParameterDescription.ToHumanReadableText("en")],
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Max = null,
@@ -1746,7 +1748,7 @@ namespace LegalLab.Models.Design
 			CalcParameter CP = new()
 			{
 				Name = FindNewName("Calc", this.AllParameterInfos),
-				Descriptions = new HumanReadableText[] { await defaultParameterDescription.ToHumanReadableText("en") },
+				Descriptions = [await defaultParameterDescription.ToHumanReadableText("en")],
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Protection = ProtectionLevel.Normal
@@ -1768,7 +1770,7 @@ namespace LegalLab.Models.Design
 			RoleParameter RP = new()
 			{
 				Name = FindNewName("RoleRef", this.AllParameterInfos),
-				Descriptions = new HumanReadableText[] { await defaultParameterDescription.ToHumanReadableText("en") },
+				Descriptions = [await defaultParameterDescription.ToHumanReadableText("en")],
 				Expression = string.Empty,
 				Guide = string.Empty,
 				Index = 1,
@@ -1807,8 +1809,8 @@ namespace LegalLab.Models.Design
 			ContractReferenceParameter CRP = new()
 			{
 				Name = FindNewName("ContractRef", this.AllParameterInfos),
-				Descriptions = new HumanReadableText[] { await defaultParameterDescription.ToHumanReadableText("en") },
-				Labels = new Waher.Networking.XMPP.Contracts.HumanReadable.Label[] { await defaultParameterLabel.ToHumanReadableLabel("en") },
+				Descriptions = [await defaultParameterDescription.ToHumanReadableText("en")],
+				Labels = [await defaultParameterLabel.ToHumanReadableLabel("en")],
 				Expression = string.Empty,
 				Guide = string.Empty,
 				CreatorRole = string.Empty,
@@ -1977,13 +1979,13 @@ namespace LegalLab.Models.Design
 				this.ArchiveRequired = Waher.Content.Duration.Zero;
 				this.Duration = Waher.Content.Duration.Zero;
 				this.Language = "en";
-				this.Languages = Array.Empty<Iso__639_1.Record>();
+				this.Languages = [];
 				this.SignBefore = null;
 				this.SignAfter = null;
-				this.Roles = Array.Empty<RoleInfo>();
-				this.Parts = Array.Empty<PartInfo>();
-				this.Parameters = Array.Empty<ParameterInfo>();
-				this.RoleReferenceParameters = Array.Empty<RoleReferenceParameterInfo>();
+				this.Roles = [];
+				this.Parts = [];
+				this.Parameters = [];
+				this.RoleReferenceParameters = [];
 				this.MachineReadable = string.Empty;
 				this.ForMachines = null;
 				this.ContractId = string.Empty;
@@ -2222,10 +2224,10 @@ namespace LegalLab.Models.Design
 				StringBuilder sb = new();
 				Text.Serialize(sb);
 
-				XmlDocument Doc = new();
+				XmlDocument Doc = [];
 				Doc.LoadXml(sb.ToString());
 
-				LinkedList<XmlElement> Elements = new();
+				LinkedList<XmlElement> Elements = [];
 				Elements.AddLast(Doc.DocumentElement);
 
 				while (Elements.First is not null)
@@ -2264,10 +2266,10 @@ namespace LegalLab.Models.Design
 			if (Descriptions is null || Descriptions.Count == 0 ||
 				(Descriptions.Count == 1 && string.IsNullOrEmpty(Descriptions[0])))
 			{
-				return new string[] { defaultParameterDescription };
+				return [defaultParameterDescription];
 			}
 			else
-				return Descriptions.ToArray();
+				return [.. Descriptions];
 		}
 
 		/// <summary>

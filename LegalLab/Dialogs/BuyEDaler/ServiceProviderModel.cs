@@ -3,18 +3,10 @@
 	/// <summary>
 	/// View mode for service providers.
 	/// </summary>
-	public class ServiceProviderModel
+	/// <param name="ServiceProvider">Service provider reference.</param>
+	public class ServiceProviderModel(Waher.Networking.XMPP.Contracts.IServiceProvider ServiceProvider)
 	{
-		private readonly Waher.Networking.XMPP.Contracts.IServiceProvider serviceProvider;
-
-		/// <summary>
-		/// View mode for service providers.
-		/// </summary>
-		/// <param name="ServiceProvider">Service provider reference.</param>
-		public ServiceProviderModel(Waher.Networking.XMPP.Contracts.IServiceProvider ServiceProvider)
-		{
-			this.serviceProvider = ServiceProvider;
-		}
+		private readonly Waher.Networking.XMPP.Contracts.IServiceProvider serviceProvider = ServiceProvider;
 
 		/// <summary>
 		/// Reference to service provider.

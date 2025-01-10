@@ -6,27 +6,18 @@ namespace LegalLab.Models.Tokens.Events
 	/// <summary>
 	/// Contains information about a token event.
 	/// </summary>
-	public abstract class TokenEventDetail
+	/// <param name="Event">Token Event object.</param>
+	public abstract class TokenEventDetail(TokenEvent Event)
 	{
-		/// <summary>
-		/// Contains information about a token event.
-		/// </summary>
-		/// <param name="Event">Token Event object.</param>
-		public TokenEventDetail(TokenEvent Event)
-		{
-			this.Personal = Event.Personal;
-			this.Timestamp = Event.Timestamp;
-		}
-
 		/// <summary>
 		/// If event is personal or not
 		/// </summary>
-		public bool Personal { get; }
+		public bool Personal { get; } = Event.Personal;
 
 		/// <summary>
 		/// Timestamp of event
 		/// </summary>
-		public DateTime Timestamp { get; }
+		public DateTime Timestamp { get; } = Event.Timestamp;
 
 		/// <summary>
 		/// Event message

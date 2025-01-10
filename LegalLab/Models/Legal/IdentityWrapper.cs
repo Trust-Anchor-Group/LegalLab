@@ -7,21 +7,13 @@ namespace LegalLab.Models.Legal
 	/// <summary>
 	/// Wrapper around a <see cref="LegalIdentity"/>, for purposes of displaying it to the user.
 	/// </summary>
-	public class IdentityWrapper : SelectableItem
+	///	<param name="Domain">Domain of XMPP Broker.</param>
+	/// <param name="Identity">Legal Identity object.</param>
+	public class IdentityWrapper(string Domain, LegalIdentity Identity)
+		: SelectableItem
 	{
-		private readonly string domain;
-		private readonly LegalIdentity identity;
-
-		/// <summary>
-		/// Wrapper around a <see cref="LegalIdentity"/>, for purposes of displaying it to the user.
-		/// </summary>
-		///	<param name="Domain">Domain of XMPP Broker.</param>
-		/// <param name="Identity">Legal Identity object.</param>
-		public IdentityWrapper(string Domain, LegalIdentity Identity)
-		{
-			this.domain = Domain;
-			this.identity = Identity;
-		}
+		private readonly string domain = Domain;
+		private readonly LegalIdentity identity = Identity;
 
 		/// <summary>
 		/// Legal Identity ID

@@ -122,10 +122,10 @@ namespace LegalLab.Models.Window
 				MainWindow.currentInstance.TabControl.SelectedIndex = this.TabIndex;
 				MainWindow.currentInstance.Visibility = Visibility.Visible;
 
-				MainWindow.currentInstance.SizeChanged += WindowSizeChanged;
-				MainWindow.currentInstance.LocationChanged += WindowLocationChanged;
-				MainWindow.currentInstance.StateChanged += WindowStateChanged;
-				MainWindow.currentInstance.TabControl.SelectionChanged += TabIndexChanged;
+				MainWindow.currentInstance.SizeChanged += this.WindowSizeChanged;
+				MainWindow.currentInstance.LocationChanged += this.WindowLocationChanged;
+				MainWindow.currentInstance.StateChanged += this.WindowStateChanged;
+				MainWindow.currentInstance.TabControl.SelectionChanged += this.TabIndexChanged;
 
 				return Task.CompletedTask;
 			});
@@ -138,10 +138,10 @@ namespace LegalLab.Models.Window
 		/// </summary>
 		public override Task Stop()
 		{
-			MainWindow.currentInstance.SizeChanged -= WindowSizeChanged;
-			MainWindow.currentInstance.LocationChanged -= WindowLocationChanged;
-			MainWindow.currentInstance.StateChanged -= WindowStateChanged;
-			MainWindow.currentInstance.TabControl.SelectionChanged -= TabIndexChanged;
+			MainWindow.currentInstance.SizeChanged -= this.WindowSizeChanged;
+			MainWindow.currentInstance.LocationChanged -= this.WindowLocationChanged;
+			MainWindow.currentInstance.StateChanged -= this.WindowStateChanged;
+			MainWindow.currentInstance.TabControl.SelectionChanged -= this.TabIndexChanged;
 
 			return base.Stop();
 		}

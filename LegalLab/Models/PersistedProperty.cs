@@ -7,23 +7,17 @@ namespace LegalLab.Models
 	/// <summary>
 	/// Generic class for persistant properties
 	/// </summary>
-	public class PersistedProperty<T> : DelayedActionProperty<T>, IPersistedProperty
+	/// <param name="Category">Property category</param>
+	/// <param name="Name">Property name</param>
+	/// <param name="LiveUpdates">If updates to the parameter should be persisted live.</param>
+	/// <param name="DefaultValue">Default value of property</param>
+	/// <param name="Model">Model hosting the property</param>
+	public class PersistedProperty<T>(string Category, string Name, bool LiveUpdates, 
+		T DefaultValue, IModel Model) 
+		: DelayedActionProperty<T>(Name, TimeSpan.FromSeconds(1), LiveUpdates, DefaultValue, 
+			Model), IPersistedProperty
 	{
-		private readonly string category;
-
-		/// <summary>
-		/// Generic class for persistant properties
-		/// </summary>
-		/// <param name="Category">Property category</param>
-		/// <param name="Name">Property name</param>
-		/// <param name="LiveUpdates">If updates to the parameter should be persisted live.</param>
-		/// <param name="DefaultValue">Default value of property</param>
-		/// <param name="Model">Model hosting the property</param>
-		public PersistedProperty(string Category, string Name, bool LiveUpdates, T DefaultValue, IModel Model)
-			: base(Name, TimeSpan.FromSeconds(1), LiveUpdates, DefaultValue, Model)
-		{
-			this.category = Category;
-		}
+		private readonly string category = Category;
 
 		/// <summary>
 		/// Property Category

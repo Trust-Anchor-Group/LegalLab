@@ -21,7 +21,7 @@ namespace LegalLab.Models.Design
 		/// <returns>Translated string.</returns>
 		public static async Task<string> Translate(string Text, string From, string To, string Key)
 		{
-			return (await Translate(new string[] { Text }, From, To, Key))[0];
+			return (await Translate([Text], From, To, Key))[0];
 		}
 
 		/// <summary>
@@ -86,11 +86,10 @@ namespace LegalLab.Models.Design
 							}
 						}
 					},
-					new KeyValuePair<string, string>[]
-					{
+					[
 						new("Accept", "application/json"),
 						new("Authorization", "Bearer " + Key),
-					});
+					]);
 
 				if (ResponseObj is Dictionary<string, object> Response &&
 					Response.TryGetValue("choices", out object Obj) &&

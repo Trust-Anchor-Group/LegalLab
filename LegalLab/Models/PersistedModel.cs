@@ -8,7 +8,7 @@ namespace LegalLab.Models
 	/// </summary>
 	public abstract class PersistedModel : Model
 	{
-		private readonly LinkedList<IPersistedProperty> properties = new LinkedList<IPersistedProperty>();
+		private readonly LinkedList<IPersistedProperty> properties = new();
 
 		/// <summary>
 		/// Adds a persistant property

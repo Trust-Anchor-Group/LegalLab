@@ -162,7 +162,7 @@ namespace LegalLab.Models.Script
 
 					this.variables["Ans"] = Ans;
 
-					MainWindow.UpdateGui(async () =>
+					await MainWindow.UpdateGui(async () =>
 					{
 						ResultBlock = await this.ShowResult(ResultBlock, Ans, ScriptBlock);
 					});
@@ -335,7 +335,7 @@ namespace LegalLab.Models.Script
 			e.Handled = true;
 		}
 
-		private UIElement AddImageBlock(UIElement ScriptBlock, PixelInformation Pixels, Graph Graph, object[] States, UIElement ResultBlock)
+		private Image AddImageBlock(UIElement ScriptBlock, PixelInformation Pixels, Graph Graph, object[] States, UIElement ResultBlock)
 		{
 			BitmapImage BitmapImage;
 			byte[] Bin = Pixels.EncodeAsPng();
@@ -418,7 +418,7 @@ namespace LegalLab.Models.Script
 		/// </summary>
 		public override async Task Start()
 		{
-			MainWindow.UpdateGui(() =>
+			await MainWindow.UpdateGui(() =>
 			{
 				MainWindow.currentInstance.ScriptTab.DataContext = this;
 				return Task.CompletedTask;

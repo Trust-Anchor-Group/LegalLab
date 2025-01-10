@@ -10,13 +10,9 @@ namespace LegalLab.Models.Tokens.Reports
 	/// <summary>
 	/// Represent a report of the historical states of a token and the underlying state-machine.
 	/// </summary>
-	public class TokenHistoryReport : TokenReport
+	public class TokenHistoryReport(NeuroFeaturesClient Client, string TokenId) 
+		: TokenReport(Client, TokenId)
 	{
-		public TokenHistoryReport(NeuroFeaturesClient Client, string TokenId)
-			: base(Client, TokenId)
-		{
-		}
-
 		/// <summary>
 		/// Gets the title of report.
 		/// </summary>

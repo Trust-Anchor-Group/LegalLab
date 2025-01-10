@@ -5,27 +5,18 @@ namespace LegalLab.Models.Tokens.Events
 	/// <summary>
 	/// Contains information about the owner of a token.
 	/// </summary>
-	public abstract class OwnershipDetail : ValueDetail
+	/// <param name="Event">Token Event object.</param>
+	public abstract class OwnershipDetail(TokenOwnershipEvent Event) 
+		: ValueDetail(Event)
 	{
-		/// <summary>
-		/// Contains information about the owner of a token.
-		/// </summary>
-		/// <param name="Event">Token Event object.</param>
-		public OwnershipDetail(TokenOwnershipEvent Event)
-			: base(Event)
-		{
-			this.Owner = Event.Owner;
-			this.OwnershipContract = Event.OwnershipContract;
-		}
-
 		/// <summary>
 		/// Owner of the token
 		/// </summary>
-		public string Owner { get; }
+		public string Owner { get; } = Event.Owner;
 
 		/// <summary>
 		/// Contract establishing ownership of thetoken
 		/// </summary>
-		public string OwnershipContract { get; }
+		public string OwnershipContract { get; } = Event.OwnershipContract;
 	}
 }

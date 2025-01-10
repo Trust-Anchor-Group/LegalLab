@@ -2,7 +2,7 @@
 using LegalLab.Models;
 using LegalLab.Models.Design;
 using LegalLab.Models.Network;
-using LegalLab.Models.Network.Events;
+using LegalLab.Models.Events;
 using LegalLab.Models.Window;
 using System;
 using System.Collections.Generic;
@@ -157,7 +157,7 @@ namespace LegalLab
 			base.OnClosed(e);
 
 			Types.StopAllModules().Wait();
-			Log.Terminate();
+			Log.TerminateAsync().Wait();
 		}
 
 		/// <summary>
@@ -346,9 +346,10 @@ namespace LegalLab
 		/// Calls a method from the Main UI thread.
 		/// </summary>
 		/// <param name="Method">Method to call.</param>
-		public static void UpdateGui(GuiDelegate Method)
+		/// <returns>If update was successful.</returns>
+		public static Task<bool> UpdateGui(GuiDelegate Method)
 		{
-			UpdateGui((State) => ((GuiDelegate)State)(), Method.Method.DeclaringType + "." + Method.Method.Name, Method);
+			return UpdateGui((State) => ((GuiDelegate)State)(), Method.Method.DeclaringType + "." + Method.Method.Name, Method);
 		}
 
 		/// <summary>
@@ -356,12 +357,13 @@ namespace LegalLab
 		/// </summary>
 		/// <param name="Method">Method to call.</param>
 		/// <param name="State">State object to pass on to the callback method.</param>
-		public static void UpdateGui(GuiDelegateWithParameter Method, object State)
+		/// <returns>If update was successful.</returns>
+		public static Task<bool> UpdateGui(GuiDelegateWithParameter Method, object State)
 		{
-			UpdateGui(Method, Method.Method.DeclaringType + "." + Method.Method.Name, State);
+			return UpdateGui(Method, Method.Method.DeclaringType + "." + Method.Method.Name, State);
 		}
 
-		private static void UpdateGui(GuiDelegateWithParameter Method, string Name, object State)
+		private static Task<bool> UpdateGui(GuiDelegateWithParameter Method, string Name, object State)
 		{
 			bool Start;
 			GuiUpdateTask Rec = new()
@@ -369,7 +371,7 @@ namespace LegalLab
 				Method = Method,
 				State = State,
 				Name = Name,
-				Requested = DateTime.Now
+				Requested = DateTime.Now,
 			};
 
 			lock (guiUpdateQueue)
@@ -380,6 +382,8 @@ namespace LegalLab
 
 			if (Start)
 				currentInstance.Dispatcher.BeginInvoke(new GuiDelegate(DoUpdates));
+
+			return Rec.Done.Task;
 		}
 
 		private static async Task DoUpdates()
@@ -406,9 +410,11 @@ namespace LegalLab
 					{
 						Rec.Started = DateTime.Now;
 						await Rec.Method(Rec.State);
+						Rec.Done.TrySetResult(true);
 					}
 					catch (Exception ex)
 					{
+						Rec.Done.TrySetResult(false);
 						Log.Exception(ex);
 					}
 					finally
@@ -418,7 +424,7 @@ namespace LegalLab
 
 					TimeSpan TS;
 
-					if ((TS = (Rec.Ended - Rec.Started)).TotalSeconds >= 1)
+					if ((TS = Rec.Ended - Rec.Started).TotalSeconds >= 1)
 						Log.Notice("GUI update method is slow: " + TS.ToString(), Rec.Name, Prev?.Name);
 					else if ((TS = (Rec.Ended - Rec.Requested)).TotalSeconds >= 1)
 						Log.Notice("GUI update pipeline is slow: " + TS.ToString(), Rec.Name, Prev?.Name);
@@ -437,6 +443,7 @@ namespace LegalLab
 
 		private class GuiUpdateTask
 		{
+			public TaskCompletionSource<bool> Done = new();
 			public GuiDelegateWithParameter Method;
 			public object State;
 			public string Name;

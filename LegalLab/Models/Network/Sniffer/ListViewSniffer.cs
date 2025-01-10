@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Waher.Events;
 using Waher.Networking.Sniffers;
+using Waher.Networking.Sniffers.Model;
 
 namespace LegalLab.Models.Network.Sniffer
 {
@@ -12,17 +13,11 @@ namespace LegalLab.Models.Network.Sniffer
 	/// Sniffer, that outputs items to a ListView control.
 	/// From the IoTGateway project, with permission.
 	/// </summary>
-	public class ListViewSniffer : SnifferBase
+	public class ListViewSniffer(ListView View, int MaxCount) 
+		: SnifferBase()
 	{
-		private readonly ListView view;
-		private readonly int maxCount;
-
-		public ListViewSniffer(ListView View, int MaxCount)
-			: base()
-		{
-			this.view = View;
-			this.maxCount = MaxCount;
-		}
+		private readonly ListView view = View;
+		private readonly int maxCount = MaxCount;
 
 		public void Add(SniffItem Item)
 		{
@@ -39,25 +34,35 @@ namespace LegalLab.Models.Network.Sniffer
 			return Task.CompletedTask;
 		}
 
-		public override Task ReceiveBinary(DateTime Timestamp, byte[] Data)
+		public override Task Process(SnifferRxBinary Event)
 		{
-			this.Add(new SniffItem(Timestamp, SniffItemType.DataReceived, HexToString(Data), Data, Colors.White, Colors.Navy, this));
+			this.Add(new SniffItem(Event.Timestamp, SniffItemType.DataReceived,
+				HexToString(Event.Data, Event.Offset, Event.Count),
+				CloneSection(Event.Data, Event.Offset, Event.Count),
+				Colors.White, Colors.Navy, this));
+
 			return Task.CompletedTask;
 		}
 
-		public override Task TransmitBinary(DateTime Timestamp, byte[] Data)
+		public override Task Process(SnifferTxBinary Event)
 		{
-			this.Add(new SniffItem(Timestamp, SniffItemType.DataTransmitted, HexToString(Data), Data, Colors.Black, Colors.White, this));
+			this.Add(new SniffItem(Event.Timestamp, SniffItemType.DataTransmitted, 
+				HexToString(Event.Data, Event.Offset, Event.Count), 
+				CloneSection(Event.Data, Event.Offset, Event.Count),
+				Colors.Black, Colors.White, this));
+			
 			return Task.CompletedTask;
 		}
 
-		internal static string HexToString(byte[] Data)
+		internal static string HexToString(byte[] Data, int Offset, int Count)
 		{
 			StringBuilder Output = new();
 			int i = 0;
 
-			foreach (byte b in Data)
+			while (Count-- > 0)
 			{
+				byte b = Data[Offset++];
+
 				if (i > 0)
 					Output.Append(' ');
 
@@ -71,39 +76,51 @@ namespace LegalLab.Models.Network.Sniffer
 			return Output.ToString().TrimEnd();
 		}
 
-		public override Task ReceiveText(DateTime Timestamp, string Text)
+		public override Task Process(SnifferRxText Event)
 		{
-			this.Add(new SniffItem(Timestamp, SniffItemType.TextReceived, Text, null, Colors.White, Colors.Navy, this));
+			this.Add(new SniffItem(Event.Timestamp, SniffItemType.TextReceived, 
+				Event.Text, null, Colors.White, Colors.Navy, this));
+
 			return Task.CompletedTask;
 		}
 
-		public override Task TransmitText(DateTime Timestamp, string Text)
+		public override Task Process(SnifferTxText Event)
 		{
-			this.Add(new SniffItem(Timestamp, SniffItemType.TextTransmitted, Text, null, Colors.Black, Colors.White, this));
+			this.Add(new SniffItem(Event.Timestamp, SniffItemType.TextTransmitted, 
+				Event.Text, null, Colors.Black, Colors.White, this));
+
 			return Task.CompletedTask;
 		}
 
-		public override Task Information(DateTime Timestamp, string Comment)
+		public override Task Process(SnifferInformation Event)
 		{
-			this.Add(new SniffItem(Timestamp, SniffItemType.Information, Comment, null, Colors.Yellow, Colors.DarkGreen, this));
+			this.Add(new SniffItem(Event.Timestamp, SniffItemType.Information, 
+				Event.Text, null, Colors.Yellow, Colors.DarkGreen, this));
+
 			return Task.CompletedTask;
 		}
 
-		public override Task Warning(DateTime Timestamp, string Warning)
+		public override Task Process(SnifferWarning Event)
 		{
-			this.Add(new SniffItem(Timestamp, SniffItemType.Warning, Warning, null, Colors.Black, Colors.Yellow, this));
+			this.Add(new SniffItem(Event.Timestamp, SniffItemType.Warning, 
+				Event.Text, null, Colors.Black, Colors.Yellow, this));
+
 			return Task.CompletedTask;
 		}
 
-		public override Task Error(DateTime Timestamp, string Error)
+		public override Task Process(SnifferError Event)
 		{
-			this.Add(new SniffItem(Timestamp, SniffItemType.Error, Error, null, Colors.White, Colors.Red, this));
+			this.Add(new SniffItem(Event.Timestamp, SniffItemType.Error, 
+				Event.Text, null, Colors.White, Colors.Red, this));
+
 			return Task.CompletedTask;
 		}
 
-		public override Task Exception(DateTime Timestamp, string Exception)
+		public override Task Process(SnifferException Event)
 		{
-			this.Add(new SniffItem(Timestamp, SniffItemType.Exception, Exception, null, Colors.White, Colors.DarkRed, this));
+			this.Add(new SniffItem(Event.Timestamp, SniffItemType.Exception, 
+				Event.Text, null, Colors.White, Colors.DarkRed, this));
+
 			return Task.CompletedTask;
 		}
 

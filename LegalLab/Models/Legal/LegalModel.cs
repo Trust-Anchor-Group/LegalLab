@@ -54,7 +54,7 @@ namespace LegalLab.Models.Legal
 		private readonly Property<TemplateReferenceModel[]> templates;
 		private readonly Property<string> contractTemplateName;
 
-		private readonly Dictionary<string, IdentityWrapper> identities = new();
+		private readonly Dictionary<string, IdentityWrapper> identities = [];
 
 		private readonly Command apply;
 
@@ -101,7 +101,7 @@ namespace LegalLab.Models.Legal
 			this.Add(this.orgCountry = new PersistedProperty<string>("Legal", nameof(this.OrgCountry), true, string.Empty, this));
 
 			this.template = new Property<Contract>(nameof(this.Template), null, this);
-			this.templates = new Property<TemplateReferenceModel[]>(nameof(this.Templates), Array.Empty<TemplateReferenceModel>(), this);
+			this.templates = new Property<TemplateReferenceModel[]>(nameof(this.Templates), [], this);
 			this.contractTemplateName = new Property<string>(nameof(this.ContractTemplateName), string.Empty, this);
 
 			this.apply = new Command(this.CanExecuteApply, this.ExecuteApply);
@@ -138,7 +138,7 @@ namespace LegalLab.Models.Legal
 		/// <inheritdoc/>
 		public override async Task Start()
 		{
-			MainWindow.UpdateGui(() =>
+			await MainWindow.UpdateGui(() =>
 			{
 				MainWindow.currentInstance.LegalIdTab.DataContext = this;
 				MainWindow.currentInstance.ContractsTab.DataContext = this;
@@ -160,7 +160,7 @@ namespace LegalLab.Models.Legal
 			this.RaisePropertyChanged(nameof(this.Identities));
 
 			Dictionary<string, object> Settings = await RuntimeSettings.GetWhereKeyLikeAsync("Contract.Template.*", "*");
-			List<TemplateReferenceModel> Templates = new();
+			List<TemplateReferenceModel> Templates = [];
 
 			foreach (KeyValuePair<string, object> Setting in Settings)
 			{
@@ -168,7 +168,7 @@ namespace LegalLab.Models.Legal
 					Templates.Add(new TemplateReferenceModel(Setting.Key[18..], ContractId));
 			}
 
-			this.Templates = Templates.ToArray();
+			this.Templates = [.. Templates];
 
 			await base.Start();
 		}
@@ -477,7 +477,7 @@ namespace LegalLab.Models.Legal
 						await this.contracts.ObsoleteLegalIdentityAsync(OldIdentity.Id);
 				}
 
-				List<Property> Properties = new();
+				List<Property> Properties = [];
 
 				AddProperty(Properties, "FIRST", this.FirstName);
 				AddProperty(Properties, "MIDDLE", this.MiddleName);
@@ -515,7 +515,7 @@ namespace LegalLab.Models.Legal
 
 				AddProperty(Properties, "JID", this.contracts.Client.BareJID);
 
-				LegalIdentity Identity = await this.contracts.ApplyAsync(Properties.ToArray());
+				LegalIdentity Identity = await this.contracts.ApplyAsync([.. Properties]);
 
 				lock (this.identities)
 				{
@@ -658,7 +658,7 @@ namespace LegalLab.Models.Legal
 		/// <param name="Contract">Contract</param>
 		public void ContractTemplateAdded(string TemplateName, Contract Contract)
 		{
-			SortedDictionary<string, TemplateReferenceModel> Templates = new();
+			SortedDictionary<string, TemplateReferenceModel> Templates = [];
 
 			foreach (TemplateReferenceModel Ref in this.Templates)
 				Templates[Ref.TemplateName] = Ref;
