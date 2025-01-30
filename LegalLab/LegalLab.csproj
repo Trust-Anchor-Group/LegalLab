@@ -22,7 +22,7 @@
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
     <PackageReference Include="EDaler" Version="3.1.0" />
-    <PackageReference Include="NeuroFeatures" Version="2.1.0" />
+    <PackageReference Include="NeuroFeatures" Version="2.1.1" />
     <PackageReference Include="SkiaSharp" Version="3.116.1" />
     <PackageReference Include="Waher.Content" Version="3.0.0" />
     <PackageReference Include="Waher.Content.Emoji" Version="2.0.2" />

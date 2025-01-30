@@ -87,6 +87,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logistics", "Logistics", "{
 		ExampleContracts\Logistics\SimpleOrder.xml = ExampleContracts\Logistics\SimpleOrder.xml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Donate", "Donate", "{CF17A90C-A2F6-410A-A918-1C6BB0F4D4D0}"
+	ProjectSection(SolutionItems) = preProject
+		ExampleContracts\Tokens\Donate\DonateTokenContract1.xml = ExampleContracts\Tokens\Donate\DonateTokenContract1.xml
+		ExampleContracts\Tokens\Donate\DonateTokenContract5.xml = ExampleContracts\Tokens\Donate\DonateTokenContract5.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -118,6 +124,7 @@ Global
 		{E65D2413-D0F0-47AF-98DC-6C6B5C458A03} = {4884851F-3B3B-4666-B245-BDE968DC48A8}
 		{1B94CDD9-BA5A-4328-9F2E-C2B55334E587} = {46E61E48-A9A5-4CB8-8B7A-712F716F6FF5}
 		{14E69444-5843-4DE2-A11F-DF3CC5997531} = {46E61E48-A9A5-4CB8-8B7A-712F716F6FF5}
+		{CF17A90C-A2F6-410A-A918-1C6BB0F4D4D0} = {FE86B209-349B-47FB-9A12-5BEAFE9F35DC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {82820A85-2566-4DAB-A5B4-BABDC2569097}

@@ -134,6 +134,14 @@ TAG technologies.
 		* [DestroyTokenContract5.xml](ExampleContracts/Tokens/Destroy/DestroyTokenContract5.xml) can be used to destroy a batch of five tokens,
 		as long as one owns all tokens in the batch.
 
+	* [Donate](ExampleContracts/Tokens/Donate) contains examples on how to donate tokens.
+	
+		* [DonateTokenContract1.xml](ExampleContracts/Tokens/Donate/DonateTokenContract1.xml) can be used to donate a
+		token from the current owner to a new owner. The token maintains its current registered value.
+	
+		* [DonateTokenContract5.xml](ExampleContracts/Tokens/Donate/DonateTokenContract5.xml) can be used to donate a
+		batch of five tokens from the current owner to a new owner. The tokens maintain their currently registered values.
+
 	* [Transfer](ExampleContracts/Tokens/Transfer) contains examples on how to transfer the ownership of tokens.
 	
 		* [TransferTokenContract1.xml](ExampleContracts/Tokens/Transfer/TransferTokenContract1.xml) can be used to transfer the ownership of a
