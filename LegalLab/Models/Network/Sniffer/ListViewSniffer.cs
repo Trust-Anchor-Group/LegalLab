@@ -19,6 +19,8 @@ namespace LegalLab.Models.Network.Sniffer
 		private readonly ListView view = View;
 		private readonly int maxCount = MaxCount;
 
+		public override BinaryPresentationMethod BinaryPresentationMethod => BinaryPresentationMethod.Hexadecimal;
+
 		public void Add(SniffItem Item)
 		{
 			MainWindow.UpdateGui(this.AddItem, Item);
