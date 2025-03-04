@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
-    <PackageReference Include="EDaler" Version="3.1.0" />
+    <PackageReference Include="EDaler" Version="3.1.1" />
     <PackageReference Include="NeuroFeatures" Version="2.1.2" />
     <PackageReference Include="SkiaSharp" Version="3.116.1" />
     <PackageReference Include="Waher.Content" Version="3.2.0" />
@@ -36,12 +36,12 @@
     <PackageReference Include="Waher.Events" Version="1.4.1" />
     <PackageReference Include="Waher.Events.Files" Version="1.2.0" />
     <PackageReference Include="Waher.Events.Persistence" Version="1.2.1" />
-    <PackageReference Include="Waher.Networking" Version="4.2.0" />
+    <PackageReference Include="Waher.Networking" Version="4.3.0" />
     <PackageReference Include="Waher.Networking.DNS" Version="3.1.1" />
     <PackageReference Include="Waher.Networking.PeerToPeer" Version="3.1.0" />
     <PackageReference Include="Waher.Networking.XMPP" Version="4.1.1" />
     <PackageReference Include="Waher.Networking.XMPP.Contracts" Version="4.1.4" />
-    <PackageReference Include="Waher.Networking.XMPP.P2P" Version="4.1.0" />
+    <PackageReference Include="Waher.Networking.XMPP.P2P" Version="4.1.1" />
     <PackageReference Include="Waher.Persistence" Version="1.14.0" />
     <PackageReference Include="Waher.Persistence.FilesLW" Version="1.14.0" />
     <PackageReference Include="Waher.Persistence.Serialization" Version="1.9.0" />
@@ -54,7 +54,7 @@
     <PackageReference Include="Waher.Runtime.Text" Version="1.1.6" />
     <PackageReference Include="Waher.Runtime.Threading" Version="2.0.0" />
     <PackageReference Include="Waher.Runtime.Timing" Version="2.0.0" />
-    <PackageReference Include="Waher.Script" Version="2.10.2" />
+    <PackageReference Include="Waher.Script" Version="2.10.3" />
     <PackageReference Include="Waher.Script.Content" Version="2.2.0" />
     <PackageReference Include="Waher.Script.Cryptography" Version="2.1.4" />
     <PackageReference Include="Waher.Script.Data" Version="2.1.0" />
@@ -67,7 +67,7 @@
     <PackageReference Include="Waher.Script.Persistence" Version="2.8.2" />
     <PackageReference Include="Waher.Script.Statistics" Version="2.1.2" />
     <PackageReference Include="Waher.Script.Xml" Version="2.3.0" />
-    <PackageReference Include="Waher.Security" Version="1.0.12" />
+    <PackageReference Include="Waher.Security" Version="1.0.13" />
     <PackageReference Include="Waher.Security.CallStack" Version="1.1.0" />
     <PackageReference Include="Waher.Security.ChaChaPoly" Version="1.0.3" />
     <PackageReference Include="Waher.Security.EllipticCurves" Version="1.0.10" />
