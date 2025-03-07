@@ -145,7 +145,7 @@ namespace LegalLab.Models.Legal
 			this.CanDownloadAttachment = (Contract.Attachments?.Length ?? 0) > 0;
 
 			this.Uri = ContractsClient.ContractIdUriString(Contract.ContractId);
-			this.QrCodeUri = "https://" + Domain + "/QR/" + this.Uri;
+			this.QrCodeUri = "https://" + Domain + "/QR/" + this.Uri + "?w=400&h=400&q=2";
 
 			List<GenInfo> GenInfo =
 			[

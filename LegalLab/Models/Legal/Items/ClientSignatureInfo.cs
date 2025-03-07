@@ -35,7 +35,7 @@ namespace LegalLab.Models.Legal.Items
             this.role = new Property<string>(nameof(this.Role), ClientSignature.Role, this);
             this.timestamp = new Property<DateTime>(nameof(this.Timestamp), ClientSignature.Timestamp, this);
             this.transferable = new Property<bool>(nameof(this.Transferable), ClientSignature.Transferable, this);
-            this.legalIdQrCodeUri = new Property<string>(nameof(this.LegalIdQrCodeUri), "https://" + Domain + "/QR/" + ClientSignature.LegalIdUriString, this);
+            this.legalIdQrCodeUri = new Property<string>(nameof(this.LegalIdQrCodeUri), "https://" + Domain + "/QR/" + ClientSignature.LegalIdUriString + "?w=400&h=400&q=2", this);
         }
 
         /// <summary>

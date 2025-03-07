@@ -43,9 +43,9 @@ namespace LegalLab.Models.Legal
 			get
 			{
 				if (string.IsNullOrEmpty(this.domain))
-					return "https://lab.tagroot.io/QR/" + this.URL;
+					return "https://lab.tagroot.io/QR/" + this.URL + "?w=400&h=400&q=2";
 				else
-					return "https://" + this.domain + "/QR/" + this.URL;
+					return "https://" + this.domain + "/QR/" + this.URL + "?w=400&h=400&q=2";
 			}
 		}
 	}
