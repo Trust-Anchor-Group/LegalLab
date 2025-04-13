@@ -110,8 +110,166 @@ namespace LegalLab.Models.Legal
 			this.contracts.EnableE2eEncryption(true);
 			this.contracts.IdentityUpdated += this.Contracts_IdentityUpdated;
 			this.contracts.PetitionForIdentityReceived += this.Contracts_PetitionForIdentityReceived;
+			this.contracts.ClientMessage += this.Contracts_ClientMessage;
 
 			this.httpFileUploadClient = new HttpFileUploadClient(Client, FileUploadJid, MaxFileSize);
+		}
+
+		private Task Contracts_ClientMessage(object Sender, ClientMessageEventArgs e)
+		{
+			StringBuilder sb = new();
+
+			sb.Append("Identity application processed.");
+
+			if (e.IsValid.HasValue)
+			{
+				if (e.IsValid.Value)
+					sb.AppendLine(" Application has been validated.");
+				else
+					sb.AppendLine(" Application has been rejected.");
+			}
+			else
+				sb.AppendLine(" Application could not be validated or rejected.");
+
+			ValidClaim[] ValidClaims = e.ValidClaims;
+			int i, c;
+
+			if ((c = ValidClaims.Length) > 0)
+			{
+				sb.AppendLine();
+				sb.Append("Valid claims: ");
+
+				for (i = 0; i < c; i++)
+				{
+					if (i == c - 1)
+						sb.Append(" and ");
+					else if (i > 0)
+						sb.Append(", ");
+
+					sb.Append(ValidClaims[i].Claim);
+				}
+
+				sb.AppendLine();
+			}
+
+			ValidPhoto[] ValidPhotos = e.ValidPhotos;
+
+			if ((c = ValidPhotos.Length) > 0)
+			{
+				sb.AppendLine();
+				sb.Append("Valid photos: ");
+
+				for (i = 0; i < c; i++)
+				{
+					if (i == c - 1)
+						sb.Append(" and ");
+					else if (i > 0)
+						sb.Append(", ");
+
+					sb.Append(ValidPhotos[i].FileName);
+				}
+
+				sb.AppendLine();
+			}
+
+			InvalidClaim[] InvalidClaims = e.InvalidClaims;
+
+			if ((c = InvalidClaims.Length) > 0)
+			{
+				sb.AppendLine();
+				sb.Append("Invalid claims: ");
+
+				for (i = 0; i < c; i++)
+				{
+					if (i == c - 1)
+						sb.Append(" and ");
+					else if (i > 0)
+						sb.Append(", ");
+
+					sb.Append(InvalidClaims[i].Claim);
+
+					if (!(string.IsNullOrEmpty(InvalidClaims[i].Reason)))
+					{
+						sb.Append(" (");
+						sb.Append(InvalidClaims[i].Reason);
+						sb.Append(')');
+					}
+				}
+
+				sb.AppendLine();
+			}
+
+			InvalidPhoto[] InvalidPhotos = e.InvalidPhotos;
+
+			if ((c = InvalidPhotos.Length) > 0)
+			{
+				sb.AppendLine();
+				sb.Append("Invalid photos: ");
+
+				for (i = 0; i < c; i++)
+				{
+					if (i == c - 1)
+						sb.Append(" and ");
+					else if (i > 0)
+						sb.Append(", ");
+
+					sb.Append(InvalidPhotos[i].FileName);
+
+					if (!(string.IsNullOrEmpty(InvalidClaims[i].Reason)))
+					{
+						sb.Append(" (");
+						sb.Append(InvalidClaims[i].Reason);
+						sb.Append(')');
+					}
+				}
+
+				sb.AppendLine();
+			}
+
+			string[] UnvalidatedClaims = e.UnvalidatedClaims;
+
+			if ((c = UnvalidatedClaims.Length) > 0)
+			{
+				sb.AppendLine();
+				sb.Append("Unvalidated claims: ");
+
+				for (i = 0; i < c; i++)
+				{
+					if (i == c - 1)
+						sb.Append(" and ");
+					else if (i > 0)
+						sb.Append(", ");
+
+					sb.Append(UnvalidatedClaims[i]);
+				}
+
+				sb.AppendLine();
+			}
+
+			string[] UnvalidatedPhotos = e.UnvalidatedPhotos;
+
+			if ((c = UnvalidatedPhotos.Length) > 0)
+			{
+				sb.AppendLine();
+				sb.Append("Unvalidated photos: ");
+
+				for (i = 0; i < c; i++)
+				{
+					if (i == c - 1)
+						sb.Append(" and ");
+					else if (i > 0)
+						sb.Append(", ");
+
+					sb.Append(UnvalidatedPhotos[i]);
+				}
+
+				sb.AppendLine();
+			}
+
+			MainWindow.MessageBox(sb.ToString(), "Identity Application Validation Result", 
+				MessageBoxButton.OK, MessageBoxImage.Information);
+
+			return Task.CompletedTask;
 		}
 
 		/// <inheritdoc/>
