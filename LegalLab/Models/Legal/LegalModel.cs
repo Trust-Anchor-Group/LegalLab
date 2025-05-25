@@ -632,7 +632,16 @@ namespace LegalLab.Models.Legal
 				foreach (LegalIdentity OldIdentity in Identities)
 				{
 					if (OldIdentity.State == IdentityState.Approved)
-						await this.contracts.ObsoleteLegalIdentityAsync(OldIdentity.Id);
+					{
+						try
+						{
+							await this.contracts.ObsoleteLegalIdentityAsync(OldIdentity.Id);
+						}
+						catch (Exception ex)
+						{
+							MainWindow.ErrorBox(ex.Message);
+						}
+					}
 				}
 
 				List<Property> Properties = [];
