@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'
+					 targetNamespace='https://paiwise.tagroot.io/Schema/OpenVote.xsd'
+					 xmlns='https://paiwise.tagroot.io/Schema/OpenVote.xsd'
+					 elementFormDefault='qualified'>
+
+	<xs:element name='YesVote'>
+		<xs:complexType/>
+	</xs:element>
+
+	<xs:element name='NoVote'>
+		<xs:complexType/>
+	</xs:element>
+
+	<xs:element name='AbstainVote'>
+		<xs:complexType/>
+	</xs:element>
+
+</xs:schema>

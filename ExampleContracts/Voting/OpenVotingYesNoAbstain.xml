@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<contract xmlns="urn:nf:iot:leg:sc:1.0"
+          id="OpenVotingYesNoAbstain"
+          archiveOpt="P3M"
+          archiveReq="P1M"
+          canActAsTemplate="true"
+          duration="P2Y"
+          visibility="Public">
+	<Create xmlns="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd">
+		<TokenID>
+			<Unique/>
+		</TokenID>
+		<Creator>
+			<RoleReference role="Creator"/>
+		</Creator>
+		<Owner>
+			<RoleReference role="Creator"/>
+		</Owner>
+		<Certifier>
+			<RoleReference role="Certifier"/>
+		</Certifier>
+		<TrustProvider>
+			<RoleReference role="TrustProvider"/>
+		</TrustProvider>
+		<Value>
+			<Number>1</Number>
+		</Value>
+		<Currency>
+			<String>TST</String>
+		</Currency>
+		<CommissionPercent>
+			<Number>0</Number>
+		</CommissionPercent>
+		<Expires>
+			<ParameterReference parameter="Expires"/>
+		</Expires>
+		<CreatorCanDestroy>
+			<Boolean>false</Boolean>
+		</CreatorCanDestroy>
+		<OwnerCanDestroyBatch>
+			<Boolean>false</Boolean>
+		</OwnerCanDestroyBatch>
+		<OwnerCanDestroyIndividual>
+			<Boolean>false</Boolean>
+		</OwnerCanDestroyIndividual>
+		<CertifierCanDestroy>
+			<Boolean>true</Boolean>
+		</CertifierCanDestroy>
+		<Definition>
+			<StateMachine xmlns="https://paiwise.tagroot.io/Schema/StateMachines.xsd" startState="Open">
+				<Variable id="NrVotesTotal">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="NrVotesAccepted">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="NrVotesRejected">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="NrYes">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="NrNo">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="NrAbstain">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="NrComments">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="Question">
+					<TagReference tag="Question"/>
+				</Variable>
+				<Variable id="From">
+					<TagReference tag="From"/>
+				</Variable>
+				<Variable id="To">
+					<TagReference tag="To"/>
+				</Variable>
+				<Variable id="Expires">
+					<TagReference tag="Expires"/>
+				</Variable>
+				<Variable id="IsOpen">
+					<Boolean>false</Boolean>
+				</Variable>
+				<State id="Created">
+					<OnEvent newState="Open">
+						<OnDateTime>{From}</OnDateTime>
+					</OnEvent>
+				</State>
+				<State id="Open">
+					<OnEnter actionRef="SetIsOpen"/>
+					<OnEvent newState="Closed">
+						<OnDateTime>{To}</OnDateTime>
+					</OnEvent>
+					<OnEvent actionRef="YesVoteReceived">
+						<OnContractSigned contractIdVariable="Contract" 
+															parametersVariable="ContractParameters"
+															rolesVariable="ContractRoles"
+															localName="YesVote" 
+															namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"/>
+					</OnEvent>
+					<OnEvent actionRef="NoVoteReceived">
+						<OnContractSigned contractIdVariable="Contract"
+															parametersVariable="ContractParameters"
+															rolesVariable="ContractRoles"
+															localName="NoVote"
+															namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"/>
+					</OnEvent>
+					<OnEvent actionRef="AbstainVoteReceived">
+						<OnContractSigned contractIdVariable="Contract"
+															parametersVariable="ContractParameters"
+															rolesVariable="ContractRoles"
+															localName="AbstainVote"
+															namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"/>
+					</OnEvent>
+				</State>
+				<State id="Closed">
+					<OnEnter actionRef="SetIsClosed"/>
+					<OnEvent newState="Terminated">
+						<OnDateTime>{Expires}</OnDateTime>
+					</OnEvent>
+				</State>
+				<State id="Terminated">
+					<OnEnter actionRef="End"/>
+				</State>
+				<Action id="SetIsOpen">
+					<PersistVariable name="IsOpen" value="{true}"/>
+				</Action>
+				<Action id="SetIsClosed">
+					<PersistVariable name="IsOpen" value="{false}"/>
+				</Action>
+				<Action id="YesVoteReceived">
+					<PersistVariable name="NrYes" value="{NrYes+1}"/>
+				</Action>
+				<Action id="NoVoteReceived">
+					<PersistVariable name="NrNo" value="{NrNo+1}"/>
+				</Action>
+				<Action id="AbstainVoteReceived">
+					<PersistVariable name="NrAbstain" value="{NrAbstain+1}"/>
+				</Action>
+				<Action id="End">
+					<End/>
+				</Action>
+				<ReportPresent>
+					<![CDATA[
+Current Voting Status
+========================
+
+{{Question}}
+
+{{if IsOpen then
+(
+	]]Voting is **open**, and will be closed in [[;
+	
+	TimeLeft:=(To-Now);
+	NrDays:=Days(TimeLeft);
+	
+	if (NrDays>2) then
+		]]((round(NrDays) )) days.[[
+	else
+	(
+		NrHours:=Hours(TimeLeft);
+		if (NrHours>2) then
+			]]((round(NrHours) )) hours.[[
+		else
+		(
+			NrMinutes:=Minutes(TimeLeft);
+			if (NrMinutes>2) then
+				]]((round(NrMinutes) )) minutes.[[
+			else
+			(
+				NrSeconds:=Seconds(TimeLeft);
+				]]((round(NrSeconds) )) seconds.[[
+			)
+		)
+	)
+)
+else
+	]]Voting is **closed**.[[;
+
+| Vote Counts                         ||
+|----------------|---------------------|
+| Total Votes    | {{NrVotesTotal}}    |
+| Accepted Votes | {{NrVotesAccepted}} |
+| Rejected Votes | {{NrVotesRejected}} |
+| **#Yes**       | **{{NrYes}}**       |
+| **#No**        | **{{NrNo}}**        |
+| #Abstain       | {{NrAbstain}}       |
+| #Comments      | {{NrComments}}      |
+					]]>
+				</ReportPresent>
+				<ReportHistory>
+					<![CDATA[
+Voting history
+=================
+
+]]>
+				</ReportHistory>
+			</StateMachine>
+		</Definition>
+		<Tag name="Question">
+			<ParameterReference parameter="Question"/>
+		</Tag>
+		<Tag name="From">
+			<ParameterReference parameter="From"/>
+		</Tag>
+		<Tag name="To">
+			<ParameterReference parameter="To"/>
+		</Tag>
+		<Tag name="Expires">
+			<ParameterReference parameter="Expires"/>
+		</Tag>
+		<FriendlyName>
+			<String>Open Voting</String>
+		</FriendlyName>
+		<Category>
+			<String>Voting</String>
+		</Category>
+		<Description>
+			<String>Example token used to demonstrate how to implement an open and transparent voting system.</String>
+		</Description>
+		<Glyph contentType="image/png">iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAABFFJREFUeJztWU1IMlsYfrqTFmgLIb5yEURlLQo3YVZUCi1qFUFQUKt2QURWm7IgIkhqJ9IP1EIIWkWuIugPLIh0GVFUBC5SocCkEM2/uYvv3oPDNNM43Thwv3lgYM77d57zeI7nzEwBy7Is/mD8RZsAbSgC0CZAG4oAtAnQhiIAbQK0oQhAmwBtKALQJkAbigC0CdCGIgBtArShCECbAG0oAtAmQBuKALQJ0EahkCMYDGJpaQklJSV5F43H4+jr60NHRwfPNz8/j3g8jmw2i5qaGoyMjORdHwBSqRScTicODg5wfX2N19dXqNVqVFRUoLGxET09Pejv7/+6ECsAn8/HApB9LS4u8mo+PT3x4vJFJpNh29vbJfPY2dkRrSe4BL77uSCTyfBs4+PjPNvCwoLkmqenp2AYBufn55JzHh8fRf0FQh9G3t7ecHx8jOLiYo69tLQUZrOZtLe3t/Hr1y+k02liSyaTMBqNqKqq4nZWUAAA0Gg0iMVixC5FbK/XC6vVyrE1Nzdjbm4O3d3dYBiG2O/v77G7u4vZ2VlMT0/D4XAIF857Dv5mS65oNCopx+FwkBy73c5arVbS3t/fz6tPAOzt7a2kfgOBgHhdSVVEyITD4bxzYrEYe3R0RNoGg0E0d2BggJOfTCbl0P6cl6ykPAXIHWx1dfWndV5eXiT153K55FAWri0rKU8BGhoaSLzH4yF2u91O7ENDQ5/mer3eb+0aX+HHBYhGo6ID+GpwKysrxF9fXy+Hrih+/CRos9nI/dTUFM+fe1hyOp08fygUIvcGg0Fyv3V1dWhtbYXJZBIPlKMa8pgBubHpdJrn9/v9xM8wDM9vs9mIv7e3VxZHMfzoDFhdXSX3FouFs1f/C5PJBI1GA+D34eni4oLjLysrI/eBQOA/5yh4EBJN+udAAwDhcBjl5eWfxhUVFSGZTAIAlpeX0dbWhkQiwYnRarXY2trC5uYmAKCpqQk+n4/4Dw8P0dXVRdpS6eZyFM2RPKcEppfQEri8vJT9HPHx8SHY397eXt4cReOkDVm4uJAALS0tsgUYHR3l1LJYLHlvhVLjf2QJpNNpqFQq0na73UilUoJTkWEYPD8/Y2ZmhthyY6PRKHQ6HWmr1WrEYjEUFgo+zdNdAmNjY8RvNpsl19VqtSTP7XZzfGtra7yZMjg4yPr9fl4dj8dDdwnk+s/OziTXXV9fJ3k6nY7ndzqdspaU6Fgks8tNyikeDAY5PpfL9a2ja27uZ79uKBRia2trJQ++srJStD/hRSSCiYkJqFQqvL+/816ZJRIJTE5OIpvNcrYvqXC73bi6ukI2m8XDwwPvJKfX63F3d4dIJIKNjQ2cnJzg5uYGkUgEDMNAr9fDaDSis7MTw8PD5IwhBFl/gv8n/PFvhRUBaBOgDUUA2gRoQxGANgHaUASgTYA2FAFoE6ANRQDaBGhDEYA2AdpQBKBNgDYUAWgToA1FANoEaONve9o8PVvYS2AAAAAASUVORK5CYII=</Glyph>
+	</Create>
+	<role name="Creator" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>Creator of the open vote.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="Certifier" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>Certifier of the vote. Apart from certifying the correctness of the vote, the certifier is empowered to cancel or disqualify a vote.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="TrustProvider" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The part that acts as a host of the voting, approves its creation and validates all digital signatures.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<templateOnly/>
+	</parts>
+	<parameters>
+		<stringParameter name="Question" guide="Question" minLength="1">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Question to be voted on.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<dateTimeParameter name="From" guide="When voting is opened." exp="From&gt;=Now">
+			<description xml:lang="en">
+				<paragraph>
+					<text>When the voting is opened.</text>
+				</paragraph>
+			</description>
+		</dateTimeParameter>
+		<dateTimeParameter name="To" guide="When voting is closed." exp="To&gt;From">
+			<description xml:lang="en">
+				<paragraph>
+					<text>When the voting is closed.</text>
+				</paragraph>
+			</description>
+		</dateTimeParameter>
+		<dateParameter name="Expires" guide="Expiry date" exp="Expires&gt;To">
+			<description xml:lang="en">
+				<paragraph>
+					<text>When token expires.</text>
+				</paragraph>
+			</description>
+		</dateParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Open voting</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This contract creates an open vote, where anyone can participate. Each participant has at most one vote. Votes are open, and can be seen by other participants.</text>
+				</paragraph>
+				<paragraph>
+					<text>Each participant votes by signing an individual contract. In the contract, they will have to answer the question </text>
+					<bold>
+						<parameter name="Question"/>
+					</bold>
+					<text>, by choosing one of the three options: </text>
+					<bold>
+						<text>Yes</text>
+					</bold>
+					<text>, </text>
+					<bold>
+						<text>No</text>
+					</bold>
+					<text>, or </text>
+					<bold>
+						<text>Abstain</text>
+					</bold>
+					<text>. The will also have the opportunity to provide a personal comment for open review.</text>
+				</paragraph>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>
