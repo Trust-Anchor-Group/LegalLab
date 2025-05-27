@@ -6,11 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Waher.Events;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Persistence;
+using Waher.Runtime.Collections;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 
@@ -109,10 +111,65 @@ namespace LegalLab.Models.Legal
 			this.contracts = new ContractsClient(Client, ComponentJid);
 			this.contracts.EnableE2eEncryption(true);
 			this.contracts.IdentityUpdated += this.Contracts_IdentityUpdated;
+			this.contracts.ContractUpdated += this.Contracts_ContractUpdated;
+			this.contracts.ContractDeleted += this.Contracts_ContractDeleted;
 			this.contracts.PetitionForIdentityReceived += this.Contracts_PetitionForIdentityReceived;
 			this.contracts.ClientMessage += this.Contracts_ClientMessage;
 
 			this.httpFileUploadClient = new HttpFileUploadClient(Client, FileUploadJid, MaxFileSize);
+		}
+
+		private Task Contracts_ContractDeleted(object Sender, ContractReferenceEventArgs e)
+		{
+			return this.RemoveContract(e);
+		}
+
+		private async Task Contracts_ContractUpdated(object Sender, ContractReferenceEventArgs e)
+		{
+			try
+			{
+				Contract Contract = await this.contracts.GetContractAsync(e.ContractId);
+
+				switch (Contract.State)
+				{
+					case ContractState.Failed:
+					case ContractState.Obsoleted:
+					case ContractState.Deleted:
+					case ContractState.Rejected:
+						await this.RemoveContract(e);
+						break;
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.Exception(ex);
+			}
+		}
+
+		private async Task RemoveContract(ContractReferenceEventArgs e)
+		{
+			ChunkedList<TemplateReferenceModel> TemplatesToKeep = [];
+			bool Changed = false;
+
+			foreach (TemplateReferenceModel Model in this.Templates)
+			{
+				if (Model.ContractId == e.ContractId)
+				{
+					await RuntimeSettings.DeleteAsync("Contract.Template." + Model.TemplateName);
+					Changed = true;
+				}
+				else
+					TemplatesToKeep.Add(Model);
+			}
+
+			if (Changed)
+			{
+				await MainWindow.UpdateGui(() =>
+				{
+					this.Templates = [.. TemplatesToKeep];
+					return Task.CompletedTask;
+				});
+			}
 		}
 
 		private Task Contracts_ClientMessage(object Sender, ClientMessageEventArgs e)
@@ -188,7 +245,7 @@ namespace LegalLab.Models.Legal
 
 					sb.Append(InvalidClaims[i].Claim);
 
-					if (!(string.IsNullOrEmpty(InvalidClaims[i].Reason)))
+					if (!string.IsNullOrEmpty(InvalidClaims[i].Reason))
 					{
 						sb.Append(" (");
 						sb.Append(InvalidClaims[i].Reason);
@@ -215,7 +272,7 @@ namespace LegalLab.Models.Legal
 
 					sb.Append(InvalidPhotos[i].FileName);
 
-					if (!(string.IsNullOrEmpty(InvalidClaims[i].Reason)))
+					if (!string.IsNullOrEmpty(InvalidClaims[i].Reason))
 					{
 						sb.Append(" (");
 						sb.Append(InvalidClaims[i].Reason);
@@ -266,7 +323,7 @@ namespace LegalLab.Models.Legal
 				sb.AppendLine();
 			}
 
-			MainWindow.MessageBox(sb.ToString(), "Identity Application Validation Result", 
+			MainWindow.MessageBox(sb.ToString(), "Identity Application Validation Result",
 				MessageBoxButton.OK, MessageBoxImage.Information);
 
 			return Task.CompletedTask;
@@ -850,19 +907,19 @@ namespace LegalLab.Models.Legal
 				if (this.currentContract is not null)
 					await this.currentContract.Stop();
 
-				this.currentContract = await ContractModel.CreateAsync(this.contracts, this.Template, MainWindow.DesignModel, 
+				this.currentContract = await ContractModel.CreateAsync(this.contracts, this.Template, MainWindow.DesignModel,
 					MainWindow.currentInstance.ContractsTab.MachineReadableXmlEditor);
-				
+
 				await this.currentContract.Start();
 
 				await this.currentContract.PopulateParameters(
 					MainWindow.currentInstance.ContractsTab.LanguageOptions,
-					MainWindow.currentInstance.ContractsTab.CreateParameters, 
+					MainWindow.currentInstance.ContractsTab.CreateParameters,
 					MainWindow.currentInstance.ContractsTab.CreateCommands,
 					PresetValues);
 
 				await this.currentContract.PopulateContract(
-					MainWindow.currentInstance.ContractsTab.ContractToCreate, 
+					MainWindow.currentInstance.ContractsTab.ContractToCreate,
 					MainWindow.currentInstance.ContractsTab.ContractToCreateHumanReadable);
 			}
 			catch (Exception ex)
