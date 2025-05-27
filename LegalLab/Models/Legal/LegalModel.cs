@@ -121,7 +121,7 @@ namespace LegalLab.Models.Legal
 
 		private Task Contracts_ContractDeleted(object Sender, ContractReferenceEventArgs e)
 		{
-			return this.RemoveContract(e);
+			return this.RemoveContract(e.ContractId);
 		}
 
 		private async Task Contracts_ContractUpdated(object Sender, ContractReferenceEventArgs e)
@@ -136,7 +136,7 @@ namespace LegalLab.Models.Legal
 					case ContractState.Obsoleted:
 					case ContractState.Deleted:
 					case ContractState.Rejected:
-						await this.RemoveContract(e);
+						await this.RemoveContract(e.ContractId);
 						break;
 				}
 			}
@@ -146,14 +146,14 @@ namespace LegalLab.Models.Legal
 			}
 		}
 
-		private async Task RemoveContract(ContractReferenceEventArgs e)
+		public async Task RemoveContract(string ContractId)
 		{
 			ChunkedList<TemplateReferenceModel> TemplatesToKeep = [];
 			bool Changed = false;
 
 			foreach (TemplateReferenceModel Model in this.Templates)
 			{
-				if (Model.ContractId == e.ContractId)
+				if (Model.ContractId == ContractId)
 				{
 					await RuntimeSettings.DeleteAsync("Contract.Template." + Model.TemplateName);
 					Changed = true;
@@ -894,12 +894,12 @@ namespace LegalLab.Models.Legal
 
 		private async Task LoadTemplate(string TemplateName, Dictionary<CaseInsensitiveString, object> PresetValues)
 		{
+			string ContractId = await RuntimeSettings.GetAsync("Contract.Template." + TemplateName, string.Empty);
+			if (string.IsNullOrEmpty(ContractId))
+				return;
+
 			try
 			{
-				string ContractId = await RuntimeSettings.GetAsync("Contract.Template." + TemplateName, string.Empty);
-				if (string.IsNullOrEmpty(ContractId))
-					return;
-
 				MainWindow.MouseHourglass();
 				this.Template = await this.contracts.GetContractAsync(ContractId);
 				MainWindow.MouseDefault();
@@ -915,7 +915,7 @@ namespace LegalLab.Models.Legal
 				await this.currentContract.PopulateParameters(
 					MainWindow.currentInstance.ContractsTab.LanguageOptions,
 					MainWindow.currentInstance.ContractsTab.CreateParameters,
-					MainWindow.currentInstance.ContractsTab.CreateCommands,
+					MainWindow.currentInstance.ContractsTab.TemplateCommands,
 					PresetValues);
 
 				await this.currentContract.PopulateContract(
@@ -924,7 +924,11 @@ namespace LegalLab.Models.Legal
 			}
 			catch (Exception ex)
 			{
-				MainWindow.ErrorBox(ex.Message);
+				if (await MainWindow.MessageBox("Unable to load template. Do you want to remove it?\r\n\r\nError returned: " +
+					ex.Message, "Error", MessageBoxButton.YesNoCancel, MessageBoxImage.Question) == MessageBoxResult.Yes)
+				{
+					await this.RemoveContract(ContractId);
+				}
 			}
 		}
 

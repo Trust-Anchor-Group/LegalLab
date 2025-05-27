@@ -51,6 +51,7 @@ namespace LegalLab.Models.Legal
 
 		private readonly Command addPart;
 		private readonly Command createContract;
+		private readonly Command removeTemplate;
 		private readonly Command uploadAttachment;
 
 		private readonly NonScrollingTextEditor xmlEditor = null;
@@ -88,6 +89,7 @@ namespace LegalLab.Models.Legal
 
 			this.addPart = new Command(this.ExecuteAddPart);
 			this.createContract = new Command(this.CanExecuteCreateContract, this.ExecuteCreateContract);
+			this.removeTemplate = new Command(this.CanExecuteRemoveTemplate, this.ExecuteRemoveTemplate);
 			this.uploadAttachment = new Command(this.CanExecuteUploadAttachment, this.ExecuteUploadAttachment);
 
 			this.xmlEditor = XmlEditor;
@@ -602,7 +604,7 @@ namespace LegalLab.Models.Legal
 		}
 
 		/// <summary>
-		/// Proposes the contract.
+		/// Creates a contract.
 		/// </summary>
 		public async Task ExecuteCreateContract()
 		{
@@ -626,6 +628,47 @@ namespace LegalLab.Models.Legal
 				await this.SetContract(Contract);
 
 				MainWindow.SuccessBox("Contract successfully created.");
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
+		}
+
+		/// <summary>
+		/// Remove template command
+		/// </summary>
+		public ICommand RemoveTemplate => this.removeTemplate;
+
+		/// <summary>
+		/// If the remove template command can be exeucted.
+		/// </summary>
+		/// <returns>If command can be executed.</returns>
+		public bool CanExecuteRemoveTemplate()
+		{
+			return this.legalModel.Template is not null;
+		}
+
+		/// <summary>
+		/// Removed the template.
+		/// </summary>
+		public async Task ExecuteRemoveTemplate()
+		{
+			try
+			{
+				if (MessageBox.Show("Are you sure you want to remove the selected template? (Only the reference to the template will be removed.)", "Confirm",
+					MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
+				{
+					return;
+				}
+
+				MainWindow.MouseHourglass();
+
+				string TemplateId = this.legalModel.Template.ContractId;
+
+				await this.legalModel.RemoveContract(TemplateId);
+
+				MainWindow.MouseDefault();
 			}
 			catch (Exception ex)
 			{
