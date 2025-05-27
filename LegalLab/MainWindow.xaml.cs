@@ -363,27 +363,35 @@ namespace LegalLab
 			return UpdateGui(Method, Method.Method.DeclaringType + "." + Method.Method.Name, State);
 		}
 
-		private static Task<bool> UpdateGui(GuiDelegateWithParameter Method, string Name, object State)
+		private static async Task<bool> UpdateGui(GuiDelegateWithParameter Method, string Name, object State)
 		{
-			bool Start;
-			GuiUpdateTask Rec = new()
+			if (currentInstance.Dispatcher.CheckAccess())
 			{
-				Method = Method,
-				State = State,
-				Name = Name,
-				Requested = DateTime.Now,
-			};
-
-			lock (guiUpdateQueue)
-			{
-				Start = (guiUpdateQueue.First is null) && currentInstance is not null;
-				guiUpdateQueue.AddLast(Rec);
+				await Method(State);
+				return true;
 			}
+			else
+			{
+				bool Start;
+				GuiUpdateTask Rec = new()
+				{
+					Method = Method,
+					State = State,
+					Name = Name,
+					Requested = DateTime.Now,
+				};
 
-			if (Start)
-				currentInstance.Dispatcher.BeginInvoke(new GuiDelegate(DoUpdates));
+				lock (guiUpdateQueue)
+				{
+					Start = (guiUpdateQueue.First is null) && currentInstance is not null;
+					guiUpdateQueue.AddLast(Rec);
+				}
 
-			return Rec.Done.Task;
+				if (Start)
+					await currentInstance.Dispatcher.BeginInvoke(new GuiDelegate(DoUpdates));
+
+				return await Rec.Done.Task;
+			}
 		}
 
 		private static async Task DoUpdates()
