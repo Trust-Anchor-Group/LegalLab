@@ -418,13 +418,27 @@ namespace LegalLab.Models.Script
 		/// </summary>
 		public override async Task Start()
 		{
-			await MainWindow.UpdateGui(() =>
-			{
-				MainWindow.currentInstance.ScriptTab.DataContext = this;
-				return Task.CompletedTask;
-			});
-
+			this.SetDataContext();
 			await base.Start();
+		}
+
+		private async void SetDataContext()
+		{
+			try
+			{
+				while (MainWindow.currentInstance.ScriptTab is null)
+					await Task.Delay(100);
+
+				await MainWindow.UpdateGui(() =>
+				{
+					MainWindow.currentInstance.ScriptTab.DataContext = this;
+					return Task.CompletedTask;
+				});
+			}
+			catch (Exception ex)
+			{
+				Log.Exception(ex);
+			}
 		}
 	}
 }

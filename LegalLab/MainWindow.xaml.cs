@@ -365,7 +365,7 @@ namespace LegalLab
 
 		private static async Task<bool> UpdateGui(GuiDelegateWithParameter Method, string Name, object State)
 		{
-			if (currentInstance.Dispatcher.CheckAccess())
+			if (currentInstance?.Dispatcher.CheckAccess() ?? false)
 			{
 				await Method(State);
 				return true;
