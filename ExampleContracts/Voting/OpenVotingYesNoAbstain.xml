@@ -47,7 +47,7 @@
 			<Boolean>true</Boolean>
 		</CertifierCanDestroy>
 		<Definition>
-			<StateMachine xmlns="https://paiwise.tagroot.io/Schema/StateMachines.xsd" startState="Open">
+			<StateMachine xmlns="https://paiwise.tagroot.io/Schema/StateMachines.xsd" startState="Created">
 				<Variable id="NrVotesTotal">
 					<Number>0</Number>
 				</Variable>
