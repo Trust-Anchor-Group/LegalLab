@@ -10,7 +10,9 @@ using LegalLab.Models.Standards;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -2383,6 +2385,21 @@ namespace LegalLab.Models.Design
 
 				MainWindow.SuccessBox("Template successfully proposed. The template ID, which has been copied to the clipboard, is: " + Contract.ContractId);
 				Clipboard.SetText(Contract.ContractId);
+
+				StringBuilder Url = new StringBuilder();
+
+				Url.Append("https://");
+				Url.Append(this.Network.XmppServer);
+				Url.Append("/Contract.md?ID=");
+				Url.Append(Contract.ContractId);
+
+				ProcessStartInfo Info = new()
+				{
+					FileName = Url.ToString(),
+					UseShellExecute = true
+				};
+
+				Process.Start(Info);
 			}
 			catch (Exception ex)
 			{
