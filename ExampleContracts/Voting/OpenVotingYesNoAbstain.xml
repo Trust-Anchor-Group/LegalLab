@@ -150,35 +150,46 @@ Current Voting Status
 
 {{Question}}
 
-{{if IsOpen then
+{{
+OutputTimeLeft(TimeLeft):=
 (
-	]]Voting is **open**, and will be closed in [[;
-	
-	TimeLeft:=(To-Now);
 	NrDays:=Days(TimeLeft);
 	
 	if (NrDays>2) then
-		]]((round(NrDays) )) days.[[
+		]]((round(NrDays) )) days[[
 	else
 	(
 		NrHours:=Hours(TimeLeft);
 		if (NrHours>2) then
-			]]((round(NrHours) )) hours.[[
+			]]((round(NrHours) )) hours[[
 		else
 		(
 			NrMinutes:=Minutes(TimeLeft);
 			if (NrMinutes>2) then
-				]]((round(NrMinutes) )) minutes.[[
+				]]((round(NrMinutes) )) minutes[[
 			else
 			(
 				NrSeconds:=Seconds(TimeLeft);
-				]]((round(NrSeconds) )) seconds.[[
+				]]((round(NrSeconds) )) seconds[[
 			)
 		)
 	)
+);
+
+if IsOpen then
+(
+	]]Voting is **open**, and will be closed in [[;
+	OutputTimeLeft(To-NowUtc);
+	]].[[
+)
+else if NowUtc < From then
+(
+	]]Voting has not started yet. It will begin in **[[;
+	OutputTimeLeft(From-NowUtc);
+	]]**.[[
 )
 else
-	]]Voting is **closed**.[[}}
+		]]Voting is **closed**.[[}}
 
 | Vote Counts                         ||
 |----------------|---------------------|
