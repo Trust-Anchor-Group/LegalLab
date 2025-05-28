@@ -84,15 +84,24 @@
 				<Variable id="IsOpen">
 					<Boolean>false</Boolean>
 				</Variable>
+				<Variable id="TimeLeftLabel">
+					<String></String>
+				</Variable>
 				<State id="Created">
 					<OnEvent newState="Open">
-						<OnDateTime>{From}</OnDateTime>
+						<OnDateTime timeCoordinates="UTC">{From}</OnDateTime>
+					</OnEvent>
+					<OnEvent actionRef="CheckTimeToOpen">
+						<OnDuration>PT1S</OnDuration>
 					</OnEvent>
 				</State>
 				<State id="Open">
 					<OnEnter actionRef="SetIsOpen"/>
 					<OnEvent newState="Closed">
-						<OnDateTime>{To}</OnDateTime>
+						<OnDateTime timeCoordinates="UTC">{To}</OnDateTime>
+					</OnEvent>
+					<OnEvent actionRef="CheckTimeToClose">
+						<OnDuration>PT1S</OnDuration>
 					</OnEvent>
 					<OnEvent actionRef="YesVoteReceived">
 						<OnContractSigned contractIdVariable="Contract" 
@@ -119,7 +128,7 @@
 				<State id="Closed">
 					<OnEnter actionRef="SetIsClosed"/>
 					<OnEvent newState="Terminated">
-						<OnDateTime>{Expires}</OnDateTime>
+						<OnDateTime timeCoordinates="UTC">{Expires}</OnDateTime>
 					</OnEvent>
 				</State>
 				<State id="Terminated">
@@ -143,6 +152,64 @@
 				<Action id="End">
 					<End/>
 				</Action>
+				<Action id="FunctionDefinitions">
+					<Script>
+						<![CDATA[
+CalcTimeLeft(TimeLeft):=
+(
+	NrDays:=Days(TimeLeft);
+	
+	if (NrDays>2) then
+		[round(NrDays),"days",Now+TimeSpan(1,0,0)]
+	else
+	(
+		NrHours:=Hours(TimeLeft);
+		if (NrHours>2) then
+			[round(NrHours),"hours",Now+TimeSpan(0,5,0)]
+		else
+		(
+			NrMinutes:=Minutes(TimeLeft);
+			if (NrMinutes>2) then
+				[round(NrMinutes),"minutes",Now+TimeSpan(0,1,0)]
+			else
+			(
+				NrSeconds:=Seconds(TimeLeft);
+				[round(NrSeconds),"seconds",Now+TimeSpan(0,0,1)]
+			)
+		)
+	)
+);
+
+CalcTimeLeftLabel(TimeLeft):=
+(
+	[Nr,Unit,NextTimeCheck]:=CalcTimeLeft(TimeLeft);
+	Str(Nr)+" "+Unit;
+);
+
+OutputTimeLeft(TimeLeft):=
+(
+	Label:=CalcTimeLeftLabel(TimeLeft);
+	]]((Label))[[
+);
+						]]>
+					</Script>
+				</Action>
+				<Action id="CheckTimeToOpen">
+					<CallAction actionRef="FunctionDefinitions"/>
+					<If condition="Label:=CalcTimeLeftLabel(From-NowUtc);Label!=TimeLeftLabel">
+						<Then>
+							<PersistVariable name="TimeLeftLabel" value="{Label}"/>
+						</Then>
+					</If>
+				</Action>
+				<Action id="CheckTimeToClose">
+					<CallAction actionRef="FunctionDefinitions"/>
+					<If condition="Label:=CalcTimeLeftLabel(To-NowUtc);Label!=TimeLeftLabel">
+						<Then>
+							<PersistVariable name="TimeLeftLabel" value="{Label}"/>
+						</Then>
+					</If>
+				</Action>
 				<ReportPresent>
 					<![CDATA[
 Current Voting Status
@@ -151,30 +218,7 @@ Current Voting Status
 {{Question}}
 
 {{
-OutputTimeLeft(TimeLeft):=
-(
-	NrDays:=Days(TimeLeft);
-	
-	if (NrDays>2) then
-		]]((round(NrDays) )) days[[
-	else
-	(
-		NrHours:=Hours(TimeLeft);
-		if (NrHours>2) then
-			]]((round(NrHours) )) hours[[
-		else
-		(
-			NrMinutes:=Minutes(TimeLeft);
-			if (NrMinutes>2) then
-				]]((round(NrMinutes) )) minutes[[
-			else
-			(
-				NrSeconds:=Seconds(TimeLeft);
-				]]((round(NrSeconds) )) seconds[[
-			)
-		)
-	)
-);
+CallAction("FunctionDefinitions");
 
 if IsOpen then
 (
