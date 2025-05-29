@@ -96,10 +96,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Voting", "Voting", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 	ProjectSection(SolutionItems) = preProject
 		ExampleContracts\Voting\OpenVote.xsd = ExampleContracts\Voting\OpenVote.xsd
-		ExampleContracts\Voting\OpenVoteAbstain.xml = ExampleContracts\Voting\OpenVoteAbstain.xml
-		ExampleContracts\Voting\OpenVoteNo.xml = ExampleContracts\Voting\OpenVoteNo.xml
-		ExampleContracts\Voting\OpenVotingYesNoAbstain.xml = ExampleContracts\Voting\OpenVotingYesNoAbstain.xml
-		ExampleContracts\Voting\OpenVoteYes.xml = ExampleContracts\Voting\OpenVoteYes.xml
+		ExampleContracts\Voting\OpenBallotYesNoAbstain.xml = ExampleContracts\Voting\OpenBallotYesNoAbstain.xml
+		ExampleContracts\Voting\OpenVoteYesNoAbstain.xml = ExampleContracts\Voting\OpenVoteYesNoAbstain.xml
 	EndProjectSection
 EndProject
 Global

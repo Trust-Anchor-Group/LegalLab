@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<contract xmlns="urn:nf:iot:leg:sc:1.0"
+          id="OpenBallotYesNoAbstain"
+          archiveOpt="P2Y"
+          archiveReq="P5Y"
+          canActAsTemplate="true"
+          duration="P1Y"
+          visibility="Public">
+	<Ballot xmlns="https://paiwise.tagroot.io/Schema/OpenVote.xsd">
+		<Option value="Yes" parameter="Yes"/>
+		<Option value="No" parameter="No"/>
+		<Option value="Abstain" parameter="Abstain"/>
+	</Ballot>
+	<role name="Voter" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>Participant of an open vote.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<templateOnly/>
+	</parts>
+	<parameters>
+		<stringParameter name="Question" guide="Question" minLength="1">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Question to be voted on.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<booleanParameter name="Yes" value="false" guide="Check this box if you vote Yes."
+											exp="(Yes?1:0)+(No?1:0)+(Abstain?1:0)=3">
+			<description xml:lang="en">
+				<paragraph>
+					<text>I vote </text>
+					<bold>
+						<text>Yes</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</booleanParameter>
+		<booleanParameter name="No" value="false" guide="Check this box if you vote No."
+											exp="(Yes?1:0)+(No?1:0)+(Abstain?1:0)=3">
+			<description xml:lang="en">
+				<paragraph>
+					<text>I vote </text>
+					<bold>
+						<text>No</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</booleanParameter>
+		<booleanParameter name="Abstain" value="false" guide="Check this box if you abstain."
+											exp="(Yes?1:0)+(No?1:0)+(Abstain?1:0)=3">
+			<description xml:lang="en">
+				<paragraph>
+					<text>I </text>
+					<bold>
+						<text>Abstain</text>
+					</bold>
+					<text> from voting.</text>
+				</paragraph>
+			</description>
+		</booleanParameter>
+		<stringParameter name="Comment" guide="Comment">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The voter can provide a comment in this field that will be included in the result.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<roleParameter name="FullName" property="FULLNAME" role="Voter" index="1" required="true">
+			<description>
+				<paragraph>
+					<text>The full name of the voter.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter name="PersonalNumber" property="PNR" role="Voter" index="1" required="true">
+			<description>
+				<paragraph>
+					<text>The personal number of the voter.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter name="Country" property="COUNTRY" role="Voter" index="1" required="true">
+			<description>
+				<paragraph>
+					<text>The country associated with the personal number of the voter.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Open Ballot</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>I vote:</text>
+				</paragraph>
+				<bulletItems>
+					<item>
+						<parameter name="Yes"/>
+						<text> </text>
+						<bold>
+							<text>Yes</text>
+						</bold>
+						<text>.</text>
+					</item>
+					<item>
+						<parameter name="No"/>
+						<text> </text>
+						<bold>
+							<text>No</text>
+						</bold>
+						<text>.</text>
+					</item>
+					<item>
+						<parameter name="Abstain"/>
+						<text> I </text>
+						<bold>
+							<text>Abstain</text>
+						</bold>
+						<text> from voting.</text>
+					</item>
+				</bulletItems>
+				<section>
+					<header>
+						<text>Declaration and Signature</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>With my signature, I declare that I, of my own will, vote in accordance with the above, in relation to the following question: </text>
+							<italic>
+								<parameter name="Question"/>
+							</italic>
+							<text>.</text>
+						</paragraph>
+						<paragraph>
+							<text>I am also aware, that I only have one vote, and that the vote will only count if I have not voted before in this voting, and that my vote is signed while the voting is open, and before it is closed.</text>
+						</paragraph>
+						<paragraph>
+							<text>As a voter, I am allowed to provide feedback, in the form of a free text comment. My feedback is: </text>
+							<italic>
+								<parameter name="Comment"/>
+							</italic>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Personal Information</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>As this vote is open, personal information will be processed to guarantee each participant gets exactly one vote. This is done by collecting validated personal information from the digital identity application signing the ballot. The information collected is full name (</text>
+							<bold>
+								<parameter name="FullName"/>
+							</bold>
+							<text>) and Personal Number (</text>
+							<bold>
+								<parameter name="PersonalNumber"/>
+							</bold>
+							<text>) and Country (</text>
+							<bold>
+								<parameter name="Country"/>
+							</bold>
+							<text>). The personal information will be automatically deleted after the ballot record has expired (</text>
+							<bold>
+								<text>1 year</text>
+							</bold>
+							<text>) and the required archiving time has elapsed (</text>
+							<bold>
+								<text>an additional 2 years</text>
+							</bold>
+							<text>) and the optional archiving time has elapsed (</text>
+							<bold>
+								<text>an additional 5 years</text>
+							</bold>
+							<text>). The ballot can be requested to be removed after the ballot expiry date and required archiving time (total </text>
+							<bold>
+								<text>3 years</text>
+							</bold>
+							<text>. Contact the </text>
+							<italic>
+								<text>Certifier</text>
+							</italic>
+							<text> of the vote to get your ballot manually removed before the optional archiving time has elapsed.</text>
+						</paragraph>	
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>

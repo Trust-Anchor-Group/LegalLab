@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <contract xmlns="urn:nf:iot:leg:sc:1.0"
-          id="OpenVotingYesNoAbstain"
+          id="OpenVoteYesNoAbstain"
           archiveOpt="P3M"
           archiveReq="P1M"
           canActAsTemplate="true"
@@ -57,6 +57,20 @@
 				<Variable id="NrVotesRejected">
 					<Number>0</Number>
 				</Variable>
+				<Variable id="Votes">
+					<Calc>
+						<![CDATA[
+						{
+							"Yes":0,
+							"No":0,
+							"Abstain":0
+						}
+						]]>
+					</Calc>
+				</Variable>
+				<Variable id="Voters">
+					<Calc>{}</Calc>
+				</Variable>
 				<Variable id="NrYes">
 					<Number>0</Number>
 				</Variable>
@@ -65,6 +79,9 @@
 				</Variable>
 				<Variable id="NrAbstain">
 					<Number>0</Number>
+				</Variable>
+				<Variable id="Comments">
+					<Calc>{}</Calc>
 				</Variable>
 				<Variable id="NrComments">
 					<Number>0</Number>
@@ -103,25 +120,12 @@
 					<OnEvent actionRef="CheckTimeToClose">
 						<OnDuration>PT1S</OnDuration>
 					</OnEvent>
-					<OnEvent actionRef="YesVoteReceived">
-						<OnContractSigned contractIdVariable="Contract" 
+					<OnEvent actionRef="BallotReceived">
+						<OnContractSigned contractIdVariable="ContractId" 
 															parametersVariable="ContractParameters"
 															rolesVariable="ContractRoles"
-															localName="YesVote" 
-															namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"/>
-					</OnEvent>
-					<OnEvent actionRef="NoVoteReceived">
-						<OnContractSigned contractIdVariable="Contract"
-															parametersVariable="ContractParameters"
-															rolesVariable="ContractRoles"
-															localName="NoVote"
-															namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"/>
-					</OnEvent>
-					<OnEvent actionRef="AbstainVoteReceived">
-						<OnContractSigned contractIdVariable="Contract"
-															parametersVariable="ContractParameters"
-															rolesVariable="ContractRoles"
-															localName="AbstainVote"
+															machineReadableVariable="Ballot"
+															localName="Ballot" 
 															namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"/>
 					</OnEvent>
 				</State>
@@ -140,14 +144,100 @@
 				<Action id="SetIsClosed">
 					<PersistVariable name="IsOpen" value="{false}"/>
 				</Action>
-				<Action id="YesVoteReceived">
-					<PersistVariable name="NrYes" value="{NrYes+1}"/>
-				</Action>
-				<Action id="NoVoteReceived">
-					<PersistVariable name="NrNo" value="{NrNo+1}"/>
-				</Action>
-				<Action id="AbstainVoteReceived">
-					<PersistVariable name="NrAbstain" value="{NrAbstain+1}"/>
+				<Action id="BallotReceived">
+					<PersistVariable name="NrVotesTotal" value="{NrVotesTotal+1}"/>
+					<Try>
+						<Script>
+							<![CDATA[
+							Key:=ContractParameters.Country+"|"+ContractParameters.PersonalNumber;
+							]]>
+						</Script>
+						<If condition="Voters.ContainsKey(Key)">
+							<Then>
+								<PersistVariable name="NrVotesRejected" value="{NrVotesRejected+1}"/>
+								<Fail reason="Voter has already voted."/>
+							</Then>
+							<Else>
+								<Script>
+									<![CDATA[
+									Options:=select /default:Ballot/default:Option;
+
+									InvalidOptions:=false;
+									InvalidParameterValue:=false;
+									MultipleSelected:=false;
+									SelectedOption:=null;
+
+									foreach Option in Options do
+									(
+										Parameter:=select @parameter from Option;
+										Value:=select @value from Option;
+							
+										if !ContractParameters.ContainsKey(Parameter) then
+											InvalidParameterValue:=true
+										else if !Votes.ContainsKey(Value) then
+											InvalidOptions:=true;
+										else
+										(
+											ParameterValue:=ContractParameters[Parameter];
+											if ParameterValue matches Boolean(ParameterSelection) then
+											(
+												if ParameterSelection then 
+												(
+													if exists(SelectedOption) then
+														MultipleSelected:=true
+													else
+														SelectedOption:=Value;
+												)
+											)
+											else
+												InvalidParameterValue:=true
+										)
+									);
+									]]>
+								</Script>
+								<If condition="InvalidOptions">
+									<Then>
+										<PersistVariable name="NrVotesRejected" value="{NrVotesRejected+1}"/>
+										<Fail reason="Invalid options in ballot."/>
+									</Then>
+									<Else>
+										<If condition="InvalidParameterValue">
+											<Then>
+												<PersistVariable name="NrVotesRejected" value="{NrVotesRejected+1}"/>
+												<Fail reason="Invalid parameter reference or parameter value in ballot."/>
+											</Then>
+											<Else>
+												<If condition="MultipleSelected">
+													<Then>
+														<PersistVariable name="NrVotesRejected" value="{NrVotesRejected+1}"/>
+														<Fail reason="Multiple options selected in ballot."/>
+													</Then>
+													<Else>
+														<If condition="!exists(SelectedOption)">
+															<Then>
+																<PersistVariable name="NrVotesRejected" value="{NrVotesRejected+1}"/>
+																<Fail reason="No selected option in ballot."/>
+															</Then>
+															<Else>
+																<PersistVariable name="{'Nr'+SelectedOption}" value="{eval('Nr'+SelectedOption)+1}"/>
+																<PersistVariable name="Votes" value="Votes[SelectedOption]:=Votes[SelectedOption]+1;Votes"/>
+																<PersistVariable name="Voters" value="Voters[Key]:=ContractParameters.FullName;Voters"/>
+																<PersistVariable name="NrVotesAccepted" value="{NrVotesAccepted+1}"/>
+															</Else>
+														</If>
+													</Else>
+												</If>
+											</Else>
+										</If>
+									</Else>
+								</If>
+							</Else>
+						</If>
+						<Catch>
+							<PersistVariable name="NrVotesRejected" value="{NrVotesRejected+1}"/>
+							<Fail reason="Unable to process ballot."/>
+						</Catch>
+					</Try>
 				</Action>
 				<Action id="End">
 					<End/>
@@ -155,42 +245,42 @@
 				<Action id="FunctionDefinitions">
 					<Script>
 						<![CDATA[
-CalcTimeLeft(TimeLeft):=
-(
-	NrDays:=Days(TimeLeft);
+						CalcTimeLeft(TimeLeft):=
+						(
+							NrDays:=Days(TimeLeft);
 	
-	if (NrDays>2) then
-		[round(NrDays),"days",Now+TimeSpan(1,0,0)]
-	else
-	(
-		NrHours:=Hours(TimeLeft);
-		if (NrHours>2) then
-			[round(NrHours),"hours",Now+TimeSpan(0,5,0)]
-		else
-		(
-			NrMinutes:=Minutes(TimeLeft);
-			if (NrMinutes>2) then
-				[round(NrMinutes),"minutes",Now+TimeSpan(0,1,0)]
-			else
-			(
-				NrSeconds:=Seconds(TimeLeft);
-				[round(NrSeconds),"seconds",Now+TimeSpan(0,0,1)]
-			)
-		)
-	)
-);
+							if (NrDays>2) then
+								[round(NrDays),"days",Now+TimeSpan(1,0,0)]
+							else
+							(
+								NrHours:=Hours(TimeLeft);
+								if (NrHours>2) then
+									[round(NrHours),"hours",Now+TimeSpan(0,5,0)]
+								else
+								(
+									NrMinutes:=Minutes(TimeLeft);
+									if (NrMinutes>2) then
+										[round(NrMinutes),"minutes",Now+TimeSpan(0,1,0)]
+									else
+									(
+										NrSeconds:=Seconds(TimeLeft);
+										[round(NrSeconds),"seconds",Now+TimeSpan(0,0,1)]
+									)
+								)
+							)
+						);
 
-CalcTimeLeftLabel(TimeLeft):=
-(
-	[Nr,Unit,NextTimeCheck]:=CalcTimeLeft(TimeLeft);
-	Str(Nr)+" "+Unit;
-);
+						CalcTimeLeftLabel(TimeLeft):=
+						(
+							[Nr,Unit,NextTimeCheck]:=CalcTimeLeft(TimeLeft);
+							Str(Nr)+" "+Unit;
+						);
 
-OutputTimeLeft(TimeLeft):=
-(
-	Label:=CalcTimeLeftLabel(TimeLeft);
-	]]((Label))[[
-);
+						OutputTimeLeft(TimeLeft):=
+						(
+							Label:=CalcTimeLeftLabel(TimeLeft);
+							]]((Label))[[
+						);
 						]]>
 					</Script>
 				</Action>
@@ -268,7 +358,7 @@ Voting history
 			<ParameterReference parameter="Expires"/>
 		</Tag>
 		<FriendlyName>
-			<String>Open Voting</String>
+			<String>Open Vote</String>
 		</FriendlyName>
 		<Category>
 			<String>Voting</String>
@@ -313,14 +403,14 @@ Voting history
 		<dateTimeParameter name="From" guide="When voting is opened." exp="From&gt;=Now">
 			<description xml:lang="en">
 				<paragraph>
-					<text>When the voting is opened.</text>
+					<text>When the voting is opened (UTC).</text>
 				</paragraph>
 			</description>
 		</dateTimeParameter>
 		<dateTimeParameter name="To" guide="When voting is closed." exp="To&gt;From">
 			<description xml:lang="en">
 				<paragraph>
-					<text>When the voting is closed.</text>
+					<text>When the voting is closed (UTC).</text>
 				</paragraph>
 			</description>
 		</dateTimeParameter>
@@ -339,10 +429,10 @@ Voting history
 			</header>
 			<body>
 				<paragraph>
-					<text>This contract creates an open vote, where anyone can participate. Each participant has at most one vote. Votes are open, and can be seen by other participants.</text>
+					<text>This contract creates an open vote, where anyone can participate. Each participant has at most one vote. Ballots are open, and can be seen by other participants.</text>
 				</paragraph>
 				<paragraph>
-					<text>Each participant votes by signing an individual contract. In the contract, they will have to answer the question </text>
+					<text>Each participant votes by signing an individual ballot contract. In the contract, they will have to answer the question </text>
 					<bold>
 						<parameter name="Question"/>
 					</bold>
@@ -358,7 +448,7 @@ Voting history
 					<bold>
 						<text>Abstain</text>
 					</bold>
-					<text>. The will also have the opportunity to provide a personal comment for open review.</text>
+					<text>. They will also have the opportunity to provide a personal comment for open review.</text>
 				</paragraph>
 			</body>
 		</section>
