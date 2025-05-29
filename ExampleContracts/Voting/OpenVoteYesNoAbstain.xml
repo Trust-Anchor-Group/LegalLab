@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <contract xmlns="urn:nf:iot:leg:sc:1.0"
           id="OpenVoteYesNoAbstain"
-          archiveOpt="P3M"
-          archiveReq="P1M"
+          archiveOpt="P2Y"
+          archiveReq="P5Y"
           canActAsTemplate="true"
-          duration="P2Y"
+          duration="P1Y"
           visibility="Public">
 	<Create xmlns="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd">
 		<TokenID>
@@ -152,7 +152,7 @@
 							Key:=ContractParameters.Country+"|"+ContractParameters.PersonalNumber;
 							]]>
 						</Script>
-						<If condition="Voters.ContainsKey(Key)">
+						<If condition="exists(Voters[Key])">
 							<Then>
 								<PersistVariable name="NrVotesRejected" value="{NrVotesRejected+1}"/>
 								<Fail reason="Voter has already voted."/>
@@ -160,7 +160,7 @@
 							<Else>
 								<Script>
 									<![CDATA[
-									Options:=select /default:Ballot/default:Option;
+									Options:=SelectXml(Ballot,"/default:Ballot/default:Option");
 
 									InvalidOptions:=false;
 									InvalidParameterValue:=false;
@@ -169,13 +169,13 @@
 
 									foreach Option in Options do
 									(
-										Parameter:=select @parameter from Option;
-										Value:=select @value from Option;
+										Parameter:=SelectXml(Option,"@parameter");
+										Value:=SelectXml(Option,"@value");
 							
-										if !ContractParameters.ContainsKey(Parameter) then
+										if !exists(ContractParameters[Parameter]) then
 											InvalidParameterValue:=true
-										else if !Votes.ContainsKey(Value) then
-											InvalidOptions:=true;
+										else if !exists(Votes[Value]) then
+											InvalidOptions:=true
 										else
 										(
 											ParameterValue:=ContractParameters[Parameter];
@@ -330,10 +330,10 @@ else
 | Total Votes    | {{NrVotesTotal}}    |
 | Accepted Votes | {{NrVotesAccepted}} |
 | Rejected Votes | {{NrVotesRejected}} |
-| **#Yes**       | **{{NrYes}}**       |
-| **#No**        | **{{NrNo}}**        |
-| #Abstain       | {{NrAbstain}}       |
-| #Comments      | {{NrComments}}      |
+| **Yes** votes  | **{{NrYes}}**       |
+| **No** votes   | **{{NrNo}}**        |
+| Abstained      | {{NrAbstain}}       |
+| Comments       | {{NrComments}}      |
 					]]>
 				</ReportPresent>
 				<ReportHistory>
@@ -448,7 +448,19 @@ Voting history
 					<bold>
 						<text>Abstain</text>
 					</bold>
-					<text>. They will also have the opportunity to provide a personal comment for open review.</text>
+					<text>. They will also have the opportunity to provide a personal comment for open review. Voting is open between </text>
+					<bold>
+						<parameter name="From"/>
+					</bold>
+					<text> (UTC) and </text>
+					<bold>
+						<parameter name="To"/>
+					</bold>
+					<text> (UTC). The vote machine will present results until </text>
+					<bold>
+						<parameter name="Expires"/>
+					</bold>
+					<text>, after which it will expire.</text>
 				</paragraph>
 			</body>
 		</section>
