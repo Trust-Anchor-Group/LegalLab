@@ -480,6 +480,8 @@ namespace LegalLab.Models.Legal
 				if (await P.ValidateParameter(Variables))
 				{
 					P.Control.Background = P.Protection.DefaultBrush();
+					P.Control.ToolTip = await P.Parameter.ToSimpleXAML(this.Language, this.contract);
+				
 					Log.Informational("Parameter " + P.Name + " is OK.");
 				}
 				else
@@ -503,8 +505,13 @@ namespace LegalLab.Models.Legal
 					}
 
 					P.Control.Background = Brushes.Salmon;
-					Log.Error(Msg.ToString());
+
+					string Error = Msg.ToString();
+
+					Log.Error(Error);
 					Ok = false;
+				
+					P.Control.ToolTip = await P.Parameter.ToSimpleXAML(this.Language, this.contract, Error);
 				}
 			}
 

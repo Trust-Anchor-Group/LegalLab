@@ -726,10 +726,14 @@ namespace LegalLab.Models.Design
 			foreach (ParameterInfo P in this.AllParameterInfos)
 			{
 				if (await P.ValidateParameter(Variables))
+				{
 					P.Control.Background = P.Protection.DefaultBrush();
+					P.Control.ToolTip = await P.Parameter.ToSimpleXAML(this.Language, this.contract);
+				}
 				else
 				{
 					P.Control.Background = Brushes.Salmon;
+					P.Control.ToolTip = await P.Parameter.ToSimpleXAML(this.Language, this.contract, P.ErrorText);
 					Ok = false;
 				}
 			}
