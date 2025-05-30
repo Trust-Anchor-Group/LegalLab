@@ -155,7 +155,7 @@
 						<If condition="exists(Voters[Key])">
 							<Then>
 								<PersistVariable name="NrVotesRejected" value="{NrVotesRejected+1}"/>
-								<Fail reason="Voter has already voted."/>
+								<Fail reason="Voter has already voted." contractId="{ContractId}"/>
 							</Then>
 							<Else>
 								<Script>
