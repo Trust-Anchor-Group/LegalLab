@@ -25,7 +25,7 @@
 		<contractReferenceParameter name="VoteReference" localName="Create"
 																namespace="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd"
 																required="true" creatorRole="Creator" guide="Open Vote Contract"
-																templateId="2fcb38b8-3e3d-c0e0-dcc7-af0c5b3c0f72@legal.localhost">
+																templateId="2fccceff-d5a5-6b1b-1074-e881469928ff@legal.localhost">
 			<description xml:lang="en">
 				<paragraph>
 					<text>A reference to the Open Vote contract.</text>

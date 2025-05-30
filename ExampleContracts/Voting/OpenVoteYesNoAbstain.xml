@@ -120,7 +120,7 @@
 					<OnEvent actionRef="CheckTimeToClose">
 						<OnDuration>PT1S</OnDuration>
 					</OnEvent>
-					<OnEvent actionRef="BallotReceived">
+					<OnEvent actionRef="ProcessBallot">
 						<OnContractSigned contractIdVariable="ContractId" 
 															parametersVariable="ContractParameters"
 															rolesVariable="ContractRoles"
@@ -144,7 +144,7 @@
 				<Action id="SetIsClosed">
 					<PersistVariable name="IsOpen" value="{false}"/>
 				</Action>
-				<Action id="BallotReceived">
+				<Action id="ProcessBallot">
 					<PersistVariable name="NrVotesTotal" value="{NrVotesTotal+1}"/>
 					<Try>
 						<Script>
@@ -219,9 +219,16 @@
 																<Fail reason="No selected option in ballot."/>
 															</Then>
 															<Else>
-																<PersistVariable name="{'Nr'+SelectedOption}" value="{eval('Nr'+SelectedOption)+1}"/>
-																<PersistVariable name="Votes" value="Votes[SelectedOption]:=Votes[SelectedOption]+1;Votes"/>
-																<PersistVariable name="Voters" value="Voters[Key]:=ContractParameters.FullName;Voters"/>
+																<PersistVariable>
+																	<Name>
+																		<Calc>'Nr'+SelectedOption</Calc>
+																	</Name>
+																	<Value>
+																		<Calc>eval('Nr'+SelectedOption)+1</Calc>
+																	</Value>
+																</PersistVariable>
+																<PersistVariable name="Votes" value="{Votes[SelectedOption]:=Votes[SelectedOption]+1;Votes}"/>
+																<PersistVariable name="Voters" value="{Voters[Key]:=ContractParameters.FullName;Voters}"/>
 																<PersistVariable name="NrVotesAccepted" value="{NrVotesAccepted+1}"/>
 															</Else>
 														</If>
@@ -286,19 +293,11 @@
 				</Action>
 				<Action id="CheckTimeToOpen">
 					<CallAction actionRef="FunctionDefinitions"/>
-					<If condition="Label:=CalcTimeLeftLabel(From-NowUtc);Label!=TimeLeftLabel">
-						<Then>
-							<PersistVariable name="TimeLeftLabel" value="{Label}"/>
-						</Then>
-					</If>
+					<PersistVariable name="TimeLeftLabel" value="{CalcTimeLeftLabel(From-NowUtc)}" onlyIfChanged="true"/>
 				</Action>
 				<Action id="CheckTimeToClose">
 					<CallAction actionRef="FunctionDefinitions"/>
-					<If condition="Label:=CalcTimeLeftLabel(To-NowUtc);Label!=TimeLeftLabel">
-						<Then>
-							<PersistVariable name="TimeLeftLabel" value="{Label}"/>
-						</Then>
-					</If>
+					<PersistVariable name="TimeLeftLabel" value="{CalcTimeLeftLabel(To-NowUtc)}" onlyIfChanged="true"/>
 				</Action>
 				<ReportPresent>
 					<![CDATA[
