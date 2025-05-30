@@ -22,15 +22,18 @@
 		<templateOnly/>
 	</parts>
 	<parameters>
-		<stringParameter name="Question" guide="Question" minLength="1">
+		<contractReferenceParameter name="VoteReference" localName="Create"
+																namespace="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd"
+																required="true" creatorRole="Creator" guide="Open Vote Contract"
+																templateId="2fcb38b8-3e3d-c0e0-dcc7-af0c5b3c0f72@legal.localhost">
 			<description xml:lang="en">
 				<paragraph>
-					<text>Question to be voted on.</text>
+					<text>A reference to the Open Vote contract.</text>
 				</paragraph>
 			</description>
-		</stringParameter>
+		</contractReferenceParameter>
 		<booleanParameter name="Yes" value="false" guide="Check this box if you vote Yes."
-											exp="(Yes?1:0)+(No?1:0)+(Abstain?1:0)=3">
+											exp="(Yes?1:0)+(No?1:0)+(Abstain?1:0)=1">
 			<description xml:lang="en">
 				<paragraph>
 					<text>I vote </text>
@@ -42,7 +45,7 @@
 			</description>
 		</booleanParameter>
 		<booleanParameter name="No" value="false" guide="Check this box if you vote No."
-											exp="(Yes?1:0)+(No?1:0)+(Abstain?1:0)=3">
+											exp="(Yes?1:0)+(No?1:0)+(Abstain?1:0)=1">
 			<description xml:lang="en">
 				<paragraph>
 					<text>I vote </text>
@@ -54,7 +57,7 @@
 			</description>
 		</booleanParameter>
 		<booleanParameter name="Abstain" value="false" guide="Check this box if you abstain."
-											exp="(Yes?1:0)+(No?1:0)+(Abstain?1:0)=3">
+											exp="(Yes?1:0)+(No?1:0)+(Abstain?1:0)=1">
 			<description xml:lang="en">
 				<paragraph>
 					<text>I </text>
@@ -137,7 +140,7 @@
 						<paragraph>
 							<text>With my signature, I declare that I, of my own will, vote in accordance with the above, in relation to the following question: </text>
 							<italic>
-								<parameter name="Question"/>
+								<parameter name="VoteReference.Question"/>
 							</italic>
 							<text>.</text>
 						</paragraph>
