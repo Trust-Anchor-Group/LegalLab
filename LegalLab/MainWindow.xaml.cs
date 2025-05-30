@@ -156,8 +156,8 @@ namespace LegalLab
 		{
 			base.OnClosed(e);
 
-			Types.StopAllModules().Wait();
-			Log.TerminateAsync().Wait();
+			Types.StopAllModules().Wait(10000);
+			Log.TerminateAsync().Wait(10000);
 		}
 
 		/// <summary>
