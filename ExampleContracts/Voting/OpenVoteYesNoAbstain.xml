@@ -257,21 +257,21 @@
 							NrDays:=Days(TimeLeft);
 	
 							if (NrDays>2) then
-								[round(NrDays),"days",Now+TimeSpan(1,0,0)]
+								[round(NrDays),"days",NowUtc+TimeSpan(1,0,0)]
 							else
 							(
 								NrHours:=Hours(TimeLeft);
 								if (NrHours>2) then
-									[round(NrHours),"hours",Now+TimeSpan(0,5,0)]
+									[round(NrHours),"hours",NowUtc+TimeSpan(0,5,0)]
 								else
 								(
 									NrMinutes:=Minutes(TimeLeft);
 									if (NrMinutes>2) then
-										[round(NrMinutes),"minutes",Now+TimeSpan(0,1,0)]
+										[round(NrMinutes),"minutes",NowUtc+TimeSpan(0,1,0)]
 									else
 									(
 										NrSeconds:=Seconds(TimeLeft);
-										[round(NrSeconds),"seconds",Now+TimeSpan(0,0,1)]
+										[round(NrSeconds),"seconds",NowUtc+TimeSpan(0,0,1)]
 									)
 								)
 							)
@@ -399,14 +399,14 @@ Voting history
 				</paragraph>
 			</description>
 		</stringParameter>
-		<dateTimeParameter name="From" guide="When voting is opened." exp="From&gt;=Now">
+		<dateTimeParameter name="From" guide="When voting is opened (UTC)." exp="From&gt;=NowUtc">
 			<description xml:lang="en">
 				<paragraph>
 					<text>When the voting is opened (UTC).</text>
 				</paragraph>
 			</description>
 		</dateTimeParameter>
-		<dateTimeParameter name="To" guide="When voting is closed." exp="To&gt;From">
+		<dateTimeParameter name="To" guide="When voting is closed (UTC)." exp="To&gt;From">
 			<description xml:lang="en">
 				<paragraph>
 					<text>When the voting is closed (UTC).</text>
