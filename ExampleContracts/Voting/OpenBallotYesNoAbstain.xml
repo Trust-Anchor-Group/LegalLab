@@ -25,7 +25,7 @@
 		<contractReferenceParameter name="VoteReference" localName="Create"
 																namespace="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd"
 																required="true" creatorRole="Creator" guide="Open Vote Contract"
-																templateId="2fccceff-d5a5-6b1b-1074-e881469928ff@legal.localhost">
+																templateId="2fce10a3-6896-3c02-ecdf-8c87fdfb20eb@legal.localhost">
 			<description xml:lang="en">
 				<paragraph>
 					<text>A reference to the Open Vote contract.</text>
@@ -103,49 +103,98 @@
 				<text>Open Ballot</text>
 			</header>
 			<body>
-				<paragraph>
-					<text>I vote:</text>
-				</paragraph>
-				<bulletItems>
-					<item>
-						<parameter name="Yes"/>
-						<text> </text>
-						<bold>
-							<text>Yes</text>
-						</bold>
-						<text>.</text>
-					</item>
-					<item>
-						<parameter name="No"/>
-						<text> </text>
-						<bold>
-							<text>No</text>
-						</bold>
-						<text>.</text>
-					</item>
-					<item>
-						<parameter name="Abstain"/>
-						<text> I </text>
-						<bold>
-							<text>Abstain</text>
-						</bold>
-						<text> from voting.</text>
-					</item>
-				</bulletItems>
+				<section>
+					<header>
+						<text>Question</text>
+					</header>
+					<body>
+						<paragraph>
+							<parameter name="VoteReference.Question"/>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>My Vote</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>I vote:</text>
+						</paragraph>
+						<bulletItems>
+							<item>
+								<parameter name="Yes"/>
+								<text> </text>
+								<bold>
+									<text>Yes</text>
+								</bold>
+								<text>.</text>
+							</item>
+							<item>
+								<parameter name="No"/>
+								<text> </text>
+								<bold>
+									<text>No</text>
+								</bold>
+								<text>.</text>
+							</item>
+							<item>
+								<parameter name="Abstain"/>
+								<text> I </text>
+								<bold>
+									<text>Abstain</text>
+								</bold>
+								<text> from voting.</text>
+							</item>
+						</bulletItems>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Changing Votes</text>
+					</header>
+					<body>
+						<paragraph>
+							<parameter name="VoteReference.ChangeVoteAllowed"/>
+							<text> Participants are allowed to change their votes.</text>
+						</paragraph>
+						<paragraph>
+							<text>If participants are allowed to change their votes, they can sign a new ballot with their updated vote. By doing so, the original ballot will be rejected, and the new ballot counted. If they are not allowed to change their vote, any new ballots signed by the same person will be automatically rejected.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Time and Duration</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>The Voting is open between </text>
+							<bold>
+								<parameter name="VoteReference.From"/>
+							</bold>
+							<text> (UTC) and </text>
+							<bold>
+								<parameter name="VoteReference.To"/>
+							</bold>
+							<text> (UTC). Ballots are only counted during this time. If votes can be changed, any changes can only be performed during this time as well. The vote machine will present results until </text>
+							<bold>
+								<parameter name="VoteReference.Expires"/>
+							</bold>
+							<text>, after which it will expire.</text>
+						</paragraph>
+					</body>
+				</section>
 				<section>
 					<header>
 						<text>Declaration and Signature</text>
 					</header>
 					<body>
 						<paragraph>
-							<text>With my signature, I declare that I, of my own will, vote in accordance with the above, in relation to the following question: </text>
-							<italic>
-								<parameter name="VoteReference.Question"/>
-							</italic>
-							<text>.</text>
+							<text>With my signature, I declare that I, of my own free will, vote in accordance with the above, in relation to the presented question.</text>
 						</paragraph>
 						<paragraph>
-							<text>I am also aware, that I only have one vote, and that the vote will only count if I have not voted before in this voting, and that my vote is signed while the voting is open, and before it is closed.</text>
+							<text>I am also aware, that I only have one vote. If votes are allowed to be changed, it is my last ballot cast while the vote is open that counts. If votes cannot be changed, it is the first ballot cast while the vote is open that counts.</text>
 						</paragraph>
 						<paragraph>
 							<text>As a voter, I am allowed to provide feedback, in the form of a free text comment. My feedback is: </text>

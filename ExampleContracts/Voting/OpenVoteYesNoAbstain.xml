@@ -5,7 +5,7 @@
           archiveReq="P5Y"
           canActAsTemplate="true"
           duration="P1Y"
-          visibility="Public">
+          visibility="PublicSearchable">
 	<Create xmlns="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd">
 		<TokenID>
 			<Unique/>
@@ -48,13 +48,16 @@
 		</CertifierCanDestroy>
 		<Definition>
 			<StateMachine xmlns="https://paiwise.tagroot.io/Schema/StateMachines.xsd" startState="Created">
-				<Variable id="NrVotesTotal">
+				<Variable id="NrBallotsTotal">
 					<Number>0</Number>
 				</Variable>
-				<Variable id="NrVotesAccepted">
+				<Variable id="NrBallotsAccepted">
 					<Number>0</Number>
 				</Variable>
-				<Variable id="NrVotesRejected">
+				<Variable id="NrBallotsRejected">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="NrChanged">
 					<Number>0</Number>
 				</Variable>
 				<Variable id="Votes">
@@ -89,6 +92,18 @@
 				<Variable id="Question">
 					<TagReference tag="Question"/>
 				</Variable>
+				<Variable id="ChangeVoteAllowed">
+					<TagReference tag="ChangeVoteAllowed"/>
+				</Variable>
+				<Variable id="LedgerCollection">
+					<TagReference tag="LedgerCollection"/>
+				</Variable>
+				<Variable id="VoteContractId">
+					<TokenProperty>CreationContract</TokenProperty>
+				</Variable>
+				<Variable id="VoteTokenId">
+					<TokenProperty>TokenId</TokenProperty>
+				</Variable>
 				<Variable id="From">
 					<TagReference tag="From"/>
 				</Variable>
@@ -121,11 +136,11 @@
 						<OnDuration>PT1S</OnDuration>
 					</OnEvent>
 					<OnEvent actionRef="ProcessBallot">
-						<OnContractSigned contractIdVariable="ContractId" 
+						<OnContractSigned contractIdVariable="ContractId"
 															parametersVariable="ContractParameters"
 															rolesVariable="ContractRoles"
 															machineReadableVariable="Ballot"
-															localName="Ballot" 
+															localName="Ballot"
 															namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"/>
 					</OnEvent>
 				</State>
@@ -145,104 +160,179 @@
 					<PersistVariable name="IsOpen" value="{false}"/>
 				</Action>
 				<Action id="ProcessBallot">
-					<PersistVariable name="NrVotesTotal" value="{NrVotesTotal+1}"/>
+					<PersistVariable name="NrBallotsTotal" value="{NrBallotsTotal+1}"/>
 					<Try>
+						<If condition="!exists(ContractRoles.Voter) || count(ContractRoles.Voter)!=1">
+							<Then>
+								<Error reason="Ballot does not have a unique voter identified."/>
+							</Then>
+						</If>
+						<If condition="!exists(ContractParameters.Country) || !exists(ContractParameters.PersonalNumber)">
+							<Then>
+								<Error reason="Voter personal number and country are not properly identified."/>
+							</Then>
+						</If>
 						<Script>
 							<![CDATA[
 							Key:=ContractParameters.Country+"|"+ContractParameters.PersonalNumber;
+							VoterId:=ContractRoles.Voter[0];
 							]]>
 						</Script>
-						<If condition="exists(Voters[Key])">
+						<If condition="exists(PrevVote:=Voters[Key])">
 							<Then>
-								<PersistVariable name="NrVotesRejected" value="{NrVotesRejected+1}"/>
-								<Fail reason="Voter has already voted." contractId="{ContractId}"/>
+								<If condition="!ChangeVoteAllowed">
+									<Then>
+										<Error reason="Voter has already voted."/>
+									</Then>
+								</If>
+								<If condition="VoterId!=PrevVote.voterId">
+									<Then>
+										<Error reason="Voter has already voted, using a different digital identity. A vote can only be changed using the same digital identity."/>
+									</Then>
+								</If>
+								<Fail contractId="{PrevVote.ballot}" reason="Voter is changing vote."/>
+								<PersistVariable>
+									<Name>
+										<Calc>'Nr'+PrevVote.vote</Calc>
+									</Name>
+									<Value>
+										<Calc>eval('Nr'+PrevVote.vote)-1</Calc>
+									</Value>
+								</PersistVariable>
+								<PersistVariable name="Votes" value="{Votes[SelectedOption]:=Votes[SelectedOption]-1;Votes}"/>
+								<PersistVariable name="Voters" value="{Voters[Key]:=null;Voters}"/>
+								<PersistVariable name="NrChanged" value="{NrChanged+1}"/>
+								<CreateEntry type="BallotRevoked" collection="{LedgerCollection}">
+									<Property key="Ballot" value="{PrevVote.ballot}"/>
+									<Property key="VoterId" value="{PrevVote.voterId}"/>
+									<Property key="VoterPersonalNumber" value="{ContractParameters.PersonalNumber}"/>
+									<Property key="VoterCountry" value="{ContractParameters.Country}"/>
+									<Property key="VoterFullName" value="{ContractParameters.FullName}"/>
+									<Property key="VoteCast" value="{PrevVote.vote}"/>
+									<Property key="VoteContractId" value="{VoteContractId}"/>
+									<Property key="VoteTokenId" value="{VoteTokenId}"/>
+								</CreateEntry>
 							</Then>
-							<Else>
+						</If>
+						<Script>
+							<![CDATA[
+							Options:=SelectXml(Ballot,"/default:Ballot/default:Option");
+
+							InvalidOptions:=false;
+							InvalidParameterValue:=false;
+							MultipleSelected:=false;
+							SelectedOption:=null;
+
+							foreach Option in Options do
+							(
+								Parameter:=SelectXml(Option,"@parameter");
+								Value:=SelectXml(Option,"@value");
+							
+								if !exists(ContractParameters[Parameter]) then
+									InvalidParameterValue:=true
+								else if !exists(Votes[Value]) then
+									InvalidOptions:=true
+								else
+								(
+									ParameterValue:=ContractParameters[Parameter];
+									if ParameterValue matches Boolean(ParameterSelection) then
+									(
+										if ParameterSelection then 
+										(
+											if exists(SelectedOption) then
+												MultipleSelected:=true
+											else
+												SelectedOption:=Value;
+										)
+									)
+									else
+										InvalidParameterValue:=true
+								)
+							);
+							]]>
+						</Script>
+						<If condition="InvalidOptions">
+							<Then>
+								<Error reason="Invalid options in ballot."/>
+							</Then>
+						</If>
+						<If condition="InvalidParameterValue">
+							<Then>
+								<Error reason="Invalid parameter reference or parameter value in ballot."/>
+							</Then>
+						</If>
+						<If condition="MultipleSelected">
+							<Then>
+								<Error reason="Multiple options selected in ballot."/>
+							</Then>
+						</If>
+						<If condition="!exists(SelectedOption)">
+							<Then>
+								<Error reason="No selected option in ballot."/>
+							</Then>
+						</If>
+						<PersistVariable>
+							<Name>
+								<Calc>'Nr'+SelectedOption</Calc>
+							</Name>
+							<Value>
+								<Calc>eval('Nr'+SelectedOption)+1</Calc>
+							</Value>
+						</PersistVariable>
+						<PersistVariable name="Votes" value="{Votes[SelectedOption]:=Votes[SelectedOption]+1;Votes}"/>
+						<PersistVariable name="Voters">
+							<Value>
+								<Calc>
+									<![CDATA[
+									Voters[Key]:=
+									{
+										'ballot':ContractId,
+										'voterId':VoterId,
+										'vote':SelectedOption
+									};
+									Voters
+									]]>
+								</Calc>
+							</Value>
+						</PersistVariable>
+						<PersistVariable name="NrBallotsAccepted" value="{NrBallotsAccepted+1}"/>
+						<CreateEntry type="BallotCounted" collection="{LedgerCollection}">
+							<Property key="Ballot" value="{ContractId}"/>
+							<Property key="VoterId" value="{VoterId}"/>
+							<Property key="VoterPersonalNumber" value="{ContractParameters.PersonalNumber}"/>
+							<Property key="VoterCountry" value="{ContractParameters.Country}"/>
+							<Property key="VoterFullName" value="{ContractParameters.FullName}"/>
+							<Property key="VoteCast" value="{SelectedOption}"/>
+							<Property key="VoteContractId" value="{VoteContractId}"/>
+							<Property key="VoteTokenId" value="{VoteTokenId}"/>
+						</CreateEntry>
+						<If condition="exists(Comment:=ContractParameters.Comment) and !empty(Comment)">
+							<Then>
 								<Script>
 									<![CDATA[
-									Options:=SelectXml(Ballot,"/default:Ballot/default:Option");
-
-									InvalidOptions:=false;
-									InvalidParameterValue:=false;
-									MultipleSelected:=false;
-									SelectedOption:=null;
-
-									foreach Option in Options do
-									(
-										Parameter:=SelectXml(Option,"@parameter");
-										Value:=SelectXml(Option,"@value");
-							
-										if !exists(ContractParameters[Parameter]) then
-											InvalidParameterValue:=true
-										else if !exists(Votes[Value]) then
-											InvalidOptions:=true
-										else
-										(
-											ParameterValue:=ContractParameters[Parameter];
-											if ParameterValue matches Boolean(ParameterSelection) then
-											(
-												if ParameterSelection then 
-												(
-													if exists(SelectedOption) then
-														MultipleSelected:=true
-													else
-														SelectedOption:=Value;
-												)
-											)
-											else
-												InvalidParameterValue:=true
-										)
-									);
+									if !exists(Nr:=Comments[Comment]) then Nr:=0;
 									]]>
 								</Script>
-								<If condition="InvalidOptions">
-									<Then>
-										<PersistVariable name="NrVotesRejected" value="{NrVotesRejected+1}"/>
-										<Fail reason="Invalid options in ballot."/>
-									</Then>
-									<Else>
-										<If condition="InvalidParameterValue">
-											<Then>
-												<PersistVariable name="NrVotesRejected" value="{NrVotesRejected+1}"/>
-												<Fail reason="Invalid parameter reference or parameter value in ballot."/>
-											</Then>
-											<Else>
-												<If condition="MultipleSelected">
-													<Then>
-														<PersistVariable name="NrVotesRejected" value="{NrVotesRejected+1}"/>
-														<Fail reason="Multiple options selected in ballot."/>
-													</Then>
-													<Else>
-														<If condition="!exists(SelectedOption)">
-															<Then>
-																<PersistVariable name="NrVotesRejected" value="{NrVotesRejected+1}"/>
-																<Fail reason="No selected option in ballot."/>
-															</Then>
-															<Else>
-																<PersistVariable>
-																	<Name>
-																		<Calc>'Nr'+SelectedOption</Calc>
-																	</Name>
-																	<Value>
-																		<Calc>eval('Nr'+SelectedOption)+1</Calc>
-																	</Value>
-																</PersistVariable>
-																<PersistVariable name="Votes" value="{Votes[SelectedOption]:=Votes[SelectedOption]+1;Votes}"/>
-																<PersistVariable name="Voters" value="{Voters[Key]:=ContractParameters.FullName;Voters}"/>
-																<PersistVariable name="NrVotesAccepted" value="{NrVotesAccepted+1}"/>
-															</Else>
-														</If>
-													</Else>
-												</If>
-											</Else>
-										</If>
-									</Else>
-								</If>
-							</Else>
+								<PersistVariable name="Comments" value="{Comments[Comment]:=Nr+1;Comments}"/>
+								<CreateEntry type="CommentReceived" collection="{LedgerCollection}">
+									<Property key="Ballot" value="{ContractId}"/>
+									<Property key="VoterId" value="{VoterId}"/>
+									<Property key="VoterPersonalNumber" value="{ContractParameters.PersonalNumber}"/>
+									<Property key="VoterCountry" value="{ContractParameters.Country}"/>
+									<Property key="VoterFullName" value="{ContractParameters.FullName}"/>
+									<Property key="Comment" value="{Comment}"/>
+									<Property key="VoteContractId" value="{VoteContractId}"/>
+									<Property key="VoteTokenId" value="{VoteTokenId}"/>
+								</CreateEntry>
+							</Then>
 						</If>
-						<Catch>
-							<PersistVariable name="NrVotesRejected" value="{NrVotesRejected+1}"/>
-							<Fail reason="Unable to process ballot."/>
+						<Catch exceptionVariable="ex">
+							<PersistVariable name="NrBallotsRejected" value="{NrBallotsRejected+1}"/>
+							<Fail reason="{ex.Message}" contractId="{ContractId}"/>
+							<CreateEntry type="BallotRejected" collection="{LedgerCollection}">
+								<Property key="Ballot" value="{ContractId}"/>
+								<Property key="Reason" value="{ex.Message}"/>
+							</CreateEntry>
 						</Catch>
 					</Try>
 				</Action>
@@ -324,15 +414,25 @@ else if NowUtc < From then
 else
 		]]Voting is **closed**.[[}}
 
-| Vote Counts                         ||
-|----------------|---------------------|
-| Total Votes    | {{NrVotesTotal}}    |
-| Accepted Votes | {{NrVotesAccepted}} |
-| Rejected Votes | {{NrVotesRejected}} |
-| **Yes** votes  | **{{NrYes}}**       |
-| **No** votes   | **{{NrNo}}**        |
-| Abstained      | {{NrAbstain}}       |
-| Comments       | {{NrComments}}      |
+| Ballot Counts                           ||
+|------------------|----------------------:|
+| Total Ballots    | {{NrBallotsTotal}}    |
+| Accepted Ballots | {{NrBallotsAccepted}} |
+| Rejected Ballots | {{NrBallotsRejected}} |
+
+| Vote Counts                             ||
+|------------------|----------------------:|
+| **Yes** votes    | **{{NrYes}}**         |
+| **No** votes     | **{{NrNo}}**          |
+| Abstained        | {{NrAbstain}}         |
+| Changed votes    | {{NrChanged}}         |
+
+| Comments Received                       ||
+|------------------|----------------------:|
+| Total Comments   | {{NrComments}}        |
+{{foreach Comment in Comments do 
+	]]| ((MarkdownEncode(Comment.Key) )) | ((Comment.Value)) |
+[[;}}
 					]]>
 				</ReportPresent>
 				<ReportHistory>
@@ -346,6 +446,12 @@ Voting history
 		</Definition>
 		<Tag name="Question">
 			<ParameterReference parameter="Question"/>
+		</Tag>
+		<Tag name="ChangeVoteAllowed">
+			<ParameterReference parameter="ChangeVoteAllowed"/>
+		</Tag>
+		<Tag name="LedgerCollection">
+			<ParameterReference parameter="LedgerCollection"/>
 		</Tag>
 		<Tag name="From">
 			<ParameterReference parameter="From"/>
@@ -399,6 +505,20 @@ Voting history
 				</paragraph>
 			</description>
 		</stringParameter>
+		<booleanParameter name="ChangeVoteAllowed" guide="If a voter is allowed to change its vote." value="true">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Voters are allowed to change their votes while vote is open.</text>
+				</paragraph>
+			</description>
+		</booleanParameter>
+		<stringParameter name="LedgerCollection" guide="Ledger Collection Name." value="OpenVote" minLength="1">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Neuro-Ledger collection to receive annotated events documenting the voting process.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
 		<dateTimeParameter name="From" guide="When voting is opened (UTC)." exp="From&gt;=NowUtc">
 			<description xml:lang="en">
 				<paragraph>
@@ -406,7 +526,7 @@ Voting history
 				</paragraph>
 			</description>
 		</dateTimeParameter>
-		<dateTimeParameter name="To" guide="When voting is closed (UTC)." exp="To&gt;From">
+		<dateTimeParameter name="To" guide="When voting is closed (UTC)." exp="To&gt;From and To&lt;=(From+TimeSpan(31,0,0,0))">
 			<description xml:lang="en">
 				<paragraph>
 					<text>When the voting is closed (UTC).</text>
@@ -428,39 +548,202 @@ Voting history
 			</header>
 			<body>
 				<paragraph>
-					<text>This contract creates an open vote, where anyone can participate. Each participant has at most one vote. Ballots are open, and can be seen by other participants.</text>
+					<text>This contract creates an open vote, where anyone with a </text>
+					<italic>
+						<text>Neuro-Access</text>
+					</italic>
+					<text> digital identity can participate. Each participant has at most one vote. Ballots are open, and can be seen by other participants.</text>
 				</paragraph>
-				<paragraph>
-					<text>Each participant votes by signing an individual ballot contract. In the contract, they will have to answer the question </text>
-					<bold>
-						<parameter name="Question"/>
-					</bold>
-					<text>, by choosing one of the three options: </text>
-					<bold>
-						<text>Yes</text>
-					</bold>
-					<text>, </text>
-					<bold>
-						<text>No</text>
-					</bold>
-					<text>, or </text>
-					<bold>
-						<text>Abstain</text>
-					</bold>
-					<text>. They will also have the opportunity to provide a personal comment for open review. Voting is open between </text>
-					<bold>
-						<parameter name="From"/>
-					</bold>
-					<text> (UTC) and </text>
-					<bold>
-						<parameter name="To"/>
-					</bold>
-					<text> (UTC). The vote machine will present results until </text>
-					<bold>
-						<parameter name="Expires"/>
-					</bold>
-					<text>, after which it will expire.</text>
-				</paragraph>
+				<section>
+					<header>
+						<text>Casting Ballot</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Each participant votes by signing an individual ballot contract. In the contract, they will have to answer the question </text>
+							<bold>
+								<parameter name="Question"/>
+							</bold>
+							<text>, by choosing one of the three options: </text>
+							<bold>
+								<text>Yes</text>
+							</bold>
+							<text>, </text>
+							<bold>
+								<text>No</text>
+							</bold>
+							<text>, or </text>
+							<bold>
+								<text>Abstain</text>
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Changing Votes</text>
+					</header>
+					<body>
+						<paragraph>
+							<parameter name="ChangeVoteAllowed"/>
+							<text> Participants are allowed to change votes.</text>
+						</paragraph>
+						<paragraph>
+							<text>In case the vote allows participants to change their vote, they need to cast a new ballot. If changing votes is accepted, the previously counted ballot will be rejected, and the new ballot counted. If changing the vote is not allowed, the new ballot will be automatically rejected. Changing votes can only be done while the vote is open, and only by using the same digital identity as the one casting the original ballot being changed.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Comments and Feedback</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>When casting a vote, the person will also have the opportunity to provide a personal comment for open review. Providing feedback is optional.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Time and Duration</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>The Voting is open between </text>
+							<bold>
+								<parameter name="From"/>
+							</bold>
+							<text> (UTC) and </text>
+							<bold>
+								<parameter name="To"/>
+							</bold>
+							<text> (UTC). The vote machine will present results until </text>
+							<bold>
+								<parameter name="Expires"/>
+							</bold>
+							<text>, after which it will expire.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Technical Information</text>
+					</header>
+					<body>
+						<section>
+							<header>
+								<text>Ledger entries</text>
+							</header>
+							<body>
+								<paragraph>
+									<text>During the life-cycle of the voting procedure, all actions related to digital identities and smart contracts are annotated in their corresponding collections in the </text>
+									<italic>
+										<text>Neuro-Ledger</text>
+									</italic>
+									<text>. Ballot counting is furthermore annotated in the </text>
+									<bold>
+										<parameter name="LedgerCollection"/>
+									</bold>
+									<text> collection for transparency and auditability. A summary of collections in the </text>
+									<italic>
+										<text>Neuro-Ledger</text>
+									</italic>
+									<text> used during the voting procedure are:</text>
+								</paragraph>
+								<table>
+									<row>
+										<cell colSpan="2" header="true" alignment="Center">
+											<italic>
+												<text>Neuro-Ledger</text>
+											</italic>
+											<text> Collections</text>
+										</cell>
+									</row>
+									<row>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>LegalIdentities</text>
+										</cell>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>Contains entries related to digital identities, including </text>
+											<italic>
+												<text>Neuro-Access</text>
+											</italic>
+											<text> digital identities.</text>
+										</cell>
+									</row>
+									<row>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>Contracts</text>
+										</cell>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>Contains entries related to smart contracts, including the voting contract and the ballot contracts used during voting.</text>
+										</cell>
+									</row>
+									<row>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>NeauroFeatureTokens</text>
+										</cell>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>Contains information regarding </text>
+											<italic>
+												<text>Neuro-Feature</text>
+											</italic>
+											<text> tokens, including the token definition of the open voting logic.</text>
+										</cell>
+									</row>
+									<row>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>StateMachines</text>
+										</cell>
+										<cell colSpan="1" header="false" alignment="Left">
+											<italic>
+												<text>State-Machine</text>
+											</italic>
+											<text> information is recorded in this collection. This includes the open voting process performing the ballot counting and presentation.</text>
+										</cell>
+									</row>
+									<row>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>StateMachineCurrentStates</text>
+										</cell>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>Contains current states of different </text>
+											<italic>
+												<text>State-Machines</text>
+											</italic>
+											<text>.</text>
+										</cell>
+									</row>
+									<row>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>StateMachineSamples</text>
+										</cell>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>Contains variable changes as they are persisted by </text>
+											<italic>
+												<text>State-Machines</text>
+											</italic>
+											<text>. These samples can be used to track the counting process.</text>
+										</cell>
+									</row>
+									<row>
+										<cell colSpan="1" header="false" alignment="Left">
+											<parameter name="LedgerCollection"/>
+										</cell>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>The Open Voting </text>
+											<italic>
+												<text>State-Machine</text>
+											</italic>
+											<text> records events into this collection as ballots are received and processed.</text>
+										</cell>
+									</row>
+								</table>
+							</body>
+						</section>
+					</body>
+				</section>
 			</body>
 		</section>
 	</humanReadableText>
