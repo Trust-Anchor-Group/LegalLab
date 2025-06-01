@@ -581,6 +581,9 @@ namespace LegalLab.Models.Network
 				else
 					this.client = new XmppClient(Host, Port, this.Account, this.Password, this.PasswordMethod, "en", typeof(MainWindow).Assembly, Sniffer);
 
+				this.client.DefaultRetryTimeout = 15000;
+				this.client.DefaultMaxRetryTimeout = 15000;
+
 				if (this.CreateAccount)
 					this.client.AllowRegistration(this.ApiKey, this.ApiKeySecret);
 
