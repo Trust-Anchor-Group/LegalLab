@@ -151,6 +151,16 @@ TAG technologies.
 		batch of five tokens from the current owner to a new owner. The process includes assigning a new value for the tokens, as well as 
 		performing instant payments.
 
+* [Voting](ExampleContracts/Voting) contains examples related to voting.
+
+	* [OpenVoteYesNoAbstain.xml](ExampleContracts/Voting/OpenVoteYesNoAbstain.xml) shows how to create a contract that creates a Neuro-Feature
+	token for an open voting procedure. Voting is performed by participants signing ballot contracts with containing information about how they
+	vote. Presentation of voting counts is done using token reports. Layouts and images are available in the
+	[ExampleImages](ExampleImages) and [ExampleLayouts](ExampleLayouts) folders.
+
+	* [OpenBallotYesNoAbstain.xml](ExampleContracts/OpenBallotYesNoAbstain.xml) is a contract representing a ballot in an open voting procedure.
+	Each signed ballot gets counted in the corresponding open voting procedure and presented by the open voting token.
+
 * [Logistics](ExampleContracts/Logistics) contains examples related to logistics.
 
 	* [SimpleOrder.xml](ExampleContracts/Logistics/SimpleOrder.xml) shows how to use a contract with calculated parameters and role-reference parameters

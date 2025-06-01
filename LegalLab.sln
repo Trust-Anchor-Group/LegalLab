@@ -100,6 +100,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Voting", "Voting", "{02EA68
 		ExampleContracts\Voting\OpenVoteYesNoAbstain.xml = ExampleContracts\Voting\OpenVoteYesNoAbstain.xml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExampleImages", "ExampleImages", "{78334898-08B6-45F0-907C-CAE710C8D0D6}"
+	ProjectSection(SolutionItems) = preProject
+		ExampleImages\WavyBG_1684x1190.png = ExampleImages\WavyBG_1684x1190.png
+		ExampleImages\WavyBG_3368x2380.png = ExampleImages\WavyBG_3368x2380.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExampleLayouts", "ExampleLayouts", "{FF098B7E-BB24-4E54-94A4-65C9243005F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -133,6 +141,8 @@ Global
 		{14E69444-5843-4DE2-A11F-DF3CC5997531} = {46E61E48-A9A5-4CB8-8B7A-712F716F6FF5}
 		{CF17A90C-A2F6-410A-A918-1C6BB0F4D4D0} = {FE86B209-349B-47FB-9A12-5BEAFE9F35DC}
 		{02EA681E-C7D8-13C7-8484-4AC65E1B71E8} = {46E61E48-A9A5-4CB8-8B7A-712F716F6FF5}
+		{78334898-08B6-45F0-907C-CAE710C8D0D6} = {5DCAD7B4-A632-4533-8B95-6D2838387720}
+		{FF098B7E-BB24-4E54-94A4-65C9243005F1} = {5DCAD7B4-A632-4533-8B95-6D2838387720}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {82820A85-2566-4DAB-A5B4-BABDC2569097}
