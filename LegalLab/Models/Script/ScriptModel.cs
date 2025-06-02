@@ -13,6 +13,7 @@ using Waher.Content.Markdown;
 using Waher.Content.Markdown.Rendering;
 using Waher.Content.Markdown.Wpf;
 using Waher.Events;
+using Waher.Runtime.Inventory;
 using Waher.Script;
 using Waher.Script.Abstraction.Elements;
 using Waher.Script.Exceptions;
@@ -68,6 +69,11 @@ namespace LegalLab.Models.Script
 			get => this.input.Value;
 			set => this.input.Value = value;
 		}
+
+		/// <summary>
+		/// Current set of variables.
+		/// </summary>
+		public Variables Variables => this.variables;
 
 		/// <summary>
 		/// Event handler for the input PreviewKeyDown event.

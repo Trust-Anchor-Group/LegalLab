@@ -1,9 +1,24 @@
-﻿using Microsoft.Win32;
+﻿using LegalLab.Models.Script;
+using Microsoft.Win32;
+using SkiaSharp;
 using System;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Markup;
+using System.Windows.Media.Imaging;
+using System.Xml;
+using Waher.Content.Markdown;
+using Waher.Content.Markdown.Model;
+using Waher.Content.Markdown.Wpf;
 using Waher.Events;
+using Waher.Runtime.Inventory;
 using Waher.Runtime.IO;
+using Waher.Script;
+using Waher.Script.Graphs;
 
 namespace LegalLab.Models.XmlEditor
 {
@@ -15,11 +30,14 @@ namespace LegalLab.Models.XmlEditor
 		private readonly Property<string> xml;
 		private readonly Property<string> fileName;
 		private readonly Property<bool> changed;
+		private readonly Property<object> visualization;
 		private readonly PersistedProperty<int> editorWidth;
 
 		private readonly Command newDocument;
 		private readonly Command loadDocument;
 		private readonly Command saveDocument;
+
+		private Timer timer = null;
 
 		/// <summary>
 		/// Interaction logic for the XML editor view.
@@ -29,6 +47,7 @@ namespace LegalLab.Models.XmlEditor
 			this.xml = new Property<string>(nameof(this.Xml), string.Empty, this);
 			this.fileName = new Property<string>(nameof(this.FileName), string.Empty, this);
 			this.changed = new Property<bool>(nameof(this.Changed), false, this);
+			this.visualization = new Property<object>(nameof(this.Visualization), null, this);
 			this.editorWidth = new PersistedProperty<int>("XML", nameof(this.EditorWidth), true, 500, this);
 
 			this.newDocument = new Command(this.ExecuteNewDocument);
@@ -45,8 +64,140 @@ namespace LegalLab.Models.XmlEditor
 			set
 			{
 				this.xml.Value = value;
-				this.changed.Value = true;
+				this.ContentsChanged();
 			}
+		}
+
+		/// <summary>
+		/// Visualization of XML input, if any.
+		/// </summary>
+		public object Visualization
+		{
+			get => this.visualization.Value;
+			set
+			{
+				object Prev = this.visualization.Value;
+				this.visualization.Value = value;
+
+				if (Prev is IDisposable Disposable)
+					Disposable.Dispose();
+			}
+		}
+
+		private void ContentsChanged()
+		{
+			this.changed.Value = true;
+
+			if (this.timer is not null)
+			{
+				this.timer.Dispose();
+				this.timer = null;
+			}
+
+			this.timer = new Timer(this.UpdateVisualization, null, 1000, Timeout.Infinite);
+		}
+
+		private void UpdateVisualization(object _)
+		{
+			MainWindow.UpdateGui(async () =>
+			{
+				try
+				{
+					XmlDocument Doc = new()
+					{
+						PreserveWhitespace = true
+					};
+
+					Doc.LoadXml(this.Xml);
+
+					IXmlVisualizer Visualizer = Types.FindBest<IXmlVisualizer, XmlDocument>(Doc);
+
+					if (Visualizer is not null)
+					{
+						Variables v;
+
+						if (MainWindow.currentInstance?.ScriptTab?.DataContext is ScriptModel ScriptModel)
+							v = ScriptModel.Variables;
+						else
+							v = [];
+
+						object Visualization = await Visualizer.TransformXml(Doc, v);
+
+						if (Visualization is PixelInformation Pixels)
+							this.Show(Pixels);
+						else if (Visualization is Graph Graph)
+						{
+							Pixels = Graph.CreatePixels(v);
+							this.Show(Pixels);
+						}
+						else if (Visualization is SKImage Image)
+						{
+							Pixels = PixelInformation.FromImage(Image);
+							Image.Dispose();
+							this.Show(Pixels);
+						}
+						else if (Visualization is MarkdownDocument Markdown)
+						{
+							string Xaml = await Markdown.GenerateXAML();
+							this.Visualization = XamlReader.Parse(Xaml);
+						}
+						else if (Visualization is string s)
+						{
+							this.Visualization = new TextBlock()
+							{
+								Text = s,
+								HorizontalAlignment = HorizontalAlignment.Center,
+								VerticalAlignment = VerticalAlignment.Center
+							};
+						}
+						else
+							this.Visualization = Visualization;
+					}
+					else
+					{
+						this.Visualization = new TextBlock()
+						{
+							Text = "No visualizer available for this type of XML document.",
+							HorizontalAlignment = HorizontalAlignment.Center,
+							VerticalAlignment = VerticalAlignment.Center
+						};
+					}
+				}
+				catch (Exception ex)
+				{
+					StackPanel View = new();
+					View.Children.Add(new TextBlock()
+					{
+						Text = ex.Message,
+						Foreground = System.Windows.Media.Brushes.Red,
+						HorizontalAlignment = HorizontalAlignment.Center,
+						VerticalAlignment = VerticalAlignment.Center
+					});
+
+					this.Visualization = View;
+				}
+			});
+		}
+
+		private void Show(PixelInformation Pixels)
+		{
+			BitmapImage BitmapImage;
+			byte[] Bin = Pixels.EncodeAsPng();
+
+			using MemoryStream ms = new(Bin);
+
+			BitmapImage = new BitmapImage();
+			BitmapImage.BeginInit();
+			BitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+			BitmapImage.StreamSource = ms;
+			BitmapImage.EndInit();
+
+			this.Visualization = new Image()
+			{
+				Source = BitmapImage,
+				Width = Pixels.Width,
+				Height = Pixels.Height
+			};
 		}
 
 		/// <summary>

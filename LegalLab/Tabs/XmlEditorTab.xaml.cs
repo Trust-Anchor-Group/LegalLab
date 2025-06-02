@@ -1,8 +1,8 @@
-﻿using LegalLab.Models.XmlEditor;
+﻿using LegalLab.Models.Script;
+using LegalLab.Models.XmlEditor;
 using System;
 using System.ComponentModel;
 using System.Windows.Controls;
-using System.Windows.Input;
 using Waher.Events;
 
 namespace LegalLab.Tabs
@@ -13,6 +13,8 @@ namespace LegalLab.Tabs
 	public partial class XmlEditorTab : UserControl
 	{
 		private XmlEditorModel xmlEditorModel;
+		private bool updatingFromModel = false;
+		private bool updatingFromEditor = false;
 
 		public XmlEditorTab()
 		{
@@ -24,7 +26,7 @@ namespace LegalLab.Tabs
 			try
 			{
 				base.OnInitialized(e);
-		
+
 				this.xmlEditorModel = await MainWindow.InstantiateModel<XmlEditorModel>();
 				this.xmlEditorModel.PropertyChanged += this.XmlEditorModel_PropertyChanged;
 			}
@@ -39,18 +41,36 @@ namespace LegalLab.Tabs
 			switch (e.PropertyName)
 			{
 				case nameof(XmlEditorModel.Xml):
-					this.XmlEditor.Text = this.xmlEditorModel.Xml;
+					if (!this.updatingFromEditor)
+					{
+						this.updatingFromModel = true;
+						try
+						{
+							this.XmlEditor.Text = this.xmlEditorModel.Xml;
+						}
+						finally
+						{
+							this.updatingFromModel = false;
+						}
+					}
 					break;
 			}
 		}
 
 		private void XmlEditor_TextChanged(object sender, EventArgs e)
 		{
-			this.xmlEditorModel.Xml = this.XmlEditor.Text;
-		}
-
-		private void InputPreviewKeyDown(object sender, KeyEventArgs e)
-		{
+			if (!this.updatingFromModel)
+			{
+				this.updatingFromEditor = true;
+				try
+				{
+					this.xmlEditorModel.Xml = this.XmlEditor.Text;
+				}
+				finally
+				{
+					this.updatingFromEditor = false;
+				}
+			}
 		}
 	}
 }

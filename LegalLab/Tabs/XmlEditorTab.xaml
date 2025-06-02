@@ -60,7 +60,7 @@
 		<ScrollViewer Grid.Column="2"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Auto">
-			<StackPanel Name="RightStackPanel"/>
+			<ContentControl Content="{Binding Visualization}"/>
 		</ScrollViewer>
 	</Grid>
 </UserControl>
