@@ -35,6 +35,9 @@
             <TabItem Header="Script">
                 <tabs:ScriptTab x:Name="ScriptTab"/>
             </TabItem>
-        </TabControl>
+			<TabItem Header="XML">
+				<tabs:XmlEditorTab x:Name="XmlEditorTab"/>
+			</TabItem>
+		</TabControl>
     </DockPanel>
 </Window>
