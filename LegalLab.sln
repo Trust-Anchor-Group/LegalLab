@@ -107,6 +107,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExampleImages", "ExampleIma
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExampleLayouts", "ExampleLayouts", "{FF098B7E-BB24-4E54-94A4-65C9243005F1}"
+	ProjectSection(SolutionItems) = preProject
+		ExampleLayouts\BackgroundLayout.xml = ExampleLayouts\BackgroundLayout.xml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

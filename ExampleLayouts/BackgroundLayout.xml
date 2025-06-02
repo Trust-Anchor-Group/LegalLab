@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Layout2D xmlns="http://waher.se/Schema/Layout2D.xsd"
+					width="1684px"
+					height="1190px"
+					background="WhiteBackground"
+					pen="BlackPen"
+					font="Text"
+					textColor="Black">
+	<SolidPen id="BlackPen" color="Black" width="1px"/>
+	<SolidPen id="WhitePen" color="White" width="1px"/>
+	<SolidBackground id="WhiteBackground" color="WhiteSmoke"/>
+	<Font id="Label" name="Roboto" size="18pt" color="Black" weight="Normal"/>
+	<Font id="Value" name="Roboto" size="24pt" color="Black" weight="Bold"/>
+	<Rectangle x="0%" y="0%" x2="100%" y2="100%" pen="BlackPen" fill="WhiteBackground"/>
+	<Overlays>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<ImageFile fileName="C:\ProgramData\IoT Gateway\Root\Creturner\Images\CertificateBG_2526x1785.png"
+								 width="1684px"
+								 height="1190px"
+								 fill="WhiteBackground"
+								 keepAspectRatio="true"
+								 x="0px"
+								 y="0px"
+								 x2="1684px"
+								 y2="1190px"/>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Label font="Label" halign="Left" valign="Top" text="Owner:" x="600px" y="400px"/>
+			<Script font="Value" halign="Left" valign="Top" expression="OwnerName" x="600px" y="445px"/>
+			<Label font="Label" halign="Left" valign="Top" text="Compensation:" x="600px" y="530px"/>
+			<Script font="Value" halign="Left" valign="Top" expression="Str(TotalCO2eKgs)+' kg'" x="600px" y="575px"/>
+			<Label font="Label" halign="Left" valign="Top" text="Certificate Number:" x="600px" y="660px"/>
+			<Script font="Value" halign="Left" valign="Top" expression="CertificateNo" x="600px" y="705px"/>
+			<Label font="Label" halign="Left" valign="Top" text="Issue date:" x="100px" y="1050px"/>
+			<Script font="Value" halign="Left" valign="Top" expression="IntToStr(n,d):=(s:=Str(n);while len(s)&lt;d do s:='0'+s;s);Cal := ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']; Month := Cal[IssueDate.Month - 1 ]; IntToStr(Month,3) + ' ' + IntToStr(IssueDate.Day,2) + ', ' + IntToStr(IssueDate.Year,4);" x="100px" y="1100px"/>
+			<Label font="Label" halign="Left" valign="Top" text="Status:" x="450px" y="1050px"/>
+			<Script font="Value" halign="Left" valign="Top" expression="IsCompensated ? 'Compensated' : CurrentState.State;" x="450px" y="1100px"/>
+			<Script font="Value" halign="Left" valign="Top" expression="IsTerminated ? 'Terminated' : CurrentState.State;" x="450px" y="1100px"/>
+			<Label font="Label" halign="Left" valign="Top" text="Left to process:" x="800px" y="1050px"/>
+			<Script font="Value" halign="Left" valign="Top" expression="Str(LeftCO2Kgs)+' kg'" x="800px" y="1100px"/>
+			<Script font="Label" halign="Left" valign="Top" expression="IsCompensated ? 'Completion date:' : ' ' " x="1150px" y="1050px"/>
+			<Script font="Value" halign="Left" valign="Top" expression="IsCompensated ? ( IntToStr(n,d):=(s:=Str(n);while len(s)&lt;d do s:='0'+s;s);Cal := ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']; Month := Cal[Month(CompletionDate) - 1 ]; IntToStr(Month,3) + ' ' + IntToStr(Day(CompletionDate),2) + ', ' + IntToStr(Year(CompletionDate),4)) : ' ' ;" x="1150px" y="1100px"/>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="820px" left="100px" right="450px">
+				<Paragraph font="Label">
+					<Text text="Creturner herby confirms that "/>
+					<Bold>
+						<InlineScript expression="OwnerName"/>
+					</Bold>
+					<Text text=" has taken action to offset their carbon emissions ("/>
+					<Bold>
+						<InlineScript expression="Purpose"/>
+					</Bold>
+					<Text text=") through the purchase of certified carbon offsets."/>
+					<Text text=" Creturner’s high-quality carbon offset method is an effective method to neutralize one's carbon footprint, and demonstrate commitment to a sustainable future."/>
+				</Paragraph>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="400px" left="1200px">
+				<Rectangle fill="WhiteBackground" pen="WhitePen" width="400px" height="400px">
+					<Script expression="(Icon:=CreateMultiQR({'Title':'Carbon Offset','Description':'Creturner carbon offset certificate','Master':'/Creturner/Certificate.md','Scheme':'nfeat','ExpiryDate':null,'CountCategory':'Creturner','CountLimit':null,'Label1':'Certificate','Text1':'Current state of the Creturner Carbon offset process. Can be scanned and validated using the TAG ID App (see links below).','Link1':'nfeat:'+TokenId,'Label2':'Android','Text2':'TAG ID App for Android','Link2':'https://play.google.com/store/apps/details?id=com.tag.IdApp','Label3':'iOS','Text3':'TAG ID App for iOS','Link3':'https://apps.apple.com/se/app/trust-anchor-id/id1580610247','Label4':'Creturner','Text5':'More information about Creturner:','Link5':'https://www.creturner.com/','Label6':'Trust Anchor Group','Text6':'More information about Trust Anchor Group:','Link6':'https://www.trustanchorgroup.com/'},'/MultiQR.md');QrEncode(Icon.Page,'H',400)) ??? (LogCritical(Exception);QrEncode('nfeat:'+TokenId,'H',400))"/>
+				</Rectangle>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Label font="Value" halign="Left" valign="Top" text="Scan me" x="1320px" y="820px"/>
+		</Cell>
+	</Overlays>
+</Layout2D>
