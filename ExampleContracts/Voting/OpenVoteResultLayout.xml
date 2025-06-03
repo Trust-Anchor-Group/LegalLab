@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Layout2D xmlns="http://waher.se/Schema/Layout2D.xsd"
+          width="1684px"
+          height="1190px"
+          background="WhiteBackground"
+          pen="BlackPen"
+          font="Text"
+          textColor="Black">
+	<SolidPen id="BlackPen" color="Black" width="1px"/>
+	<SolidPen id="WhitePen" color="White" width="1px"/>
+	<SolidPen id="DarkSemiTransparentPen" color="#00000080" width="3px"/>
+	<SolidPen id="DarkGreenPen" color="DarkGreen" width="3px"/>
+	<SolidPen id="DarkRedPen" color="DarkRed" width="3px"/>
+	<SolidPen id="GreenWidePen" color="Green" width="7px"/>
+	<SolidPen id="RedWidePen" color="Red" width="7px"/>
+	<SolidPen id="GreenPen" color="Green" width="5px"/>
+	<SolidPen id="RedPen" color="Red" width="5px"/>
+	<SolidBackground id="SemiTransparentBackground" color="#f8f8f8e0"/>
+	<SolidBackground id="SemiTransparentGreenBackground" color="#e0ffe040"/>
+	<SolidBackground id="SemiTransparentRedBackground" color="#ffe0e040"/>
+	<SolidBackground id="WhiteBackground" color="#fffffff0"/>
+	<SolidBackground id="WhiteSmokeBackground" color="WhiteSmoke"/>
+	<Font id="Text" name="Roboto" size="14pt" color="Black" weight="Normal"/>
+	<Font id="LargeText" name="Roboto" size="17pt" color="Black" weight="Normal"/>
+	<Font id="Label" name="Roboto" size="16pt" color="Black" weight="Normal"/>
+	<Font id="DarkGreenLabel" name="Roboto" size="16pt" color="DarkGreen" weight="Normal"/>
+	<Font id="DarkRedLabel" name="Roboto" size="16pt" color="DarkRed" weight="Normal"/>
+	<Font id="DarkGrayLabel" name="Roboto" size="16pt" color="#606060" weight="Normal"/>
+	<Font id="GreenLabel" name="Roboto" size="16pt" color="Green" weight="Normal"/>
+	<Font id="RedLabel" name="Roboto" size="16pt" color="Red" weight="Normal"/>
+	<Font id="Value" name="Roboto" size="20pt" color="Black" weight="Bold"/>
+	<Font id="DarkGreenValue" name="Roboto" size="20pt" color="DarkGreen" weight="Bold"/>
+	<Font id="DarkRedValue" name="Roboto" size="20pt" color="DarkRed" weight="Bold"/>
+	<Font id="DarkGrayValue" name="Roboto" size="20pt" color="#606060" weight="Bold"/>
+	<Font id="Header" name="Roboto" size="24pt" color="Black" weight="Bold"/>
+	<Font id="RedHeader" name="Roboto" size="24pt" color="Red" weight="Bold"/>
+	<Font id="GreenHeader" name="Roboto" size="24pt" color="Green" weight="Bold"/>
+	<Rectangle x="0%" y="0%" x2="100%" y2="100%" pen="BlackPen" fill="WhiteSmokeBackground"/>
+	<Overlays>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<ImageUrl url="https://paiwise.tagroot.io/Images/WavyBG_1684x1190.png"
+			          width="1684px"
+			          height="1190px"
+			          fill="WhiteBackground"
+			          keepAspectRatio="true"
+			          x="0px"
+			          y="0px"
+			          x2="1684px"
+			          y2="1190px"/>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="50px" left="100px" right="100px" bottom="1350px">
+				<RoundedRectangle fill="SemiTransparentBackground" pen="DarkSemiTransparentPen" radiusX="50px" radiusY="50px">
+					<Paragraph font="Header" width="100%" height="100%" background="WhiteBackground" halign="Center" valign="Center">
+						<InlineScript expression="Question"/>
+					</Paragraph>
+				</RoundedRectangle>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Translate translateX="200px" translateY="480px">
+				<Label font="Header" halign="Center" valign="Top" text="Ballot Counts" x="170px" y="0px"/>
+				<Label font="Label" halign="Left" valign="Top" text="Total Ballots:" x="0px" y="90px"/>
+				<Label font="DarkGreenLabel" halign="Left" valign="Top" text="Accepted Ballots:" x="0px" y="150px"/>
+				<Label font="DarkRedLabel" halign="Left" valign="Top" text="Rejected Ballots:" x="0px" y="210px"/>
+				<Script font="Value" halign="Right" valign="Top" expression="NrBallotsTotal" x="350px" y="85px"/>
+				<Script font="DarkGreenValue" halign="Right" valign="Top" expression="NrBallotsAccepted" x="350px" y="145px"/>
+				<Script font="DarkRedValue" halign="Right" valign="Top" expression="NrBallotsRejected" x="350px" y="205px"/>
+			</Translate>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{NrYes>=NrNo}">
+			<Margins top="485px" left="650px" right="550px" bottom="1260px">
+				<RoundedRectangle fill="SemiTransparentGreenBackground" pen="DarkGreenPen" radiusX="20px" radiusY="20px"/>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{NrNo>=NrYes}">
+			<Margins top="545px" left="650px" right="550px" bottom="1200px">
+				<RoundedRectangle fill="SemiTransparentRedBackground" pen="DarkRedPen" radiusX="20px" radiusY="20px"/>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Translate translateX="700px" translateY="415px">
+				<Label font="Header" halign="Center" valign="Top" text="Vote Counts" x="150px" y="0px"/>
+				<Label font="DarkGreenLabel" halign="Left" valign="Top" text="Yes:" x="0px" y="90px"/>
+				<Label font="DarkRedLabel" halign="Left" valign="Top" text="No:" x="0px" y="150px"/>
+				<Label font="DarkGrayLabel" halign="Left" valign="Top" text="Abstained:" x="0px" y="210px"/>
+				<Label font="Label" halign="Left" valign="Top" text="Changed:" x="0px" y="270px"/>
+				<Label font="Label" halign="Left" valign="Top" text="Comments:" x="0px" y="330px"/>
+				<Script font="DarkGreenValue" halign="Right" valign="Top" expression="NrYes" x="310px" y="85px"/>
+				<Script font="DarkRedValue" halign="Right" valign="Top" expression="NrNo" x="310px" y="145px"/>
+				<Script font="DarkGrayValue" halign="Right" valign="Top" expression="NrAbstain" x="310px" y="205px"/>
+				<Script font="Value" halign="Right" valign="Top" expression="NrChanged" x="310px" y="265px"/>
+				<Script font="Value" halign="Right" valign="Top" expression="NrComments" x="310px" y="325px"/>
+				<Label font="DarkGreenValue" halign="Left" valign="Top" text="√" visible="{NrYes>NrNo}" x="350px" y="85px"/>
+				<Label font="DarkRedValue" halign="Left" valign="Top" text="√" visible="{NrNo>NrYes}" x="350px" y="145px"/>
+			</Translate>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="860px" left="100px" right="475px">
+				<Paragraph font="Text">
+					<Text text="Above is shown the current number of ballots processed ("/>
+					<Bold>
+						<Text text="Total"/>
+					</Bold>
+					<Text text="), the number that was considered correct ("/>
+					<TextColor color="DarkGreen">
+						<Bold>
+							<Text text="Accepted"/>
+						</Bold>
+					</TextColor>
+					<Text text="), and the number that contained errors ("/>
+					<TextColor color="DarkRed">
+						<Bold>
+							<Text text="Rejected"/>
+						</Bold>
+					</TextColor>
+					<Text text="). The number of votes are also countes, separating the number of affirmative votes ("/>
+					<TextColor color="DarkGreen">
+						<Bold>
+							<Text text="Yes"/>
+						</Bold>
+					</TextColor>
+					<Text text="), the number of dissenting votes ("/>
+					<TextColor color="DarkRed">
+						<Bold>
+							<Text text="No"/>
+						</Bold>
+					</TextColor>
+					<Text text="), and the number of who abstained. The number of people who has changed their votes by casting new ballots is also displayed ("/>
+					<TextColor color="DarkGray">
+						<Bold>
+							<Text text="Changed"/>
+						</Bold>
+					</TextColor>
+					<Text text="). Number of comments received during is also shown ("/>
+						<TextColor color="DarkGray">
+						<Bold>
+							<Text text="Comments"/>
+						</Bold>
+					</TextColor>
+					<Text text=")."/>
+				</Paragraph>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="1070px" left="100px" right="475px">
+				<Paragraph font="LargeText">
+					<Bold>
+						<Text text="To cast a vote"/>
+					</Bold>
+					<Text text=", scan the "/>
+					<Italic>
+						<Text text="QR Code"/>
+					</Italic>
+					<Text text=" to the right using the "/>
+					<Bold>
+						<Text text="Neuro-Access"/>
+					</Bold>
+					<Text text=" App, found in the "/>
+					<Italic>
+						<Text text="App Store"/>
+					</Italic>
+					<Text text=" (for iOS devices) and the "/>
+					<Italic>
+						<Text text="Play Store"/>
+					</Italic>
+					<Text text=" (for Android devices)."/>
+				</Paragraph>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="400px" left="1200px">
+				<Rectangle fill="WhiteSmokeBackground" pen="WhitePen" width="400px" height="400px">
+					<Script expression="QrEncode('iotsc:'+BallotTemplateId+'?VoteReference='+VoteContractId,'H',400)"/>
+				</Rectangle>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{IsOpen}">
+			<Margins top="825px" left="1225px" right="100px" bottom="775px">
+				<RoundedRectangle fill="WhiteBackground" pen="GreenWidePen" radiusX="50px" radiusY="50px">
+					<Label font="GreenHeader" halign="Center" valign="Center" text="Open" x="50%" y="50%"/>
+				</RoundedRectangle>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{!IsOpen}">
+			<Margins top="825px" left="1225px" right="100px" bottom="775px">
+				<RoundedRectangle fill="WhiteBackground" pen="RedWidePen" radiusX="50px" radiusY="50px">
+					<Label font="RedHeader" halign="Center" valign="Center" text="Closed" x="50%" y="50%"/>
+				</RoundedRectangle>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{NowUtc&lt;From}">
+			<Margins top="925px" left="1225px" right="100px" bottom="675px">
+				<RoundedRectangle fill="WhiteBackground" pen="GreenPen" radiusX="50px" radiusY="50px">
+					<Paragraph font="GreenLabel" halign="Center" valign="Center" x="50%" y="50%">
+						<Text text="Opening in "/>
+						<InlineScript expression="CalcTimeLeftLabel(From-NowUtc)"/>
+						<Text text="..."/>
+					</Paragraph>
+				</RoundedRectangle>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{NowUtc&gt;=From and NowUtc&lt;To}">
+			<Margins top="925px" left="1225px" right="100px" bottom="675px">
+				<RoundedRectangle fill="WhiteBackground" pen="RedPen" radiusX="50px" radiusY="50px">
+					<Paragraph font="RedLabel" halign="Center" valign="Center" x="50%" y="50%">
+						<Text text="Closing in "/>
+						<InlineScript expression="CalcTimeLeftLabel(To-NowUtc)"/>
+						<Text text="..."/>
+					</Paragraph>
+				</RoundedRectangle>
+			</Margins>
+		</Cell>
+	</Overlays>
+</Layout2D>
