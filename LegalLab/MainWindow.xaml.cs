@@ -4,6 +4,7 @@ using LegalLab.Models.Design;
 using LegalLab.Models.Network;
 using LegalLab.Models.Events;
 using LegalLab.Models.Window;
+using LegalLab.Tabs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,6 +23,7 @@ using Waher.Persistence;
 using Waher.Persistence.Files;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Inventory.Loader;
+using Waher.Runtime.Collections;
 
 namespace LegalLab
 {
@@ -92,6 +94,17 @@ namespace LegalLab
 
 				Database.Register(database);
 
+				TaskCompletionSource<bool>[] WaitingTasks;
+
+				lock (waitingForDb)
+				{
+					WaitingTasks = waitingForDb.ToArray();
+					waitingForDb.Clear();
+				}
+
+				foreach (TaskCompletionSource<bool> Task in WaitingTasks)
+					Task.TrySetResult(true);
+
 				// Event logs
 
 				Log.RegisterAlertExceptionType(true,
@@ -127,6 +140,26 @@ namespace LegalLab
 			catch (Exception ex)
 			{
 				ErrorBox(ex.Message);
+			}
+		}
+
+		private static readonly ChunkedList<TaskCompletionSource<bool>> waitingForDb = [];
+
+		/// <summary>
+		/// Waits to the database to be configured.
+		/// </summary>
+		/// <returns></returns>
+		public static Task WaitForDB()
+		{
+			lock (waitingForDb)
+			{
+				if (Database.HasProvider)
+					return Task.CompletedTask;
+
+				TaskCompletionSource<bool> Result = new();
+				waitingForDb.Add(Result);
+
+				return Result.Task;
 			}
 		}
 
@@ -560,5 +593,10 @@ namespace LegalLab
 
 		#endregion
 
+		private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (this.TabControl.SelectedItem is ISelectableTab SelectableTab)
+				SelectableTab.Selected();
+		}
 	}
 }

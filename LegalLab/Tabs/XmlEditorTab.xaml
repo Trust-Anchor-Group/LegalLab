@@ -4,18 +4,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
-			 xmlns:model="clr-namespace:LegalLab.Models.XmlEditor"
-             mc:Ignorable="d" DataContext="model:XmlEditorModel" 
-             d:DesignHeight="450" d:DesignWidth="800">
+			 xmlns:model="clr-namespace:LegalLab.Models.XmlEditor" 
+			 d:DataContext="{d:DesignInstance Type=model:XmlEditorModel}"
+			 mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800">
 	<Grid>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="{Binding EditorWidth}"/>
+			<ColumnDefinition Width="{Binding EditorWidth}" x:Name="EditorColumn"/>
 			<ColumnDefinition Width="5"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 
 		<!-- Left View -->
-		<DockPanel Grid.Column="0" LastChildFill="True">
+		<DockPanel Grid.Column="0" LastChildFill="True" x:Name="EditorPanel">
 			<!-- Toolbar -->
 			<ToolBar DockPanel.Dock="Top">
 				<Button Name="NewButton" ToolTip="New" Command="{Binding NewDocument}">
@@ -27,6 +27,22 @@
 				<Button Name="SaveButton" ToolTip="Save" Command="{Binding SaveDocument}" IsEnabled="{Binding Changed}">
 					<Image Source="pack://application:,,,/Graphics/save_32_h.png" Width="32" Height="32"/>
 				</Button>
+				<Separator/>
+				<ComboBox Name="ZoomComboBox" Width="100"
+						  SelectedValue="{Binding SelectedZoom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+						  SelectedValuePath="Tag" ToolTip="Zoom">
+					<ComboBoxItem Content="Fit to size" Tag="0"/>
+					<ComboBoxItem Content="10%" Tag="0.1"/>
+					<ComboBoxItem Content="25%" Tag="0.25"/>
+					<ComboBoxItem Content="50%" Tag="0.5"/>
+					<ComboBoxItem Content="75%" Tag="0.75"/>
+					<ComboBoxItem Content="90%" Tag="0.9"/>
+					<ComboBoxItem Content="100%" Tag="1"/>
+					<ComboBoxItem Content="110%" Tag="1.1"/>
+					<ComboBoxItem Content="125%" Tag="1.25"/>
+					<ComboBoxItem Content="150%" Tag="1.5"/>
+					<ComboBoxItem Content="200%" Tag="2"/>
+				</ComboBox>
 			</ToolBar>
 			<!-- AvalonEdit XML Editor -->
 			<avalonedit:TextEditor Name="XmlEditor"
@@ -49,7 +65,8 @@
 		</DockPanel>
 
 		<!-- Splitter -->
-		<GridSplitter Grid.Column="1"
+		<GridSplitter x:Name="EditorVisualizationSplitter" 
+					  Grid.Column="1"
                       Width="5"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Stretch"
@@ -57,10 +74,15 @@
                       ShowsPreview="True"/>
 
 		<!-- Right View -->
-		<ScrollViewer Grid.Column="2"
+		<ScrollViewer x:Name="VisualizationViewer" 
+					  Grid.Column="2"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Auto">
-			<ContentControl Content="{Binding Visualization}"/>
+			<ContentControl Content="{Binding Visualization}">
+				<ContentControl.LayoutTransform>
+					<ScaleTransform ScaleX="{Binding Zoom}" ScaleY="{Binding Zoom}"/>
+				</ContentControl.LayoutTransform>
+			</ContentControl>
 		</ScrollViewer>
 	</Grid>
 </UserControl>

@@ -25,13 +25,17 @@ namespace LegalLab.Models.XmlEditor
 	/// <summary>
 	/// Interaction logic for the XML editor view.
 	/// </summary>
-	public class XmlEditorModel : Model
+	public class XmlEditorModel : PersistedModel
 	{
+		private readonly ScrollViewer scrollViewer;
+
 		private readonly Property<string> xml;
 		private readonly Property<string> fileName;
 		private readonly Property<bool> changed;
 		private readonly Property<object> visualization;
-		private readonly PersistedProperty<int> editorWidth;
+		private readonly Property<double> zoom;
+		private readonly PersistedProperty<double> selectedZoom;
+		private readonly PersistedProperty<double> editorWidth;
 
 		private readonly Command newDocument;
 		private readonly Command loadDocument;
@@ -42,13 +46,20 @@ namespace LegalLab.Models.XmlEditor
 		/// <summary>
 		/// Interaction logic for the XML editor view.
 		/// </summary>
-		public XmlEditorModel()
+		/// <param name="ScrollViewer">Scroll Viewer that will display visualization.</param>
+		public XmlEditorModel(ScrollViewer ScrollViewer)
+			: base()
 		{
+			this.scrollViewer = ScrollViewer;
+
 			this.xml = new Property<string>(nameof(this.Xml), string.Empty, this);
 			this.fileName = new Property<string>(nameof(this.FileName), string.Empty, this);
 			this.changed = new Property<bool>(nameof(this.Changed), false, this);
 			this.visualization = new Property<object>(nameof(this.Visualization), null, this);
-			this.editorWidth = new PersistedProperty<int>("XML", nameof(this.EditorWidth), true, 500, this);
+			this.zoom = new Property<double>(nameof(this.Zoom), 1, this);
+
+			this.Add(this.selectedZoom = new PersistedProperty<double>("XML", nameof(this.SelectedZoom), true, 1, this));
+			this.Add(this.editorWidth = new PersistedProperty<double>("XML", nameof(this.EditorWidth), true, 500, this));
 
 			this.newDocument = new Command(this.ExecuteNewDocument);
 			this.loadDocument = new Command(this.ExecuteLoadDocument);
@@ -66,6 +77,55 @@ namespace LegalLab.Models.XmlEditor
 				this.xml.Value = value;
 				this.ContentsChanged();
 			}
+		}
+
+		/// <summary>
+		/// Selected Visualization Zoom level
+		/// </summary>
+		public double SelectedZoom
+		{
+			get => this.selectedZoom.Value;
+			set
+			{
+				this.selectedZoom.Value = value;
+				this.CalcZoom(value, null, null);
+			}
+		}
+
+		private void CalcZoom(double SelectedZoom, double? ActualWidth, double? ActualHeight)
+		{
+			if (SelectedZoom <= 0)
+			{
+				if (this.Visualization is not FrameworkElement Element)
+					this.Zoom = 1;
+				else
+				{
+					double AvailableWidth = this.scrollViewer.ViewportWidth;
+					double AvailableHeight = this.scrollViewer.ViewportHeight;
+
+					ActualWidth ??= Element.ActualWidth;
+					ActualHeight ??= Element.ActualHeight;
+
+					if (ActualWidth.Value > 0 && ActualHeight.Value > 0)
+					{
+						double ScaleWidth = AvailableWidth / ActualWidth.Value;
+						double ScaleHeight = AvailableHeight / ActualHeight.Value;
+
+						this.Zoom = Math.Min(ScaleWidth, ScaleHeight);
+					}
+				}
+			}
+			else
+				this.Zoom = SelectedZoom;
+		}
+
+		/// <summary>
+		/// Visualization Zoom
+		/// </summary>
+		public double Zoom
+		{
+			get => this.zoom.Value;
+			set => this.zoom.Value = value;
 		}
 
 		/// <summary>
@@ -97,12 +157,26 @@ namespace LegalLab.Models.XmlEditor
 			this.timer = new Timer(this.UpdateVisualization, null, 1000, Timeout.Infinite);
 		}
 
+		public void UpdateVisualization()
+		{
+			this.UpdateVisualization(null);
+		}
+
 		private void UpdateVisualization(object _)
 		{
 			MainWindow.UpdateGui(async () =>
 			{
+				double? ActualWidth = null;
+				double? ActualHeight = null;
+
 				try
 				{
+					if (string.IsNullOrWhiteSpace(this.Xml))
+					{
+						this.Visualization = null;
+						return;
+					}
+
 					XmlDocument Doc = new()
 					{
 						PreserveWhitespace = true
@@ -124,17 +198,25 @@ namespace LegalLab.Models.XmlEditor
 						object Visualization = await Visualizer.TransformXml(Doc, v);
 
 						if (Visualization is PixelInformation Pixels)
+						{
 							this.Show(Pixels);
+							ActualWidth = Pixels.Width;
+							ActualHeight = Pixels.Height;
+						}
 						else if (Visualization is Graph Graph)
 						{
 							Pixels = Graph.CreatePixels(v);
 							this.Show(Pixels);
+							ActualWidth = Pixels.Width;
+							ActualHeight = Pixels.Height;
 						}
 						else if (Visualization is SKImage Image)
 						{
 							Pixels = PixelInformation.FromImage(Image);
 							Image.Dispose();
 							this.Show(Pixels);
+							ActualWidth = Pixels.Width;
+							ActualHeight = Pixels.Height;
 						}
 						else if (Visualization is MarkdownDocument Markdown)
 						{
@@ -176,6 +258,8 @@ namespace LegalLab.Models.XmlEditor
 
 					this.Visualization = View;
 				}
+
+				this.CalcZoom(this.SelectedZoom, ActualWidth, ActualHeight);
 			});
 		}
 
@@ -221,10 +305,14 @@ namespace LegalLab.Models.XmlEditor
 		/// <summary>
 		/// File Name
 		/// </summary>
-		public int EditorWidth
+		public double EditorWidth
 		{
 			get => this.editorWidth.Value;
-			set => this.editorWidth.Value = Math.Max(value, 50);
+			set
+			{
+				this.editorWidth.Value = Math.Max(value, 50);
+				this.CalcZoom(this.SelectedZoom, null, null);
+			}
 		}
 
 		/// <summary>
@@ -265,7 +353,7 @@ namespace LegalLab.Models.XmlEditor
 		/// </summary>
 		public async Task ExecuteNewDocument()
 		{
-			if (this.Changed && await this.CanContinue())
+			if (!this.Changed || await this.CanContinue())
 			{
 				this.Xml = string.Empty;
 				this.FileName = string.Empty;
@@ -278,19 +366,19 @@ namespace LegalLab.Models.XmlEditor
 			if (this.Changed)
 			{
 				switch (await MainWindow.MessageBox("Do you want to save your unsaved changes?",
-					"Confirm", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Question))
+					"Confirm", MessageBoxButton.YesNoCancel, MessageBoxImage.Question))
 				{
-					case System.Windows.MessageBoxResult.Yes:
-						bool? Result = await this.Save();
+					case MessageBoxResult.Yes:
+						bool? Result = await this.SaveXml();
 						if (!Result.HasValue)
 							return false;
 						else
 							return true;
 
-					case System.Windows.MessageBoxResult.No:
+					case MessageBoxResult.No:
 						return true;
 
-					case System.Windows.MessageBoxResult.Cancel:
+					case MessageBoxResult.Cancel:
 					default:
 						return false;
 				}
@@ -349,10 +437,10 @@ namespace LegalLab.Models.XmlEditor
 		/// </summary>
 		public async Task ExecuteSaveDocument()
 		{
-			await this.Save();
+			await this.SaveXml();
 		}
 
-		private async Task<bool?> Save()
+		private async Task<bool?> SaveXml()
 		{
 			try
 			{

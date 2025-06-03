@@ -1,7 +1,7 @@
-﻿using LegalLab.Models.Script;
-using LegalLab.Models.XmlEditor;
+﻿using LegalLab.Models.XmlEditor;
 using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using Waher.Events;
 
@@ -10,7 +10,7 @@ namespace LegalLab.Tabs
 	/// <summary>
 	/// Interaction logic for XmlEditorTab.xaml
 	/// </summary>
-	public partial class XmlEditorTab : UserControl
+	public partial class XmlEditorTab : UserControl, ISelectableTab
 	{
 		private XmlEditorModel xmlEditorModel;
 		private bool updatingFromModel = false;
@@ -27,8 +27,22 @@ namespace LegalLab.Tabs
 			{
 				base.OnInitialized(e);
 
-				this.xmlEditorModel = await MainWindow.InstantiateModel<XmlEditorModel>();
+				this.xmlEditorModel = await MainWindow.InstantiateModel<XmlEditorModel>(this.VisualizationViewer);
 				this.xmlEditorModel.PropertyChanged += this.XmlEditorModel_PropertyChanged;
+
+				// ActualWidth does not get updated until after all events have been raised.
+
+				this.EditorPanel.SizeChanged += (s, e) =>
+				{
+					Task.Delay(100).ContinueWith((_) =>
+					{
+						MainWindow.UpdateGui(() =>
+						{
+							this.xmlEditorModel.EditorWidth = this.EditorColumn.ActualWidth;
+							return Task.CompletedTask;
+						});
+					});
+				};
 			}
 			catch (Exception ex)
 			{
@@ -71,6 +85,11 @@ namespace LegalLab.Tabs
 					this.updatingFromEditor = false;
 				}
 			}
+		}
+
+		public void Selected()
+		{
+			this.xmlEditorModel.UpdateVisualization();
 		}
 	}
 }

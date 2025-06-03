@@ -53,6 +53,8 @@
     <PackageReference Include="Waher.Persistence.FilesLW" Version="1.15.1" />
     <PackageReference Include="Waher.Persistence.Serialization" Version="1.10.1" />
     <PackageReference Include="Waher.Runtime.Cache" Version="2.1.1" />
+    <PackageReference Include="Waher.Runtime.Collections" Version="1.0.3" />
+    <PackageReference Include="Waher.Runtime.Geo" Version="1.0.0" />
     <PackageReference Include="Waher.Runtime.Inventory" Version="1.4.3" />
     <PackageReference Include="Waher.Runtime.Inventory.Loader" Version="1.1.0" />
     <PackageReference Include="Waher.Runtime.Profiling" Version="1.1.1" />

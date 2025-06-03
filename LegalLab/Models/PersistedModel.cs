@@ -24,6 +24,8 @@ namespace LegalLab.Models
 		/// </summary>
 		public async Task Load()
 		{
+			await MainWindow.WaitForDB();
+
 			foreach (IPersistedProperty Property in this.properties)
 				await Property.Load();
 		}

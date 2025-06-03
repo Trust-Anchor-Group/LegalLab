@@ -10,7 +10,7 @@
             <StatusBarItem Name="XmppState" Content="{Binding State}"/>
             <StatusBarItem Name="Status"></StatusBarItem>
         </StatusBar>
-        <TabControl Name="TabControl" DockPanel.Dock="Top">
+        <TabControl Name="TabControl" DockPanel.Dock="Top" SelectionChanged="TabControl_SelectionChanged">
             <TabItem Header="Network ID">
                 <tabs:NetworkTab x:Name="NetworkTab"/>
             </TabItem>
