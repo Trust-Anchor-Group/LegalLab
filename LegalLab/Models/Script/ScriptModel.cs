@@ -13,7 +13,6 @@ using Waher.Content.Markdown;
 using Waher.Content.Markdown.Rendering;
 using Waher.Content.Markdown.Wpf;
 using Waher.Events;
-using Waher.Runtime.Inventory;
 using Waher.Script;
 using Waher.Script.Abstraction.Elements;
 using Waher.Script.Exceptions;
@@ -29,10 +28,11 @@ namespace LegalLab.Models.Script
 	/// </summary>
 	public class ScriptModel : Model, IDisposable
 	{
+		private static readonly Variables variables = [];
+
 		private readonly Property<string> referenceUri;
 		private readonly Property<string> input;
 
-		private readonly Variables variables;
 		private readonly StackPanel historyPanel;
 
 		/// <summary>
@@ -46,10 +46,8 @@ namespace LegalLab.Models.Script
 			this.input = new Property<string>(nameof(this.Input), string.Empty, this);
 
 			this.historyPanel = HistoryPanel;
-			this.variables = new Variables()
-			{
-				ConsoleOut = new PrintOutput(this)
-			};
+
+			variables.ConsoleOut = new PrintOutput(this);
 		}
 
 		/// <summary>
@@ -73,7 +71,7 @@ namespace LegalLab.Models.Script
 		/// <summary>
 		/// Current set of variables.
 		/// </summary>
-		public Variables Variables => this.variables;
+		public static Variables Variables => variables;
 
 		/// <summary>
 		/// Event handler for the input PreviewKeyDown event.
@@ -148,10 +146,10 @@ namespace LegalLab.Models.Script
 						return Task.CompletedTask;
 					}
 
-					this.variables.OnPreview += Preview;
+					variables.OnPreview += Preview;
 					try
 					{
-						Ans = await Exp.Root.EvaluateAsync(this.variables);
+						Ans = await Exp.Root.EvaluateAsync(variables);
 					}
 					catch (ScriptReturnValueException ex)
 					{
@@ -163,10 +161,10 @@ namespace LegalLab.Models.Script
 					}
 					finally
 					{
-						this.variables.OnPreview -= Preview;
+						variables.OnPreview -= Preview;
 					}
 
-					this.variables["Ans"] = Ans;
+					variables["Ans"] = Ans;
 
 					await MainWindow.UpdateGui(async () =>
 					{
@@ -187,7 +185,7 @@ namespace LegalLab.Models.Script
 			{
 				if (Ans is Graph G)
 				{
-					PixelInformation Pixels = G.CreatePixels(this.variables, out object[] States);
+					PixelInformation Pixels = G.CreatePixels(variables, out object[] States);
 					return this.AddImageBlock(ScriptBlock, Pixels, G, States, ResultBlock);
 				}
 				else if (Ans.AssociatedObjectValue is SKImage Img)
@@ -262,7 +260,7 @@ namespace LegalLab.Models.Script
 			{
 				ex = Log.UnnestException(ex);
 				Ans = new ObjectValue(ex);
-				this.variables["Ans"] = Ans;
+				variables["Ans"] = Ans;
 
 				if (ex is AggregateException ex2)
 				{

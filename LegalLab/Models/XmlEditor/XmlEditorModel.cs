@@ -3,6 +3,7 @@ using Microsoft.Win32;
 using SkiaSharp;
 using System;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -162,41 +163,89 @@ namespace LegalLab.Models.XmlEditor
 			this.UpdateVisualization(null);
 		}
 
-		private void UpdateVisualization(object _)
+		private async void UpdateVisualization(object _)
 		{
-			MainWindow.UpdateGui(async () =>
+			try
 			{
 				double? ActualWidth = null;
 				double? ActualHeight = null;
+				object Visualization = null;
+				IXmlVisualizer Visualizer = null;
+				Exception XmlParsingException = null;
+				XmlDocument Doc = null;
+				Variables Variables = null;
 
-				try
+				if (!string.IsNullOrWhiteSpace(this.Xml))
 				{
-					if (string.IsNullOrWhiteSpace(this.Xml))
+					try
 					{
-						this.Visualization = null;
-						return;
+						Doc = new()
+						{
+							PreserveWhitespace = true
+						};
+
+						Doc.LoadXml(this.Xml);
+
+						Visualizer = Types.FindBest<IXmlVisualizer, XmlDocument>(Doc);
+
+						if (Visualizer is not null)
+						{
+							Variables = ScriptModel.Variables ?? [];
+							Visualization = await Visualizer.TransformXml(Doc, Variables);
+						}
 					}
-
-					XmlDocument Doc = new()
+					catch (Exception ex)
 					{
-						PreserveWhitespace = true
-					};
+						XmlParsingException = ex;
+					}
+				}
 
-					Doc.LoadXml(this.Xml);
-
-					IXmlVisualizer Visualizer = Types.FindBest<IXmlVisualizer, XmlDocument>(Doc);
-
-					if (Visualizer is not null)
+				await MainWindow.UpdateGui(async () =>
+				{
+					try
 					{
-						Variables v;
+						if (Visualization is null)
+						{
+							if (Doc is null)
+							{
+								this.Visualization = new TextBlock()
+								{
+									Text = "No visualizer available for this type of XML document.",
+									HorizontalAlignment = HorizontalAlignment.Center,
+									VerticalAlignment = VerticalAlignment.Center
+								};
+							}
+							else if (XmlParsingException is not null)
+							{
+								StringBuilder sb = new();
 
-						if (MainWindow.currentInstance?.ScriptTab?.DataContext is ScriptModel ScriptModel)
-							v = ScriptModel.Variables;
-						else
-							v = [];
+								if (XmlParsingException is XmlException XmlException)
+								{
+									sb.Append("Line: ");
+									sb.AppendLine(XmlException.LineNumber.ToString());
+									sb.Append("Position: ");
+									sb.AppendLine(XmlException.LinePosition.ToString());
+									sb.AppendLine();
+								}
 
-						object Visualization = await Visualizer.TransformXml(Doc, v);
+								sb.Append(XmlParsingException.Message);
 
+								StackPanel View = new();
+								View.Children.Add(new TextBlock()
+								{
+									Text = sb.ToString(),
+									Foreground = System.Windows.Media.Brushes.Red,
+									HorizontalAlignment = HorizontalAlignment.Center,
+									VerticalAlignment = VerticalAlignment.Center
+								});
+
+								this.Visualization = View;
+							}
+							else
+							{
+								this.Visualization = null;
+							}
+						}
 						if (Visualization is PixelInformation Pixels)
 						{
 							this.Show(Pixels);
@@ -205,7 +254,7 @@ namespace LegalLab.Models.XmlEditor
 						}
 						else if (Visualization is Graph Graph)
 						{
-							Pixels = Graph.CreatePixels(v);
+							Pixels = Graph.CreatePixels(Variables ?? []);
 							this.Show(Pixels);
 							ActualWidth = Pixels.Width;
 							ActualHeight = Pixels.Height;
@@ -235,32 +284,27 @@ namespace LegalLab.Models.XmlEditor
 						else
 							this.Visualization = Visualization;
 					}
-					else
+					catch (Exception ex)
 					{
-						this.Visualization = new TextBlock()
+						StackPanel View = new();
+						View.Children.Add(new TextBlock()
 						{
-							Text = "No visualizer available for this type of XML document.",
+							Text = ex.Message,
+							Foreground = System.Windows.Media.Brushes.Red,
 							HorizontalAlignment = HorizontalAlignment.Center,
 							VerticalAlignment = VerticalAlignment.Center
-						};
+						});
+
+						this.Visualization = View;
 					}
-				}
-				catch (Exception ex)
-				{
-					StackPanel View = new();
-					View.Children.Add(new TextBlock()
-					{
-						Text = ex.Message,
-						Foreground = System.Windows.Media.Brushes.Red,
-						HorizontalAlignment = HorizontalAlignment.Center,
-						VerticalAlignment = VerticalAlignment.Center
-					});
 
-					this.Visualization = View;
-				}
-
-				this.CalcZoom(this.SelectedZoom, ActualWidth, ActualHeight);
-			});
+					this.CalcZoom(this.SelectedZoom, ActualWidth, ActualHeight);
+				});
+			}
+			catch (Exception ex)
+			{
+				Log.Exception(ex);
+			}
 		}
 
 		private void Show(PixelInformation Pixels)

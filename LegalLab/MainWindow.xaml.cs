@@ -595,8 +595,11 @@ namespace LegalLab
 
 		private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (this.TabControl.SelectedItem is ISelectableTab SelectableTab)
+			if (this.TabControl.SelectedItem is TabItem TabItem &&
+				TabItem.Content is ISelectableTab SelectableTab)
+			{
 				SelectableTab.Selected();
+			}
 		}
 	}
 }
