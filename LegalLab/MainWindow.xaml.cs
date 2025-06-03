@@ -55,14 +55,20 @@ namespace LegalLab
 
 		public MainWindow()
 		{
+			TaskCompletionSource<bool> Completed = new TaskCompletionSource<bool>();
+
 			this.Visibility = Visibility.Hidden;
-			this.Initialize();
+
+			Task.Run(() => this.Initialize(Completed));
+
 			this.InitializeComponent();
+
+			Completed.Task.Wait();
 		}
 
 		#region Initialization & Setup
 
-		private async void Initialize()
+		private async Task Initialize(TaskCompletionSource<bool> Completed)
 		{
 			try
 			{
@@ -126,16 +132,28 @@ namespace LegalLab
 
 				// Modules
 
-				await Types.StartAllModules(60000);
+				await Types.StartAllModules(10000);
+
+				Completed.TrySetResult(true);
 
 				// View Models
 
-				windowSizeModel = await InstantiateModel<WindowSizeModel>(this.WindowState, this.Left, this.Top, this.Width, this.Height, this.TabControl.SelectedIndex);
-				networkModel = await InstantiateModel<NetworkModel>();
-				designModel = await InstantiateModel<DesignModel>();
+				await this.Dispatcher.BeginInvoke(async () =>
+				{
+					try
+					{
+						windowSizeModel = await InstantiateModel<WindowSizeModel>(this.WindowState, this.Left, this.Top, this.Width, this.Height, this.TabControl.SelectedIndex);
+						networkModel = await InstantiateModel<NetworkModel>();
+						designModel = await InstantiateModel<DesignModel>();
 
-				if (StartGuiTask)
-					await this.Dispatcher.BeginInvoke(new GuiDelegate(DoUpdates));
+						if (StartGuiTask)
+							await this.Dispatcher.BeginInvoke(DoUpdates);
+					}
+					catch (Exception ex)
+					{
+						ErrorBox(ex.Message);
+					}
+				});
 			}
 			catch (Exception ex)
 			{
@@ -421,7 +439,7 @@ namespace LegalLab
 				}
 
 				if (Start)
-					await currentInstance.Dispatcher.BeginInvoke(new GuiDelegate(DoUpdates));
+					await currentInstance.Dispatcher.BeginInvoke(DoUpdates);
 
 				return await Rec.Done.Task;
 			}
