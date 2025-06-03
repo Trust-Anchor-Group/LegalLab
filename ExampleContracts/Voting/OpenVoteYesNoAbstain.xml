@@ -197,46 +197,7 @@
 									<![CDATA[
 									Key:=ContractParameters.Country+"|"+ContractParameters.PersonalNumber;
 									VoterId:=ContractRoles.Voter[0];
-									]]>
-								</Script>
-								<If condition="exists(PrevVote:=Voters[Key])">
-									<Then>
-										<If condition="!ChangeVoteAllowed">
-											<Then>
-												<Error reason="Voter has already voted."/>
-											</Then>
-										</If>
-										<If condition="VoterId!=PrevVote.voterId">
-											<Then>
-												<Error reason="Voter has already voted, using a different digital identity. A vote can only be changed using the same digital identity."/>
-											</Then>
-										</If>
-										<Fail contractId="{PrevVote.ballot}" reason="Voter is changing vote."/>
-										<PersistVariable>
-											<Name>
-												<Calc>'Nr'+PrevVote.vote</Calc>
-											</Name>
-											<Value>
-												<Calc>eval('Nr'+PrevVote.vote)-1</Calc>
-											</Value>
-										</PersistVariable>
-										<PersistVariable name="Votes" value="{Votes[SelectedOption]:=Votes[SelectedOption]-1;Votes}"/>
-										<PersistVariable name="Voters" value="{Voters[Key]:=null;Voters}"/>
-										<PersistVariable name="NrChanged" value="{NrChanged+1}"/>
-										<CreateEntry type="BallotRevoked" collection="{LedgerCollection}">
-											<Property key="Ballot" value="{PrevVote.ballot}"/>
-											<Property key="VoterId" value="{PrevVote.voterId}"/>
-											<Property key="VoterPersonalNumber" value="{ContractParameters.PersonalNumber}"/>
-											<Property key="VoterCountry" value="{ContractParameters.Country}"/>
-											<Property key="VoterFullName" value="{ContractParameters.FullName}"/>
-											<Property key="VoteCast" value="{PrevVote.vote}"/>
-											<Property key="VoteContractId" value="{VoteContractId}"/>
-											<Property key="VoteTokenId" value="{VoteTokenId}"/>
-										</CreateEntry>
-									</Then>
-								</If>
-								<Script>
-									<![CDATA[
+									
 									Options:=SelectXml(Ballot,"/default:Ballot/default:Option");
 
 									InvalidOptions:=false;
@@ -290,6 +251,42 @@
 								<If condition="!exists(SelectedOption)">
 									<Then>
 										<Error reason="No selected option in ballot."/>
+									</Then>
+								</If>
+								<If condition="exists(PrevVote:=Voters[Key])">
+									<Then>
+										<If condition="!ChangeVoteAllowed">
+											<Then>
+												<Error reason="Voter has already voted."/>
+											</Then>
+										</If>
+										<If condition="VoterId!=PrevVote.voterId">
+											<Then>
+												<Error reason="Voter has already voted, using a different digital identity. A vote can only be changed using the same digital identity."/>
+											</Then>
+										</If>
+										<Fail contractId="{PrevVote.ballot}" reason="Voter is changing vote."/>
+										<PersistVariable>
+											<Name>
+												<Calc>'Nr'+PrevVote.vote</Calc>
+											</Name>
+											<Value>
+												<Calc>eval('Nr'+PrevVote.vote)-1</Calc>
+											</Value>
+										</PersistVariable>
+										<PersistVariable name="Votes" value="{Votes[SelectedOption]:=Votes[SelectedOption]-1;Votes}"/>
+										<PersistVariable name="Voters" value="{Voters[Key]:=null;Voters}"/>
+										<PersistVariable name="NrChanged" value="{NrChanged+1}"/>
+										<CreateEntry type="BallotRevoked" collection="{LedgerCollection}">
+											<Property key="Ballot" value="{PrevVote.ballot}"/>
+											<Property key="VoterId" value="{PrevVote.voterId}"/>
+											<Property key="VoterPersonalNumber" value="{ContractParameters.PersonalNumber}"/>
+											<Property key="VoterCountry" value="{ContractParameters.Country}"/>
+											<Property key="VoterFullName" value="{ContractParameters.FullName}"/>
+											<Property key="VoteCast" value="{PrevVote.vote}"/>
+											<Property key="VoteContractId" value="{VoteContractId}"/>
+											<Property key="VoteTokenId" value="{VoteTokenId}"/>
+										</CreateEntry>
 									</Then>
 								</If>
 								<PersistVariable>
