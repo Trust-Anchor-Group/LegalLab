@@ -148,6 +148,7 @@ namespace LegalLab.Models.Tokens
 				new TokenDetail("Definition", Result.token.Definition, false),
 				new TokenDetail("DefinitionNamespace", Result.token.DefinitionNamespace, false),
 				new TokenDetail("CreationContract", Result.token.CreationContract, false),
+				new TokenDetail("CreationContractTemplate", Result.token.CreationContractTemplate, false),
 				new TokenDetail("OwnershipContract", Result.token.OwnershipContract, false)
 			];
 

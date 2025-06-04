@@ -47,7 +47,7 @@
 			<Boolean>true</Boolean>
 		</CertifierCanDestroy>
 		<Definition>
-			<StateMachine xmlns="https://paiwise.tagroot.io/Schema/StateMachines.xsd" startState="Created">
+			<StateMachine xmlns="https://paiwise.tagroot.io/Schema/StateMachines.xsd" startState="Preparing">
 				<Variable id="NrBallotsTotal">
 					<Number>0</Number>
 				</Variable>
@@ -101,11 +101,14 @@
 				<Variable id="VoteContractId">
 					<TokenProperty>CreationContract</TokenProperty>
 				</Variable>
+				<Variable id="VoteTemplateId">
+					<TokenProperty>CreationContractTemplate</TokenProperty>
+				</Variable>
 				<Variable id="VoteTokenId">
 					<TokenProperty>TokenId</TokenProperty>
 				</Variable>
 				<Variable id="BallotTemplateId">
-					<String>2fcf9126-9836-d9e2-00cd-dfb7755efb5f@legal.localhost</String>
+					<String></String>
 				</Variable>
 				<Variable id="From">
 					<TagReference tag="From"/>
@@ -122,20 +125,40 @@
 				<Variable id="TimeLeftLabel">
 					<String></String>
 				</Variable>
-				<State id="Created">
-					<OnEvent newState="Open">
-						<OnDateTime timeCoordinates="UTC">{From}</OnDateTime>
-					</OnEvent>
-					<OnEvent actionRef="CheckTimeToOpen" suppressSample="true">
-						<OnDuration>PT1S</OnDuration>
+				<State id="Preparing">
+					<OnEvent actionRef="StoreBallotTemplateId" newState="Pending">
+						<OnContractTemplateApproved localName="Ballot"
+																				namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"
+																				contractIdVariable="ContractId"
+																				contractXmlVariable="ContractXml"
+																				condition="VoteTemplateId=SelectXml(ContractXml,&quot;/default:contract/default:parameters/default:contractReferenceParameter[@name='VoteReference']/@templateId&quot;)"
+																				checkExisting="true"/>
 					</OnEvent>
 					<OnEvent actionRef="DiscardBallotVotingNotOpened">
-						<OnContractSigned contractIdVariable="ContractId"
+						<OnContractSigned localName="Ballot"
+															namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"
+															contractIdVariable="ContractId"
 															parametersVariable="ContractParameters"
 															rolesVariable="ContractRoles"
 															machineReadableVariable="Ballot"
-															localName="Ballot"
-															namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"/>
+															condition="ContractParameters.VoteReference=VoteContractId"/>
+					</OnEvent>
+				</State>
+				<State id="Pending">
+					<OnEvent newState="Open">
+						<OnDateTime timeCoordinates="UTC">{From}</OnDateTime>
+					</OnEvent>
+					<OnEvent actionRef="UpdateOpenTime" suppressSample="true">
+						<OnDuration>PT1S</OnDuration>
+					</OnEvent>
+					<OnEvent actionRef="DiscardBallotVotingNotOpened">
+						<OnContractSigned localName="Ballot"
+															namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"
+															contractIdVariable="ContractId"
+															parametersVariable="ContractParameters"
+															rolesVariable="ContractRoles"
+															machineReadableVariable="Ballot"
+															condition="ContractParameters.VoteReference=VoteContractId"/>
 					</OnEvent>
 				</State>
 				<State id="Open">
@@ -143,16 +166,17 @@
 					<OnEvent newState="Closed">
 						<OnDateTime timeCoordinates="UTC">{To}</OnDateTime>
 					</OnEvent>
-					<OnEvent actionRef="CheckTimeToClose" suppressSample="true">
+					<OnEvent actionRef="UpdateCloseTime" suppressSample="true">
 						<OnDuration>PT1S</OnDuration>
 					</OnEvent>
 					<OnEvent actionRef="ProcessBallot">
-						<OnContractSigned contractIdVariable="ContractId"
+						<OnContractSigned localName="Ballot"
+															namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"
+															contractIdVariable="ContractId"
 															parametersVariable="ContractParameters"
 															rolesVariable="ContractRoles"
 															machineReadableVariable="Ballot"
-															localName="Ballot"
-															namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"/>
+															condition="ContractParameters.VoteReference=VoteContractId"/>
 					</OnEvent>
 				</State>
 				<State id="Closed">
@@ -161,12 +185,13 @@
 						<OnDateTime timeCoordinates="UTC">{Expires}</OnDateTime>
 					</OnEvent>
 					<OnEvent actionRef="DiscardBallotVotingClosed">
-						<OnContractSigned contractIdVariable="ContractId"
+						<OnContractSigned localName="Ballot"
+															namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"
+															contractIdVariable="ContractId"
 															parametersVariable="ContractParameters"
 															rolesVariable="ContractRoles"
 															machineReadableVariable="Ballot"
-															localName="Ballot"
-															namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"/>
+															condition="ContractParameters.VoteReference=VoteContractId"/>
 					</OnEvent>
 				</State>
 				<State id="Terminated">
@@ -178,198 +203,189 @@
 				<Action id="SetIsClosed">
 					<PersistVariable name="IsOpen" value="{false}"/>
 				</Action>
+				<Action id="StoreBallotTemplateId">
+					<PersistVariable name="BallotTemplateId" value="{ContractId}"/>
+				</Action>
 				<Action id="ProcessBallot">
-					<If condition="ContractParameters.VoteReference=VoteContractId">
-						<Then>
-							<PersistVariable name="NrBallotsTotal" value="{NrBallotsTotal+1}"/>
-							<Try>
-								<If condition="!exists(ContractRoles.Voter) || count(ContractRoles.Voter)!=1">
-									<Then>
-										<Error reason="Ballot does not have a unique voter identified."/>
-									</Then>
-								</If>
-								<If condition="!exists(ContractParameters.Country) || !exists(ContractParameters.PersonalNumber)">
-									<Then>
-										<Error reason="Voter personal number and country are not properly identified."/>
-									</Then>
-								</If>
-								<Script>
-									<![CDATA[
-									Key:=ContractParameters.Country+"|"+ContractParameters.PersonalNumber;
-									VoterId:=ContractRoles.Voter[0];
+					<PersistVariable name="NrBallotsTotal" value="{NrBallotsTotal+1}"/>
+					<Try>
+						<If condition="!exists(ContractRoles.Voter) || count(ContractRoles.Voter)!=1">
+							<Then>
+								<Error reason="Ballot does not have a unique voter identified."/>
+							</Then>
+						</If>
+						<If condition="!exists(ContractParameters.Country) || !exists(ContractParameters.PersonalNumber)">
+							<Then>
+								<Error reason="Voter personal number and country are not properly identified."/>
+							</Then>
+						</If>
+						<Script>
+							<![CDATA[
+							Key:=ContractParameters.Country+"|"+ContractParameters.PersonalNumber;
+							VoterId:=ContractRoles.Voter[0];
 									
-									Options:=SelectXml(Ballot,"/default:Ballot/default:Option");
+							Options:=SelectXml(Ballot,"/default:Ballot/default:Option");
 
-									InvalidOptions:=false;
-									InvalidParameterValue:=false;
-									MultipleSelected:=false;
-									SelectedOption:=null;
+							InvalidOptions:=false;
+							InvalidParameterValue:=false;
+							MultipleSelected:=false;
+							SelectedOption:=null;
 
-									foreach Option in Options do
-									(
-										Parameter:=SelectXml(Option,"@parameter");
-										Value:=SelectXml(Option,"@value");
+							foreach Option in Options do
+							(
+								Parameter:=SelectXml(Option,"@parameter");
+								Value:=SelectXml(Option,"@value");
 							
-										if !exists(ContractParameters[Parameter]) then
-											InvalidParameterValue:=true
-										else if !exists(Votes[Value]) then
-											InvalidOptions:=true
-										else
+								if !exists(ContractParameters[Parameter]) then
+									InvalidParameterValue:=true
+								else if !exists(Votes[Value]) then
+									InvalidOptions:=true
+								else
+								(
+									ParameterValue:=ContractParameters[Parameter];
+									if ParameterValue matches Boolean(ParameterSelection) then
+									(
+										if ParameterSelection then 
 										(
-											ParameterValue:=ContractParameters[Parameter];
-											if ParameterValue matches Boolean(ParameterSelection) then
-											(
-												if ParameterSelection then 
-												(
-													if exists(SelectedOption) then
-														MultipleSelected:=true
-													else
-														SelectedOption:=Value;
-												)
-											)
+											if exists(SelectedOption) then
+												MultipleSelected:=true
 											else
-												InvalidParameterValue:=true
+												SelectedOption:=Value;
 										)
-									);
-									]]>
-								</Script>
-								<If condition="InvalidOptions">
+									)
+									else
+										InvalidParameterValue:=true
+								)
+							);
+							]]>
+						</Script>
+						<If condition="InvalidOptions">
+							<Then>
+								<Error reason="Invalid options in ballot."/>
+							</Then>
+						</If>
+						<If condition="InvalidParameterValue">
+							<Then>
+								<Error reason="Invalid parameter reference or parameter value in ballot."/>
+							</Then>
+						</If>
+						<If condition="MultipleSelected">
+							<Then>
+								<Error reason="Multiple options selected in ballot."/>
+							</Then>
+						</If>
+						<If condition="!exists(SelectedOption)">
+							<Then>
+								<Error reason="No selected option in ballot."/>
+							</Then>
+						</If>
+						<If condition="exists(PrevVote:=Voters[Key])">
+							<Then>
+								<If condition="!ChangeVoteAllowed">
 									<Then>
-										<Error reason="Invalid options in ballot."/>
+										<Error reason="Voter has already voted."/>
 									</Then>
 								</If>
-								<If condition="InvalidParameterValue">
+								<If condition="VoterId!=PrevVote.voterId">
 									<Then>
-										<Error reason="Invalid parameter reference or parameter value in ballot."/>
+										<Error reason="Voter has already voted, using a different digital identity. A vote can only be changed using the same digital identity."/>
 									</Then>
 								</If>
-								<If condition="MultipleSelected">
-									<Then>
-										<Error reason="Multiple options selected in ballot."/>
-									</Then>
-								</If>
-								<If condition="!exists(SelectedOption)">
-									<Then>
-										<Error reason="No selected option in ballot."/>
-									</Then>
-								</If>
-								<If condition="exists(PrevVote:=Voters[Key])">
-									<Then>
-										<If condition="!ChangeVoteAllowed">
-											<Then>
-												<Error reason="Voter has already voted."/>
-											</Then>
-										</If>
-										<If condition="VoterId!=PrevVote.voterId">
-											<Then>
-												<Error reason="Voter has already voted, using a different digital identity. A vote can only be changed using the same digital identity."/>
-											</Then>
-										</If>
-										<Fail contractId="{PrevVote.ballot}" reason="Voter is changing vote."/>
-										<PersistVariable>
-											<Name>
-												<Calc>'Nr'+PrevVote.vote</Calc>
-											</Name>
-											<Value>
-												<Calc>eval('Nr'+PrevVote.vote)-1</Calc>
-											</Value>
-										</PersistVariable>
-										<PersistVariable name="Votes" value="{Votes[SelectedOption]:=Votes[SelectedOption]-1;Votes}" suppressSample="true"/>
-										<PersistVariable name="Voters" value="{Voters[Key]:=null;Voters}" suppressSample="true"/>
-										<PersistVariable name="NrChanged" value="{NrChanged+1}"/>
-										<CreateEntry type="BallotRevoked" collection="{LedgerCollection}">
-											<Property key="Ballot" value="{PrevVote.ballot}"/>
-											<Property key="VoterId" value="{PrevVote.voterId}"/>
-											<Property key="VoterPersonalNumber" value="{ContractParameters.PersonalNumber}"/>
-											<Property key="VoterCountry" value="{ContractParameters.Country}"/>
-											<Property key="VoterFullName" value="{ContractParameters.FullName}"/>
-											<Property key="VoteCast" value="{PrevVote.vote}"/>
-											<Property key="VoteContractId" value="{VoteContractId}"/>
-											<Property key="VoteTokenId" value="{VoteTokenId}"/>
-										</CreateEntry>
-									</Then>
-								</If>
+								<Fail contractId="{PrevVote.ballot}" reason="Voter is changing vote."/>
 								<PersistVariable>
 									<Name>
-										<Calc>'Nr'+SelectedOption</Calc>
+										<Calc>'Nr'+PrevVote.vote</Calc>
 									</Name>
 									<Value>
-										<Calc>eval('Nr'+SelectedOption)+1</Calc>
+										<Calc>eval('Nr'+PrevVote.vote)-1</Calc>
 									</Value>
 								</PersistVariable>
-								<PersistVariable name="Votes" value="{Votes[SelectedOption]:=Votes[SelectedOption]+1;Votes}" suppressSample="true"/>
-								<PersistVariable name="Voters" suppressSample="true">
-									<Value>
-										<Calc>
-											<![CDATA[
-											Voters[Key]:=
-											{
-												'ballot':ContractId,
-												'voterId':VoterId,
-												'vote':SelectedOption
-											};
-											Voters
-											]]>
-										</Calc>
-									</Value>
-								</PersistVariable>
-								<PersistVariable name="NrBallotsAccepted" value="{NrBallotsAccepted+1}"/>
-								<CreateEntry type="BallotCounted" collection="{LedgerCollection}">
+								<PersistVariable name="Votes" value="{Votes[SelectedOption]:=Votes[SelectedOption]-1;Votes}" suppressSample="true"/>
+								<PersistVariable name="Voters" value="{Voters[Key]:=null;Voters}" suppressSample="true"/>
+								<PersistVariable name="NrChanged" value="{NrChanged+1}"/>
+								<CreateEntry type="BallotRevoked" collection="{LedgerCollection}">
+									<Property key="Ballot" value="{PrevVote.ballot}"/>
+									<Property key="VoterId" value="{PrevVote.voterId}"/>
+									<Property key="VoterPersonalNumber" value="{ContractParameters.PersonalNumber}"/>
+									<Property key="VoterCountry" value="{ContractParameters.Country}"/>
+									<Property key="VoterFullName" value="{ContractParameters.FullName}"/>
+									<Property key="VoteCast" value="{PrevVote.vote}"/>
+									<Property key="VoteContractId" value="{VoteContractId}"/>
+									<Property key="VoteTokenId" value="{VoteTokenId}"/>
+								</CreateEntry>
+							</Then>
+						</If>
+						<PersistVariable>
+							<Name>
+								<Calc>'Nr'+SelectedOption</Calc>
+							</Name>
+							<Value>
+								<Calc>eval('Nr'+SelectedOption)+1</Calc>
+							</Value>
+						</PersistVariable>
+						<PersistVariable name="Votes" value="{Votes[SelectedOption]:=Votes[SelectedOption]+1;Votes}" suppressSample="true"/>
+						<PersistVariable name="Voters" suppressSample="true">
+							<Value>
+								<Calc>
+									<![CDATA[
+									Voters[Key]:=
+									{
+										'ballot':ContractId,
+										'voterId':VoterId,
+										'vote':SelectedOption
+									};
+									Voters
+									]]>
+								</Calc>
+							</Value>
+						</PersistVariable>
+						<PersistVariable name="NrBallotsAccepted" value="{NrBallotsAccepted+1}"/>
+						<CreateEntry type="BallotCounted" collection="{LedgerCollection}">
+							<Property key="Ballot" value="{ContractId}"/>
+							<Property key="VoterId" value="{VoterId}"/>
+							<Property key="VoterPersonalNumber" value="{ContractParameters.PersonalNumber}"/>
+							<Property key="VoterCountry" value="{ContractParameters.Country}"/>
+							<Property key="VoterFullName" value="{ContractParameters.FullName}"/>
+							<Property key="VoteCast" value="{SelectedOption}"/>
+							<Property key="VoteContractId" value="{VoteContractId}"/>
+							<Property key="VoteTokenId" value="{VoteTokenId}"/>
+						</CreateEntry>
+						<If condition="exists(Comment:=ContractParameters.Comment) and !empty(Comment)">
+							<Then>
+								<Script>
+									<![CDATA[
+									if !exists(Nr:=Comments[Comment]) then Nr:=0;
+									]]>
+								</Script>
+								<PersistVariable name="NrComments" value="{NrComments+1}"/>
+								<PersistVariable name="Comments" value="{Comments[Comment]:=Nr+1;Comments}" suppressSample="true"/>
+								<CreateEntry type="CommentReceived" collection="{LedgerCollection}">
 									<Property key="Ballot" value="{ContractId}"/>
 									<Property key="VoterId" value="{VoterId}"/>
 									<Property key="VoterPersonalNumber" value="{ContractParameters.PersonalNumber}"/>
 									<Property key="VoterCountry" value="{ContractParameters.Country}"/>
 									<Property key="VoterFullName" value="{ContractParameters.FullName}"/>
-									<Property key="VoteCast" value="{SelectedOption}"/>
+									<Property key="Comment" value="{Comment}"/>
 									<Property key="VoteContractId" value="{VoteContractId}"/>
 									<Property key="VoteTokenId" value="{VoteTokenId}"/>
 								</CreateEntry>
-								<If condition="exists(Comment:=ContractParameters.Comment) and !empty(Comment)">
-									<Then>
-										<Script>
-											<![CDATA[
-											if !exists(Nr:=Comments[Comment]) then Nr:=0;
-											]]>
-										</Script>
-										<PersistVariable name="NrComments" value="{NrComments+1}"/>
-										<PersistVariable name="Comments" value="{Comments[Comment]:=Nr+1;Comments}" suppressSample="true"/>
-										<CreateEntry type="CommentReceived" collection="{LedgerCollection}">
-											<Property key="Ballot" value="{ContractId}"/>
-											<Property key="VoterId" value="{VoterId}"/>
-											<Property key="VoterPersonalNumber" value="{ContractParameters.PersonalNumber}"/>
-											<Property key="VoterCountry" value="{ContractParameters.Country}"/>
-											<Property key="VoterFullName" value="{ContractParameters.FullName}"/>
-											<Property key="Comment" value="{Comment}"/>
-											<Property key="VoteContractId" value="{VoteContractId}"/>
-											<Property key="VoteTokenId" value="{VoteTokenId}"/>
-										</CreateEntry>
-									</Then>
-								</If>
-								<Catch exceptionVariable="ex">
-									<PersistVariable name="NrBallotsRejected" value="{NrBallotsRejected+1}"/>
-									<Fail reason="{ex.Message}" contractId="{ContractId}"/>
-									<CreateEntry type="BallotRejected" collection="{LedgerCollection}">
-										<Property key="Ballot" value="{ContractId}"/>
-										<Property key="Reason" value="{ex.Message}"/>
-									</CreateEntry>
-								</Catch>
-							</Try>
-						</Then>
-					</If>
+							</Then>
+						</If>
+						<Catch exceptionVariable="ex">
+							<PersistVariable name="NrBallotsRejected" value="{NrBallotsRejected+1}"/>
+							<Fail reason="{ex.Message}" contractId="{ContractId}"/>
+							<CreateEntry type="BallotRejected" collection="{LedgerCollection}">
+								<Property key="Ballot" value="{ContractId}"/>
+								<Property key="Reason" value="{ex.Message}"/>
+							</CreateEntry>
+						</Catch>
+					</Try>
 				</Action>
 				<Action id="DiscardBallotVotingNotOpened">
-					<If condition="ContractParameters.VoteReference=VoteContractId">
-						<Then>
-							<Fail reason="Ballot discarded. Voting has not started." contractId="{ContractId}"/>
-						</Then>
-					</If>
+					<Fail reason="Ballot discarded. Voting has not started." contractId="{ContractId}"/>
 				</Action>
 				<Action id="DiscardBallotVotingClosed">
-					<If condition="ContractParameters.VoteReference=VoteContractId">
-						<Then>
-							<Fail reason="Ballot discarded. Voting has closed." contractId="{ContractId}"/>
-						</Then>
-					</If>
+					<Fail reason="Ballot discarded. Voting has closed." contractId="{ContractId}"/>
 				</Action>
 				<Action id="End">
 					<End/>
@@ -416,12 +432,12 @@
 						]]>
 					</Script>
 				</Action>
-				<Action id="CheckTimeToOpen">
+				<Action id="UpdateOpenTime">
 					<CallAction actionRef="FunctionDefinitions"/>
 					<PersistVariable name="TimeLeftLabel" value="{CalcTimeLeftLabel(From-NowUtc)}" 
 													 onlyIfChanged="true" suppressSample="true"/>
 				</Action>
-				<Action id="CheckTimeToClose">
+				<Action id="UpdateCloseTime">
 					<CallAction actionRef="FunctionDefinitions"/>
 					<PersistVariable name="TimeLeftLabel" value="{CalcTimeLeftLabel(To-NowUtc)}"
 													 onlyIfChanged="true" suppressSample="true"/>
