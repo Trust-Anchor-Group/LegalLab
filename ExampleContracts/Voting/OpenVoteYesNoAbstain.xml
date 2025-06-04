@@ -126,7 +126,7 @@
 					<OnEvent newState="Open">
 						<OnDateTime timeCoordinates="UTC">{From}</OnDateTime>
 					</OnEvent>
-					<OnEvent actionRef="CheckTimeToOpen">
+					<OnEvent actionRef="CheckTimeToOpen" suppressSample="true">
 						<OnDuration>PT1S</OnDuration>
 					</OnEvent>
 					<OnEvent actionRef="DiscardBallotVotingNotOpened">
@@ -143,7 +143,7 @@
 					<OnEvent newState="Closed">
 						<OnDateTime timeCoordinates="UTC">{To}</OnDateTime>
 					</OnEvent>
-					<OnEvent actionRef="CheckTimeToClose">
+					<OnEvent actionRef="CheckTimeToClose" suppressSample="true">
 						<OnDuration>PT1S</OnDuration>
 					</OnEvent>
 					<OnEvent actionRef="ProcessBallot">
@@ -274,8 +274,8 @@
 												<Calc>eval('Nr'+PrevVote.vote)-1</Calc>
 											</Value>
 										</PersistVariable>
-										<PersistVariable name="Votes" value="{Votes[SelectedOption]:=Votes[SelectedOption]-1;Votes}"/>
-										<PersistVariable name="Voters" value="{Voters[Key]:=null;Voters}"/>
+										<PersistVariable name="Votes" value="{Votes[SelectedOption]:=Votes[SelectedOption]-1;Votes}" suppressSample="true"/>
+										<PersistVariable name="Voters" value="{Voters[Key]:=null;Voters}" suppressSample="true"/>
 										<PersistVariable name="NrChanged" value="{NrChanged+1}"/>
 										<CreateEntry type="BallotRevoked" collection="{LedgerCollection}">
 											<Property key="Ballot" value="{PrevVote.ballot}"/>
@@ -297,8 +297,8 @@
 										<Calc>eval('Nr'+SelectedOption)+1</Calc>
 									</Value>
 								</PersistVariable>
-								<PersistVariable name="Votes" value="{Votes[SelectedOption]:=Votes[SelectedOption]+1;Votes}"/>
-								<PersistVariable name="Voters">
+								<PersistVariable name="Votes" value="{Votes[SelectedOption]:=Votes[SelectedOption]+1;Votes}" suppressSample="true"/>
+								<PersistVariable name="Voters" suppressSample="true">
 									<Value>
 										<Calc>
 											<![CDATA[
@@ -331,7 +331,8 @@
 											if !exists(Nr:=Comments[Comment]) then Nr:=0;
 											]]>
 										</Script>
-										<PersistVariable name="Comments" value="{Comments[Comment]:=Nr+1;Comments}"/>
+										<PersistVariable name="NrComments" value="{NrComments+1}"/>
+										<PersistVariable name="Comments" value="{Comments[Comment]:=Nr+1;Comments}" suppressSample="true"/>
 										<CreateEntry type="CommentReceived" collection="{LedgerCollection}">
 											<Property key="Ballot" value="{ContractId}"/>
 											<Property key="VoterId" value="{VoterId}"/>
@@ -417,11 +418,13 @@
 				</Action>
 				<Action id="CheckTimeToOpen">
 					<CallAction actionRef="FunctionDefinitions"/>
-					<PersistVariable name="TimeLeftLabel" value="{CalcTimeLeftLabel(From-NowUtc)}" onlyIfChanged="true"/>
+					<PersistVariable name="TimeLeftLabel" value="{CalcTimeLeftLabel(From-NowUtc)}" 
+													 onlyIfChanged="true" suppressSample="true"/>
 				</Action>
 				<Action id="CheckTimeToClose">
 					<CallAction actionRef="FunctionDefinitions"/>
-					<PersistVariable name="TimeLeftLabel" value="{CalcTimeLeftLabel(To-NowUtc)}" onlyIfChanged="true"/>
+					<PersistVariable name="TimeLeftLabel" value="{CalcTimeLeftLabel(To-NowUtc)}"
+													 onlyIfChanged="true" suppressSample="true"/>
 				</Action>
 				<ReportPresent>
 					<![CDATA[
@@ -649,8 +652,8 @@
 	]]Comments
 ===============
 
-| Comments ||
-|:-----|---:|
+| Comments received on ballots ||
+|:-----------------------|-----:|
 [[;
 
 foreach Comment in Comments do 
