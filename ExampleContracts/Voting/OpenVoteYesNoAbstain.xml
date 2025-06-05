@@ -135,7 +135,8 @@
 					<TagReference tag="CreatorEMail"/>
 				</Variable>
 				<State id="Preparing">
-					<OnEvent actionRef="SetIsPreparing">
+					<OnEnter actionRef="SetIsPreparing"/>
+					<OnEvent actionRef="SendPreparingNotice">
 						<OnDateTime>{NowUtc+TimeSpan(0,0,10)}</OnDateTime>
 					</OnEvent>
 					<OnEvent actionRef="StoreBallotTemplateId" newState="Pending">
@@ -448,6 +449,8 @@
 				</Action>
 				<Action id="SetIsPreparing">
 					<PersistVariable name="LayoutState" value="Preparing"/>
+				</Action>
+				<Action id="SendPreparingNotice">
 					<XmppMessage to="{CreatorJid}">
 						<Content>
 							<String>
