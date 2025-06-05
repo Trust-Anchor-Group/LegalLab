@@ -69,28 +69,28 @@
 			</Translate>
 		</Cell>
 		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{NrYes>=NrNo}">
-			<Margins top="485px" left="650px" right="550px" bottom="1260px">
+			<Margins top="{ChangeVoteAllowed ? '485px' : '515px'}" left="650px" right="550px" bottom="{ChangeVoteAllowed ? '1260px' : '1225px'}">
 				<RoundedRectangle fill="SemiTransparentGreenBackground" pen="DarkGreenPen" radiusX="20px" radiusY="20px"/>
 			</Margins>
 		</Cell>
 		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{NrNo>=NrYes}">
-			<Margins top="545px" left="650px" right="550px" bottom="1200px">
+			<Margins top="{ChangeVoteAllowed ? '545px' : '575px'}" left="650px" right="550px" bottom="{ChangeVoteAllowed ? '1200px' : '1170px'}">
 				<RoundedRectangle fill="SemiTransparentRedBackground" pen="DarkRedPen" radiusX="20px" radiusY="20px"/>
 			</Margins>
 		</Cell>
 		<Cell halign="Left" valign="Top" width="100%" height="100%">
-			<Translate translateX="700px" translateY="415px">
+			<Translate translateX="700px" translateY="{ChangeVoteAllowed ? '415px' : '445px'}">
 				<Label font="Header" halign="Center" valign="Top" text="Vote Counts" x="150px" y="0px"/>
 				<Label font="DarkGreenLabel" halign="Left" valign="Top" text="Yes:" x="0px" y="90px"/>
 				<Label font="DarkRedLabel" halign="Left" valign="Top" text="No:" x="0px" y="150px"/>
 				<Label font="DarkGrayLabel" halign="Left" valign="Top" text="Abstained:" x="0px" y="210px"/>
-				<Label font="Label" halign="Left" valign="Top" text="Changed:" x="0px" y="270px"/>
-				<Label font="Label" halign="Left" valign="Top" text="Comments:" x="0px" y="330px"/>
+				<Label font="Label" halign="Left" valign="Top" text="Changed:" x="0px" y="270px" visible="{ChangeVoteAllowed}"/>
+				<Label font="Label" halign="Left" valign="Top" text="Comments:" x="0px" y="{ChangeVoteAllowed ? '330px' : '270px'}"/>
 				<Script font="DarkGreenValue" halign="Right" valign="Top" expression="NrYes" x="310px" y="85px"/>
 				<Script font="DarkRedValue" halign="Right" valign="Top" expression="NrNo" x="310px" y="145px"/>
 				<Script font="DarkGrayValue" halign="Right" valign="Top" expression="NrAbstain" x="310px" y="205px"/>
-				<Script font="Value" halign="Right" valign="Top" expression="NrChanged" x="310px" y="265px"/>
-				<Script font="Value" halign="Right" valign="Top" expression="NrComments" x="310px" y="325px"/>
+				<Script font="Value" halign="Right" valign="Top" expression="NrChanged" x="310px" y="265px" visible="{ChangeVoteAllowed}"/>
+				<Script font="Value" halign="Right" valign="Top" expression="NrComments" x="310px" y="{ChangeVoteAllowed ? '325px' : '265px'}"/>
 				<Label font="DarkGreenValue" halign="Left" valign="Top" text="√" visible="{NrYes>NrNo}" x="350px" y="85px"/>
 				<Label font="DarkRedValue" halign="Left" valign="Top" text="√" visible="{NrNo>NrYes}" x="350px" y="145px"/>
 			</Translate>
