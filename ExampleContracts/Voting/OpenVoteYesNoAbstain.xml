@@ -500,9 +500,11 @@ Pending: {{MarkdownEncode(Question)}}
 ----------------------------------------
 
 The vote is waiting to be opened. This will be done automatically at {{From}} UTC. Meanwhile,
-you can share the following link:
+you can share the following links:
 
-[Click here to vote]('iotsc:'+BallotTemplateId+'?VoteReference='+VoteContractId)
+[Click here to vote from App](iotsc:{{BallotTemplateId}}?VoteReference={{VoteContractId}})
+
+[Click here to open vote in browser](https://{{after(VoteTokenId,"@edaler.")}}/NF/{{VoteTokenId}})
 ]]>
 							</String>
 						</Content>
@@ -519,9 +521,11 @@ you can share the following information to expected participants:
 {{PresentReport()}}
 
 By scanning the above QR code with the *Neuro-Access* App, they can participate. If they 
-cannot scan the code, they can also click on the following link:
+cannot scan the code, they can also click on the following links:
 
-[Click here to vote]('iotsc:'+BallotTemplateId+'?VoteReference='+VoteContractId)
+[Click here to vote from App](iotsc:{{BallotTemplateId}}?VoteReference={{VoteContractId}})
+
+[Click here to open vote in browser](https://{{after(VoteTokenId,"@edaler.")}}/NF/{{VoteTokenId}})
 ]]></String>
 						</Content>
 					</MailMessage>
@@ -535,9 +539,11 @@ cannot scan the code, they can also click on the following link:
 Opened: {{MarkdownEncode(Question)}}
 ---------------------------------------
 
-The vote has opened and participants can vote by clicking the following link:
+The vote has opened and participants can vote by clicking the following links:
 
-[Click here to vote]('iotsc:'+BallotTemplateId+'?VoteReference='+VoteContractId)
+[Click here to vote from App](iotsc:{{BallotTemplateId}}?VoteReference={{VoteContractId}})
+
+[Click here to open vote in browser](https://{{after(VoteTokenId,"@edaler.")}}/NF/{{VoteTokenId}})
 ]]>
 							</String>
 						</Content>
@@ -552,9 +558,11 @@ The vote has opened and participants can vote by scanning the following QR code:
 
 {{PresentReport()}}
 
-They can also participate by clicking on the following link:
+They can also participate by clicking on the following links:
 
-[Click here to vote]('iotsc:'+BallotTemplateId+'?VoteReference='+VoteContractId)
+[Click here to vote from App](iotsc:{{BallotTemplateId}}?VoteReference={{VoteContractId}})
+
+[Click here to open vote in browser](https://{{after(VoteTokenId,"@edaler.")}}/NF/{{VoteTokenId}})
 ]]></String>
 						</Content>
 					</MailMessage>
@@ -569,9 +577,11 @@ Closed: {{MarkdownEncode(Question)}}
 ---------------------------------------
 
 The vote has closed and voters can no longer participate. Results can be viewed at the
-following link:
+following links:
 
-[View results]('nfeat:'+VoteTokenId)
+[View results in App](nfeat:{{VoteTokenId}})
+
+[View results in browser](https://{{after(VoteTokenId,"@edaler.")}}/NF/{{VoteTokenId}})
 ]]>
 							</String>
 						</Content>
@@ -586,9 +596,11 @@ The vote has closed and voters can no longer participate. Results are as follows
 
 {{PresentReport()}}
 
-Access to the results can also be given by clicking on the following link:
+Access to the results can also be given by clicking on the following links:
 
-[View results]('nfeat:'+VoteTokenId)
+[View results in App](nfeat:{{VoteTokenId}})
+
+[View results in browser](https://{{after(VoteTokenId,"@edaler.")}}/NF/{{VoteTokenId}})
 ]]></String>
 						</Content>
 					</MailMessage>
