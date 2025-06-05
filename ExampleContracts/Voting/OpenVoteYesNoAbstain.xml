@@ -135,7 +135,7 @@
 					<TagReference tag="CreatorEMail"/>
 				</Variable>
 				<State id="Preparing">
-					<OnEnter actionRef="SendPreparationNotification"/>
+					<OnEnter actionRef="SetIsPreparing"/>
 					<OnEvent actionRef="StoreBallotTemplateId" newState="Pending">
 						<OnContractTemplateApproved localName="Ballot"
 																				namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"
@@ -155,7 +155,7 @@
 					</OnEvent>
 				</State>
 				<State id="Pending">
-					<OnEnter actionRef="SendPendingNotification"/>
+					<OnEnter actionRef="SetIsPending"/>
 					<OnEvent newState="Open">
 						<OnDateTime timeCoordinates="UTC">{From}</OnDateTime>
 					</OnEvent>
@@ -208,14 +208,6 @@
 				<State id="Terminated">
 					<OnEnter actionRef="End"/>
 				</State>
-				<Action id="SetIsOpen">
-					<PersistVariable name="LayoutState" value="Open"/>
-					<CallAction actionRef="SendOpenedNotification"/>
-				</Action>
-				<Action id="SetIsClosed">
-					<PersistVariable name="LayoutState" value="Closed"/>
-					<CallAction actionRef="SendClosedNotification"/>
-				</Action>
 				<Action id="StoreBallotTemplateId">
 					<PersistVariable name="BallotTemplateId" value="{ContractId}"/>
 				</Action>
@@ -452,7 +444,7 @@
 					<PersistVariable name="TimeLeftLabel" value="{CalcTimeLeftLabel(To-NowUtc)}"
 													 onlyIfChanged="true" suppressSample="true"/>
 				</Action>
-				<Action id="SendPreparationNotification">
+				<Action id="SetIsPreparing">
 					<PersistVariable name="LayoutState" value="Preparing"/>
 					<XmppMessage to="{CreatorJid}">
 						<Content>
@@ -493,7 +485,7 @@ contract template that needs to exist, or be created:
 						</Content>
 					</MailMessage>
 				</Action>
-				<Action id="SendPendingNotification">
+				<Action id="SetIsPending">
 					<PersistVariable name="LayoutState" value="Pending"/>
 					<XmppMessage to="{CreatorJid}">
 						<Content>
@@ -529,7 +521,8 @@ cannot scan the code, they can also click on the following link:
 						</Content>
 					</MailMessage>
 				</Action>
-				<Action id="SendOpenedNotification">
+				<Action id="SetIsOpen">
+					<PersistVariable name="LayoutState" value="Open"/>
 					<XmppMessage to="{CreatorJid}">
 						<Content>
 							<String>
@@ -561,7 +554,8 @@ They can also participate by clicking on the following link:
 						</Content>
 					</MailMessage>
 				</Action>
-				<Action id="SendClosedNotification">
+				<Action id="SetIsClosed">
+					<PersistVariable name="LayoutState" value="Closed"/>
 					<XmppMessage to="{CreatorJid}">
 						<Content>
 							<String>
