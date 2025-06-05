@@ -125,7 +125,17 @@
 				<Variable id="TimeLeftLabel">
 					<String></String>
 				</Variable>
+				<Variable id="CreatorFullName">
+					<TagReference tag="CreatorFullName"/>
+				</Variable>
+				<Variable id="CreatorJid">
+					<TagReference tag="CreatorJid"/>
+				</Variable>
+				<Variable id="CreatorEMail">
+					<TagReference tag="CreatorEMail"/>
+				</Variable>
 				<State id="Preparing">
+					<OnEnter actionRef="SendPreparationNotification"/>
 					<OnEvent actionRef="StoreBallotTemplateId" newState="Pending">
 						<OnContractTemplateApproved localName="Ballot"
 																				namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"
@@ -134,7 +144,7 @@
 																				condition="VoteTemplateId=SelectXml(ContractXml,&quot;/default:contract/default:parameters/default:contractReferenceParameter[@name='VoteReference']/@templateId&quot;)"
 																				checkExisting="true"/>
 					</OnEvent>
-					<OnEvent actionRef="DiscardBallotVotingNotOpened">
+					<OnEvent actionRef="DiscardBallotVotingNotPrepared">
 						<OnContractSigned localName="Ballot"
 															namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"
 															contractIdVariable="ContractId"
@@ -145,6 +155,7 @@
 					</OnEvent>
 				</State>
 				<State id="Pending">
+					<OnEnter actionRef="SendPendingNotification"/>
 					<OnEvent newState="Open">
 						<OnDateTime timeCoordinates="UTC">{From}</OnDateTime>
 					</OnEvent>
@@ -199,9 +210,11 @@
 				</State>
 				<Action id="SetIsOpen">
 					<PersistVariable name="IsOpen" value="{true}"/>
+					<CallAction actionRef="SendOpenedNotification"/>
 				</Action>
 				<Action id="SetIsClosed">
 					<PersistVariable name="IsOpen" value="{false}"/>
+					<CallAction actionRef="SendClosedNotification"/>
 				</Action>
 				<Action id="StoreBallotTemplateId">
 					<PersistVariable name="BallotTemplateId" value="{ContractId}"/>
@@ -381,6 +394,9 @@
 						</Catch>
 					</Try>
 				</Action>
+				<Action id="DiscardBallotVotingNotPrepared">
+					<Fail reason="Ballot discarded. Voting has not been prepared." contractId="{ContractId}"/>
+				</Action>
 				<Action id="DiscardBallotVotingNotOpened">
 					<Fail reason="Ballot discarded. Voting has not started." contractId="{ContractId}"/>
 				</Action>
@@ -435,6 +451,146 @@
 					<CallAction actionRef="FunctionDefinitions"/>
 					<PersistVariable name="TimeLeftLabel" value="{CalcTimeLeftLabel(To-NowUtc)}"
 													 onlyIfChanged="true" suppressSample="true"/>
+				</Action>
+				<Action id="SendPreparationNotification">
+					<XmppMessage to="{CreatorJid}">
+						<Content>
+							<String>
+								<![CDATA[
+Vote is being prepared
+-------------------------
+
+During the preparation phase, an appropriate ballot template is selected. If one is found,
+the vote will automatically progress to the next state. If one is not found, such a ballot
+template needs to be created. If you notice the vote state not progressing, you must make
+sure such a ballot template is also created.
+]]>
+							</String>
+						</Content>
+					</XmppMessage>
+					<MailMessage to="{CreatorEMail}" subject="Vote is being prepared.">
+						<Content>
+							<String><![CDATA[
+Vote is being prepared
+-------------------------
+
+During the preparation phase, an appropriate ballot template is selected. If one is found,
+the vote will automatically progress to the next state. If one is not found, such a ballot
+template needs to be created. If you notice the vote state not progressing, you must make
+sure such a ballot template is also created.
+
+**Note**: Following are some technical details on the requirements of the open ballot 
+contract template that needs to exist, or be created:
+
+| Ballot Contract Template Requirements                                               ||
+|:----------------------------------|:-------------------------------------------------|
+| Namespace                         | `https://paiwise.tagroot.io/Schema/OpenVote.xsd` |
+| Local Name                        | `Ballot`                                         |
+| Contract Reference Parameter Name | `VoteReference`                                  |
+| Vote Template ID:                 | `{{VoteTemplateId}}`                             |
+]]></String>
+						</Content>
+					</MailMessage>
+				</Action>
+				<Action id="SendPendingNotification">
+					<XmppMessage to="{CreatorJid}">
+						<Content>
+							<String>
+								<![CDATA[
+Vote is pending
+------------------
+
+The vote is waiting to be opened. This will be done automatically at {{From}} UTC. Meanwhile,
+you can share the following link:
+
+[Click here to vote]('iotsc:'+BallotTemplateId+'?VoteReference='+VoteContractId)
+]]>
+							</String>
+						</Content>
+					</XmppMessage>
+					<MailMessage to="{CreatorEMail}" subject="Vote is pending.">
+						<Content>
+							<String><![CDATA[
+Vote is pending
+------------------
+
+The vote is waiting to be opened. This will be done automatically at {{From}} UTC. Meanwhile,
+you can share the following information to expected participants:
+
+{{PresentReport()}}
+
+By scanning the above QR code with the *Neuro-Access* App, they can participate. If they 
+cannot scan the code, they can also click on the following link:
+
+[Click here to vote]('iotsc:'+BallotTemplateId+'?VoteReference='+VoteContractId)
+]]></String>
+						</Content>
+					</MailMessage>
+				</Action>
+				<Action id="SendOpenedNotification">
+					<XmppMessage to="{CreatorJid}">
+						<Content>
+							<String>
+								<![CDATA[
+Vote has opened
+------------------
+
+The vote has opened and participants can vote by clicking the following link:
+
+[Click here to vote]('iotsc:'+BallotTemplateId+'?VoteReference='+VoteContractId)
+]]>
+							</String>
+						</Content>
+					</XmppMessage>
+					<MailMessage to="{CreatorEMail}" subject="Vote has opened.">
+						<Content>
+							<String><![CDATA[
+Vote has opened
+------------------
+
+The vote has opened and participants can vote by scanning the following QR code:
+
+{{PresentReport()}}
+
+They can also participate by clicking on the following link:
+
+[Click here to vote]('iotsc:'+BallotTemplateId+'?VoteReference='+VoteContractId)
+]]></String>
+						</Content>
+					</MailMessage>
+				</Action>
+				<Action id="SendClosedNotification">
+					<XmppMessage to="{CreatorJid}">
+						<Content>
+							<String>
+								<![CDATA[
+Vote has closed
+------------------
+
+The vote has closed and voters can no longer participate. Results can be viewed at the
+following link:
+
+[View results]('nfeat:'+VoteTokenId)
+]]>
+							</String>
+						</Content>
+					</XmppMessage>
+					<MailMessage to="{CreatorEMail}" subject="Vote has opened.">
+						<Content>
+							<String><![CDATA[
+Vote has closed
+------------------
+
+The vote has closed and voters can no longer participate. Results are as follows:
+
+{{PresentReport()}}
+
+Access to the results can also be given by clicking on the following link:
+
+[View results]('nfeat:'+VoteTokenId)
+]]></String>
+						</Content>
+					</MailMessage>
 				</Action>
 				<ReportPresent>
 					<![CDATA[
@@ -700,6 +856,15 @@ Voting history
 		<Tag name="Expires">
 			<ParameterReference parameter="Expires"/>
 		</Tag>
+		<Tag name="CreatorFullName">
+			<ParameterReference parameter="CreatorFullName"/>
+		</Tag>
+		<Tag name="CreatorJid">
+			<ParameterReference parameter="CreatorJid"/>
+		</Tag>
+		<Tag name="CreatorEMail">
+			<ParameterReference parameter="CreatorEMail"/>
+		</Tag>
 		<FriendlyName>
 			<String>Open Vote</String>
 		</FriendlyName>
@@ -778,6 +943,27 @@ Voting history
 				</paragraph>
 			</description>
 		</dateParameter>
+		<roleParameter name="CreatorFullName" property="FULLNAME" role="Creator" index="1" required="true">
+			<description>
+				<paragraph>
+					<text>The full name of the creator of the vote.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter name="CreatorJid" property="JID" role="Creator" index="1" required="true">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The XMPP address of the creator. The creator will receive instant message notifications when there's a major event concerning the vote.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter name="CreatorEMail" property="EMAIL" role="Creator" index="1" required="true">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The e-mail address of the creator. The creator will receive notifications when the vote opens and vote results when the vote closes, as well as links to the vote and if the vote needs to be prepared before it can be opened.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
 	</parameters>
 	<humanReadableText xml:lang="en">
 		<section>
