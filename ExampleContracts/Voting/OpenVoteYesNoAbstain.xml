@@ -135,7 +135,9 @@
 					<TagReference tag="CreatorEMail"/>
 				</Variable>
 				<State id="Preparing">
-					<OnEnter actionRef="SetIsPreparing"/>
+					<OnEvent actionRef="SetIsPreparing">
+						<OnDateTime>{NowUtc+TimeSpan(0,0,10)}</OnDateTime>
+					</OnEvent>
 					<OnEvent actionRef="StoreBallotTemplateId" newState="Pending">
 						<OnContractTemplateApproved localName="Ballot"
 																				namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"
@@ -398,7 +400,7 @@
 				<Action id="End">
 					<End/>
 				</Action>
-				<Action id="FunctionDefinitions">
+				<Action id="CommonFunctions">
 					<Script>
 						<![CDATA[
 						CalcTimeLeft(TimeLeft):=
@@ -435,12 +437,12 @@
 					</Script>
 				</Action>
 				<Action id="UpdateOpenTime">
-					<CallAction actionRef="FunctionDefinitions"/>
+					<CallAction actionRef="CommonFunctions"/>
 					<PersistVariable name="TimeLeftLabel" value="{CalcTimeLeftLabel(From-NowUtc)}" 
 													 onlyIfChanged="true" suppressSample="true"/>
 				</Action>
 				<Action id="UpdateCloseTime">
-					<CallAction actionRef="FunctionDefinitions"/>
+					<CallAction actionRef="CommonFunctions"/>
 					<PersistVariable name="TimeLeftLabel" value="{CalcTimeLeftLabel(To-NowUtc)}"
 													 onlyIfChanged="true" suppressSample="true"/>
 				</Action>
@@ -450,8 +452,8 @@
 						<Content>
 							<String>
 								<![CDATA[
-Vote is being prepared
--------------------------
+Preparing: {{MarkdownEncode(Question)}}
+------------------------------------------
 
 During the preparation phase, an appropriate ballot template is selected. If one is found,
 the vote will automatically progress to the next state. If one is not found, such a ballot
@@ -461,11 +463,11 @@ sure such a ballot template is also created.
 							</String>
 						</Content>
 					</XmppMessage>
-					<MailMessage to="{CreatorEMail}" subject="Vote is being prepared.">
+					<MailMessage to="{CreatorEMail}" subject="{'Preparing: '+Question}">
 						<Content>
 							<String><![CDATA[
-Vote is being prepared
--------------------------
+Preparing: {{MarkdownEncode(Question)}}
+------------------------------------------
 
 During the preparation phase, an appropriate ballot template is selected. If one is found,
 the vote will automatically progress to the next state. If one is not found, such a ballot
@@ -491,8 +493,8 @@ contract template that needs to exist, or be created:
 						<Content>
 							<String>
 								<![CDATA[
-Vote is pending
-------------------
+Pending: {{MarkdownEncode(Question)}}
+----------------------------------------
 
 The vote is waiting to be opened. This will be done automatically at {{From}} UTC. Meanwhile,
 you can share the following link:
@@ -502,11 +504,11 @@ you can share the following link:
 							</String>
 						</Content>
 					</XmppMessage>
-					<MailMessage to="{CreatorEMail}" subject="Vote is pending.">
+					<MailMessage to="{CreatorEMail}" subject="{'Pending: '+Question}">
 						<Content>
 							<String><![CDATA[
-Vote is pending
-------------------
+Pending: {{MarkdownEncode(Question)}}
+----------------------------------------
 
 The vote is waiting to be opened. This will be done automatically at {{From}} UTC. Meanwhile,
 you can share the following information to expected participants:
@@ -527,8 +529,8 @@ cannot scan the code, they can also click on the following link:
 						<Content>
 							<String>
 								<![CDATA[
-Vote has opened
-------------------
+Opened: {{MarkdownEncode(Question)}}
+---------------------------------------
 
 The vote has opened and participants can vote by clicking the following link:
 
@@ -537,11 +539,11 @@ The vote has opened and participants can vote by clicking the following link:
 							</String>
 						</Content>
 					</XmppMessage>
-					<MailMessage to="{CreatorEMail}" subject="Vote has opened.">
+					<MailMessage to="{CreatorEMail}" subject="{'Opened: '+Question}">
 						<Content>
 							<String><![CDATA[
-Vote has opened
-------------------
+Opened: {{MarkdownEncode(Question)}}
+---------------------------------------
 
 The vote has opened and participants can vote by scanning the following QR code:
 
@@ -560,8 +562,8 @@ They can also participate by clicking on the following link:
 						<Content>
 							<String>
 								<![CDATA[
-Vote has closed
-------------------
+Closed: {{MarkdownEncode(Question)}}
+---------------------------------------
 
 The vote has closed and voters can no longer participate. Results can be viewed at the
 following link:
@@ -571,11 +573,11 @@ following link:
 							</String>
 						</Content>
 					</XmppMessage>
-					<MailMessage to="{CreatorEMail}" subject="Vote has closed.">
+					<MailMessage to="{CreatorEMail}" subject="{'Closed: '+Question}">
 						<Content>
 							<String><![CDATA[
-Vote has closed
-------------------
+Closed: {{MarkdownEncode(Question)}}
+---------------------------------------
 
 The vote has closed and voters can no longer participate. Results are as follows:
 
@@ -590,7 +592,7 @@ Access to the results can also be given by clicking on the following link:
 				</Action>
 				<ReportPresent>
 					<![CDATA[
-{{CallAction("FunctionDefinitions");null}}
+{{CallAction("CommonFunctions");null}}
 
 ```layout
 <?xml version="1.0" encoding="utf-8" ?>
@@ -664,12 +666,12 @@ Access to the results can also be given by clicking on the following link:
 				<Script font="DarkRedValue" halign="Right" valign="Top" expression="NrBallotsRejected" x="350px" y="205px"/>
 			</Translate>
 		</Cell>
-		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{NrYes>=NrNo}">
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{NrYes>NrNo}">
 			<Margins top="{ChangeVoteAllowed ? '485px' : '515px'}" left="650px" right="550px" bottom="{ChangeVoteAllowed ? '1260px' : '1225px'}">
 				<RoundedRectangle fill="SemiTransparentGreenBackground" pen="DarkGreenPen" radiusX="20px" radiusY="20px"/>
 			</Margins>
 		</Cell>
-		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{NrNo>=NrYes}">
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{NrNo>NrYes}">
 			<Margins top="{ChangeVoteAllowed ? '545px' : '575px'}" left="650px" right="550px" bottom="{ChangeVoteAllowed ? '1200px' : '1170px'}">
 				<RoundedRectangle fill="SemiTransparentRedBackground" pen="DarkRedPen" radiusX="20px" radiusY="20px"/>
 			</Margins>
@@ -767,9 +769,6 @@ Access to the results can also be given by clicking on the following link:
 			</Margins>
 		</Cell>
 		<Cell halign="Left" valign="Top" width="100%" height="100%">
-			<Label text="{VoteTokenId}" x="10px" y="1190px" halign="Left" valign="Bottom" font="SmallText"/>
-		</Cell>
-		<Cell halign="Left" valign="Top" width="100%" height="100%">
 			<Margins top="400px" left="1200px">
 				<Rectangle fill="WhiteSmokeBackground" pen="WhitePen" width="400px" height="400px">
 					<Script expression="QrEncode('iotsc:'+BallotTemplateId+'?VoteReference='+VoteContractId,'H',400)" visible="{LayoutState!='Closed'}"/>
@@ -811,6 +810,23 @@ Access to the results can also be given by clicking on the following link:
 						<Text text="..."/>
 					</Paragraph>
 				</RoundedRectangle>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="1165px" left="10px" right="100px">
+				<Paragraph x="100px" y="100px" halign="Left" valign="Bottom" font="SmallText">
+					<Text text="Vote ID: "/>
+					<Text text="{VoteTokenId}"/>
+					<Text text=" from "/>
+					<Text text="{From.ToShortDateString()}"/>
+					<Text text=", "/>
+					<Text text="{From.ToShortTimeString()}"/>
+					<Text text=" to "/>
+					<Text text="{To.ToShortDateString()}"/>
+					<Text text=", "/>
+					<Text text="{To.ToShortTimeString()}"/>
+					<Text text=" UTC."/>
+				</Paragraph>
 			</Margins>
 		</Cell>
 	</Overlays>
@@ -902,7 +918,7 @@ Voting history
 		<templateOnly/>
 	</parts>
 	<parameters>
-		<stringParameter name="Question" guide="Question" minLength="1">
+		<stringParameter name="Question" guide="Question" minLength="1" regEx="^(?!\s)(?!.*\s$)(?!.*[\r\n\t]).+$">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Question to be voted on.</text>

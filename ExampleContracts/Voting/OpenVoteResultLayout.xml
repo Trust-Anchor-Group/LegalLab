@@ -69,12 +69,12 @@
 				<Script font="DarkRedValue" halign="Right" valign="Top" expression="NrBallotsRejected" x="350px" y="205px"/>
 			</Translate>
 		</Cell>
-		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{NrYes>=NrNo}">
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{NrYes>NrNo}">
 			<Margins top="{ChangeVoteAllowed ? '485px' : '515px'}" left="650px" right="550px" bottom="{ChangeVoteAllowed ? '1260px' : '1225px'}">
 				<RoundedRectangle fill="SemiTransparentGreenBackground" pen="DarkGreenPen" radiusX="20px" radiusY="20px"/>
 			</Margins>
 		</Cell>
-		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{NrNo>=NrYes}">
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{NrNo>NrYes}">
 			<Margins top="{ChangeVoteAllowed ? '545px' : '575px'}" left="650px" right="550px" bottom="{ChangeVoteAllowed ? '1200px' : '1170px'}">
 				<RoundedRectangle fill="SemiTransparentRedBackground" pen="DarkRedPen" radiusX="20px" radiusY="20px"/>
 			</Margins>
@@ -172,9 +172,6 @@
 			</Margins>
 		</Cell>
 		<Cell halign="Left" valign="Top" width="100%" height="100%">
-			<Label text="{VoteTokenId}" x="10px" y="1190px" halign="Left" valign="Bottom" font="SmallText"/>
-		</Cell>
-		<Cell halign="Left" valign="Top" width="100%" height="100%">
 			<Margins top="400px" left="1200px">
 				<Rectangle fill="WhiteSmokeBackground" pen="WhitePen" width="400px" height="400px">
 					<Script expression="QrEncode('iotsc:'+BallotTemplateId+'?VoteReference='+VoteContractId,'H',400)" visible="{LayoutState!='Closed'}"/>
@@ -216,6 +213,23 @@
 						<Text text="..."/>
 					</Paragraph>
 				</RoundedRectangle>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="1165px" left="10px" right="100px">
+				<Paragraph x="100px" y="100px" halign="Left" valign="Bottom" font="SmallText">
+					<Text text="Vote ID: "/>
+					<Text text="{VoteTokenId}"/>
+					<Text text=" from "/>
+					<Text text="{From.ToShortDateString()}"/>
+					<Text text=", "/>
+					<Text text="{From.ToShortTimeString()}"/>
+					<Text text=" to "/>
+					<Text text="{To.ToShortDateString()}"/>
+					<Text text=", "/>
+					<Text text="{To.ToShortTimeString()}"/>
+					<Text text=" UTC."/>
+				</Paragraph>
 			</Margins>
 		</Cell>
 	</Overlays>
