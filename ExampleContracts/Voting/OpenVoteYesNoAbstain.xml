@@ -575,7 +575,7 @@ following link:
 							</String>
 						</Content>
 					</XmppMessage>
-					<MailMessage to="{CreatorEMail}" subject="Vote has opened.">
+					<MailMessage to="{CreatorEMail}" subject="Vote has closed.">
 						<Content>
 							<String><![CDATA[
 Vote has closed
