@@ -119,8 +119,8 @@
 				<Variable id="Expires">
 					<TagReference tag="Expires"/>
 				</Variable>
-				<Variable id="IsOpen">
-					<Boolean>false</Boolean>
+				<Variable id="LayoutState">
+					<String>Created</String>
 				</Variable>
 				<Variable id="TimeLeftLabel">
 					<String></String>
@@ -209,11 +209,11 @@
 					<OnEnter actionRef="End"/>
 				</State>
 				<Action id="SetIsOpen">
-					<PersistVariable name="IsOpen" value="{true}"/>
+					<PersistVariable name="LayoutState" value="Open"/>
 					<CallAction actionRef="SendOpenedNotification"/>
 				</Action>
 				<Action id="SetIsClosed">
-					<PersistVariable name="IsOpen" value="{false}"/>
+					<PersistVariable name="LayoutState" value="Closed"/>
 					<CallAction actionRef="SendClosedNotification"/>
 				</Action>
 				<Action id="StoreBallotTemplateId">
@@ -453,6 +453,7 @@
 													 onlyIfChanged="true" suppressSample="true"/>
 				</Action>
 				<Action id="SendPreparationNotification">
+					<PersistVariable name="LayoutState" value="Preparing"/>
 					<XmppMessage to="{CreatorJid}">
 						<Content>
 							<String>
@@ -493,6 +494,7 @@ contract template that needs to exist, or be created:
 					</MailMessage>
 				</Action>
 				<Action id="SendPendingNotification">
+					<PersistVariable name="LayoutState" value="Pending"/>
 					<XmppMessage to="{CreatorJid}">
 						<Content>
 							<String>
@@ -619,6 +621,7 @@ Access to the results can also be given by clicking on the following link:
 	<SolidBackground id="SemiTransparentRedBackground" color="#ffe0e040"/>
 	<SolidBackground id="WhiteBackground" color="#fffffff0"/>
 	<SolidBackground id="WhiteSmokeBackground" color="WhiteSmoke"/>
+	<Font id="SmallText" name="Roboto" size="12pt" color="#a0a0a0" weight="Normal"/>
 	<Font id="Text" name="Roboto" size="14pt" color="Black" weight="Normal"/>
 	<Font id="LargeText" name="Roboto" size="17pt" color="Black" weight="Normal"/>
 	<Font id="Label" name="Roboto" size="16pt" color="Black" weight="Normal"/>
@@ -744,7 +747,7 @@ Access to the results can also be given by clicking on the following link:
 			</Margins>
 		</Cell>
 		<Cell halign="Left" valign="Top" width="100%" height="100%">
-			<Margins top="1070px" left="100px" right="475px">
+			<Margins top="1060px" left="100px" right="475px">
 				<Paragraph font="LargeText">
 					<Bold>
 						<Text text="To cast a vote"/>
@@ -770,27 +773,30 @@ Access to the results can also be given by clicking on the following link:
 			</Margins>
 		</Cell>
 		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Label text="{VoteTokenId}" x="10px" y="1190px" halign="Left" valign="Bottom" font="SmallText"/>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
 			<Margins top="400px" left="1200px">
 				<Rectangle fill="WhiteSmokeBackground" pen="WhitePen" width="400px" height="400px">
 					<Script expression="QrEncode('iotsc:'+BallotTemplateId+'?VoteReference='+VoteContractId,'H',400)"/>
 				</Rectangle>
 			</Margins>
 		</Cell>
-		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{IsOpen}">
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{LayoutState='Open'}">
 			<Margins top="825px" left="1225px" right="100px" bottom="775px">
 				<RoundedRectangle fill="WhiteBackground" pen="GreenWidePen" radiusX="50px" radiusY="50px">
 					<Label font="GreenHeader" halign="Center" valign="Center" text="Open" x="50%" y="50%"/>
 				</RoundedRectangle>
 			</Margins>
 		</Cell>
-		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{!IsOpen}">
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{LayoutState!='Open'}">
 			<Margins top="825px" left="1225px" right="100px" bottom="775px">
 				<RoundedRectangle fill="WhiteBackground" pen="RedWidePen" radiusX="50px" radiusY="50px">
-					<Label font="RedHeader" halign="Center" valign="Center" text="Closed" x="50%" y="50%"/>
+					<Label font="RedHeader" halign="Center" valign="Center" text="{LayoutState}" x="50%" y="50%"/>
 				</RoundedRectangle>
 			</Margins>
 		</Cell>
-		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{NowUtc&lt;From}">
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{LayoutState='Pending' and NowUtc&lt;From}">
 			<Margins top="925px" left="1225px" right="100px" bottom="675px">
 				<RoundedRectangle fill="WhiteBackground" pen="GreenPen" radiusX="50px" radiusY="50px">
 					<Paragraph font="GreenLabel" halign="Center" valign="Center" x="50%" y="50%">
@@ -801,7 +807,7 @@ Access to the results can also be given by clicking on the following link:
 				</RoundedRectangle>
 			</Margins>
 		</Cell>
-		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{NowUtc&gt;=From and NowUtc&lt;To}">
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{LayoutState='Open' and NowUtc&gt;=From and NowUtc&lt;To}">
 			<Margins top="925px" left="1225px" right="100px" bottom="675px">
 				<RoundedRectangle fill="WhiteBackground" pen="RedPen" radiusX="50px" radiusY="50px">
 					<Paragraph font="RedLabel" halign="Center" valign="Center" x="50%" y="50%">

@@ -10,10 +10,11 @@ Question:="What do you think?";
 ChangeVoteAllowed:=true;
 VoteContractId:="2fd25b60-6cd7-af11-90c6-85fe384b0cf9@legal.localhost";
 BallotTemplateId:="2fd45ecd-0755-c4a2-008f-5048ed645fee@legal.localhost";
+VoteTokenId:="2fd25b60-6cd7-af11-90c6-85fe384b0cf9@legal.localhost";
 From:=NowUtc;
 To:=From+TimeSpan(1,0,0,0);
 Expires:=To+TimeSpan(1,0,0,0);
-IsOpen:=true;
+LayoutState:="Created";
 
 CalcTimeLeft(TimeLeft):=
 (
