@@ -149,7 +149,8 @@
 			<Margins top="1060px" left="100px" right="475px">
 				<Paragraph font="LargeText">
 					<Bold>
-						<Text text="To cast a vote"/>
+						<Text text="To cast a vote" visible="{LayoutState!='Closed'}"/>
+						<Text text="To view the results of the vote online" visible="{LayoutState='Closed'}"/>
 					</Bold>
 					<Text text=", scan the "/>
 					<Italic>

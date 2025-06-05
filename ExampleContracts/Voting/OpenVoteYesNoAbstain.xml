@@ -749,7 +749,8 @@ Access to the results can also be given by clicking on the following link:
 			<Margins top="1060px" left="100px" right="475px">
 				<Paragraph font="LargeText">
 					<Bold>
-						<Text text="To cast a vote"/>
+						<Text text="To cast a vote" visible="{LayoutState!='Closed'}"/>
+						<Text text="To review the results of the vote online" visible="{LayoutState='Closed'}"/>
 					</Bold>
 					<Text text=", scan the "/>
 					<Italic>
