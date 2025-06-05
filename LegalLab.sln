@@ -98,6 +98,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Voting", "Voting", "{02EA68
 		ExampleContracts\Voting\OpenBallotYesNoAbstain.xml = ExampleContracts\Voting\OpenBallotYesNoAbstain.xml
 		ExampleContracts\Voting\OpenVote.xsd = ExampleContracts\Voting\OpenVote.xsd
 		ExampleContracts\Voting\OpenVoteResultLayout.xml = ExampleContracts\Voting\OpenVoteResultLayout.xml
+		ExampleContracts\Voting\OpenVoteResultLayoutInit.script = ExampleContracts\Voting\OpenVoteResultLayoutInit.script
 		ExampleContracts\Voting\OpenVoteYesNoAbstain.xml = ExampleContracts\Voting\OpenVoteYesNoAbstain.xml
 	EndProjectSection
 EndProject

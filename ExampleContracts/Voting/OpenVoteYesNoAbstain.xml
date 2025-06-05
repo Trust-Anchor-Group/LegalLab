@@ -494,7 +494,7 @@
 		<Cell halign="Left" valign="Top" width="100%" height="100%">
 			<Margins top="50px" left="100px" right="100px" bottom="1350px">
 				<RoundedRectangle fill="SemiTransparentBackground" pen="DarkSemiTransparentPen" radiusX="50px" radiusY="50px">
-					<Paragraph font="Header" width="100%" height="100%" background="WhiteBackground" halign="Center" valign="Center">
+					<Paragraph font="Header" halign="Center" valign="Center">
 						<InlineScript expression="Question"/>
 					</Paragraph>
 				</RoundedRectangle>
