@@ -147,7 +147,7 @@
 		</Cell>
 		<Cell halign="Left" valign="Top" width="100%" height="100%">
 			<Margins top="1060px" left="100px" right="475px">
-				<Paragraph font="LargeText">
+				<Paragraph font="{LayoutState='Closed' ? 'Text' : 'LargeText'}">
 					<Bold>
 						<Text text="To cast a vote" visible="{LayoutState!='Closed'}"/>
 						<Text text="To view the results of the vote online" visible="{LayoutState='Closed'}"/>
