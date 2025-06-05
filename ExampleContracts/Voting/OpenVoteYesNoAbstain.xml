@@ -778,7 +778,8 @@ Access to the results can also be given by clicking on the following link:
 		<Cell halign="Left" valign="Top" width="100%" height="100%">
 			<Margins top="400px" left="1200px">
 				<Rectangle fill="WhiteSmokeBackground" pen="WhitePen" width="400px" height="400px">
-					<Script expression="QrEncode('iotsc:'+BallotTemplateId+'?VoteReference='+VoteContractId,'H',400)"/>
+					<Script expression="QrEncode('iotsc:'+BallotTemplateId+'?VoteReference='+VoteContractId,'H',400)" visible="{LayoutState!='Closed'}"/>
+					<Script expression="QrEncode('nfeat:'+VoteTokenId,'H',400)" visible="{LayoutState='Closed'}"/>
 				</Rectangle>
 			</Margins>
 		</Cell>
