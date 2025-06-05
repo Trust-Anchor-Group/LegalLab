@@ -56,10 +56,26 @@ namespace LegalLab
 		public MainWindow()
 		{
 			TaskCompletionSource<bool> Completed = new TaskCompletionSource<bool>();
+			bool StartGuiTask = false;
+
+			lock (guiUpdateQueue)
+			{
+				if (currentInstance is null)
+				{
+					currentInstance = this;
+					StartGuiTask = true;
+				}
+			}
+
+			appDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LegalLab");
+
+			// Implementation Inventory. Used by persistence, networking and scripting modules.
+
+			TypesLoader.Initialize();   // Makes an inventory of all assemblies in project.
 
 			this.Visibility = Visibility.Hidden;
 
-			Task.Run(() => this.Initialize(Completed));
+			Task.Run(() => this.Initialize(Completed, StartGuiTask));
 
 			this.InitializeComponent();
 
@@ -68,27 +84,10 @@ namespace LegalLab
 
 		#region Initialization & Setup
 
-		private async Task Initialize(TaskCompletionSource<bool> Completed)
+		private async Task Initialize(TaskCompletionSource<bool> Completed, bool StartGuiTask)
 		{
 			try
 			{
-				bool StartGuiTask = false;
-
-				lock (guiUpdateQueue)
-				{
-					if (currentInstance is null)
-					{
-						currentInstance = this;
-						StartGuiTask = true;
-					}
-				}
-
-				appDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LegalLab");
-
-				// Implementation Inventory. Used by persistence, networking and scripting modules.
-
-				TypesLoader.Initialize();   // Makes an inventory of all assemblies in project.
-
 				// Setting up internal encrypted object Database
 
 				databaseFolder = Path.Combine(appDataFolder, "Data");
