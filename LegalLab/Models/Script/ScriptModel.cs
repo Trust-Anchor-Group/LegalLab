@@ -34,18 +34,21 @@ namespace LegalLab.Models.Script
 		private readonly Property<string> input;
 
 		private readonly StackPanel historyPanel;
+		private readonly TextBox inputEdit;
 
 		/// <summary>
 		/// Interaction logic for the script view.
 		/// From the IoTGateway project, with permission.
 		/// </summary>
 		/// <param name="HistoryPanel">History panel</param>
-		public ScriptModel(StackPanel HistoryPanel)
+		/// <param name="InputEdit">Input editor.</param>
+		public ScriptModel(StackPanel HistoryPanel, TextBox InputEdit)
 		{
 			this.referenceUri = new Property<string>(nameof(this.ReferenceUri), "https://lab.tagroot.io/Script.md", this);
 			this.input = new Property<string>(nameof(this.Input), string.Empty, this);
 
 			this.historyPanel = HistoryPanel;
+			this.inputEdit = InputEdit;
 
 			variables.ConsoleOut = new PrintOutput(this);
 		}
@@ -336,6 +339,7 @@ namespace LegalLab.Models.Script
 		private void TextBlock_PreviewMouseDown(object sender, MouseButtonEventArgs e)
 		{
 			this.Input = ((TextBlock)sender).Text;
+			this.inputEdit.Focus();
 			e.Handled = true;
 		}
 
