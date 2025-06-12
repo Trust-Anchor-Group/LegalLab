@@ -225,10 +225,7 @@ namespace LegalLab.Models.Tokens.Reports
 			await MainWindow.UpdateGui(() =>
 			{
 				UIElement Report = ParseReport(Xaml);
-
-				Tab.ReportPanel.Children.Clear();
-				Tab.ReportPanel.Children.Add(Report);
-
+				Tab.UpdateReport(Report);
 				return Task.CompletedTask;
 			});
 		}
