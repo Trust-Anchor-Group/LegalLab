@@ -1,19 +1,25 @@
 ﻿using LegalLab.Extensions;
 using LegalLab.Models.Standards;
+using LegalLab.Models.Wallet;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Waher.Content.Markdown;
 using Waher.Events;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
+using Waher.Networking.XMPP.Contracts.HumanReadable;
+using Waher.Networking.XMPP.Contracts.HumanReadable.BlockElements;
+using Waher.Networking.XMPP.Contracts.HumanReadable.InlineElements;
 using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Persistence;
 using Waher.Runtime.Collections;
 using Waher.Runtime.Inventory;
+using Waher.Runtime.Language;
 using Waher.Runtime.Settings;
 
 namespace LegalLab.Models.Legal
@@ -54,7 +60,11 @@ namespace LegalLab.Models.Legal
 
 		private readonly Property<Contract> template;
 		private readonly Property<TemplateReferenceModel[]> templates;
+		private readonly Property<ContractReferenceModel[]> existingContracts;
 		private readonly Property<string> contractTemplateName;
+		private readonly Property<string> existingContractId;
+		private readonly Property<bool> isTemplate;
+		private readonly Property<bool> isContract;
 
 		private readonly Dictionary<string, IdentityWrapper> identities = [];
 
@@ -103,20 +113,166 @@ namespace LegalLab.Models.Legal
 			this.Add(this.orgCountry = new PersistedProperty<string>("Legal", nameof(this.OrgCountry), true, string.Empty, this));
 
 			this.template = new Property<Contract>(nameof(this.Template), null, this);
-			this.templates = new Property<TemplateReferenceModel[]>(nameof(this.Templates), [], this);
+			this.templates = new Property<TemplateReferenceModel[]>(nameof(this.ExistingContracts), [], this);
 			this.contractTemplateName = new Property<string>(nameof(this.ContractTemplateName), string.Empty, this);
+			this.existingContracts = new Property<ContractReferenceModel[]>(nameof(this.ExistingContracts), [], this);
+			this.existingContractId = new Property<string>(nameof(this.ExistingContractId), string.Empty, this);
+			this.isTemplate = new Property<bool>(nameof(this.IsTemplate), false, this);
+			this.isContract = new Property<bool>(nameof(this.IsContract), false, this);
 
 			this.apply = new Command(this.CanExecuteApply, this.ExecuteApply);
 
 			this.contracts = new ContractsClient(Client, ComponentJid);
 			this.contracts.EnableE2eEncryption(true);
 			this.contracts.IdentityUpdated += this.Contracts_IdentityUpdated;
-			this.contracts.ContractUpdated += this.Contracts_ContractUpdated;
+			this.contracts.ContractCreated += this.Contracts_ContractCreated;
 			this.contracts.ContractDeleted += this.Contracts_ContractDeleted;
 			this.contracts.PetitionForIdentityReceived += this.Contracts_PetitionForIdentityReceived;
 			this.contracts.ClientMessage += this.Contracts_ClientMessage;
+			this.contracts.ContractProposalReceived += this.Contracts_ContractProposalReceived;
+			this.contracts.IdentityReview += this.Contracts_IdentityReview;
+			this.contracts.PetitionClientUrlReceived += this.Contracts_PetitionClientUrlReceived;
+			this.contracts.PetitionForContractReceived += this.Contracts_PetitionForContractReceived;
+			this.contracts.PetitionForPeerReviewIDReceived += this.Contracts_PetitionForPeerReviewIDReceived;
+			this.contracts.PetitionForSignatureReceived += this.Contracts_PetitionForSignatureReceived;
+
+			// ContractUpdated and ContractSigned are handled in the ContractModel
 
 			this.httpFileUploadClient = new HttpFileUploadClient(Client, FileUploadJid, MaxFileSize);
+		}
+
+		private Task Contracts_PetitionForSignatureReceived(object Sender, SignaturePetitionEventArgs e)
+		{
+			PersonalInformation PersonalInfo = e.RequestorIdentity.GetPersonalInformation();
+			StringBuilder Question = new();
+
+			Question.Append("A petition for your signature has been received for the following purpose: ");
+			Question.Append(e.Purpose);
+			Question.Append(" The petition was sent by");
+
+			AppendPersonalInfo(Question, PersonalInfo);
+
+			Append(Question, e.RequestorFullJid, ", from ", string.Empty);
+			Question.Append(". Do you want to sign?");
+
+			MainWindow.UpdateGui(async () =>
+			{
+				switch (MessageBox.Show(Question.ToString(), "Petition received", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No))
+				{
+					case MessageBoxResult.Yes:
+						byte[] Signature = await this.contracts.SignAsync(e.ContentToSign, SignWith.CurrentKeys);
+						await this.contracts.PetitionSignatureResponseAsync(e.SignatoryIdentityId,
+							e.ContentToSign, Signature, e.PetitionId, e.RequestorFullJid, true);
+						break;
+
+					case MessageBoxResult.No:
+						await this.contracts.PetitionSignatureResponseAsync(e.SignatoryIdentityId,
+							e.ContentToSign, Array.Empty<byte>(), e.PetitionId, e.RequestorFullJid, false);
+						break;
+				}
+			});
+
+			return Task.CompletedTask;
+		}
+
+		private async Task Contracts_PetitionForPeerReviewIDReceived(object Sender, SignaturePetitionEventArgs e)
+		{
+			// TODO
+		}
+
+		private Task Contracts_PetitionForContractReceived(object Sender, ContractPetitionEventArgs e)
+		{
+			PersonalInformation PersonalInfo = e.RequestorIdentity.GetPersonalInformation();
+			StringBuilder Question = new();
+
+			Question.Append("A petition for your contract with ID ");
+			Question.Append(e.RequestedContractId);
+			Question.Append("has been received for the following purpose: ");
+			Question.Append(e.Purpose);
+			Question.Append(" The petition was sent by");
+
+			AppendPersonalInfo(Question, PersonalInfo);
+
+			Append(Question, e.RequestorFullJid, ", from ", string.Empty);
+			Question.Append(". Do you want to give access to the contract?");
+
+			MainWindow.UpdateGui(async () =>
+			{
+				switch (MessageBox.Show(Question.ToString(), "Petition received", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No))
+				{
+					case MessageBoxResult.Yes:
+						await this.contracts.PetitionContractResponseAsync(e.RequestedContractId,
+							e.PetitionId, e.RequestorFullJid, true);
+						break;
+
+					case MessageBoxResult.No:
+						await this.contracts.PetitionContractResponseAsync(e.RequestedContractId,
+							e.PetitionId, e.RequestorFullJid, false);
+						break;
+				}
+			});
+
+			return Task.CompletedTask;
+		}
+
+		private static void AppendPersonalInfo(StringBuilder Question, PersonalInformation PersonalInfo)
+		{
+			Append(Question, PersonalInfo.FullName, " ", string.Empty);
+			Append(Question, PersonalInfo.PersonalNumber, " (", ")");
+
+			Question.Append(", at");
+
+			Append(Question, PersonalInfo.Address, " ", string.Empty);
+			Append(Question, PersonalInfo.Address2, " ", string.Empty);
+			Append(Question, PersonalInfo.PostalCode, " ", string.Empty);
+			Append(Question, PersonalInfo.Area, " ", string.Empty);
+			Append(Question, PersonalInfo.City, " ", string.Empty);
+			Append(Question, PersonalInfo.Region, " ", string.Empty);
+
+			string s = PersonalInfo.Country;
+			if (!string.IsNullOrEmpty(s))
+			{
+				if (Iso_3166_1.CodeToCountry(s, out string Country))
+					s = Country;
+
+				Append(Question, s, " ", string.Empty);
+			}
+		}
+
+		private Task Contracts_PetitionClientUrlReceived(object Sender, PetitionClientUrlEventArgs e)
+		{
+			WalletModel.OpenUrl(e.ClientUrl);
+			return Task.CompletedTask;
+		}
+
+		private Task Contracts_IdentityReview(object Sender, IdentityReviewEventArgs e)
+		{
+			return Task.CompletedTask;	// TODO
+		}
+
+		private Task Contracts_ContractProposalReceived(object Sender, ContractProposalEventArgs e)
+		{
+			MainWindow.UpdateGui(async () =>
+			{
+				if (MessageBox.Show("You have received a proposal to sign a contract as " + 
+					e.Role + ", with the following message:\r\n\r\n" + e.Message + 
+					"\r\n\r\nDo you want to review the contract?", "Confirm",
+					MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
+				{
+					return;
+				}
+
+				MainWindow.SelectTab(MainWindow.currentInstance.ContractsTab);
+				await this.LoadContract(e.ContractId);
+			});
+
+			return Task.CompletedTask;
+		}
+
+		private async Task Contracts_ContractCreated(object Sender, ContractReferenceEventArgs e)
+		{
+			Contract Contract = await this.contracts.GetContractAsync(e.ContractId);
+			await UpdateContactReference(Contract);
 		}
 
 		private Task Contracts_ContractDeleted(object Sender, ContractReferenceEventArgs e)
@@ -124,12 +280,11 @@ namespace LegalLab.Models.Legal
 			return this.RemoveContract(e.ContractId);
 		}
 
-		private async Task Contracts_ContractUpdated(object Sender, ContractReferenceEventArgs e)
+		internal async Task Contracts_ContractUpdated(object Sender, ContractReferenceEventArgs e,
+			Contract Contract)
 		{
 			try
 			{
-				Contract Contract = await this.contracts.GetContractAsync(e.ContractId);
-
 				switch (Contract.State)
 				{
 					case ContractState.Failed:
@@ -137,6 +292,10 @@ namespace LegalLab.Models.Legal
 					case ContractState.Deleted:
 					case ContractState.Rejected:
 						await this.RemoveContract(e.ContractId);
+						break;
+
+					default:
+						await UpdateContactReference(Contract);
 						break;
 				}
 			}
@@ -146,27 +305,98 @@ namespace LegalLab.Models.Legal
 			}
 		}
 
+		private async Task UpdateContactReference(Contract Contract)
+		{
+			StringBuilder sb = new();
+
+			sb.Append(Contract.Created.ToShortDateString());
+			sb.Append(", ");
+			sb.Append(Contract.Created.ToLongTimeString());
+			sb.Append(", ");
+			sb.Append(await GetCategory(Contract));
+
+			await RuntimeSettings.SetAsync("Contract.Id." + Contract.ContractId, sb.ToString());
+
+			this.ContractAdded(sb.ToString(), Contract);
+		}
+
+		/// <summary>
+		/// Gets the category of a contract
+		/// </summary>
+		/// <param name="Contract">Contract</param>
+		/// <returns>Contract Category</returns>
+		public static async Task<string> GetCategory(Contract Contract)
+		{
+			HumanReadableText[] Localizations = Contract.ForHumans;
+			string Language = MainWindow.DesignModel?.Language ?? Translator.DefaultLanguageCode;
+
+			foreach (HumanReadableText Localization in Localizations)
+			{
+				if (!string.Equals(Localization.Language, Language, StringComparison.OrdinalIgnoreCase))
+					continue;
+
+				foreach (BlockElement Block in Localization.Body)
+				{
+					if (Block is Section Section)
+					{
+						MarkdownOutput Markdown = new();
+
+						foreach (InlineElement Item in Section.Header)
+							await Item.GenerateMarkdown(Markdown, 1, 0, new Waher.Networking.XMPP.Contracts.HumanReadable.MarkdownSettings(Contract, MarkdownType.ForRendering));
+
+						MarkdownDocument Doc = await MarkdownDocument.CreateAsync(Markdown.ToString());
+
+						return (await Doc.GeneratePlainText()).Trim();
+					}
+				}
+			}
+
+			return null;
+		}
+
 		public async Task RemoveContract(string ContractId)
 		{
 			ChunkedList<TemplateReferenceModel> TemplatesToKeep = [];
-			bool Changed = false;
+			ChunkedList<ContractReferenceModel> ExistingContractsToKeep = [];
+			bool TemplatesChanged = false;
+			bool ExistingChanged = false;
 
 			foreach (TemplateReferenceModel Model in this.Templates)
 			{
 				if (Model.ContractId == ContractId)
 				{
 					await RuntimeSettings.DeleteAsync("Contract.Template." + Model.TemplateName);
-					Changed = true;
+					TemplatesChanged = true;
 				}
 				else
 					TemplatesToKeep.Add(Model);
 			}
 
-			if (Changed)
+			foreach (ContractReferenceModel Model in this.ExistingContracts)
+			{
+				if (Model.ContractId == ContractId)
+				{
+					await RuntimeSettings.DeleteAsync("Contract.Id." + ContractId);
+					ExistingChanged = true;
+				}
+				else
+					ExistingContractsToKeep.Add(Model);
+			}
+
+			if (TemplatesChanged)
 			{
 				await MainWindow.UpdateGui(() =>
 				{
 					this.Templates = [.. TemplatesToKeep];
+					return Task.CompletedTask;
+				});
+			}
+
+			if (ExistingChanged)
+			{
+				await MainWindow.UpdateGui(() =>
+				{
+					this.ExistingContracts = [.. ExistingContractsToKeep];
 					return Task.CompletedTask;
 				});
 			}
@@ -353,15 +583,6 @@ namespace LegalLab.Models.Legal
 		/// <inheritdoc/>
 		public override async Task Start()
 		{
-			await MainWindow.UpdateGui(() =>
-			{
-				MainWindow.currentInstance.LegalIdTab.DataContext = this;
-				MainWindow.currentInstance.ContractsTab.DataContext = this;
-				MainWindow.currentInstance.ContractsTab.ContractCommands.DataContext = this;
-
-				return Task.CompletedTask;
-			});
-
 			await this.contracts.LoadKeys(true);
 
 			LegalIdentity[] Identities = await this.contracts.GetLegalIdentitiesAsync();
@@ -375,15 +596,39 @@ namespace LegalLab.Models.Legal
 			this.RaisePropertyChanged(nameof(this.Identities));
 
 			Dictionary<string, object> Settings = await RuntimeSettings.GetWhereKeyLikeAsync("Contract.Template.*", "*");
-			List<TemplateReferenceModel> Templates = [];
+			SortedDictionary<string, TemplateReferenceModel> Templates = [];
+			string Name;
 
 			foreach (KeyValuePair<string, object> Setting in Settings)
 			{
 				if (Setting.Value is string ContractId)
-					Templates.Add(new TemplateReferenceModel(Setting.Key[18..], ContractId));
+				{
+					Name = Setting.Key[18..];
+					Templates[Name] = new TemplateReferenceModel(Name, ContractId);
+				}
 			}
 
-			this.Templates = [.. Templates];
+			this.Templates = Templates.ToValueArray();
+
+			Settings = await RuntimeSettings.GetWhereKeyLikeAsync("Contract.Id.*", "*");
+			SortedDictionary<string, ContractReferenceModel> ExistingContracts = new(new ReverseOrder<string>());
+
+			foreach (KeyValuePair<string, object> Setting in Settings)
+			{
+				if (Setting.Value is string Name2)
+					ExistingContracts[Name2] = new ContractReferenceModel(Name2, Setting.Key[12..]);
+			}
+
+			this.ExistingContracts = ExistingContracts.ToValueArray();
+
+			await MainWindow.UpdateGui(() =>
+			{
+				MainWindow.currentInstance.LegalIdTab.DataContext = this;
+				MainWindow.currentInstance.ContractsTab.DataContext = this;
+				MainWindow.currentInstance.ContractsTab.ContractCommands.DataContext = this;
+
+				return Task.CompletedTask;
+			});
 
 			await base.Start();
 		}
@@ -766,53 +1011,32 @@ namespace LegalLab.Models.Legal
 
 		private Task Contracts_PetitionForIdentityReceived(object Sender, LegalIdentityPetitionEventArgs e)
 		{
+			PersonalInformation PersonalInfo = e.RequestorIdentity.GetPersonalInformation();
 			StringBuilder Question = new();
 
 			Question.Append("A petition for your legal identity has been received for the following purpose: ");
 			Question.Append(e.Purpose);
 			Question.Append(" The petition was sent by");
 
-			Append(Question, e.RequestorIdentity["FIRST"], " ", string.Empty);
-			Append(Question, e.RequestorIdentity["MIDDLE"], " ", string.Empty);
-			Append(Question, e.RequestorIdentity["LAST"], " ", string.Empty);
-			Append(Question, e.RequestorIdentity["PNR"], " (", ")");
-
-			Question.Append(", at");
-
-			Append(Question, e.RequestorIdentity["ADDR"], " ", string.Empty);
-			Append(Question, e.RequestorIdentity["ADDR2"], " ", string.Empty);
-			Append(Question, e.RequestorIdentity["ZIP"], " ", string.Empty);
-			Append(Question, e.RequestorIdentity["AREA"], " ", string.Empty);
-			Append(Question, e.RequestorIdentity["CITY"], " ", string.Empty);
-			Append(Question, e.RequestorIdentity["REGION"], " ", string.Empty);
-
-			string s = e.RequestorIdentity["COUNTRY"];
-			if (!string.IsNullOrEmpty(s))
-			{
-				if (Iso_3166_1.CodeToCountry(s, out string Country))
-					s = Country;
-
-				Append(Question, s, " ", string.Empty);
-			}
+			AppendPersonalInfo(Question, PersonalInfo);
 
 			Append(Question, e.RequestorFullJid, ", from ", string.Empty);
-
 			Question.Append(". Do you want to return your identity information?");
 
-			MainWindow.UpdateGui(() =>
+			MainWindow.UpdateGui(async () =>
 			{
 				switch (MessageBox.Show(Question.ToString(), "Petition received", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No))
 				{
 					case MessageBoxResult.Yes:
-						Task.Run(() => this.contracts.PetitionIdentityResponseAsync(e.RequestedIdentityId, e.PetitionId, e.RequestorFullJid, true));
+						await this.contracts.PetitionIdentityResponseAsync(e.RequestedIdentityId, 
+							e.PetitionId, e.RequestorFullJid, true);
 						break;
 
 					case MessageBoxResult.No:
-						Task.Run(() => this.contracts.PetitionIdentityResponseAsync(e.RequestedIdentityId, e.PetitionId, e.RequestorFullJid, false));
+						await this.contracts.PetitionIdentityResponseAsync(e.RequestedIdentityId, 
+							e.PetitionId, e.RequestorFullJid, false);
 						break;
 				}
-
-				return Task.CompletedTask;
 			});
 
 			return Task.CompletedTask;
@@ -850,7 +1074,39 @@ namespace LegalLab.Models.Legal
 			set
 			{
 				this.contractTemplateName.Value = value;
-				MainWindow.UpdateGui(() => this.LoadTemplate(value, null));
+				this.existingContractId.Value = string.Empty;
+				MainWindow.UpdateGui(async () =>
+				{
+					this.RaisePropertyChanged(nameof(this.ExistingContractId));
+					await this.LoadTemplate(value, null);
+				});
+			}
+		}
+
+		/// <summary>
+		/// Existing Contract References
+		/// </summary>
+		public ContractReferenceModel[] ExistingContracts
+		{
+			get => this.existingContracts.Value;
+			set => this.existingContracts.Value = value;
+		}
+
+		/// <summary>
+		/// Existing Contract Id
+		/// </summary>
+		public string ExistingContractId
+		{
+			get => this.existingContractId.Value;
+			set
+			{
+				this.existingContractId.Value = value;
+				this.contractTemplateName.Value = string.Empty;
+				MainWindow.UpdateGui(async () =>
+				{
+					this.RaisePropertyChanged(nameof(this.ContractTemplateName));
+					await this.LoadContract(value);
+				});
 			}
 		}
 
@@ -876,6 +1132,24 @@ namespace LegalLab.Models.Legal
 		}
 
 		/// <summary>
+		/// If the currently loaded contract is a template.
+		/// </summary>
+		public bool IsTemplate
+		{
+			get => this.isTemplate.Value;
+			set => this.isTemplate.Value = value;
+		}
+
+		/// <summary>
+		/// If the currently loaded contract is a contract.
+		/// </summary>
+		public bool IsContract
+		{
+			get => this.isContract.Value;
+			set => this.isContract.Value = value;
+		}
+
+		/// <summary>
 		/// A contract template has been added.
 		/// </summary>
 		/// <param name="TemplateName">Template name</param>
@@ -892,6 +1166,23 @@ namespace LegalLab.Models.Legal
 			this.Templates = Templates.ToValueArray();
 		}
 
+		/// <summary>
+		/// A contract has been added.
+		/// </summary>
+		/// <param name="Name">Contract name</param>
+		/// <param name="Contract">Contract</param>
+		public void ContractAdded(string Name, Contract Contract)
+		{
+			SortedDictionary<string, ContractReferenceModel> ExistingContracts = new(new ReverseOrder<string>());
+
+			foreach (ContractReferenceModel Ref in this.ExistingContracts)
+				ExistingContracts[Ref.ContractName] = Ref;
+
+			ExistingContracts[Name] = new ContractReferenceModel(Name, Contract.ContractId);
+
+			this.ExistingContracts = ExistingContracts.ToValueArray();
+		}
+
 		private async Task LoadTemplate(string TemplateName, Dictionary<CaseInsensitiveString, object> PresetValues)
 		{
 			string ContractId = await RuntimeSettings.GetAsync("Contract.Template." + TemplateName, string.Empty);
@@ -902,6 +1193,8 @@ namespace LegalLab.Models.Legal
 			{
 				MainWindow.MouseHourglass();
 				this.Template = await this.contracts.GetContractAsync(ContractId);
+				this.IsTemplate = true;
+				this.IsContract = false;
 				MainWindow.MouseDefault();
 
 				if (this.currentContract is not null)
@@ -925,6 +1218,45 @@ namespace LegalLab.Models.Legal
 			catch (Exception ex)
 			{
 				if (await MainWindow.MessageBox("Unable to load template. Do you want to remove it?\r\n\r\nError returned: " +
+					ex.Message, "Error", MessageBoxButton.YesNoCancel, MessageBoxImage.Question) == MessageBoxResult.Yes)
+				{
+					await this.RemoveContract(ContractId);
+				}
+			}
+		}
+
+		private async Task LoadContract(string ContractId)
+		{
+			try
+			{
+				MainWindow.MouseHourglass();
+				this.Template = await this.contracts.GetContractAsync(ContractId);
+				this.Template = await this.contracts.GetContractAsync(ContractId);
+				this.IsTemplate = false;
+				this.IsContract = true;
+				MainWindow.MouseDefault();
+
+				if (this.currentContract is not null)
+					await this.currentContract.Stop();
+
+				this.currentContract = await ContractModel.CreateAsync(this.contracts, this.Template, MainWindow.DesignModel,
+					MainWindow.currentInstance.ContractsTab.MachineReadableXmlEditor);
+
+				await this.currentContract.Start();
+
+				await this.currentContract.PopulateParameters(
+					MainWindow.currentInstance.ContractsTab.LanguageOptions,
+					MainWindow.currentInstance.ContractsTab.CreateParameters,
+					MainWindow.currentInstance.ContractsTab.TemplateCommands,
+					null);
+
+				await this.currentContract.PopulateContract(
+					MainWindow.currentInstance.ContractsTab.ContractToCreate,
+					MainWindow.currentInstance.ContractsTab.ContractToCreateHumanReadable);
+			}
+			catch (Exception ex)
+			{
+				if (await MainWindow.MessageBox("Unable to load contract. Do you want to remove it?\r\n\r\nError returned: " +
 					ex.Message, "Error", MessageBoxButton.YesNoCancel, MessageBoxImage.Question) == MessageBoxResult.Yes)
 				{
 					await this.RemoveContract(ContractId);

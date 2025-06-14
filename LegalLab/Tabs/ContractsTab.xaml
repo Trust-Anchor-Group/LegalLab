@@ -14,6 +14,9 @@
 				<Label>Template:</Label>
 				<ComboBox ItemsSource="{Binding Templates}" DisplayMemberPath="TemplateName" SelectedValuePath="TemplateName" 
 						  SelectedValue="{Binding ContractTemplateName}"/>
+				<Label>Existing contracts:</Label>
+				<ComboBox ItemsSource="{Binding ExistingContracts}" DisplayMemberPath="ContractName" SelectedValuePath="ContractId" 
+						  SelectedValue="{Binding ExistingContractId}"/>
 				<StackPanel Name="LanguageOptions">
 					<Label>Language:</Label>
 					<ComboBox ItemsSource="{Binding Languages}" DisplayMemberPath="Language" SelectedValuePath="Code" 
@@ -22,7 +25,8 @@
 				<StackPanel Name="CreateParameters"/>
 				<StackPanel Name="TemplateCommands" Visibility="Hidden">
 					<Button Margin="0,10,0,0" Command="{Binding CreateContract}" IsEnabled="{Binding ParametersOk}">Create Contract</Button>
-					<Button Margin="0,10,0,0" Command="{Binding RemoveTemplate}">Remove Template</Button>
+					<Button Margin="0,10,0,0" Command="{Binding RemoveTemplate}" Visibility="{Binding IsTemplate, Converter={conv:BooleanToVisibility}}">Remove Template</Button>
+					<Button Margin="0,10,0,0" Command="{Binding RemoveContract}" Visibility="{Binding IsContract, Converter={conv:BooleanToVisibility}}">Remove Contract</Button>
 				</StackPanel>
 			</StackPanel>
 		</ScrollViewer>

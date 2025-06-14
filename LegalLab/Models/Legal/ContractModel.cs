@@ -52,6 +52,7 @@ namespace LegalLab.Models.Legal
 		private readonly Command addPart;
 		private readonly Command createContract;
 		private readonly Command removeTemplate;
+		private readonly Command removeContract;
 		private readonly Command uploadAttachment;
 
 		private readonly NonScrollingTextEditor xmlEditor = null;
@@ -90,6 +91,7 @@ namespace LegalLab.Models.Legal
 			this.addPart = new Command(this.ExecuteAddPart);
 			this.createContract = new Command(this.CanExecuteCreateContract, this.ExecuteCreateContract);
 			this.removeTemplate = new Command(this.CanExecuteRemoveTemplate, this.ExecuteRemoveTemplate);
+			this.removeContract = new Command(this.CanExecuteRemoveContract, this.ExecuteRemoveContract);
 			this.uploadAttachment = new Command(this.CanExecuteUploadAttachment, this.ExecuteUploadAttachment);
 
 			this.xmlEditor = XmlEditor;
@@ -245,21 +247,30 @@ namespace LegalLab.Models.Legal
 			return base.Stop();
 		}
 
-		private Task Contracts_ContractSigned(object Sender, ContractSignedEventArgs e)
+		private async Task Contracts_ContractSigned(object Sender, ContractSignedEventArgs e)
 		{
-			return this.CheckReload(e);
+			Contract Contract = await this.contracts.GetContractAsync(this.ContractId);
+
+			if (this.legalModel is not null)
+				await this.legalModel.Contracts_ContractUpdated(Sender, e, Contract);
+
+			await this.CheckUpdatedView(Contract);
 		}
 
-		private Task Contracts_ContractUpdated(object Sender, ContractReferenceEventArgs e)
+		private async Task Contracts_ContractUpdated(object Sender, ContractReferenceEventArgs e)
 		{
-			return this.CheckReload(e);
+			Contract Contract = await this.contracts.GetContractAsync(this.ContractId);
+
+			if (this.legalModel is not null)
+				await this.legalModel.Contracts_ContractUpdated(Sender, e, Contract);
+
+			await this.CheckUpdatedView(Contract);
 		}
 
-		private async Task CheckReload(ContractReferenceEventArgs e)
+		private async Task CheckUpdatedView(Contract Contract)
 		{
-			if (e.ContractId == this.ContractId)
+			if (Contract.ContractId == this.ContractId)
 			{
-				Contract Contract = await this.contracts.GetContractAsync(this.ContractId);
 				await MainWindow.UpdateGui(async () =>
 				{
 					await this.SetContract(Contract);
@@ -600,7 +611,7 @@ namespace LegalLab.Models.Legal
 		/// <returns>If command can be executed.</returns>
 		public bool CanExecuteCreateContract()
 		{
-			return this.ParametersOk;
+			return this.ParametersOk && this.legalModel.Template is not null && this.legalModel.IsTemplate;
 		}
 
 		/// <summary>
@@ -646,7 +657,7 @@ namespace LegalLab.Models.Legal
 		/// <returns>If command can be executed.</returns>
 		public bool CanExecuteRemoveTemplate()
 		{
-			return this.legalModel.Template is not null;
+			return this.legalModel.Template is not null && this.legalModel.IsTemplate;
 		}
 
 		/// <summary>
@@ -667,6 +678,49 @@ namespace LegalLab.Models.Legal
 				string TemplateId = this.legalModel.Template.ContractId;
 
 				await this.legalModel.RemoveContract(TemplateId);
+
+				MainWindow.MouseDefault();
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
+		}
+
+		/// <summary>
+		/// Remove contract command
+		/// </summary>
+		public ICommand RemoveContract => this.removeContract;
+
+		/// <summary>
+		/// If the remove contract command can be exeucted.
+		/// </summary>
+		/// <returns>If command can be executed.</returns>
+		public bool CanExecuteRemoveContract()
+		{
+			return this.legalModel.Template is not null && 
+				this.legalModel.IsContract &&
+				!string.IsNullOrEmpty(this.legalModel.ExistingContractId);
+		}
+
+		/// <summary>
+		/// Removed the template.
+		/// </summary>
+		public async Task ExecuteRemoveContract()
+		{
+			try
+			{
+				if (MessageBox.Show("Are you sure you want to remove the selected contract? (Only the reference to the contract will be removed.)", "Confirm",
+					MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
+				{
+					return;
+				}
+
+				MainWindow.MouseHourglass();
+
+				string ContractId = this.legalModel.ExistingContractId;
+
+				await this.legalModel.RemoveContract(ContractId);
 
 				MainWindow.MouseDefault();
 			}

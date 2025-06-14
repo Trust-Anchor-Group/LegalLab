@@ -397,15 +397,7 @@ namespace LegalLab.Models.Wallet
 
 					await this.networkModel.Legal.SetContractTemplateName(TemplateName, PresetValues);
 
-					foreach (TabItem Item in MainWindow.currentInstance.TabControl.Items)
-					{
-						if (Item.Content == MainWindow.currentInstance.ContractsTab)
-						{
-							MainWindow.currentInstance.TabControl.SelectedItem = Item;
-							break;
-						}
-					}
-
+					MainWindow.SelectTab(MainWindow.currentInstance.ContractsTab);
 					MainWindow.MouseDefault();
 
 					this.optionsTransactionId = Guid.NewGuid().ToString();
@@ -427,7 +419,7 @@ namespace LegalLab.Models.Wallet
 			return Task.CompletedTask;
 		}
 
-		private static void OpenUrl(string Url)
+		internal static void OpenUrl(string Url)
 		{
 			ProcessStartInfo StartInfo = new()
 			{
@@ -538,15 +530,7 @@ namespace LegalLab.Models.Wallet
 
 					await this.networkModel.Legal.SetContractTemplateName(TemplateName, PresetValues);
 
-					foreach (TabItem Item in MainWindow.currentInstance.TabControl.Items)
-					{
-						if (Item.Content == MainWindow.currentInstance.ContractsTab)
-						{
-							MainWindow.currentInstance.TabControl.SelectedItem = Item;
-							break;
-						}
-					}
-
+					MainWindow.SelectTab(MainWindow.currentInstance.ContractsTab);
 					MainWindow.MouseDefault();
 
 					this.optionsTransactionId = Guid.NewGuid().ToString();

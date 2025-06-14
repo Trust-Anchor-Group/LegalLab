@@ -606,6 +606,18 @@ namespace LegalLab
 			}
 		}
 
+		public static void SelectTab(UserControl Tab)
+		{
+			foreach (TabItem Item in currentInstance.TabControl.Items)
+			{
+				if (Item.Content == Tab)
+				{
+					currentInstance.TabControl.SelectedItem = Item;
+					break;
+				}
+			}
+		}
+
 		#endregion
 
 		#endregion
