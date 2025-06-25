@@ -249,7 +249,7 @@ namespace LegalLab.Models.Legal
 
 		private async Task Contracts_ContractSigned(object Sender, ContractSignedEventArgs e)
 		{
-			Contract Contract = await this.contracts.GetContractAsync(this.ContractId);
+			Contract Contract = e.Contract ?? await this.contracts.GetContractAsync(this.ContractId);
 
 			if (this.legalModel is not null)
 				await this.legalModel.Contracts_ContractUpdated(Sender, e, Contract);
