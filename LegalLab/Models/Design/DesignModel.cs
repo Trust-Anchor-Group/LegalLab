@@ -78,6 +78,7 @@ namespace LegalLab.Models.Design
 		private readonly Command addDateTimeParameter;
 		private readonly Command addTimeParameter;
 		private readonly Command addDurationParameter;
+		private readonly Command addGeoParameter;
 		private readonly Command addCalcParameter;
 		private readonly Command addRoleReference;
 		private readonly Command addContractReference;
@@ -140,6 +141,7 @@ namespace LegalLab.Models.Design
 			this.addDateTimeParameter = new Command(this.ExecuteAddDateTimeParameter);
 			this.addTimeParameter = new Command(this.ExecuteAddTimeParameter);
 			this.addDurationParameter = new Command(this.ExecuteAddDurationParameter);
+			this.addGeoParameter = new Command(this.ExecuteAddGeoParameter);
 			this.addCalcParameter = new Command(this.ExecuteAddCalcParameter);
 			this.addRoleReference = new Command(this.ExecuteAddRoleReference);
 			this.addContractReference = new Command(this.ExecuteAddContractReference);
@@ -1862,6 +1864,33 @@ namespace LegalLab.Models.Design
 			ValueControl.Tag = ParameterInfo;
 
 			return ParameterInfo;
+		}
+
+		/// <summary>
+		/// Command for adding a geo-spatial parameter
+		/// </summary>
+		public ICommand AddGeoParameter => this.addGeoParameter;
+
+		/// <summary>
+		/// Adds a geo-spatial parameter to the design.
+		/// </summary>
+		public async Task ExecuteAddGeoParameter()
+		{
+			GeoParameter GP = new()
+			{
+				Name = FindNewName("Geo", this.AllParameterInfos),
+				Descriptions = [await defaultParameterDescription.ToHumanReadableText("en")],
+				Expression = string.Empty,
+				Guide = string.Empty,
+				Max = null,
+				MaxIncluded = false,
+				Min = null,
+				MinIncluded = false,
+				Value = null,
+				Protection = ProtectionLevel.Normal
+			};
+
+			this.AddParameter(this.GetParameterInfo(GP));
 		}
 
 		private ParameterInfo GetParameterInfo(GeoParameter GP)

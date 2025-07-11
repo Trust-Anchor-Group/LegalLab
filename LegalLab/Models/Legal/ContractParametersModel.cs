@@ -353,7 +353,7 @@ namespace LegalLab.Models.Legal
 						if (PresetValue is GeoPosition Position)
 							GP.Value = Position;
 
-						TextBox.Text = GP.Value.HumanReadable;
+						TextBox.Text = GP.Value?.HumanReadable ?? string.Empty;
 
 						this.parametersByName[Parameter.Name] = ParameterInfo = new GeoParameterInfo(this.contract, GP, TextBox,
 							null, null, null, null, this.designModel, this.parameters);
