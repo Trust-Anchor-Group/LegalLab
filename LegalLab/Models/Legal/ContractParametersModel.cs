@@ -16,6 +16,7 @@ using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
 using Waher.Persistence;
+using Waher.Runtime.Geo;
 using Waher.Script;
 
 namespace LegalLab.Models.Legal
@@ -347,6 +348,16 @@ namespace LegalLab.Models.Legal
 						this.parametersByName[Parameter.Name] = ParameterInfo = new ContractReferenceParameterInfo(this.contract, CRP, TextBox,
 							this.designModel, this.parameters);
 					}
+					else if (Parameter is GeoParameter GP)
+					{
+						if (PresetValue is GeoPosition Position)
+							GP.Value = Position;
+
+						TextBox.Text = GP.Value.HumanReadable;
+
+						this.parametersByName[Parameter.Name] = ParameterInfo = new GeoParameterInfo(this.contract, GP, TextBox,
+							null, null, null, null, this.designModel, this.parameters);
+					}
 					else
 						continue;
 
@@ -436,8 +447,12 @@ namespace LegalLab.Models.Legal
 						ParameterInfo.Value = TS;
 					else if (ParameterInfo.Parameter is DurationParameter && Waher.Content.Duration.TryParse(TextBox.Text, out Waher.Content.Duration Dr))
 						ParameterInfo.Value = Dr;
+					else if (ParameterInfo.Parameter is GeoParameter && GeoPosition.TryParse(TextBox.Text, out GeoPosition Position))
+						ParameterInfo.Value = Position;
 					else if (ParameterInfo.Parameter is not CalcParameter)
 						ParameterInfo.Value = TextBox.Text;
+					else
+						throw new Exception("Unable to parse value.");
 
 					TextBox.Background = ParameterInfo.Protection.DefaultBrush();
 

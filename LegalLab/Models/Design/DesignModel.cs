@@ -16,6 +16,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Markup;
@@ -248,6 +249,8 @@ namespace LegalLab.Models.Design
 					ContractReferenceParameterList.Add(this.GetParameterInfo(CRP));
 					continue;
 				}
+				else if (Parameter is GeoParameter GP)
+					ParameterInfo = this.GetParameterInfo(GP);
 				else
 					continue;
 
@@ -1071,12 +1074,12 @@ namespace LegalLab.Models.Design
 			MaxControl.TextChanged += this.Parameter_MaxTextChanged;
 
 			CheckBox MinIncludedControl = new();
-			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
+			MinIncludedControl.SetBinding(ToggleButton.IsCheckedProperty, "MinIncluded");
 			MinIncludedControl.Checked += this.Parameter_MinIncludedCheckedChanged;
 			MinIncludedControl.Unchecked += this.Parameter_MinIncludedCheckedChanged;
 
 			CheckBox MaxIncludedControl = new();
-			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
+			MaxIncludedControl.SetBinding(ToggleButton.IsCheckedProperty, "MaxIncluded");
 			MaxIncludedControl.Checked += this.Parameter_MaxIncludedCheckedChanged;
 			MaxIncludedControl.Unchecked += this.Parameter_MaxIncludedCheckedChanged;
 
@@ -1141,12 +1144,12 @@ namespace LegalLab.Models.Design
 			MaxControl.TextChanged += this.Parameter_MaxTextChanged;
 
 			CheckBox MinIncludedControl = new();
-			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
+			MinIncludedControl.SetBinding(ToggleButton.IsCheckedProperty, "MinIncluded");
 			MinIncludedControl.Checked += this.Parameter_MinIncludedCheckedChanged;
 			MinIncludedControl.Unchecked += this.Parameter_MinIncludedCheckedChanged;
 
 			CheckBox MaxIncludedControl = new();
-			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
+			MaxIncludedControl.SetBinding(ToggleButton.IsCheckedProperty, "MaxIncluded");
 			MaxIncludedControl.Checked += this.Parameter_MaxIncludedCheckedChanged;
 			MaxIncludedControl.Unchecked += this.Parameter_MaxIncludedCheckedChanged;
 
@@ -1372,7 +1375,7 @@ namespace LegalLab.Models.Design
 				HorizontalContentAlignment = HorizontalAlignment.Center
 			};
 
-			CheckBox.SetBinding(CheckBox.IsCheckedProperty, "Value");
+			CheckBox.SetBinding(ToggleButton.IsCheckedProperty, "Value");
 			CheckBox.Checked += this.Parameter_CheckedChanged;
 			CheckBox.Unchecked += this.Parameter_CheckedChanged;
 
@@ -1493,12 +1496,12 @@ namespace LegalLab.Models.Design
 			MaxControl.TextChanged += this.Parameter_MaxTextChanged;
 
 			CheckBox MinIncludedControl = new();
-			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
+			MinIncludedControl.SetBinding(ToggleButton.IsCheckedProperty, "MinIncluded");
 			MinIncludedControl.Checked += this.Parameter_MinIncludedCheckedChanged;
 			MinIncludedControl.Unchecked += this.Parameter_MinIncludedCheckedChanged;
 
 			CheckBox MaxIncludedControl = new();
-			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
+			MaxIncludedControl.SetBinding(ToggleButton.IsCheckedProperty, "MaxIncluded");
 			MaxIncludedControl.Checked += this.Parameter_MaxIncludedCheckedChanged;
 			MaxIncludedControl.Unchecked += this.Parameter_MaxIncludedCheckedChanged;
 
@@ -1567,12 +1570,12 @@ namespace LegalLab.Models.Design
 			MaxControl.TextChanged += this.Parameter_MaxTextChanged;
 
 			CheckBox MinIncludedControl = new();
-			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
+			MinIncludedControl.SetBinding(ToggleButton.IsCheckedProperty, "MinIncluded");
 			MinIncludedControl.Checked += this.Parameter_MinIncludedCheckedChanged;
 			MinIncludedControl.Unchecked += this.Parameter_MinIncludedCheckedChanged;
 
 			CheckBox MaxIncludedControl = new();
-			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
+			MaxIncludedControl.SetBinding(ToggleButton.IsCheckedProperty, "MaxIncluded");
 			MaxIncludedControl.Checked += this.Parameter_MaxIncludedCheckedChanged;
 			MaxIncludedControl.Unchecked += this.Parameter_MaxIncludedCheckedChanged;
 
@@ -1638,7 +1641,7 @@ namespace LegalLab.Models.Design
 			MinControl.TextChanged += this.Parameter_MinTextChanged;
 
 			TextBox MaxControl = new();
-			Binding = new("Min")
+			Binding = new("Max")
 			{
 				Converter = new TimeToXmlString()
 			};
@@ -1646,12 +1649,12 @@ namespace LegalLab.Models.Design
 			MaxControl.TextChanged += this.Parameter_MaxTextChanged;
 
 			CheckBox MinIncludedControl = new();
-			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
+			MinIncludedControl.SetBinding(ToggleButton.IsCheckedProperty, "MinIncluded");
 			MinIncludedControl.Checked += this.Parameter_MinIncludedCheckedChanged;
 			MinIncludedControl.Unchecked += this.Parameter_MinIncludedCheckedChanged;
 
 			CheckBox MaxIncludedControl = new();
-			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
+			MaxIncludedControl.SetBinding(ToggleButton.IsCheckedProperty, "MaxIncluded");
 			MaxIncludedControl.Checked += this.Parameter_MaxIncludedCheckedChanged;
 			MaxIncludedControl.Unchecked += this.Parameter_MaxIncludedCheckedChanged;
 
@@ -1720,12 +1723,12 @@ namespace LegalLab.Models.Design
 			MaxControl.TextChanged += this.Parameter_MaxTextChanged;
 
 			CheckBox MinIncludedControl = new();
-			MinIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MinIncluded");
+			MinIncludedControl.SetBinding(ToggleButton.IsCheckedProperty, "MinIncluded");
 			MinIncludedControl.Checked += this.Parameter_MinIncludedCheckedChanged;
 			MinIncludedControl.Unchecked += this.Parameter_MinIncludedCheckedChanged;
 
 			CheckBox MaxIncludedControl = new();
-			MaxIncludedControl.SetBinding(CheckBox.IsCheckedProperty, "MaxIncluded");
+			MaxIncludedControl.SetBinding(ToggleButton.IsCheckedProperty, "MaxIncluded");
 			MaxIncludedControl.Checked += this.Parameter_MaxIncludedCheckedChanged;
 			MaxIncludedControl.Unchecked += this.Parameter_MaxIncludedCheckedChanged;
 
@@ -1857,6 +1860,53 @@ namespace LegalLab.Models.Design
 
 			ParameterInfo ParameterInfo = new CalcParameterInfo(this.contract, CP, ValueControl, this, this.parameters);
 			ValueControl.Tag = ParameterInfo;
+
+			return ParameterInfo;
+		}
+
+		private ParameterInfo GetParameterInfo(GeoParameter GP)
+		{
+			TextBox ValueControl = new();
+			Binding Binding = new("Value")
+			{
+				Converter = new GeoPositionToGpsString()
+			};
+			ValueControl.SetBinding(TextBox.TextProperty, Binding);
+			ValueControl.TextChanged += this.Parameter_TextChanged;
+
+			TextBox MinControl = new();
+			Binding = new Binding("Min")
+			{
+				Converter = new GeoPositionToGpsString()
+			};
+			MinControl.SetBinding(TextBox.TextProperty, Binding);
+			MinControl.TextChanged += this.Parameter_MinTextChanged;
+
+			TextBox MaxControl = new();
+			Binding = new("Max")
+			{
+				Converter = new GeoPositionToGpsString()
+			};
+			MaxControl.SetBinding(TextBox.TextProperty, Binding);
+			MaxControl.TextChanged += this.Parameter_MaxTextChanged;
+
+			CheckBox MinIncludedControl = new();
+			MinIncludedControl.SetBinding(ToggleButton.IsCheckedProperty, "MinIncluded");
+			MinIncludedControl.Checked += this.Parameter_MinIncludedCheckedChanged;
+			MinIncludedControl.Unchecked += this.Parameter_MinIncludedCheckedChanged;
+
+			CheckBox MaxIncludedControl = new();
+			MaxIncludedControl.SetBinding(ToggleButton.IsCheckedProperty, "MaxIncluded");
+			MaxIncludedControl.Checked += this.Parameter_MaxIncludedCheckedChanged;
+			MaxIncludedControl.Unchecked += this.Parameter_MaxIncludedCheckedChanged;
+
+			ParameterInfo ParameterInfo = new GeoParameterInfo(this.contract, GP, ValueControl, MinControl, MinIncludedControl,
+				MaxControl, MaxIncludedControl, this, this.parameters);
+			ValueControl.Tag = ParameterInfo;
+			MinControl.Tag = ParameterInfo;
+			MaxControl.Tag = ParameterInfo;
+			MinIncludedControl.Tag = ParameterInfo;
+			MaxIncludedControl.Tag = ParameterInfo;
 
 			return ParameterInfo;
 		}
@@ -2389,7 +2439,7 @@ namespace LegalLab.Models.Design
 				MainWindow.SuccessBox("Template successfully proposed. The template ID, which has been copied to the clipboard, is: " + Contract.ContractId);
 				Clipboard.SetText(Contract.ContractId);
 
-				StringBuilder Url = new StringBuilder();
+				StringBuilder Url = new();
 
 				Url.Append("https://");
 				Url.Append(this.Network.XmppServer);

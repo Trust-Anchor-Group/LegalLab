@@ -24,6 +24,7 @@ using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
 using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Persistence;
+using Waher.Runtime.Geo;
 using Waher.Runtime.IO;
 
 namespace LegalLab.Models.Legal
@@ -1117,6 +1118,26 @@ namespace LegalLab.Models.Legal
 								}
 
 								Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());
+							}
+							else if (Info.Parameter is GeoParameter GP)
+							{
+								if (P.Value is GeoPosition Position ||
+									(P.Value is string s && GeoPosition.TryParse(s, out Position)))
+								{
+									GP.Value = Position;
+
+									if (Entry is not null)
+										Entry.Background = Info.Protection.DefaultBrush();
+
+									Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());
+								}
+								else
+								{
+									if (Entry is not null)
+										Entry.Background = Brushes.Salmon;
+
+									Log.Error("Unable to set parameter " + Info.Parameter.Name + " to " + P.Value?.ToString());
+								}
 							}
 						}
 					}

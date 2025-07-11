@@ -142,7 +142,7 @@
 											 AutoGenerateColumns="False" GridLinesVisibility="None" IsReadOnly="True">
 					<DataGrid.Columns>
 						<DataGridTextColumn Binding="{Binding Name}" Header="Parameter"/>
-						<DataGridTextColumn Binding="{Binding Value}" Header="Value"/>
+						<DataGridTextColumn Binding="{Binding Value, Converter={conv:MoneyToString}}" Header="Value"/>
 						<DataGridTemplateColumn Header="Description">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
