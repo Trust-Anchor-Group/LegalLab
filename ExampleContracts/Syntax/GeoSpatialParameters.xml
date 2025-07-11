@@ -1,0 +1,87 @@
+<contract archiveOpt="PT0S" archiveReq="PT0S" canActAsTemplate="true" duration="P1M" id="ExampleCalculatedParameters" visibility="PublicSearchable" xmlns="urn:nf:iot:leg:sc:1.0">
+	<Nop xmlns="https://paiwise.tagroot.io/Schema/PaymentInstructions.xsd" />
+	<role maxCount="1" minCount="1" name="Author">
+		<description xml:lang="en">
+			<paragraph>
+				<text>Author of smart contracts.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<templateOnly />
+	</parts>
+	<parameters>
+		<stringParameter name="Observation" minLength="1" guide="Observation">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Write a short description of what has been observed.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<geoParameter name="ObservationLocation" contractLocation="true" guide="GPS Coordintes">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The coordinates of what has been observed.</text>
+				</paragraph>
+			</description>
+		</geoParameter>
+		<calcParameter name="ObservationTime" exp="NowUtc">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The time (in UTC) the observation was reported.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Geo-spatial coordinates</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This example demonstrates how to use geo-spatial coordinates in a contract. It does this by allowing the creator of a contract to publish an observation together with a location.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Geo-spatial publication</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>The location is encoded as the location of the contract. This causes the contract to be published via the geo-spatial Publish/Subscribe-service of the Neuron. If the contract visibility is </text>
+							<italic>
+								<text>Public and Searchable</text>
+							</italic>
+							<text>, the publication will be persisted. If not, the publication will be </text>
+							<italic>
+								<text>ephemeral</text>
+							</italic>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Observation</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>The following observation was reported at </text>
+							<italic>
+								<parameter name="ObservationTime"/>
+							</italic>
+							<text> (UTC), at location </text>
+							<italic>
+								<parameter name="ObservationLocation"/>
+							</italic>
+							<text>: </text>
+							<bold>
+								<parameter name="Observation"/>
+							</bold>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>

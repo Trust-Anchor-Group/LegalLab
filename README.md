@@ -93,6 +93,9 @@ TAG technologies.
 	to define separate parameters the users have to edit. This simplifies contract creation, and improves integrity of the information
 	presented.
 
+	* [GeoSpatialParameters.xml](ExampleContracts/Syntax/GeoSpatialParameters.xml) shows how geo-spatial parameters can be used in 
+	contracts.
+
 * [Tokens](ExampleContracts/Tokens) contains examples on how to create and manage Neuro-Feature tokens.
 
 	* [Create](ExampleContracts/Tokens/Create) contains examples on how to create tokens.
