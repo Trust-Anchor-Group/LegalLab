@@ -590,7 +590,7 @@ namespace LegalLab.Models.Legal
 			lock (this.identities)
 			{
 				foreach (LegalIdentity Identity in Identities)
-					this.identities[Identity.Id] = new IdentityWrapper(this.contracts.Client.Domain, Identity);
+					this.identities[Identity.Id] = new IdentityWrapper(this.contracts.Client.Domain, Identity, this);
 			}
 
 			this.RaisePropertyChanged(nameof(this.Identities));
@@ -903,7 +903,7 @@ namespace LegalLab.Models.Legal
 		{
 			lock (this.identities)
 			{
-				this.identities[e.Identity.Id] = new IdentityWrapper(this.contracts.Client.Domain, e.Identity);
+				this.identities[e.Identity.Id] = new IdentityWrapper(this.contracts.Client.Domain, e.Identity, this);
 			}
 
 			this.RaisePropertyChanged(nameof(this.Identities));
@@ -988,7 +988,7 @@ namespace LegalLab.Models.Legal
 
 				lock (this.identities)
 				{
-					this.identities[Identity.Id] = new IdentityWrapper(this.contracts.Client.Domain, Identity);
+					this.identities[Identity.Id] = new IdentityWrapper(this.contracts.Client.Domain, Identity, this);
 				}
 
 				this.RaisePropertyChanged(nameof(this.Identities));
