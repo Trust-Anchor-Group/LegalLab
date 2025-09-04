@@ -11,26 +11,17 @@ namespace LegalLab.Models.Legal.Items.Parameters
 	/// <summary>
 	/// Contains information about a calculation parameter
 	/// </summary>
-	public class CalcParameterInfo : ParameterInfo
+	/// <param name="Contract">Contract hosting the parameter</param>
+	/// <param name="Parameter">Parameter</param>
+	/// <param name="Control">Edit control</param>
+	/// <param name="DesignModel">Design model</param>
+	/// <param name="Parameters">Collection of parameters.</param>
+	public class CalcParameterInfo(Contract Contract, CalcParameter Parameter, TextBox Control, 
+		DesignModel DesignModel, Property<ParameterInfo[]> Parameters) 
+		: ParameterInfo(Contract, Parameter, Control, DesignModel, Parameters)
 	{
-		private CalcParameter calcParameter;
-		private readonly TextBox textBox;
-
-		/// <summary>
-		/// Contains information about a calculation parameter
-		/// </summary>
-		/// <param name="Contract">Contract hosting the parameter</param>
-		/// <param name="Parameter">Parameter</param>
-		/// <param name="Control">Edit control</param>
-		/// <param name="DesignModel">Design model</param>
-		/// <param name="Parameters">Collection of parameters.</param>
-		public CalcParameterInfo(Contract Contract, CalcParameter Parameter, TextBox Control, DesignModel DesignModel, 
-			Property<ParameterInfo[]> Parameters)
-			: base(Contract, Parameter, Control, DesignModel, Parameters)
-		{
-			this.calcParameter = Parameter;
-			this.textBox = Control;
-		}
+		private CalcParameter calcParameter = Parameter;
+		private readonly TextBox textBox = Control;
 
 		/// <summary>
 		/// Method called when the parameter needs to be validated.

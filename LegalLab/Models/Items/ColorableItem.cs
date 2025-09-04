@@ -6,22 +6,13 @@ namespace LegalLab.Models.Items
 	/// Abstract base class for selectable colorable item.
 	/// From the IoTGateway project, with permission.
 	/// </summary>
-	public abstract class ColorableItem : SelectableItem
+	/// <param name="ForegroundColor">Foreground Color</param>
+	/// <param name="BackgroundColor">Background Color</param>
+	public abstract class ColorableItem(Color ForegroundColor, Color BackgroundColor) 
+		: SelectableItem
 	{
-		private Color foregroundColor;
-		private Color backgroundColor;
-
-		/// <summary>
-		/// Abstract base class for selectable colorable item.
-		/// From the IoTGateway project, with permission.
-		/// </summary>
-		/// <param name="ForegroundColor">Foreground Color</param>
-		/// <param name="BackgroundColor">Background Color</param>
-		public ColorableItem(Color ForegroundColor, Color BackgroundColor)
-		{
-			this.foregroundColor = ForegroundColor;
-			this.backgroundColor = BackgroundColor;
-		}
+		private Color foregroundColor = ForegroundColor;
+		private Color backgroundColor = BackgroundColor;
 
 		/// <summary>
 		/// Foreground color

@@ -93,6 +93,9 @@ TAG technologies.
 	to define separate parameters the users have to edit. This simplifies contract creation, and improves integrity of the information
 	presented.
 
+	* [GeoSpatialParameters.xml](ExampleContracts/Syntax/GeoSpatialParameters.xml) shows how geo-spatial parameters can be used in 
+	contracts.
+
 * [Tokens](ExampleContracts/Tokens) contains examples on how to create and manage Neuro-Feature tokens.
 
 	* [Create](ExampleContracts/Tokens/Create) contains examples on how to create tokens.
@@ -134,6 +137,14 @@ TAG technologies.
 		* [DestroyTokenContract5.xml](ExampleContracts/Tokens/Destroy/DestroyTokenContract5.xml) can be used to destroy a batch of five tokens,
 		as long as one owns all tokens in the batch.
 
+	* [Donate](ExampleContracts/Tokens/Donate) contains examples on how to donate tokens.
+	
+		* [DonateTokenContract1.xml](ExampleContracts/Tokens/Donate/DonateTokenContract1.xml) can be used to donate a
+		token from the current owner to a new owner. The token maintains its current registered value.
+	
+		* [DonateTokenContract5.xml](ExampleContracts/Tokens/Donate/DonateTokenContract5.xml) can be used to donate a
+		batch of five tokens from the current owner to a new owner. The tokens maintain their currently registered values.
+
 	* [Transfer](ExampleContracts/Tokens/Transfer) contains examples on how to transfer the ownership of tokens.
 	
 		* [TransferTokenContract1.xml](ExampleContracts/Tokens/Transfer/TransferTokenContract1.xml) can be used to transfer the ownership of a
@@ -142,6 +153,16 @@ TAG technologies.
 		* [TransferTokenContract5.xml](ExampleContracts/Tokens/Transfer/TransferTokenContract5.xml) can be used to transfer the ownership of a
 		batch of five tokens from the current owner to a new owner. The process includes assigning a new value for the tokens, as well as 
 		performing instant payments.
+
+* [Voting](ExampleContracts/Voting) contains examples related to voting.
+
+	* [OpenVoteYesNoAbstain.xml](ExampleContracts/Voting/OpenVoteYesNoAbstain.xml) shows how to create a contract that creates a Neuro-Feature
+	token for an open voting procedure. Voting is performed by participants signing ballot contracts with containing information about how they
+	vote. Presentation of voting counts is done using token reports. Layouts and images are available in the
+	[ExampleImages](ExampleImages) and [ExampleLayouts](ExampleLayouts) folders.
+
+	* [OpenBallotYesNoAbstain.xml](ExampleContracts/OpenBallotYesNoAbstain.xml) is a contract representing a ballot in an open voting procedure.
+	Each signed ballot gets counted in the corresponding open voting procedure and presented by the open voting token.
 
 * [Logistics](ExampleContracts/Logistics) contains examples related to logistics.
 

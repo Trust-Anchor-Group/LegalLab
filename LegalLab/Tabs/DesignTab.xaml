@@ -415,6 +415,7 @@
 					<Button Width="100" HorizontalAlignment="Left" Margin="0,5,5,0" Command="{Binding AddDateTimeParameter}">Add Date &amp; Time</Button>
 					<Button Width="100" HorizontalAlignment="Left" Margin="0,5,5,0" Command="{Binding AddTimeParameter}">Add Time</Button>
 					<Button Width="100" HorizontalAlignment="Left" Margin="0,5,5,0" Command="{Binding AddDurationParameter}">Add Duration</Button>
+					<Button Width="100" HorizontalAlignment="Left" Margin="0,5,5,0" Command="{Binding AddGeoParameter}">Add Geo</Button>
 					<Button Width="100" HorizontalAlignment="Left" Margin="0,5,5,0" Command="{Binding AddCalcParameter}">Add Calculation</Button>
 				</WrapPanel>
 

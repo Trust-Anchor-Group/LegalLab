@@ -11,28 +11,19 @@ namespace LegalLab.Models.Standards
 		/// <summary>
 		/// Contains one record of the ISO 639-1 data set.
 		/// </summary>
-		public class Record
+		/// <param name="Language">Language name</param>
+		/// <param name="Code">Language Code</param>
+		public class Record(string Language, string Code)
 		{
-			/// <summary>
-			/// Contains one record of the ISO 639-1 data set.
-			/// </summary>
-			/// <param name="Language">Language name</param>
-			/// <param name="Code">Language Code</param>
-			public Record(string Language, string Code)
-			{
-				this.Language = Language;
-				this.Code = Code;
-			}
-
 			/// <summary>
 			/// Language
 			/// </summary>
-			public string Language { get; set; }
+			public string Language { get; set; } = Language;
 
 			/// <summary>
 			/// ISO 639-1 language code
 			/// </summary>
-			public string Code { get; set; }
+			public string Code { get; set; } = Code;
 		}
 
 		private static Dictionary<string, string> languageByCode = null;
@@ -61,8 +52,8 @@ namespace LegalLab.Models.Standards
 		/// <summary>
 		/// Available language codes
 		/// </summary>
-		public static readonly Record[] Data = new Record[]
-		{
+		public static readonly Record[] Data =
+		[
 			new("Abkhaz", "ab"),
 			new("Afar", "aa"),
 			new("Afrikaans", "af"),
@@ -239,6 +230,6 @@ namespace LegalLab.Models.Standards
 			new("Yoruba", "yo"),
 			new("Zhuang", "za"),
 			new("Zulu", "zu")
-		};
+		];
 	}
 }

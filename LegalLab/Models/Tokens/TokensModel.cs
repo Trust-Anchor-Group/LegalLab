@@ -23,8 +23,8 @@ namespace LegalLab.Models.Tokens
 	[Singleton]
 	public class TokensModel : PersistedModel, IDisposable
 	{
-		private readonly List<TokenModel> tokens = new();
-		private readonly List<TokenTotal> totals = new();
+		private readonly List<TokenModel> tokens = [];
+		private readonly List<TokenTotal> totals = [];
 
 		private readonly NeuroFeaturesClient neuroFeaturesClient;
 
@@ -123,7 +123,7 @@ namespace LegalLab.Models.Tokens
 								this.selectedItem.VariablesUpdated(e2.Variables);
 								await this.selectedItem.UpdateNoteCommands();
 
-								MainWindow.UpdateGui(async () =>
+								await MainWindow.UpdateGui(async () =>
 								{
 									await this.PrepareTokenMenuItems();
 								});
@@ -145,7 +145,7 @@ namespace LegalLab.Models.Tokens
 
 		private void LoadEvents()
 		{
-			this.events = Array.Empty<TokenEventDetail>();
+			this.events = [];
 			this.RaisePropertyChanged(nameof(this.Events));
 
 			this.neuroFeaturesClient.GetEvents(this.selectedItem.TokenId, 0, 100, (sender, e) =>
@@ -173,7 +173,7 @@ namespace LegalLab.Models.Tokens
 
 		private async Task PrepareTokenMenuItems()
 		{
-			List<Control> Items = new();
+			List<Control> Items = [];
 			TokenModel Model = this.selectedItem;
 
 			if (Model is not null)
@@ -238,7 +238,7 @@ namespace LegalLab.Models.Tokens
 				}
 			}
 
-			this.tokenMenuItems = Items.ToArray();
+			this.tokenMenuItems = [.. Items];
 			this.RaisePropertyChanged(nameof(this.TokenMenuItems));
 		}
 
@@ -290,7 +290,7 @@ namespace LegalLab.Models.Tokens
 			{
 				lock (this.tokens)
 				{
-					return this.tokens.ToArray();
+					return [.. this.tokens];
 				}
 			}
 		}
@@ -320,7 +320,7 @@ namespace LegalLab.Models.Tokens
 			{
 				lock (this.totals)
 				{
-					return this.totals.ToArray();
+					return [.. this.totals];
 				}
 			}
 		}
@@ -416,7 +416,7 @@ namespace LegalLab.Models.Tokens
 		/// <inheritdoc/>
 		public override async Task Start()
 		{
-			MainWindow.UpdateGui(() =>
+			await MainWindow.UpdateGui(() =>
 			{
 				MainWindow.currentInstance.TokensTab.DataContext = this;
 				return Task.CompletedTask;
@@ -430,20 +430,23 @@ namespace LegalLab.Models.Tokens
 			TokensEventArgs e2 = await this.neuroFeaturesClient.GetTokensAsync(Offset, c);
 			while (e2.Ok)
 			{
-				foreach (Token Token in e2.Tokens)
+				await MainWindow.UpdateGui(async () =>
 				{
-					TokenModel TokenModel = await TokenModel.CreateAsync(this.neuroFeaturesClient, Token, "en", MainWindow.DesignModel);
-					TokenModel.Selected += this.Token_Selected;
-					TokenModel.Deselected += this.Token_Deselected;
-					TokenModel.NoteAdded += this.Token_NoteAdded;
-
-					lock (this.tokens)
+					foreach (Token Token in e2.Tokens)
 					{
-						this.tokens.Add(TokenModel);
-					}
-				}
+						TokenModel TokenModel = await TokenModel.CreateAsync(this.neuroFeaturesClient, Token, "en", MainWindow.DesignModel);
+						TokenModel.Selected += this.Token_Selected;
+						TokenModel.Deselected += this.Token_Deselected;
+						TokenModel.NoteAdded += this.Token_NoteAdded;
 
-				this.RaisePropertyChanged(nameof(this.Tokens));
+						lock (this.tokens)
+						{
+							this.tokens.Add(TokenModel);
+						}
+					}
+
+					this.RaisePropertyChanged(nameof(this.Tokens));
+				});
 
 				Offset += e2.Tokens.Length;
 				if (e2.Tokens.Length == 0)

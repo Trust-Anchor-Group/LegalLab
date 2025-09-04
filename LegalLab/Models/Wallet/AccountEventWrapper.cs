@@ -8,18 +8,11 @@ namespace LegalLab.Models.Wallet
 	/// <summary>
 	/// Account event wrapper.
 	/// </summary>
-	public class AccountEventWrapper : SelectableItem
+	/// <param name="Event">Account event</param>
+	public class AccountEventWrapper(AccountEvent Event) 
+		: SelectableItem
 	{
-		private readonly AccountEvent @event;
-
-		/// <summary>
-		/// Account event wrapper.
-		/// </summary>
-		/// <param name="Event">Account event</param>
-		public AccountEventWrapper(AccountEvent Event)
-		{
-			this.@event = Event;
-		}
+		private readonly AccountEvent @event = Event;
 
 		/// <summary>
 		/// Transaction ID

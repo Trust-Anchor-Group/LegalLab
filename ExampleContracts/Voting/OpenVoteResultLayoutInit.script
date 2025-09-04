@@ -1,0 +1,48 @@
+NrBallotsTotal:=135;
+NrBallotsAccepted:=125;
+NrBallotsRejected:=10;
+NrChanged:=5;
+NrYes:=70;
+NrNo:=40;
+NrAbstain:=10;
+NrComments:=25;
+Question:="What do you think?";
+ChangeVoteAllowed:=true;
+VoteContractId:="2fd25b60-6cd7-af11-90c6-85fe384b0cf9@legal.localhost";
+BallotTemplateId:="2fd45ecd-0755-c4a2-008f-5048ed645fee@legal.localhost";
+VoteTokenId:="2fd25b60-6cd7-af11-90c6-85fe384b0cf9@legal.localhost";
+From:=NowUtc;
+To:=From+TimeSpan(1,0,0,0);
+Expires:=To+TimeSpan(1,0,0,0);
+LayoutState:="Created";
+
+CalcTimeLeft(TimeLeft):=
+(
+	NrDays:=Days(TimeLeft);
+	
+	if (NrDays>2) then
+		[round(NrDays),"days",NowUtc+TimeSpan(1,0,0)]
+	else
+	(
+		NrHours:=Hours(TimeLeft);
+		if (NrHours>2) then
+			[round(NrHours),"hours",NowUtc+TimeSpan(0,5,0)]
+		else
+		(
+			NrMinutes:=Minutes(TimeLeft);
+			if (NrMinutes>2) then
+				[round(NrMinutes),"minutes",NowUtc+TimeSpan(0,1,0)]
+			else
+			(
+				NrSeconds:=Seconds(TimeLeft);
+				[round(NrSeconds),"seconds",NowUtc+TimeSpan(0,0,1)]
+			)
+		)
+	)
+);
+
+CalcTimeLeftLabel(TimeLeft):=
+(
+	[Nr,Unit,NextTimeCheck]:=CalcTimeLeft(TimeLeft);
+	Str(Nr)+" "+Unit;
+);

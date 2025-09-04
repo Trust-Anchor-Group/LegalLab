@@ -9,7 +9,7 @@ namespace LegalLab.Models
 	/// </summary>
 	public static class DelayedActions
 	{
-		private static readonly Scheduler scheduler = new Scheduler();
+		private static readonly Scheduler scheduler = new();
 
 		/// <summary>
 		/// Queues a delayed action. If previously queued, previously queued item will be removed.

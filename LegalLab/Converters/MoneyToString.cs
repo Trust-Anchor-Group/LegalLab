@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Markup;
+using Waher.Runtime.Geo;
 
 namespace LegalLab.Converters
 {
@@ -34,6 +35,8 @@ namespace LegalLab.Converters
 				else
 					return TP.ToString();
 			}
+			else if (Value is GeoPosition Position)
+				return Position.HumanReadable;
 			else
 				return Value?.ToString() ?? string.Empty;
 		}

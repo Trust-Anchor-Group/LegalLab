@@ -20,14 +20,14 @@ namespace LegalLab.Extensions
 	public static class ScriptExtensions
 	{
 		private readonly static Assembly scriptContent = typeof(GraphEncoder).Assembly;
-		private readonly static Assembly[] prohibitedAssemblies = new Assembly[]
-		{
+		private readonly static Assembly[] prohibitedAssemblies =
+		[
 			scriptContent,						// Waher.Script.Content
 			typeof(FractalGraph).Assembly,		// Waher.Script.Fractals
 			typeof(WhoIs).Assembly,				// Waher.Script.Networking
 			typeof(Select).Assembly,			// Waher.Script.Persistence
 			typeof(ConnectMsSql).Assembly		// Waher.Script.Data
-		};
+		];
 
 		/// <summary>
 		/// Checks if an expression is safe to execute (if it comes from an external source).

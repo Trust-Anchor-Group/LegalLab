@@ -54,7 +54,7 @@ namespace LegalLab.Models.Network
 			this.networkModel = await MainWindow.InstantiateModel<NetworkModel>();
 			this.networkModel.OnStateChanged += this.NetworkModel_OnStateChanged;
 
-			MainWindow.UpdateGui(() =>
+			await MainWindow.UpdateGui(() =>
 			{
 				this.ConnectionState = this.networkModel.State;
 				return Task.CompletedTask;

@@ -8,7 +8,7 @@ namespace LegalLab.Models
 	/// </summary>
 	public abstract class PersistedModel : Model
 	{
-		private readonly LinkedList<IPersistedProperty> properties = new LinkedList<IPersistedProperty>();
+		private readonly LinkedList<IPersistedProperty> properties = new();
 
 		/// <summary>
 		/// Adds a persistant property
@@ -24,6 +24,8 @@ namespace LegalLab.Models
 		/// </summary>
 		public async Task Load()
 		{
+			await MainWindow.WaitForDB();
+
 			foreach (IPersistedProperty Property in this.properties)
 				await Property.Load();
 		}

@@ -26,7 +26,7 @@ namespace LegalLab.Tabs
 			{
 				base.OnInitialized(e);
 		
-				scriptModel = await MainWindow.InstantiateModel<ScriptModel>(this.HistoryPanel);
+				scriptModel = await MainWindow.InstantiateModel<ScriptModel>(this.HistoryPanel, this.InputEdit);
 			}
 			catch (Exception ex)
 			{

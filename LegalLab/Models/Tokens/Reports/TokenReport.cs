@@ -18,21 +18,16 @@ namespace LegalLab.Models.Tokens.Reports
 	/// <summary>
 	/// Abstract base class for token reports.
 	/// </summary>
-	public abstract class TokenReport : IDelayedAction
+	public abstract class TokenReport(NeuroFeaturesClient Client, string TokenId)
+		: IDelayedAction
 	{
-		private readonly string tokenId;
+		private readonly string tokenId = TokenId;
 		private ReportTab tab;
 
 		/// <summary>
 		/// Refernce to the Neuro-Features client.
 		/// </summary>
-		protected readonly NeuroFeaturesClient client;
-
-		public TokenReport(NeuroFeaturesClient Client, string TokenId)
-		{
-			this.client = Client;
-			this.tokenId = TokenId;
-		}
+		protected readonly NeuroFeaturesClient client = Client;
 
 		/// <summary>
 		/// Token ID associated with the state-machine.
@@ -58,7 +53,7 @@ namespace LegalLab.Models.Tokens.Reports
 		/// <returns>Parsed XAML</returns>
 		public static UIElement ParseReport(string Xaml)
 		{
-			List<DynamicImageRef> DynamicImages = new();
+			List<DynamicImageRef> DynamicImages = [];
 			StringBuilder sb = new();
 			int i = 0;
 			int c = Xaml.Length;
@@ -96,8 +91,8 @@ namespace LegalLab.Models.Tokens.Reports
 
 			if (Parsed is Panel Panel)
 			{
-				LinkedList<Panel> ToProcess = new();
-				LinkedList<Image> Images = new();
+				LinkedList<Panel> ToProcess = [];
+				LinkedList<Image> Images = [];
 				ToProcess.AddLast(Panel);
 
 				while (ToProcess.First is not null)
@@ -227,13 +222,10 @@ namespace LegalLab.Models.Tokens.Reports
 			
 			string Xaml = await this.GetReportXaml();
 
-			MainWindow.UpdateGui(() =>
+			await MainWindow.UpdateGui(() =>
 			{
 				UIElement Report = ParseReport(Xaml);
-
-				Tab.ReportPanel.Children.Clear();
-				Tab.ReportPanel.Children.Add(Report);
-
+				Tab.UpdateReport(Report);
 				return Task.CompletedTask;
 			});
 		}

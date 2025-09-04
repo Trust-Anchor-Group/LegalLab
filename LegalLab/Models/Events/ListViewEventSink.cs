@@ -2,23 +2,17 @@
 using System.Windows.Controls;
 using Waher.Events;
 
-namespace LegalLab.Models.Network.Events
+namespace LegalLab.Models.Events
 {
 	/// <summary>
 	/// Event Sink, that outputs items to a ListView control.
 	/// From the IoTGateway project, with permission.
 	/// </summary>
-	public class ListViewEventSink : EventSink
+	public class ListViewEventSink(ListView View, int MaxCount) 
+		: EventSink(string.Empty)
 	{
-		private readonly ListView view;
-		private readonly int maxCount;
-
-		public ListViewEventSink(ListView View, int MaxCount)
-			: base(string.Empty)
-		{
-			this.view = View;
-			this.maxCount = MaxCount;
-		}
+		private readonly ListView view = View;
+		private readonly int maxCount = MaxCount;
 
 		public override Task Queue(Event Event)
 		{

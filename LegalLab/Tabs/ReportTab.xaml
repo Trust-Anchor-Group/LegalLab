@@ -6,9 +6,13 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel LastChildFill="True">
-        <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" DockPanel.Dock="Top">
+        <ScrollViewer Name="ReportScrollView" VerticalScrollBarVisibility="Visible" 
+					  HorizontalScrollBarVisibility="Auto" DockPanel.Dock="Top">
             <StackPanel Name="ReportPanel" Margin="10,10,10,10">
-            </StackPanel>
+				<StackPanel.LayoutTransform>
+					<ScaleTransform x:Name="ReportScaleTransform" ScaleX="1" ScaleY="1"/>
+				</StackPanel.LayoutTransform>
+			</StackPanel>
         </ScrollViewer>
     </DockPanel>
 </UserControl>

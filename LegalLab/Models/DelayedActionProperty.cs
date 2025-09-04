@@ -7,10 +7,17 @@ namespace LegalLab.Models
 	/// <summary>
 	/// Generic class for persistant properties
 	/// </summary>
-	public class DelayedActionProperty<T> : Property<T>, IDelayedAction
+	/// <param name="Name">Property name</param>
+	/// <param name="LiveUpdates">If updates to the parameter should cause delayed actions live.</param>
+	/// <param name="Delay">Delay after last change, before executing action.</param>
+	/// <param name="DefaultValue">Default value of property</param>
+	/// <param name="Model">Model hosting the property</param>
+	public class DelayedActionProperty<T>(string Name, TimeSpan Delay, bool LiveUpdates, 
+		T DefaultValue, IModel Model) 
+		: Property<T>(Name, DefaultValue, Model), IDelayedAction
 	{
-		private readonly bool liveUpdates = false;
-		private readonly TimeSpan delay;
+		private readonly bool liveUpdates = LiveUpdates;
+		private readonly TimeSpan delay = Delay;
 		private DateTime scheduledFor = DateTime.MinValue;
 		private bool changed = false;
 
@@ -23,21 +30,6 @@ namespace LegalLab.Models
 		public DelayedActionProperty(string Name, TimeSpan Delay, T DefaultValue, IModel Model)
 			: this(Name, Delay, true, DefaultValue, Model)
 		{
-		}
-
-		/// <summary>
-		/// Generic class for persistant properties
-		/// </summary>
-		/// <param name="Name">Property name</param>
-		/// <param name="LiveUpdates">If updates to the parameter should cause delayed actions live.</param>
-		/// <param name="Delay">Delay after last change, before executing action.</param>
-		/// <param name="DefaultValue">Default value of property</param>
-		/// <param name="Model">Model hosting the property</param>
-		public DelayedActionProperty(string Name, TimeSpan Delay, bool LiveUpdates, T DefaultValue, IModel Model)
-			: base(Name, DefaultValue, Model)
-		{
-			this.liveUpdates = LiveUpdates;
-			this.delay = Delay;
 		}
 
 		/// <summary>

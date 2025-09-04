@@ -10,13 +10,9 @@ namespace LegalLab.Models.Tokens.Reports
 	/// <summary>
 	/// Represent a report of the present state of a token and the underlying state-machine.
 	/// </summary>
-	public class TokenPresentReport : TokenReport
+	public class TokenPresentReport(NeuroFeaturesClient Client, string TokenId) 
+		: TokenReport(Client, TokenId)
 	{
-		public TokenPresentReport(NeuroFeaturesClient Client, string TokenId)
-			: base(Client, TokenId)
-		{
-		}
-
 		/// <summary>
 		/// Gets the title of report.
 		/// </summary>

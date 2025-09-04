@@ -1,0 +1,81 @@
+<contract archiveOpt="P3M" archiveReq="P1M" canActAsTemplate="true" duration="P2M" id="DonateTokenContract1" visibility="Public" xmlns="urn:nf:iot:leg:sc:1.0">
+	<Donate xmlns="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd">
+		<TokenID>
+			<ParameterReference parameter="TokenID" />
+		</TokenID>
+		<Donor>
+			<RoleReference role="Donor" />
+		</Donor>
+		<Recipient>
+			<RoleReference role="Recipient" />
+		</Recipient>
+		<TrustProvider>
+			<RoleReference role="TrustProvider" />
+		</TrustProvider>
+		<OwnershipContract>
+			<ParameterReference parameter="OwnershipContract" />
+		</OwnershipContract>
+	</Donate>
+	<role maxCount="1" minCount="1" name="Donor">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This is the role of the part that owns the token, before the donation.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role maxCount="1" minCount="1" name="Recipient">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This is the role of the part that will become the new ower of the token, after the donation.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role maxCount="1" minCount="1" name="TrustProvider">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This is the role of the trust provider that acts as the host for the token and approves the donation.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<templateOnly />
+	</parts>
+	<parameters>
+		<stringParameter name="TokenID" guide="Token ID (GUID)" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The ID of the token to donate.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="OwnershipContract" guide="Ownership Contract ID" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The ID of the contract that shows the current owner is the current owner of the token.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Donation of token</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This contract donates a token from its current owner to another. The token will retain its registered value.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Payment</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>No monetary exchange takes place in the donation.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>

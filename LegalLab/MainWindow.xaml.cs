@@ -2,8 +2,9 @@
 using LegalLab.Models;
 using LegalLab.Models.Design;
 using LegalLab.Models.Network;
-using LegalLab.Models.Network.Events;
+using LegalLab.Models.Events;
 using LegalLab.Models.Window;
+using LegalLab.Tabs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,6 +23,7 @@ using Waher.Persistence;
 using Waher.Persistence.Files;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Inventory.Loader;
+using Waher.Runtime.Collections;
 
 namespace LegalLab
 {
@@ -53,34 +55,39 @@ namespace LegalLab
 
 		public MainWindow()
 		{
+			TaskCompletionSource<bool> Completed = new TaskCompletionSource<bool>();
+			bool StartGuiTask = false;
+
+			lock (guiUpdateQueue)
+			{
+				if (currentInstance is null)
+				{
+					currentInstance = this;
+					StartGuiTask = true;
+				}
+			}
+
+			appDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LegalLab");
+
+			// Implementation Inventory. Used by persistence, networking and scripting modules.
+
+			TypesLoader.Initialize();   // Makes an inventory of all assemblies in project.
+
 			this.Visibility = Visibility.Hidden;
-			this.Initialize();
+
+			Task.Run(() => this.Initialize(Completed, StartGuiTask));
+
 			this.InitializeComponent();
+
+			Completed.Task.Wait();
 		}
 
 		#region Initialization & Setup
 
-		private async void Initialize()
+		private async Task Initialize(TaskCompletionSource<bool> Completed, bool StartGuiTask)
 		{
 			try
 			{
-				bool StartGuiTask = false;
-
-				lock (guiUpdateQueue)
-				{
-					if (currentInstance is null)
-					{
-						currentInstance = this;
-						StartGuiTask = true;
-					}
-				}
-
-				appDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LegalLab");
-
-				// Implementation Inventory. Used by persistence, networking and scripting modules.
-
-				TypesLoader.Initialize();   // Makes an inventory of all assemblies in project.
-
 				// Setting up internal encrypted object Database
 
 				databaseFolder = Path.Combine(appDataFolder, "Data");
@@ -91,6 +98,17 @@ namespace LegalLab
 				await database.RepairIfInproperShutdown(string.Empty);
 
 				Database.Register(database);
+
+				TaskCompletionSource<bool>[] WaitingTasks;
+
+				lock (waitingForDb)
+				{
+					WaitingTasks = waitingForDb.ToArray();
+					waitingForDb.Clear();
+				}
+
+				foreach (TaskCompletionSource<bool> Task in WaitingTasks)
+					Task.TrySetResult(true);
 
 				// Event logs
 
@@ -113,20 +131,52 @@ namespace LegalLab
 
 				// Modules
 
-				await Types.StartAllModules(60000);
+				await Types.StartAllModules(10000);
+
+				Completed.TrySetResult(true);
 
 				// View Models
 
-				windowSizeModel = await InstantiateModel<WindowSizeModel>(this.WindowState, this.Left, this.Top, this.Width, this.Height, this.TabControl.SelectedIndex);
-				networkModel = await InstantiateModel<NetworkModel>();
-				designModel = await InstantiateModel<DesignModel>();
+				await this.Dispatcher.BeginInvoke(async () =>
+				{
+					try
+					{
+						windowSizeModel = await InstantiateModel<WindowSizeModel>(this.WindowState, this.Left, this.Top, this.Width, this.Height, this.TabControl.SelectedIndex);
+						networkModel = await InstantiateModel<NetworkModel>();
+						designModel = await InstantiateModel<DesignModel>();
 
-				if (StartGuiTask)
-					await this.Dispatcher.BeginInvoke(new GuiDelegate(DoUpdates));
+						if (StartGuiTask)
+							await this.Dispatcher.BeginInvoke(DoUpdates);
+					}
+					catch (Exception ex)
+					{
+						ErrorBox(ex.Message);
+					}
+				});
 			}
 			catch (Exception ex)
 			{
 				ErrorBox(ex.Message);
+			}
+		}
+
+		private static readonly ChunkedList<TaskCompletionSource<bool>> waitingForDb = [];
+
+		/// <summary>
+		/// Waits to the database to be configured.
+		/// </summary>
+		/// <returns></returns>
+		public static Task WaitForDB()
+		{
+			lock (waitingForDb)
+			{
+				if (Database.HasProvider)
+					return Task.CompletedTask;
+
+				TaskCompletionSource<bool> Result = new();
+				waitingForDb.Add(Result);
+
+				return Result.Task;
 			}
 		}
 
@@ -156,8 +206,8 @@ namespace LegalLab
 		{
 			base.OnClosed(e);
 
-			Types.StopAllModules().Wait();
-			Log.Terminate();
+			Types.StopAllModules().Wait(10000);
+			Log.TerminateAsync().Wait(10000);
 		}
 
 		/// <summary>
@@ -346,9 +396,10 @@ namespace LegalLab
 		/// Calls a method from the Main UI thread.
 		/// </summary>
 		/// <param name="Method">Method to call.</param>
-		public static void UpdateGui(GuiDelegate Method)
+		/// <returns>If update was successful.</returns>
+		public static Task<bool> UpdateGui(GuiDelegate Method)
 		{
-			UpdateGui((State) => ((GuiDelegate)State)(), Method.Method.DeclaringType + "." + Method.Method.Name, Method);
+			return UpdateGui((State) => ((GuiDelegate)State)(), Method.Method.DeclaringType + "." + Method.Method.Name, Method);
 		}
 
 		/// <summary>
@@ -356,30 +407,41 @@ namespace LegalLab
 		/// </summary>
 		/// <param name="Method">Method to call.</param>
 		/// <param name="State">State object to pass on to the callback method.</param>
-		public static void UpdateGui(GuiDelegateWithParameter Method, object State)
+		/// <returns>If update was successful.</returns>
+		public static Task<bool> UpdateGui(GuiDelegateWithParameter Method, object State)
 		{
-			UpdateGui(Method, Method.Method.DeclaringType + "." + Method.Method.Name, State);
+			return UpdateGui(Method, Method.Method.DeclaringType + "." + Method.Method.Name, State);
 		}
 
-		private static void UpdateGui(GuiDelegateWithParameter Method, string Name, object State)
+		private static async Task<bool> UpdateGui(GuiDelegateWithParameter Method, string Name, object State)
 		{
-			bool Start;
-			GuiUpdateTask Rec = new()
+			if (currentInstance?.Dispatcher.CheckAccess() ?? false)
 			{
-				Method = Method,
-				State = State,
-				Name = Name,
-				Requested = DateTime.Now
-			};
-
-			lock (guiUpdateQueue)
-			{
-				Start = (guiUpdateQueue.First is null) && currentInstance is not null;
-				guiUpdateQueue.AddLast(Rec);
+				await Method(State);
+				return true;
 			}
+			else
+			{
+				bool Start;
+				GuiUpdateTask Rec = new()
+				{
+					Method = Method,
+					State = State,
+					Name = Name,
+					Requested = DateTime.Now,
+				};
 
-			if (Start)
-				currentInstance.Dispatcher.BeginInvoke(new GuiDelegate(DoUpdates));
+				lock (guiUpdateQueue)
+				{
+					Start = (guiUpdateQueue.First is null) && currentInstance is not null;
+					guiUpdateQueue.AddLast(Rec);
+				}
+
+				if (Start)
+					await currentInstance.Dispatcher.BeginInvoke(DoUpdates);
+
+				return await Rec.Done.Task;
+			}
 		}
 
 		private static async Task DoUpdates()
@@ -406,9 +468,11 @@ namespace LegalLab
 					{
 						Rec.Started = DateTime.Now;
 						await Rec.Method(Rec.State);
+						Rec.Done.TrySetResult(true);
 					}
 					catch (Exception ex)
 					{
+						Rec.Done.TrySetResult(false);
 						Log.Exception(ex);
 					}
 					finally
@@ -418,7 +482,7 @@ namespace LegalLab
 
 					TimeSpan TS;
 
-					if ((TS = (Rec.Ended - Rec.Started)).TotalSeconds >= 1)
+					if ((TS = Rec.Ended - Rec.Started).TotalSeconds >= 1)
 						Log.Notice("GUI update method is slow: " + TS.ToString(), Rec.Name, Prev?.Name);
 					else if ((TS = (Rec.Ended - Rec.Requested)).TotalSeconds >= 1)
 						Log.Notice("GUI update pipeline is slow: " + TS.ToString(), Rec.Name, Prev?.Name);
@@ -437,6 +501,7 @@ namespace LegalLab
 
 		private class GuiUpdateTask
 		{
+			public TaskCompletionSource<bool> Done = new();
 			public GuiDelegateWithParameter Method;
 			public object State;
 			public string Name;
@@ -541,9 +606,29 @@ namespace LegalLab
 			}
 		}
 
-		#endregion
+		public static void SelectTab(UserControl Tab)
+		{
+			foreach (TabItem Item in currentInstance.TabControl.Items)
+			{
+				if (Item.Content == Tab)
+				{
+					currentInstance.TabControl.SelectedItem = Item;
+					break;
+				}
+			}
+		}
 
 		#endregion
 
+		#endregion
+
+		private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (this.TabControl.SelectedItem is TabItem TabItem &&
+				TabItem.Content is ISelectableTab SelectableTab)
+			{
+				SelectableTab.Selected();
+			}
+		}
 	}
 }

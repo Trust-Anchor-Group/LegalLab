@@ -131,7 +131,7 @@ namespace LegalLab.Dialogs.TransferEDaler
 				this.AmountExtra >= 0 &&
 				this.ValidNrDays > 0 &&
 				this.Currency.Length == 3 &&
-				this.Currency == this.Currency.ToUpper();
+				this.Currency.Equals(this.Currency, System.StringComparison.CurrentCultureIgnoreCase);
 		}
 
 		private Task ExecuteTransfer()

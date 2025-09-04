@@ -10,13 +10,9 @@ namespace LegalLab.Models.Tokens.Reports
 	/// <summary>
 	/// Represent a profiling report of a token and the underlying state-machine.
 	/// </summary>
-	public class TokenProfilingReport : TokenReport
+	public class TokenProfilingReport(NeuroFeaturesClient Client, string TokenId) 
+		: TokenReport(Client, TokenId)
 	{
-		public TokenProfilingReport(NeuroFeaturesClient Client, string TokenId)
-			: base(Client, TokenId)
-		{
-		}
-
 		/// <summary>
 		/// Gets the title of report.
 		/// </summary>

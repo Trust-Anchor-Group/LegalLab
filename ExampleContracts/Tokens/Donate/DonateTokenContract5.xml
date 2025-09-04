@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<contract xmlns="urn:nf:iot:leg:sc:1.0"
+          id="DonateTokenContract5"
+          archiveOpt="P3M"
+          archiveReq="P1M"
+          canActAsTemplate="true"
+          duration="P2M"
+          visibility="Public">
+	<Donate xmlns="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd">
+		<TokenID>
+			<ParameterReference parameter="TokenID1"/>
+		</TokenID>
+		<TokenID>
+			<ParameterReference parameter="TokenID2"/>
+		</TokenID>
+		<TokenID>
+			<ParameterReference parameter="TokenID3"/>
+		</TokenID>
+		<TokenID>
+			<ParameterReference parameter="TokenID4"/>
+		</TokenID>
+		<TokenID>
+			<ParameterReference parameter="TokenID5"/>
+		</TokenID>
+		<Donor>
+			<RoleReference role="Donor"/>
+		</Donor>
+		<Recipient>
+			<RoleReference role="Recipient"/>
+		</Recipient>
+		<TrustProvider>
+			<RoleReference role="TrustProvider"/>
+		</TrustProvider>
+		<OwnershipContract>
+			<ParameterReference parameter="OwnershipContract"/>
+		</OwnershipContract>
+	</Donate>
+	<role name="Donor" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This is the role of the part that owns the tokens, before the donation.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="Recipient" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This is the role of the part that will become the new ower of the tokens, after the donation.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="TrustProvider" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>This is the role of the trust provider that acts as the host for the tokens and approves their donation.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<templateOnly/>
+	</parts>
+	<parameters>
+		<stringParameter name="TokenID1" guide="Token ID 1 (GUID)" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The ID of the token to donate.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="TokenID2" guide="Token ID 2 (GUID)" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The ID of the token to donate.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="TokenID3" guide="Token ID 3 (GUID)" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The ID of the token to donate.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="TokenID4" guide="Token ID 4 (GUID)" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The ID of the token to donate.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="TokenID5" guide="Token ID 5 (GUID)" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The ID of the token to donate.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="OwnershipContract" guide="Ownership Contract ID" regEx="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}@[^.\s]+(\.[^.\s]+)*$">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The ID of the contract that shows the current owner is the current owner of the tokens.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Donation of tokens</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This contract donates tokens from their current owner to another. The tokens will retain their registered values.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Payment</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>No monetary exchange takes place in the donation.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>

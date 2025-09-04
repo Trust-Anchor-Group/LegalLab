@@ -5,27 +5,18 @@ namespace LegalLab.Models.Tokens.Events
 	/// <summary>
 	/// Contains information about the value of a token.
 	/// </summary>
-	public abstract class ValueDetail : TokenEventDetail
+	/// <param name="Event">Token Event object.</param>
+	public abstract class ValueDetail(TokenValueEvent Event) 
+		: TokenEventDetail(Event)
 	{
-		/// <summary>
-		/// Contains information about the value of a token.
-		/// </summary>
-		/// <param name="Event">Token Event object.</param>
-		public ValueDetail(TokenValueEvent Event)
-			: base(Event)
-		{
-			this.Value = Event.Value;
-			this.Currency = Event.Currency;
-		}
-
 		/// <summary>
 		/// Value of the token
 		/// </summary>
-		public decimal Value { get; }
+		public decimal Value { get; } = Event.Value;
 
 		/// <summary>
 		/// Currency of the token
 		/// </summary>
-		public string Currency { get; }
+		public string Currency { get; } = Event.Currency;
 	}
 }

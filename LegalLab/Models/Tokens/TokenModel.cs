@@ -108,8 +108,8 @@ namespace LegalLab.Models.Tokens
 
 			Result.noteCommands = await Result.token.GetNoteCommands();
 
-			List<TokenDetail> Details = new()
-			{
+			List<TokenDetail> Details =
+			[
 				new TokenDetail("Token ID", Result.token.TokenId, false),
 				new TokenDetail("Token ID Method", Result.token.TokenIdMethod, false),
 				new TokenDetail("Short ID", Result.token.ShortId, false),
@@ -148,8 +148,9 @@ namespace LegalLab.Models.Tokens
 				new TokenDetail("Definition", Result.token.Definition, false),
 				new TokenDetail("DefinitionNamespace", Result.token.DefinitionNamespace, false),
 				new TokenDetail("CreationContract", Result.token.CreationContract, false),
+				new TokenDetail("CreationContractTemplate", Result.token.CreationContractTemplate, false),
 				new TokenDetail("OwnershipContract", Result.token.OwnershipContract, false)
-			};
+			];
 
 			foreach (string s in Result.token.Witness)
 				Details.Add(new TokenDetail("Witness", s, false));
@@ -209,7 +210,7 @@ namespace LegalLab.Models.Tokens
 				await Result.AddNoteCommands(Details);
 			}
 
-			Result.details = Details.ToArray();
+			Result.details = [.. Details];
 
 			return Result;
 		}
@@ -219,7 +220,7 @@ namespace LegalLab.Models.Tokens
 		/// </summary>
 		public async Task UpdateNoteCommands()
 		{
-			List<TokenDetail> Details = new();
+			List<TokenDetail> Details = [];
 
 			foreach (TokenDetail Detail in this.details)
 			{
@@ -229,9 +230,9 @@ namespace LegalLab.Models.Tokens
 
 			await this.AddNoteCommands(Details);
 
-			MainWindow.UpdateGui(() =>
+			await MainWindow.UpdateGui(() =>
 			{
-				this.Details = Details.ToArray();
+				this.Details = [.. Details];
 				return Task.CompletedTask;
 			});
 		}
@@ -244,7 +245,7 @@ namespace LegalLab.Models.Tokens
 				["<State>"] = this.currentState
 			};
 			int i, c = this.noteCommands?.Length ?? 0;
-			List<KeyValuePair<NoteCommand, int>> Result = new();
+			List<KeyValuePair<NoteCommand, int>> Result = [];
 
 			this.currentVariables?.CopyTo(v);
 
@@ -281,7 +282,7 @@ namespace LegalLab.Models.Tokens
 				Result.Add(new KeyValuePair<NoteCommand, int>(NoteCommand, i));
 			}
 
-			return Result.ToArray();
+			return [.. Result];
 		}
 
 		private async Task AddNoteCommands(List<TokenDetail> Details)
@@ -502,10 +503,10 @@ namespace LegalLab.Models.Tokens
 									?? throw new Exception("Invalid parameters.");
 							}
 							else
-								NoteParameters = new Variables();
+								NoteParameters = [];
 						}
 						else
-							NoteParameters = new Variables();
+							NoteParameters = [];
 
 						Msg = Command.Confirmation?.Find(this.language);
 						if (!string.IsNullOrEmpty(Msg))

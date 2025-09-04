@@ -28,27 +28,29 @@ namespace LegalLab.Models.Script
 	/// </summary>
 	public class ScriptModel : Model, IDisposable
 	{
+		private static readonly Variables variables = [];
+
 		private readonly Property<string> referenceUri;
 		private readonly Property<string> input;
 
-		private readonly Variables variables;
 		private readonly StackPanel historyPanel;
+		private readonly TextBox inputEdit;
 
 		/// <summary>
 		/// Interaction logic for the script view.
 		/// From the IoTGateway project, with permission.
 		/// </summary>
 		/// <param name="HistoryPanel">History panel</param>
-		public ScriptModel(StackPanel HistoryPanel)
+		/// <param name="InputEdit">Input editor.</param>
+		public ScriptModel(StackPanel HistoryPanel, TextBox InputEdit)
 		{
 			this.referenceUri = new Property<string>(nameof(this.ReferenceUri), "https://lab.tagroot.io/Script.md", this);
 			this.input = new Property<string>(nameof(this.Input), string.Empty, this);
 
 			this.historyPanel = HistoryPanel;
-			this.variables = new Variables()
-			{
-				ConsoleOut = new PrintOutput(this)
-			};
+			this.inputEdit = InputEdit;
+
+			variables.ConsoleOut = new PrintOutput(this);
 		}
 
 		/// <summary>
@@ -68,6 +70,11 @@ namespace LegalLab.Models.Script
 			get => this.input.Value;
 			set => this.input.Value = value;
 		}
+
+		/// <summary>
+		/// Current set of variables.
+		/// </summary>
+		public static Variables Variables => variables;
 
 		/// <summary>
 		/// Event handler for the input PreviewKeyDown event.
@@ -142,10 +149,10 @@ namespace LegalLab.Models.Script
 						return Task.CompletedTask;
 					}
 
-					this.variables.OnPreview += Preview;
+					variables.OnPreview += Preview;
 					try
 					{
-						Ans = await Exp.Root.EvaluateAsync(this.variables);
+						Ans = await Exp.Root.EvaluateAsync(variables);
 					}
 					catch (ScriptReturnValueException ex)
 					{
@@ -157,12 +164,12 @@ namespace LegalLab.Models.Script
 					}
 					finally
 					{
-						this.variables.OnPreview -= Preview;
+						variables.OnPreview -= Preview;
 					}
 
-					this.variables["Ans"] = Ans;
+					variables["Ans"] = Ans;
 
-					MainWindow.UpdateGui(async () =>
+					await MainWindow.UpdateGui(async () =>
 					{
 						ResultBlock = await this.ShowResult(ResultBlock, Ans, ScriptBlock);
 					});
@@ -181,7 +188,7 @@ namespace LegalLab.Models.Script
 			{
 				if (Ans is Graph G)
 				{
-					PixelInformation Pixels = G.CreatePixels(this.variables, out object[] States);
+					PixelInformation Pixels = G.CreatePixels(variables, out object[] States);
 					return this.AddImageBlock(ScriptBlock, Pixels, G, States, ResultBlock);
 				}
 				else if (Ans.AssociatedObjectValue is SKImage Img)
@@ -256,7 +263,7 @@ namespace LegalLab.Models.Script
 			{
 				ex = Log.UnnestException(ex);
 				Ans = new ObjectValue(ex);
-				this.variables["Ans"] = Ans;
+				variables["Ans"] = Ans;
 
 				if (ex is AggregateException ex2)
 				{
@@ -332,10 +339,11 @@ namespace LegalLab.Models.Script
 		private void TextBlock_PreviewMouseDown(object sender, MouseButtonEventArgs e)
 		{
 			this.Input = ((TextBlock)sender).Text;
+			this.inputEdit.Focus();
 			e.Handled = true;
 		}
 
-		private UIElement AddImageBlock(UIElement ScriptBlock, PixelInformation Pixels, Graph Graph, object[] States, UIElement ResultBlock)
+		private Image AddImageBlock(UIElement ScriptBlock, PixelInformation Pixels, Graph Graph, object[] States, UIElement ResultBlock)
 		{
 			BitmapImage BitmapImage;
 			byte[] Bin = Pixels.EncodeAsPng();
@@ -418,13 +426,27 @@ namespace LegalLab.Models.Script
 		/// </summary>
 		public override async Task Start()
 		{
-			MainWindow.UpdateGui(() =>
-			{
-				MainWindow.currentInstance.ScriptTab.DataContext = this;
-				return Task.CompletedTask;
-			});
-
+			this.SetDataContext();
 			await base.Start();
+		}
+
+		private async void SetDataContext()
+		{
+			try
+			{
+				while (MainWindow.currentInstance.ScriptTab is null)
+					await Task.Delay(100);
+
+				await MainWindow.UpdateGui(() =>
+				{
+					MainWindow.currentInstance.ScriptTab.DataContext = this;
+					return Task.CompletedTask;
+				});
+			}
+			catch (Exception ex)
+			{
+				Log.Exception(ex);
+			}
 		}
 	}
 }

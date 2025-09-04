@@ -1,0 +1,1207 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<contract xmlns="urn:nf:iot:leg:sc:1.0"
+          id="OpenVoteYesNoAbstain"
+          archiveOpt="P2Y"
+          archiveReq="P5Y"
+          canActAsTemplate="true"
+          duration="P1Y"
+          visibility="PublicSearchable">
+	<Create xmlns="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd">
+		<TokenID>
+			<Unique/>
+		</TokenID>
+		<Creator>
+			<RoleReference role="Creator"/>
+		</Creator>
+		<Owner>
+			<RoleReference role="Creator"/>
+		</Owner>
+		<Certifier>
+			<RoleReference role="Certifier"/>
+		</Certifier>
+		<TrustProvider>
+			<RoleReference role="TrustProvider"/>
+		</TrustProvider>
+		<Value>
+			<Number>1</Number>
+		</Value>
+		<Currency>
+			<String>TST</String>
+		</Currency>
+		<CommissionPercent>
+			<Number>0</Number>
+		</CommissionPercent>
+		<Expires>
+			<ParameterReference parameter="Expires"/>
+		</Expires>
+		<CreatorCanDestroy>
+			<Boolean>false</Boolean>
+		</CreatorCanDestroy>
+		<OwnerCanDestroyBatch>
+			<Boolean>false</Boolean>
+		</OwnerCanDestroyBatch>
+		<OwnerCanDestroyIndividual>
+			<Boolean>false</Boolean>
+		</OwnerCanDestroyIndividual>
+		<CertifierCanDestroy>
+			<Boolean>true</Boolean>
+		</CertifierCanDestroy>
+		<Definition>
+			<StateMachine xmlns="https://paiwise.tagroot.io/Schema/StateMachines.xsd" startState="Preparing">
+				<Variable id="NrBallotsTotal">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="NrBallotsAccepted">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="NrBallotsRejected">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="NrChanged">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="Votes">
+					<Calc>
+						<![CDATA[
+						{
+							"Yes":0,
+							"No":0,
+							"Abstain":0
+						}
+						]]>
+					</Calc>
+				</Variable>
+				<Variable id="Voters">
+					<Calc>{}</Calc>
+				</Variable>
+				<Variable id="NrYes">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="NrNo">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="NrAbstain">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="Comments">
+					<Calc>{}</Calc>
+				</Variable>
+				<Variable id="NrComments">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="Question">
+					<TagReference tag="Question"/>
+				</Variable>
+				<Variable id="ChangeVoteAllowed">
+					<TagReference tag="ChangeVoteAllowed"/>
+				</Variable>
+				<Variable id="LedgerCollection">
+					<TagReference tag="LedgerCollection"/>
+				</Variable>
+				<Variable id="VoteContractId">
+					<TokenProperty>CreationContract</TokenProperty>
+				</Variable>
+				<Variable id="VoteTemplateId">
+					<TokenProperty>CreationContractTemplate</TokenProperty>
+				</Variable>
+				<Variable id="VoteTokenId">
+					<TokenProperty>TokenId</TokenProperty>
+				</Variable>
+				<Variable id="BallotTemplateId">
+					<String></String>
+				</Variable>
+				<Variable id="From">
+					<TagReference tag="From"/>
+				</Variable>
+				<Variable id="To">
+					<TagReference tag="To"/>
+				</Variable>
+				<Variable id="Expires">
+					<TagReference tag="Expires"/>
+				</Variable>
+				<Variable id="LayoutState">
+					<String>Created</String>
+				</Variable>
+				<Variable id="TimeLeftLabel">
+					<String></String>
+				</Variable>
+				<Variable id="CreatorFullName">
+					<TagReference tag="CreatorFullName"/>
+				</Variable>
+				<Variable id="CreatorJid">
+					<TagReference tag="CreatorJid"/>
+				</Variable>
+				<Variable id="CreatorEMail">
+					<TagReference tag="CreatorEMail"/>
+				</Variable>
+				<State id="Preparing">
+					<OnEnter actionRef="SetIsPreparing"/>
+					<OnEvent actionRef="SendPreparingNotice">
+						<OnDateTime>{NowUtc+TimeSpan(0,0,10)}</OnDateTime>
+					</OnEvent>
+					<OnEvent actionRef="StoreBallotTemplateId" newState="Pending">
+						<OnContractTemplateApproved localName="Ballot"
+																				namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"
+																				contractIdVariable="ContractId"
+																				contractXmlVariable="ContractXml"
+																				condition="VoteTemplateId=SelectXml(ContractXml,&quot;/default:contract/default:parameters/default:contractReferenceParameter[@name='VoteReference']/@templateId&quot;)"
+																				checkExisting="true"/>
+					</OnEvent>
+					<OnEvent actionRef="DiscardBallotVotingNotPrepared">
+						<OnContractSigned localName="Ballot"
+															namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"
+															contractIdVariable="ContractId"
+															parametersVariable="ContractParameters"
+															rolesVariable="ContractRoles"
+															machineReadableVariable="Ballot"
+															condition="ContractParameters.VoteReference=VoteContractId"/>
+					</OnEvent>
+				</State>
+				<State id="Pending">
+					<OnEnter actionRef="SetIsPending"/>
+					<OnEvent newState="Open">
+						<OnDateTime timeCoordinates="UTC">{From}</OnDateTime>
+					</OnEvent>
+					<OnEvent actionRef="UpdateOpenTime" suppressSample="true">
+						<OnDuration>PT1S</OnDuration>
+					</OnEvent>
+					<OnEvent actionRef="DiscardBallotVotingNotOpened">
+						<OnContractSigned localName="Ballot"
+															namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"
+															contractIdVariable="ContractId"
+															parametersVariable="ContractParameters"
+															rolesVariable="ContractRoles"
+															machineReadableVariable="Ballot"
+															condition="ContractParameters.VoteReference=VoteContractId"/>
+					</OnEvent>
+				</State>
+				<State id="Open">
+					<OnEnter actionRef="SetIsOpen"/>
+					<OnEvent newState="Closed">
+						<OnDateTime timeCoordinates="UTC">{To}</OnDateTime>
+					</OnEvent>
+					<OnEvent actionRef="UpdateCloseTime" suppressSample="true">
+						<OnDuration>PT1S</OnDuration>
+					</OnEvent>
+					<OnEvent actionRef="ProcessBallot">
+						<OnContractSigned localName="Ballot"
+															namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"
+															contractIdVariable="ContractId"
+															parametersVariable="ContractParameters"
+															rolesVariable="ContractRoles"
+															machineReadableVariable="Ballot"
+															condition="ContractParameters.VoteReference=VoteContractId"/>
+					</OnEvent>
+				</State>
+				<State id="Closed">
+					<OnEnter actionRef="SetIsClosed"/>
+					<OnEvent newState="Terminated">
+						<OnDateTime timeCoordinates="UTC">{Expires}</OnDateTime>
+					</OnEvent>
+					<OnEvent actionRef="DiscardBallotVotingClosed">
+						<OnContractSigned localName="Ballot"
+															namespace="https://paiwise.tagroot.io/Schema/OpenVote.xsd"
+															contractIdVariable="ContractId"
+															parametersVariable="ContractParameters"
+															rolesVariable="ContractRoles"
+															machineReadableVariable="Ballot"
+															condition="ContractParameters.VoteReference=VoteContractId"/>
+					</OnEvent>
+				</State>
+				<State id="Terminated">
+					<OnEnter actionRef="End"/>
+				</State>
+				<Action id="StoreBallotTemplateId">
+					<PersistVariable name="BallotTemplateId" value="{ContractId}"/>
+				</Action>
+				<Action id="ProcessBallot">
+					<PersistVariable name="NrBallotsTotal" value="{NrBallotsTotal+1}"/>
+					<Try>
+						<If condition="!exists(ContractRoles.Voter) || count(ContractRoles.Voter)!=1">
+							<Then>
+								<Error reason="Ballot does not have a unique voter identified."/>
+							</Then>
+						</If>
+						<If condition="!exists(ContractParameters.Country) || !exists(ContractParameters.PersonalNumber)">
+							<Then>
+								<Error reason="Voter personal number and country are not properly identified."/>
+							</Then>
+						</If>
+						<Script>
+							<![CDATA[
+							Key:=ContractParameters.Country+"|"+ContractParameters.PersonalNumber;
+							VoterId:=ContractRoles.Voter[0];
+									
+							Options:=SelectXml(Ballot,"/default:Ballot/default:Option");
+
+							InvalidOptions:=false;
+							InvalidParameterValue:=false;
+							MultipleSelected:=false;
+							SelectedOption:=null;
+
+							foreach Option in Options do
+							(
+								Parameter:=SelectXml(Option,"@parameter");
+								Value:=SelectXml(Option,"@value");
+							
+								if !exists(ContractParameters[Parameter]) then
+									InvalidParameterValue:=true
+								else if !exists(Votes[Value]) then
+									InvalidOptions:=true
+								else
+								(
+									ParameterValue:=ContractParameters[Parameter];
+									if ParameterValue matches Boolean(ParameterSelection) then
+									(
+										if ParameterSelection then 
+										(
+											if exists(SelectedOption) then
+												MultipleSelected:=true
+											else
+												SelectedOption:=Value;
+										)
+									)
+									else
+										InvalidParameterValue:=true
+								)
+							);
+							]]>
+						</Script>
+						<If condition="InvalidOptions">
+							<Then>
+								<Error reason="Invalid options in ballot."/>
+							</Then>
+						</If>
+						<If condition="InvalidParameterValue">
+							<Then>
+								<Error reason="Invalid parameter reference or parameter value in ballot."/>
+							</Then>
+						</If>
+						<If condition="MultipleSelected">
+							<Then>
+								<Error reason="Multiple options selected in ballot."/>
+							</Then>
+						</If>
+						<If condition="!exists(SelectedOption)">
+							<Then>
+								<Error reason="No selected option in ballot."/>
+							</Then>
+						</If>
+						<If condition="exists(PrevVote:=Voters[Key])">
+							<Then>
+								<If condition="!ChangeVoteAllowed">
+									<Then>
+										<Error reason="Voter has already voted."/>
+									</Then>
+								</If>
+								<If condition="VoterId!=PrevVote.voterId">
+									<Then>
+										<Error reason="Voter has already voted, using a different digital identity. A vote can only be changed using the same digital identity."/>
+									</Then>
+								</If>
+								<Fail contractId="{PrevVote.ballot}" reason="Voter is changing vote."/>
+								<PersistVariable>
+									<Name>
+										<Calc>'Nr'+PrevVote.vote</Calc>
+									</Name>
+									<Value>
+										<Calc>eval('Nr'+PrevVote.vote)-1</Calc>
+									</Value>
+								</PersistVariable>
+								<PersistVariable name="Votes" value="{Votes[SelectedOption]:=Votes[SelectedOption]-1;Votes}" suppressSample="true"/>
+								<PersistVariable name="Voters" value="{Voters[Key]:=null;Voters}" suppressSample="true"/>
+								<PersistVariable name="NrChanged" value="{NrChanged+1}"/>
+								<CreateEntry type="BallotRevoked" collection="{LedgerCollection}">
+									<Property key="Ballot" value="{PrevVote.ballot}"/>
+									<Property key="VoterId" value="{PrevVote.voterId}"/>
+									<Property key="VoterPersonalNumber" value="{ContractParameters.PersonalNumber}"/>
+									<Property key="VoterCountry" value="{ContractParameters.Country}"/>
+									<Property key="VoterFullName" value="{ContractParameters.FullName}"/>
+									<Property key="VoteCast" value="{PrevVote.vote}"/>
+									<Property key="VoteContractId" value="{VoteContractId}"/>
+									<Property key="VoteTokenId" value="{VoteTokenId}"/>
+								</CreateEntry>
+							</Then>
+						</If>
+						<PersistVariable>
+							<Name>
+								<Calc>'Nr'+SelectedOption</Calc>
+							</Name>
+							<Value>
+								<Calc>eval('Nr'+SelectedOption)+1</Calc>
+							</Value>
+						</PersistVariable>
+						<PersistVariable name="Votes" value="{Votes[SelectedOption]:=Votes[SelectedOption]+1;Votes}" suppressSample="true"/>
+						<PersistVariable name="Voters" suppressSample="true">
+							<Value>
+								<Calc>
+									<![CDATA[
+									Voters[Key]:=
+									{
+										'ballot':ContractId,
+										'voterId':VoterId,
+										'vote':SelectedOption
+									};
+									Voters
+									]]>
+								</Calc>
+							</Value>
+						</PersistVariable>
+						<PersistVariable name="NrBallotsAccepted" value="{NrBallotsAccepted+1}"/>
+						<CreateEntry type="BallotCounted" collection="{LedgerCollection}">
+							<Property key="Ballot" value="{ContractId}"/>
+							<Property key="VoterId" value="{VoterId}"/>
+							<Property key="VoterPersonalNumber" value="{ContractParameters.PersonalNumber}"/>
+							<Property key="VoterCountry" value="{ContractParameters.Country}"/>
+							<Property key="VoterFullName" value="{ContractParameters.FullName}"/>
+							<Property key="VoteCast" value="{SelectedOption}"/>
+							<Property key="VoteContractId" value="{VoteContractId}"/>
+							<Property key="VoteTokenId" value="{VoteTokenId}"/>
+						</CreateEntry>
+						<If condition="exists(Comment:=ContractParameters.Comment) and !empty(Comment)">
+							<Then>
+								<Script>
+									<![CDATA[
+									if !exists(Nr:=Comments[Comment]) then Nr:=0;
+									]]>
+								</Script>
+								<PersistVariable name="NrComments" value="{NrComments+1}"/>
+								<PersistVariable name="Comments" value="{Comments[Comment]:=Nr+1;Comments}" suppressSample="true"/>
+								<CreateEntry type="CommentReceived" collection="{LedgerCollection}">
+									<Property key="Ballot" value="{ContractId}"/>
+									<Property key="VoterId" value="{VoterId}"/>
+									<Property key="VoterPersonalNumber" value="{ContractParameters.PersonalNumber}"/>
+									<Property key="VoterCountry" value="{ContractParameters.Country}"/>
+									<Property key="VoterFullName" value="{ContractParameters.FullName}"/>
+									<Property key="Comment" value="{Comment}"/>
+									<Property key="VoteContractId" value="{VoteContractId}"/>
+									<Property key="VoteTokenId" value="{VoteTokenId}"/>
+								</CreateEntry>
+							</Then>
+						</If>
+						<Catch exceptionVariable="ex">
+							<PersistVariable name="NrBallotsRejected" value="{NrBallotsRejected+1}"/>
+							<Fail reason="{ex.Message}" contractId="{ContractId}"/>
+							<CreateEntry type="BallotRejected" collection="{LedgerCollection}">
+								<Property key="Ballot" value="{ContractId}"/>
+								<Property key="Reason" value="{ex.Message}"/>
+							</CreateEntry>
+						</Catch>
+					</Try>
+				</Action>
+				<Action id="DiscardBallotVotingNotPrepared">
+					<Fail reason="Ballot discarded. Voting has not been prepared." contractId="{ContractId}"/>
+				</Action>
+				<Action id="DiscardBallotVotingNotOpened">
+					<Fail reason="Ballot discarded. Voting has not started." contractId="{ContractId}"/>
+				</Action>
+				<Action id="DiscardBallotVotingClosed">
+					<Fail reason="Ballot discarded. Voting has closed." contractId="{ContractId}"/>
+				</Action>
+				<Action id="End">
+					<End/>
+				</Action>
+				<Action id="CommonFunctions">
+					<Script>
+						<![CDATA[
+						CalcTimeLeft(TimeLeft):=
+						(
+							NrDays:=Days(TimeLeft);
+	
+							if (NrDays>2) then
+								[round(NrDays),"days",NowUtc+TimeSpan(1,0,0)]
+							else
+							(
+								NrHours:=Hours(TimeLeft);
+								if (NrHours>2) then
+									[round(NrHours),"hours",NowUtc+TimeSpan(0,5,0)]
+								else
+								(
+									NrMinutes:=Minutes(TimeLeft);
+									if (NrMinutes>2) then
+										[round(NrMinutes),"minutes",NowUtc+TimeSpan(0,1,0)]
+									else
+									(
+										NrSeconds:=Seconds(TimeLeft);
+										[round(NrSeconds),"seconds",NowUtc+TimeSpan(0,0,1)]
+									)
+								)
+							)
+						);
+
+						CalcTimeLeftLabel(TimeLeft):=
+						(
+							[Nr,Unit,NextTimeCheck]:=CalcTimeLeft(TimeLeft);
+							Str(Nr)+" "+Unit;
+						);
+						]]>
+					</Script>
+				</Action>
+				<Action id="UpdateOpenTime">
+					<CallAction actionRef="CommonFunctions"/>
+					<PersistVariable name="TimeLeftLabel" value="{CalcTimeLeftLabel(From-NowUtc)}" 
+													 onlyIfChanged="true" suppressSample="true"/>
+				</Action>
+				<Action id="UpdateCloseTime">
+					<CallAction actionRef="CommonFunctions"/>
+					<PersistVariable name="TimeLeftLabel" value="{CalcTimeLeftLabel(To-NowUtc)}"
+													 onlyIfChanged="true" suppressSample="true"/>
+				</Action>
+				<Action id="SetIsPreparing">
+					<PersistVariable name="LayoutState" value="Preparing"/>
+				</Action>
+				<Action id="SendPreparingNotice">
+					<XmppMessage to="{CreatorJid}">
+						<Content>
+							<String>
+								<![CDATA[
+Preparing: {{MarkdownEncode(Question)}}
+------------------------------------------
+
+During the preparation phase, an appropriate ballot template is selected. If one is found,
+the vote will automatically progress to the next state. If one is not found, such a ballot
+template needs to be created. If you notice the vote state not progressing, you must make
+sure such a ballot template is also created.
+]]>
+							</String>
+						</Content>
+					</XmppMessage>
+					<MailMessage to="{CreatorEMail}" subject="{'Preparing: '+Question}">
+						<Content>
+							<String><![CDATA[
+Preparing: {{MarkdownEncode(Question)}}
+------------------------------------------
+
+During the preparation phase, an appropriate ballot template is selected. If one is found,
+the vote will automatically progress to the next state. If one is not found, such a ballot
+template needs to be created. If you notice the vote state not progressing, you must make
+sure such a ballot template is also created.
+
+**Note**: Following are some technical details on the requirements of the open ballot 
+contract template that needs to exist, or be created:
+
+| Ballot Contract Template Requirements                                               ||
+|:----------------------------------|:-------------------------------------------------|
+| Namespace                         | `https://paiwise.tagroot.io/Schema/OpenVote.xsd` |
+| Local Name                        | `Ballot`                                         |
+| Contract Reference Parameter Name | `VoteReference`                                  |
+| Vote Template ID:                 | `{{VoteTemplateId}}`                             |
+]]></String>
+						</Content>
+					</MailMessage>
+				</Action>
+				<Action id="SetIsPending">
+					<PersistVariable name="LayoutState" value="Pending"/>
+					<XmppMessage to="{CreatorJid}">
+						<Content>
+							<String>
+								<![CDATA[
+Pending: {{MarkdownEncode(Question)}}
+----------------------------------------
+
+The vote is waiting to be opened. This will be done automatically at {{From}} UTC. Meanwhile,
+you can share the following links:
+
+[Click here to vote from App](iotsc:{{BallotTemplateId}}?VoteReference={{VoteContractId}})
+
+[Click here to open vote in browser](https://{{after(VoteTokenId,"@edaler.")}}/NF/{{VoteTokenId}})
+]]>
+							</String>
+						</Content>
+					</XmppMessage>
+					<MailMessage to="{CreatorEMail}" subject="{'Pending: '+Question}">
+						<Content>
+							<String><![CDATA[
+Pending: {{MarkdownEncode(Question)}}
+----------------------------------------
+
+The vote is waiting to be opened. This will be done automatically at {{From}} UTC. Meanwhile,
+you can share the following information to expected participants:
+
+{{PresentReport()}}
+
+By scanning the above QR code with the *Neuro-Access* App, they can participate. If they 
+cannot scan the code, they can also click on the following links:
+
+[Click here to vote from App](iotsc:{{BallotTemplateId}}?VoteReference={{VoteContractId}})
+
+[Click here to open vote in browser](https://{{after(VoteTokenId,"@edaler.")}}/NF/{{VoteTokenId}})
+]]></String>
+						</Content>
+					</MailMessage>
+				</Action>
+				<Action id="SetIsOpen">
+					<PersistVariable name="LayoutState" value="Open"/>
+					<XmppMessage to="{CreatorJid}">
+						<Content>
+							<String>
+								<![CDATA[
+Opened: {{MarkdownEncode(Question)}}
+---------------------------------------
+
+The vote has opened and participants can vote by clicking the following links:
+
+[Click here to vote from App](iotsc:{{BallotTemplateId}}?VoteReference={{VoteContractId}})
+
+[Click here to open vote in browser](https://{{after(VoteTokenId,"@edaler.")}}/NF/{{VoteTokenId}})
+]]>
+							</String>
+						</Content>
+					</XmppMessage>
+					<MailMessage to="{CreatorEMail}" subject="{'Opened: '+Question}">
+						<Content>
+							<String><![CDATA[
+Opened: {{MarkdownEncode(Question)}}
+---------------------------------------
+
+The vote has opened and participants can vote by scanning the following QR code:
+
+{{PresentReport()}}
+
+They can also participate by clicking on the following links:
+
+[Click here to vote from App](iotsc:{{BallotTemplateId}}?VoteReference={{VoteContractId}})
+
+[Click here to open vote in browser](https://{{after(VoteTokenId,"@edaler.")}}/NF/{{VoteTokenId}})
+]]></String>
+						</Content>
+					</MailMessage>
+				</Action>
+				<Action id="SetIsClosed">
+					<PersistVariable name="LayoutState" value="Closed"/>
+					<XmppMessage to="{CreatorJid}">
+						<Content>
+							<String>
+								<![CDATA[
+Closed: {{MarkdownEncode(Question)}}
+---------------------------------------
+
+The vote has closed and voters can no longer participate. Results can be viewed at the
+following links:
+
+[View results in App](nfeat:{{VoteTokenId}})
+
+[View results in browser](https://{{after(VoteTokenId,"@edaler.")}}/NF/{{VoteTokenId}})
+]]>
+							</String>
+						</Content>
+					</XmppMessage>
+					<MailMessage to="{CreatorEMail}" subject="{'Closed: '+Question}">
+						<Content>
+							<String><![CDATA[
+Closed: {{MarkdownEncode(Question)}}
+---------------------------------------
+
+The vote has closed and voters can no longer participate. Results are as follows:
+
+{{PresentReport()}}
+
+Access to the results can also be given by clicking on the following links:
+
+[View results in App](nfeat:{{VoteTokenId}})
+
+[View results in browser](https://{{after(VoteTokenId,"@edaler.")}}/NF/{{VoteTokenId}})
+]]></String>
+						</Content>
+					</MailMessage>
+				</Action>
+				<ReportPresent>
+					<![CDATA[
+{{CallAction("CommonFunctions");null}}
+
+```layout
+<?xml version="1.0" encoding="utf-8" ?>
+<Layout2D xmlns="http://waher.se/Schema/Layout2D.xsd"
+          width="1684px"
+          height="1190px"
+          background="WhiteBackground"
+          pen="BlackPen"
+          font="Text"
+          textColor="Black">
+	<SolidPen id="BlackPen" color="Black" width="1px"/>
+	<SolidPen id="WhitePen" color="White" width="1px"/>
+	<SolidPen id="DarkSemiTransparentPen" color="#00000080" width="3px"/>
+	<SolidPen id="DarkGreenPen" color="DarkGreen" width="3px"/>
+	<SolidPen id="DarkRedPen" color="DarkRed" width="3px"/>
+	<SolidPen id="GreenWidePen" color="Green" width="7px"/>
+	<SolidPen id="RedWidePen" color="Red" width="7px"/>
+	<SolidPen id="GreenPen" color="Green" width="5px"/>
+	<SolidPen id="RedPen" color="Red" width="5px"/>
+	<SolidBackground id="SemiTransparentBackground" color="#f8f8f8e0"/>
+	<SolidBackground id="SemiTransparentGreenBackground" color="#e0ffe040"/>
+	<SolidBackground id="SemiTransparentRedBackground" color="#ffe0e040"/>
+	<SolidBackground id="WhiteBackground" color="#fffffff0"/>
+	<SolidBackground id="WhiteSmokeBackground" color="WhiteSmoke"/>
+	<Font id="SmallText" name="Roboto" size="12pt" color="#a0a0a0" weight="Normal"/>
+	<Font id="Text" name="Roboto" size="14pt" color="Black" weight="Normal"/>
+	<Font id="LargeText" name="Roboto" size="17pt" color="Black" weight="Normal"/>
+	<Font id="Label" name="Roboto" size="16pt" color="Black" weight="Normal"/>
+	<Font id="DarkGreenLabel" name="Roboto" size="16pt" color="DarkGreen" weight="Normal"/>
+	<Font id="DarkRedLabel" name="Roboto" size="16pt" color="DarkRed" weight="Normal"/>
+	<Font id="DarkGrayLabel" name="Roboto" size="16pt" color="#606060" weight="Normal"/>
+	<Font id="GreenLabel" name="Roboto" size="16pt" color="Green" weight="Normal"/>
+	<Font id="RedLabel" name="Roboto" size="16pt" color="Red" weight="Normal"/>
+	<Font id="Value" name="Roboto" size="20pt" color="Black" weight="Bold"/>
+	<Font id="DarkGreenValue" name="Roboto" size="20pt" color="DarkGreen" weight="Bold"/>
+	<Font id="DarkRedValue" name="Roboto" size="20pt" color="DarkRed" weight="Bold"/>
+	<Font id="DarkGrayValue" name="Roboto" size="20pt" color="#606060" weight="Bold"/>
+	<Font id="Header" name="Roboto" size="24pt" color="Black" weight="Bold"/>
+	<Font id="RedHeader" name="Roboto" size="24pt" color="Red" weight="Bold"/>
+	<Font id="GreenHeader" name="Roboto" size="24pt" color="Green" weight="Bold"/>
+	<Rectangle x="0%" y="0%" x2="100%" y2="100%" pen="BlackPen" fill="WhiteSmokeBackground"/>
+	<Overlays>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<ImageUrl url="https://paiwise.tagroot.io/Images/WavyBG_1684x1190.png"
+			          width="1684px"
+			          height="1190px"
+			          fill="WhiteBackground"
+			          keepAspectRatio="true"
+			          x="0px"
+			          y="0px"
+			          x2="1684px"
+			          y2="1190px"/>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="50px" left="100px" right="100px" bottom="1350px">
+				<RoundedRectangle fill="SemiTransparentBackground" pen="DarkSemiTransparentPen" radiusX="50px" radiusY="50px">
+					<Paragraph font="Header" halign="Center" valign="Center">
+						<InlineScript expression="Question"/>
+					</Paragraph>
+				</RoundedRectangle>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Translate translateX="200px" translateY="480px">
+				<Label font="Header" halign="Center" valign="Top" text="Ballot Counts" x="170px" y="0px"/>
+				<Label font="Label" halign="Left" valign="Top" text="Total Ballots:" x="0px" y="90px"/>
+				<Label font="DarkGreenLabel" halign="Left" valign="Top" text="Accepted Ballots:" x="0px" y="150px"/>
+				<Label font="DarkRedLabel" halign="Left" valign="Top" text="Rejected Ballots:" x="0px" y="210px"/>
+				<Script font="Value" halign="Right" valign="Top" expression="NrBallotsTotal" x="350px" y="85px"/>
+				<Script font="DarkGreenValue" halign="Right" valign="Top" expression="NrBallotsAccepted" x="350px" y="145px"/>
+				<Script font="DarkRedValue" halign="Right" valign="Top" expression="NrBallotsRejected" x="350px" y="205px"/>
+			</Translate>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{NrYes>NrNo}">
+			<Margins top="{ChangeVoteAllowed ? '485px' : '515px'}" left="650px" right="550px" bottom="{ChangeVoteAllowed ? '1260px' : '1225px'}">
+				<RoundedRectangle fill="SemiTransparentGreenBackground" pen="DarkGreenPen" radiusX="20px" radiusY="20px"/>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{NrNo>NrYes}">
+			<Margins top="{ChangeVoteAllowed ? '545px' : '575px'}" left="650px" right="550px" bottom="{ChangeVoteAllowed ? '1200px' : '1170px'}">
+				<RoundedRectangle fill="SemiTransparentRedBackground" pen="DarkRedPen" radiusX="20px" radiusY="20px"/>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Translate translateX="700px" translateY="{ChangeVoteAllowed ? '415px' : '445px'}">
+				<Label font="Header" halign="Center" valign="Top" text="Vote Counts" x="150px" y="0px"/>
+				<Label font="DarkGreenLabel" halign="Left" valign="Top" text="Yes:" x="0px" y="90px"/>
+				<Label font="DarkRedLabel" halign="Left" valign="Top" text="No:" x="0px" y="150px"/>
+				<Label font="DarkGrayLabel" halign="Left" valign="Top" text="Abstained:" x="0px" y="210px"/>
+				<Label font="Label" halign="Left" valign="Top" text="Changed:" x="0px" y="270px" visible="{ChangeVoteAllowed}"/>
+				<Label font="Label" halign="Left" valign="Top" text="Comments:" x="0px" y="{ChangeVoteAllowed ? '330px' : '270px'}"/>
+				<Script font="DarkGreenValue" halign="Right" valign="Top" expression="NrYes" x="310px" y="85px"/>
+				<Script font="DarkRedValue" halign="Right" valign="Top" expression="NrNo" x="310px" y="145px"/>
+				<Script font="DarkGrayValue" halign="Right" valign="Top" expression="NrAbstain" x="310px" y="205px"/>
+				<Script font="Value" halign="Right" valign="Top" expression="NrChanged" x="310px" y="265px" visible="{ChangeVoteAllowed}"/>
+				<Script font="Value" halign="Right" valign="Top" expression="NrComments" x="310px" y="{ChangeVoteAllowed ? '325px' : '265px'}"/>
+				<Label font="DarkGreenValue" halign="Left" valign="Top" text="√" visible="{NrYes>NrNo}" x="350px" y="85px"/>
+				<Label font="DarkRedValue" halign="Left" valign="Top" text="√" visible="{NrNo>NrYes}" x="350px" y="145px"/>
+			</Translate>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="860px" left="100px" right="475px">
+				<Paragraph font="Text">
+					<Text text="Above is shown the current number of ballots processed ("/>
+					<Bold>
+						<Text text="Total"/>
+					</Bold>
+					<Text text="), the number that was considered correct ("/>
+					<TextColor color="DarkGreen">
+						<Bold>
+							<Text text="Accepted"/>
+						</Bold>
+					</TextColor>
+					<Text text="), and the number that contained errors ("/>
+					<TextColor color="DarkRed">
+						<Bold>
+							<Text text="Rejected"/>
+						</Bold>
+					</TextColor>
+					<Text text="). The number of votes are also counted, separating the number of affirmative votes ("/>
+					<TextColor color="DarkGreen">
+						<Bold>
+							<Text text="Yes"/>
+						</Bold>
+					</TextColor>
+					<Text text="), the number of dissenting votes ("/>
+					<TextColor color="DarkRed">
+						<Bold>
+							<Text text="No"/>
+						</Bold>
+					</TextColor>
+					<Text text="), and the number of who abstained."/>
+					<Text text=" The number of people who has changed their votes by casting new ballots is also displayed (" visible="{ChangeVoteAllowed}"/>
+					<TextColor color="DarkGray" visible="{ChangeVoteAllowed}">
+						<Bold>
+							<Text text="Changed"/>
+						</Bold>
+					</TextColor>
+					<Text text=")." visible="{ChangeVoteAllowed}"/>
+					<Text text=" Number of comments received is also shown ("/>
+					<TextColor color="DarkGray">
+						<Bold>
+							<Text text="Comments"/>
+						</Bold>
+					</TextColor>
+					<Text text=")."/>
+				</Paragraph>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="1060px" left="100px" right="475px">
+				<Paragraph font="{LayoutState='Closed' ? 'Text' : 'LargeText'}">
+					<Bold>
+						<Text text="To cast a vote" visible="{LayoutState!='Closed'}"/>
+						<Text text="To review the results of the vote online" visible="{LayoutState='Closed'}"/>
+					</Bold>
+					<Text text=", scan the "/>
+					<Italic>
+						<Text text="QR Code"/>
+					</Italic>
+					<Text text=" to the right using the "/>
+					<Bold>
+						<Text text="Neuro-Access"/>
+					</Bold>
+					<Text text=" App, found in the "/>
+					<Italic>
+						<Text text="App Store"/>
+					</Italic>
+					<Text text=" (for iOS devices) and the "/>
+					<Italic>
+						<Text text="Play Store"/>
+					</Italic>
+					<Text text=" (for Android devices)."/>
+				</Paragraph>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="400px" left="1200px">
+				<Rectangle fill="WhiteSmokeBackground" pen="WhitePen" width="400px" height="400px">
+					<Script expression="QrEncode('iotsc:'+BallotTemplateId+'?VoteReference='+VoteContractId,'H',400)" visible="{LayoutState!='Closed'}"/>
+					<Script expression="QrEncode('nfeat:'+VoteTokenId,'H',400)" visible="{LayoutState='Closed'}"/>
+				</Rectangle>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{LayoutState='Open'}">
+			<Margins top="825px" left="1225px" right="100px" bottom="775px">
+				<RoundedRectangle fill="WhiteBackground" pen="GreenWidePen" radiusX="50px" radiusY="50px">
+					<Label font="GreenHeader" halign="Center" valign="Center" text="Open" x="50%" y="50%"/>
+				</RoundedRectangle>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{LayoutState!='Open'}">
+			<Margins top="825px" left="1225px" right="100px" bottom="775px">
+				<RoundedRectangle fill="WhiteBackground" pen="RedWidePen" radiusX="50px" radiusY="50px">
+					<Label font="RedHeader" halign="Center" valign="Center" text="{LayoutState}" x="50%" y="50%"/>
+				</RoundedRectangle>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{LayoutState='Pending' and NowUtc&lt;From}">
+			<Margins top="925px" left="1225px" right="100px" bottom="675px">
+				<RoundedRectangle fill="WhiteBackground" pen="GreenPen" radiusX="50px" radiusY="50px">
+					<Paragraph font="GreenLabel" halign="Center" valign="Center" x="50%" y="50%">
+						<Text text="Opening in "/>
+						<InlineScript expression="CalcTimeLeftLabel(From-NowUtc)"/>
+						<Text text="..."/>
+					</Paragraph>
+				</RoundedRectangle>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{LayoutState='Open' and NowUtc&gt;=From and NowUtc&lt;To}">
+			<Margins top="925px" left="1225px" right="100px" bottom="675px">
+				<RoundedRectangle fill="WhiteBackground" pen="RedPen" radiusX="50px" radiusY="50px">
+					<Paragraph font="RedLabel" halign="Center" valign="Center" x="50%" y="50%">
+						<Text text="Closing in "/>
+						<InlineScript expression="CalcTimeLeftLabel(To-NowUtc)"/>
+						<Text text="..."/>
+					</Paragraph>
+				</RoundedRectangle>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="1165px" left="10px" right="100px">
+				<Paragraph x="100px" y="100px" halign="Left" valign="Bottom" font="SmallText">
+					<Text text="Vote ID: "/>
+					<Text text="{VoteTokenId}"/>
+					<Text text=" from "/>
+					<Text text="{From.ToShortDateString()}"/>
+					<Text text=", "/>
+					<Text text="{From.ToShortTimeString()}"/>
+					<Text text=" to "/>
+					<Text text="{To.ToShortDateString()}"/>
+					<Text text=", "/>
+					<Text text="{To.ToShortTimeString()}"/>
+					<Text text=" UTC."/>
+				</Paragraph>
+			</Margins>
+		</Cell>
+	</Overlays>
+</Layout2D>
+```
+
+{{if NrComments>0 then
+	]]Comments
+===============
+
+| Comments received on ballots ||
+|:-----------------------|-----:|
+[[;
+
+foreach Comment in Comments do 
+	]]| ((MarkdownEncode(Comment.Key) )) | ((Comment.Value)) |
+[[;}}
+					]]>
+				</ReportPresent>
+				<ReportHistory>
+					<![CDATA[
+Voting history
+=================
+
+]]>
+				</ReportHistory>
+			</StateMachine>
+		</Definition>
+		<Tag name="Question">
+			<ParameterReference parameter="Question"/>
+		</Tag>
+		<Tag name="ChangeVoteAllowed">
+			<ParameterReference parameter="ChangeVoteAllowed"/>
+		</Tag>
+		<Tag name="LedgerCollection">
+			<ParameterReference parameter="LedgerCollection"/>
+		</Tag>
+		<Tag name="From">
+			<ParameterReference parameter="From"/>
+		</Tag>
+		<Tag name="To">
+			<ParameterReference parameter="To"/>
+		</Tag>
+		<Tag name="Expires">
+			<ParameterReference parameter="Expires"/>
+		</Tag>
+		<Tag name="CreatorFullName">
+			<ParameterReference parameter="CreatorFullName"/>
+		</Tag>
+		<Tag name="CreatorJid">
+			<ParameterReference parameter="CreatorJid"/>
+		</Tag>
+		<Tag name="CreatorEMail">
+			<ParameterReference parameter="CreatorEMail"/>
+		</Tag>
+		<FriendlyName>
+			<String>Open Vote</String>
+		</FriendlyName>
+		<Category>
+			<String>Voting</String>
+		</Category>
+		<Description>
+			<String>Example token used to demonstrate how to implement an open and transparent voting system.</String>
+		</Description>
+		<Glyph contentType="image/png">iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAABFFJREFUeJztWU1IMlsYfrqTFmgLIb5yEURlLQo3YVZUCi1qFUFQUKt2QURWm7IgIkhqJ9IP1EIIWkWuIugPLIh0GVFUBC5SocCkEM2/uYvv3oPDNNM43Thwv3lgYM77d57zeI7nzEwBy7Is/mD8RZsAbSgC0CZAG4oAtAnQhiIAbQK0oQhAmwBtKALQJkAbigC0CdCGIgBtArShCECbAG0oAtAmQBuKALQJ0EahkCMYDGJpaQklJSV5F43H4+jr60NHRwfPNz8/j3g8jmw2i5qaGoyMjORdHwBSqRScTicODg5wfX2N19dXqNVqVFRUoLGxET09Pejv7/+6ECsAn8/HApB9LS4u8mo+PT3x4vJFJpNh29vbJfPY2dkRrSe4BL77uSCTyfBs4+PjPNvCwoLkmqenp2AYBufn55JzHh8fRf0FQh9G3t7ecHx8jOLiYo69tLQUZrOZtLe3t/Hr1y+k02liSyaTMBqNqKqq4nZWUAAA0Gg0iMVixC5FbK/XC6vVyrE1Nzdjbm4O3d3dYBiG2O/v77G7u4vZ2VlMT0/D4XAIF857Dv5mS65oNCopx+FwkBy73c5arVbS3t/fz6tPAOzt7a2kfgOBgHhdSVVEyITD4bxzYrEYe3R0RNoGg0E0d2BggJOfTCbl0P6cl6ykPAXIHWx1dfWndV5eXiT153K55FAWri0rKU8BGhoaSLzH4yF2u91O7ENDQ5/mer3eb+0aX+HHBYhGo6ID+GpwKysrxF9fXy+Hrih+/CRos9nI/dTUFM+fe1hyOp08fygUIvcGg0Fyv3V1dWhtbYXJZBIPlKMa8pgBubHpdJrn9/v9xM8wDM9vs9mIv7e3VxZHMfzoDFhdXSX3FouFs1f/C5PJBI1GA+D34eni4oLjLysrI/eBQOA/5yh4EBJN+udAAwDhcBjl5eWfxhUVFSGZTAIAlpeX0dbWhkQiwYnRarXY2trC5uYmAKCpqQk+n4/4Dw8P0dXVRdpS6eZyFM2RPKcEppfQEri8vJT9HPHx8SHY397eXt4cReOkDVm4uJAALS0tsgUYHR3l1LJYLHlvhVLjf2QJpNNpqFQq0na73UilUoJTkWEYPD8/Y2ZmhthyY6PRKHQ6HWmr1WrEYjEUFgo+zdNdAmNjY8RvNpsl19VqtSTP7XZzfGtra7yZMjg4yPr9fl4dj8dDdwnk+s/OziTXXV9fJ3k6nY7ndzqdspaU6Fgks8tNyikeDAY5PpfL9a2ja27uZ79uKBRia2trJQ++srJStD/hRSSCiYkJqFQqvL+/816ZJRIJTE5OIpvNcrYvqXC73bi6ukI2m8XDwwPvJKfX63F3d4dIJIKNjQ2cnJzg5uYGkUgEDMNAr9fDaDSis7MTw8PD5IwhBFl/gv8n/PFvhRUBaBOgDUUA2gRoQxGANgHaUASgTYA2FAFoE6ANRQDaBGhDEYA2AdpQBKBNgDYUAWgToA1FANoEaONve9o8PVvYS2AAAAAASUVORK5CYII=</Glyph>
+	</Create>
+	<role name="Creator" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>Creator of the open vote.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="Certifier" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>Certifier of the vote. Apart from certifying the correctness of the vote, the certifier is empowered to cancel or disqualify a vote.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="TrustProvider" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The part that acts as a host of the voting, approves its creation and validates all digital signatures.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<templateOnly/>
+	</parts>
+	<parameters>
+		<stringParameter name="Question" guide="Question" minLength="1" regEx="^(?!\s)(?!.*\s$)(?!.*[\r\n\t]).+$">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Question to be voted on.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<booleanParameter name="ChangeVoteAllowed" guide="If a voter is allowed to change its vote." value="true">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Voters are allowed to change their votes while vote is open.</text>
+				</paragraph>
+			</description>
+		</booleanParameter>
+		<stringParameter name="LedgerCollection" guide="Ledger Collection Name." value="OpenVote" minLength="1">
+			<description xml:lang="en">
+				<paragraph>
+					<text>Neuro-Ledger collection to receive annotated events documenting the voting process.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<dateTimeParameter name="From" guide="When voting is opened (UTC)." exp="From&gt;=NowUtc">
+			<description xml:lang="en">
+				<paragraph>
+					<text>When the voting is opened (UTC).</text>
+				</paragraph>
+			</description>
+		</dateTimeParameter>
+		<dateTimeParameter name="To" guide="When voting is closed (UTC)." exp="To&gt;From and To&lt;=(From+TimeSpan(31,0,0,0))">
+			<description xml:lang="en">
+				<paragraph>
+					<text>When the voting is closed (UTC).</text>
+				</paragraph>
+			</description>
+		</dateTimeParameter>
+		<dateParameter name="Expires" guide="Expiry date" exp="Expires&gt;To">
+			<description xml:lang="en">
+				<paragraph>
+					<text>When token expires.</text>
+				</paragraph>
+			</description>
+		</dateParameter>
+		<roleParameter name="CreatorFullName" property="FULLNAME" role="Creator" index="1" required="true">
+			<description>
+				<paragraph>
+					<text>The full name of the creator of the vote.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter name="CreatorJid" property="JID" role="Creator" index="1" required="true">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The XMPP address of the creator. The creator will receive instant message notifications when there's a major event concerning the vote.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter name="CreatorEMail" property="EMAIL" role="Creator" index="1" required="true">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The e-mail address of the creator. The creator will receive notifications when the vote opens and vote results when the vote closes, as well as links to the vote and if the vote needs to be prepared before it can be opened.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Open voting</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This contract creates an open vote, where anyone with a </text>
+					<italic>
+						<text>Neuro-Access</text>
+					</italic>
+					<text> digital identity can participate. Each participant has at most one vote. Ballots are open, and can be seen by other participants.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Casting Ballot</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Each participant votes by signing an individual ballot contract. In the contract, they will have to answer the question </text>
+							<bold>
+								<parameter name="Question"/>
+							</bold>
+							<text>, by choosing one of the three options: </text>
+							<bold>
+								<text>Yes</text>
+							</bold>
+							<text>, </text>
+							<bold>
+								<text>No</text>
+							</bold>
+							<text>, or </text>
+							<bold>
+								<text>Abstain</text>
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Changing Votes</text>
+					</header>
+					<body>
+						<paragraph>
+							<parameter name="ChangeVoteAllowed"/>
+							<text> Participants are allowed to change votes.</text>
+						</paragraph>
+						<paragraph>
+							<text>In case the vote allows participants to change their vote, they need to cast a new ballot. If changing votes is accepted, the previously counted ballot will be rejected, and the new ballot counted. If changing the vote is not allowed, the new ballot will be automatically rejected. Changing votes can only be done while the vote is open, and only by using the same digital identity as the one casting the original ballot being changed.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Comments and Feedback</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>When casting a vote, the person will also have the opportunity to provide a personal comment for open review. Providing feedback is optional.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Time and Duration</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>The Voting is open between </text>
+							<bold>
+								<parameter name="From"/>
+							</bold>
+							<text> (UTC) and </text>
+							<bold>
+								<parameter name="To"/>
+							</bold>
+							<text> (UTC). The vote machine will present results until </text>
+							<bold>
+								<parameter name="Expires"/>
+							</bold>
+							<text>, after which it will expire.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Technical Information</text>
+					</header>
+					<body>
+						<section>
+							<header>
+								<text>Ledger entries</text>
+							</header>
+							<body>
+								<paragraph>
+									<text>During the life-cycle of the voting procedure, all actions related to digital identities and smart contracts are annotated in their corresponding collections in the </text>
+									<italic>
+										<text>Neuro-Ledger</text>
+									</italic>
+									<text>. Ballot counting is furthermore annotated in the </text>
+									<bold>
+										<parameter name="LedgerCollection"/>
+									</bold>
+									<text> collection for transparency and auditability. A summary of collections in the </text>
+									<italic>
+										<text>Neuro-Ledger</text>
+									</italic>
+									<text> used during the voting procedure are:</text>
+								</paragraph>
+								<table>
+									<row>
+										<cell colSpan="2" header="true" alignment="Center">
+											<italic>
+												<text>Neuro-Ledger</text>
+											</italic>
+											<text> Collections</text>
+										</cell>
+									</row>
+									<row>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>LegalIdentities</text>
+										</cell>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>Contains entries related to digital identities, including </text>
+											<italic>
+												<text>Neuro-Access</text>
+											</italic>
+											<text> digital identities.</text>
+										</cell>
+									</row>
+									<row>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>Contracts</text>
+										</cell>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>Contains entries related to smart contracts, including the voting contract and the ballot contracts used during voting.</text>
+										</cell>
+									</row>
+									<row>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>NeauroFeatureTokens</text>
+										</cell>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>Contains information regarding </text>
+											<italic>
+												<text>Neuro-Feature</text>
+											</italic>
+											<text> tokens, including the token definition of the open voting logic.</text>
+										</cell>
+									</row>
+									<row>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>StateMachines</text>
+										</cell>
+										<cell colSpan="1" header="false" alignment="Left">
+											<italic>
+												<text>State-Machine</text>
+											</italic>
+											<text> information is recorded in this collection. This includes the open voting process performing the ballot counting and presentation.</text>
+										</cell>
+									</row>
+									<row>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>StateMachineCurrentStates</text>
+										</cell>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>Contains current states of different </text>
+											<italic>
+												<text>State-Machines</text>
+											</italic>
+											<text>.</text>
+										</cell>
+									</row>
+									<row>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>StateMachineSamples</text>
+										</cell>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>Contains variable changes as they are persisted by </text>
+											<italic>
+												<text>State-Machines</text>
+											</italic>
+											<text>. These samples can be used to track the counting process.</text>
+										</cell>
+									</row>
+									<row>
+										<cell colSpan="1" header="false" alignment="Left">
+											<parameter name="LedgerCollection"/>
+										</cell>
+										<cell colSpan="1" header="false" alignment="Left">
+											<text>The Open Voting </text>
+											<italic>
+												<text>State-Machine</text>
+											</italic>
+											<text> records events into this collection as ballots are received and processed.</text>
+										</cell>
+									</row>
+								</table>
+							</body>
+						</section>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>

@@ -140,7 +140,7 @@ namespace LegalLab.Models.Legal.Items
 			try
 			{
 				string Extension = Path.GetExtension(this.FileName);
-				if (Extension.StartsWith("."))
+				if (Extension.StartsWith('.'))
 					Extension = Extension[1..];
 
 				SaveFileDialog Dialog = new()

@@ -21,7 +21,7 @@ namespace LegalLab.Models.Design
 		/// <returns>Translated string.</returns>
 		public static async Task<string> Translate(string Text, string From, string To, string Key)
 		{
-			return (await Translate(new string[] { Text }, From, To, Key))[0];
+			return (await Translate([Text], From, To, Key))[0];
 		}
 
 		/// <summary>
@@ -59,7 +59,7 @@ namespace LegalLab.Models.Design
 		{
 			try
 			{
-				object ResponseObj = await InternetContent.PostAsync(openAiChatCompletions,
+				ContentResponse Content = await InternetContent.PostAsync(openAiChatCompletions,
 					new Dictionary<string, object>()
 					{
 						{
@@ -86,11 +86,14 @@ namespace LegalLab.Models.Design
 							}
 						}
 					},
-					new KeyValuePair<string, string>[]
-					{
+					[
 						new("Accept", "application/json"),
 						new("Authorization", "Bearer " + Key),
-					});
+					]);
+
+				Content.AssertOk();
+
+				object ResponseObj = Content.Decoded;
 
 				if (ResponseObj is Dictionary<string, object> Response &&
 					Response.TryGetValue("choices", out object Obj) &&
@@ -100,9 +103,9 @@ namespace LegalLab.Models.Design
 					Choice.TryGetValue("message", out Obj) &&
 					Obj is Dictionary<string, object> Message &&
 					Message.TryGetValue("content", out Obj) &&
-					Obj is string Content)
+					Obj is string Translation)
 				{
-					Translations[Index] = Content;
+					Translations[Index] = Translation;
 				}
 				else
 					Translations[Index] = Text;

@@ -24,6 +24,8 @@ using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
 using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Persistence;
+using Waher.Runtime.Geo;
+using Waher.Runtime.IO;
 
 namespace LegalLab.Models.Legal
 {
@@ -50,6 +52,8 @@ namespace LegalLab.Models.Legal
 
 		private readonly Command addPart;
 		private readonly Command createContract;
+		private readonly Command removeTemplate;
+		private readonly Command removeContract;
 		private readonly Command uploadAttachment;
 
 		private readonly NonScrollingTextEditor xmlEditor = null;
@@ -67,12 +71,12 @@ namespace LegalLab.Models.Legal
 		private ContractModel(ContractsClient Contracts, Contract Contract, DesignModel DesignModel, NonScrollingTextEditor XmlEditor)
 			: base(Contract.Parameters, Contract, "en", DesignModel)
 		{
-			this.generalInformation = new Property<GenInfo[]>(nameof(this.GeneralInformation), Array.Empty<GenInfo>(), this);
-			this.roles = new Property<RoleInfo[]>(nameof(this.Roles), Array.Empty<RoleInfo>(), this);
-			this.parts = new Property<PartInfo[]>(nameof(this.Parts), Array.Empty<PartInfo>(), this);
-			this.attachments = new Property<AttachmentInfo[]>(nameof(this.Attachments), Array.Empty<AttachmentInfo>(), this);
-			this.clientSignatures = new Property<ClientSignatureInfo[]>(nameof(this.ClientSignatures), Array.Empty<ClientSignatureInfo>(), this);
-			this.serverSignatures = new Property<ServerSignatureInfo[]>(nameof(this.ServerSignatures), Array.Empty<ServerSignatureInfo>(), this);
+			this.generalInformation = new Property<GenInfo[]>(nameof(this.GeneralInformation), [], this);
+			this.roles = new Property<RoleInfo[]>(nameof(this.Roles), [], this);
+			this.parts = new Property<PartInfo[]>(nameof(this.Parts), [], this);
+			this.attachments = new Property<AttachmentInfo[]>(nameof(this.Attachments), [], this);
+			this.clientSignatures = new Property<ClientSignatureInfo[]>(nameof(this.ClientSignatures), [], this);
+			this.serverSignatures = new Property<ServerSignatureInfo[]>(nameof(this.ServerSignatures), [], this);
 			this.hasId = new Property<bool>(nameof(this.HasId), false, this);
 			this.canBeSigned = new Property<bool>(nameof(this.CanBeSigned), false, this);
 			this.canUploadAttachment = new Property<bool>(nameof(this.CanUploadAttachment), false, this);
@@ -83,10 +87,12 @@ namespace LegalLab.Models.Legal
 			this.templateName = new Property<string>(nameof(this.TemplateName), string.Empty, this);
 			this.contractId = new Property<string>(nameof(this.ContractId), Contract.ContractId, this);
 
-			this.ParameterOptions = new ObservableCollection<ContractOption>();
+			this.ParameterOptions = [];
 
 			this.addPart = new Command(this.ExecuteAddPart);
 			this.createContract = new Command(this.CanExecuteCreateContract, this.ExecuteCreateContract);
+			this.removeTemplate = new Command(this.CanExecuteRemoveTemplate, this.ExecuteRemoveTemplate);
+			this.removeContract = new Command(this.CanExecuteRemoveContract, this.ExecuteRemoveContract);
 			this.uploadAttachment = new Command(this.CanExecuteUploadAttachment, this.ExecuteUploadAttachment);
 
 			this.xmlEditor = XmlEditor;
@@ -144,12 +150,12 @@ namespace LegalLab.Models.Legal
 			this.CanDownloadAttachment = (Contract.Attachments?.Length ?? 0) > 0;
 
 			this.Uri = ContractsClient.ContractIdUriString(Contract.ContractId);
-			this.QrCodeUri = "https://" + Domain + "/QR/" + this.Uri;
+			this.QrCodeUri = "https://" + Domain + "/QR/" + this.Uri + "?w=400&h=400&q=2";
 
-			List<GenInfo> GenInfo = new()
-			{
+			List<GenInfo> GenInfo =
+			[
 				new GenInfo("Created:", this.Contract.Created.ToString(CultureInfo.CurrentUICulture))
-			};
+			];
 
 			if (this.Contract.Updated > DateTime.MinValue)
 				GenInfo.Add(new GenInfo("Updated:", this.Contract.Updated.ToString(CultureInfo.CurrentUICulture)));
@@ -174,9 +180,9 @@ namespace LegalLab.Models.Legal
 			if (!string.IsNullOrEmpty(this.Contract.TemplateId))
 				GenInfo.Add(new GenInfo("Template ID:", this.Contract.TemplateId));
 
-			this.GeneralInformation = GenInfo.ToArray();
+			this.GeneralInformation = [.. GenInfo];
 
-			List<PartInfo> Parts = new();
+			List<PartInfo> Parts = [];
 
 			if (this.Contract.Parts is not null)
 			{
@@ -184,9 +190,9 @@ namespace LegalLab.Models.Legal
 					Parts.Add(new PartInfo(Part, this, this.parts));
 			}
 
-			this.Parts = Parts.ToArray();
+			this.Parts = [.. Parts];
 
-			List<RoleInfo> Roles = new();
+			List<RoleInfo> Roles = [];
 
 			if (this.Contract.Roles is not null)
 			{
@@ -194,9 +200,9 @@ namespace LegalLab.Models.Legal
 					Roles.Add(new RoleInfo(this, Role, this.roles));
 			}
 
-			this.Roles = Roles.ToArray();
+			this.Roles = [.. Roles];
 
-			List<AttachmentInfo> Attachments = new();
+			List<AttachmentInfo> Attachments = [];
 
 			if (this.Contract.Attachments is not null)
 			{
@@ -204,9 +210,9 @@ namespace LegalLab.Models.Legal
 					Attachments.Add(new AttachmentInfo(this, Attachment));
 			}
 
-			this.Attachments = Attachments.ToArray();
+			this.Attachments = [.. Attachments];
 
-			List<ClientSignatureInfo> ClientSignatures = new();
+			List<ClientSignatureInfo> ClientSignatures = [];
 
 			if (this.Contract.ClientSignatures is not null)
 			{
@@ -214,12 +220,12 @@ namespace LegalLab.Models.Legal
 					ClientSignatures.Add(new ClientSignatureInfo(this.contracts, ClientSignature));
 			}
 
-			this.ClientSignatures = ClientSignatures.ToArray();
+			this.ClientSignatures = [.. ClientSignatures];
 
 			if (this.Contract.ServerSignature is null)
-				this.ServerSignatures = Array.Empty<ServerSignatureInfo>();
+				this.ServerSignatures = [];
 			else
-				this.ServerSignatures = new ServerSignatureInfo[] { new(this.Contract.ServerSignature) };
+				this.ServerSignatures = [new(this.Contract.ServerSignature)];
 
 			await this.PopulateHumanReadableText();
 		}
@@ -242,22 +248,31 @@ namespace LegalLab.Models.Legal
 			return base.Stop();
 		}
 
-		private Task Contracts_ContractSigned(object Sender, ContractSignedEventArgs e)
+		private async Task Contracts_ContractSigned(object Sender, ContractSignedEventArgs e)
 		{
-			return this.CheckReload(e);
+			Contract Contract = e.Contract ?? await this.contracts.GetContractAsync(this.ContractId);
+
+			if (this.legalModel is not null)
+				await this.legalModel.Contracts_ContractUpdated(Sender, e, Contract);
+
+			await this.CheckUpdatedView(Contract);
 		}
 
-		private Task Contracts_ContractUpdated(object Sender, ContractReferenceEventArgs e)
+		private async Task Contracts_ContractUpdated(object Sender, ContractReferenceEventArgs e)
 		{
-			return this.CheckReload(e);
+			Contract Contract = await this.contracts.GetContractAsync(this.ContractId);
+
+			if (this.legalModel is not null)
+				await this.legalModel.Contracts_ContractUpdated(Sender, e, Contract);
+
+			await this.CheckUpdatedView(Contract);
 		}
 
-		private async Task CheckReload(ContractReferenceEventArgs e)
+		private async Task CheckUpdatedView(Contract Contract)
 		{
-			if (e.ContractId == this.ContractId)
+			if (Contract.ContractId == this.ContractId)
 			{
-				Contract Contract = await this.contracts.GetContractAsync(this.ContractId);
-				MainWindow.UpdateGui(async () =>
+				await MainWindow.UpdateGui(async () =>
 				{
 					await this.SetContract(Contract);
 				});
@@ -414,7 +429,7 @@ namespace LegalLab.Models.Legal
 
 			if (XamlReader.Parse(await this.Contract.ToXAML(this.Language)) is StackPanel Panel)
 			{
-				LinkedList<UIElement> Elements = new();
+				LinkedList<UIElement> Elements = [];
 
 				foreach (UIElement Item in Panel.Children)
 					Elements.AddLast(Item);
@@ -440,7 +455,7 @@ namespace LegalLab.Models.Legal
 		/// </summary>
 		public RoleInfo[] Roles
 		{
-			get => this.roles?.Value ?? Array.Empty<RoleInfo>();
+			get => this.roles?.Value ?? [];
 			set => this.roles.Value = value;
 		}
 
@@ -454,7 +469,7 @@ namespace LegalLab.Models.Legal
 				RoleInfo[] Roles = this.Roles;
 
 				if (Roles is null)
-					return Array.Empty<string>();
+					return [];
 
 				int i, c = Roles.Length;
 				string[] Result = new string[c];
@@ -597,11 +612,11 @@ namespace LegalLab.Models.Legal
 		/// <returns>If command can be executed.</returns>
 		public bool CanExecuteCreateContract()
 		{
-			return this.ParametersOk;
+			return this.ParametersOk && this.legalModel.Template is not null && this.legalModel.IsTemplate;
 		}
 
 		/// <summary>
-		/// Proposes the contract.
+		/// Creates a contract.
 		/// </summary>
 		public async Task ExecuteCreateContract()
 		{
@@ -625,6 +640,90 @@ namespace LegalLab.Models.Legal
 				await this.SetContract(Contract);
 
 				MainWindow.SuccessBox("Contract successfully created.");
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
+		}
+
+		/// <summary>
+		/// Remove template command
+		/// </summary>
+		public ICommand RemoveTemplate => this.removeTemplate;
+
+		/// <summary>
+		/// If the remove template command can be exeucted.
+		/// </summary>
+		/// <returns>If command can be executed.</returns>
+		public bool CanExecuteRemoveTemplate()
+		{
+			return this.legalModel.Template is not null && this.legalModel.IsTemplate;
+		}
+
+		/// <summary>
+		/// Removed the template.
+		/// </summary>
+		public async Task ExecuteRemoveTemplate()
+		{
+			try
+			{
+				if (MessageBox.Show("Are you sure you want to remove the selected template? (Only the reference to the template will be removed.)", "Confirm",
+					MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
+				{
+					return;
+				}
+
+				MainWindow.MouseHourglass();
+
+				string TemplateId = this.legalModel.Template.ContractId;
+
+				await this.legalModel.RemoveContract(TemplateId);
+
+				MainWindow.MouseDefault();
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
+		}
+
+		/// <summary>
+		/// Remove contract command
+		/// </summary>
+		public ICommand RemoveContract => this.removeContract;
+
+		/// <summary>
+		/// If the remove contract command can be exeucted.
+		/// </summary>
+		/// <returns>If command can be executed.</returns>
+		public bool CanExecuteRemoveContract()
+		{
+			return this.legalModel.Template is not null && 
+				this.legalModel.IsContract &&
+				!string.IsNullOrEmpty(this.legalModel.ExistingContractId);
+		}
+
+		/// <summary>
+		/// Removed the template.
+		/// </summary>
+		public async Task ExecuteRemoveContract()
+		{
+			try
+			{
+				if (MessageBox.Show("Are you sure you want to remove the selected contract? (Only the reference to the contract will be removed.)", "Confirm",
+					MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
+				{
+					return;
+				}
+
+				MainWindow.MouseHourglass();
+
+				string ContractId = this.legalModel.ExistingContractId;
+
+				await this.legalModel.RemoveContract(ContractId);
+
+				MainWindow.MouseDefault();
 			}
 			catch (Exception ex)
 			{
@@ -719,14 +818,14 @@ namespace LegalLab.Models.Legal
 
 				try
 				{
-					if (ParameterName.StartsWith("Max(", StringComparison.CurrentCultureIgnoreCase) && ParameterName.EndsWith(")"))
+					if (ParameterName.StartsWith("Max(", StringComparison.CurrentCultureIgnoreCase) && ParameterName.EndsWith(')'))
 					{
 						if (!this.parametersByName.TryGetValue(ParameterName[4..^1].Trim(), out ParameterInfo Info))
 							continue;
 
 						Info.Parameter.SetMaxValue(Parameter.Value, true);
 					}
-					else if (ParameterName.StartsWith("Min(", StringComparison.CurrentCultureIgnoreCase) && ParameterName.EndsWith(")"))
+					else if (ParameterName.StartsWith("Min(", StringComparison.CurrentCultureIgnoreCase) && ParameterName.EndsWith(')'))
 					{
 						if (!this.parametersByName.TryGetValue(ParameterName[4..^1].Trim(), out ParameterInfo Info))
 							continue;
@@ -861,14 +960,14 @@ namespace LegalLab.Models.Legal
 
 					try
 					{
-						if (ParameterName.StartsWith("Max(", StringComparison.CurrentCultureIgnoreCase) && ParameterName.EndsWith(")"))
+						if (ParameterName.StartsWith("Max(", StringComparison.CurrentCultureIgnoreCase) && ParameterName.EndsWith(')'))
 						{
 							if (!this.parametersByName.TryGetValue(ParameterName[4..^1].Trim(), out ParameterInfo Info))
 								continue;
 
 							Info.Parameter.SetMaxValue(P.Value, true);
 						}
-						else if (ParameterName.StartsWith("Min(", StringComparison.CurrentCultureIgnoreCase) && ParameterName.EndsWith(")"))
+						else if (ParameterName.StartsWith("Min(", StringComparison.CurrentCultureIgnoreCase) && ParameterName.EndsWith(')'))
 						{
 							if (!this.parametersByName.TryGetValue(ParameterName[4..^1].Trim(), out ParameterInfo Info))
 								continue;
@@ -1020,6 +1119,26 @@ namespace LegalLab.Models.Legal
 
 								Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());
 							}
+							else if (Info.Parameter is GeoParameter GP)
+							{
+								if (P.Value is GeoPosition Position ||
+									(P.Value is string s && GeoPosition.TryParse(s, out Position)))
+								{
+									GP.Value = Position;
+
+									if (Entry is not null)
+										Entry.Background = Info.Protection.DefaultBrush();
+
+									Log.Informational("Parameter " + Info.Parameter.Name + " set to " + P.Value?.ToString());
+								}
+								else
+								{
+									if (Entry is not null)
+										Entry.Background = Brushes.Salmon;
+
+									Log.Error("Unable to set parameter " + Info.Parameter.Name + " to " + P.Value?.ToString());
+								}
+							}
 						}
 					}
 					catch (Exception ex)
@@ -1039,8 +1158,8 @@ namespace LegalLab.Models.Legal
 
 		private CaseInsensitiveString GetPrimaryKey(IDictionary<CaseInsensitiveString, object>[] Options)
 		{
-			Dictionary<CaseInsensitiveString, Dictionary<string, bool>> ByKeyAndValue = new();
-			LinkedList<CaseInsensitiveString> Keys = new();
+			Dictionary<CaseInsensitiveString, Dictionary<string, bool>> ByKeyAndValue = [];
+			LinkedList<CaseInsensitiveString> Keys = [];
 			int c = Options.Length;
 
 			foreach (IDictionary<CaseInsensitiveString, object> Option in Options)
@@ -1049,7 +1168,7 @@ namespace LegalLab.Models.Legal
 				{
 					if (!ByKeyAndValue.TryGetValue(P.Key, out Dictionary<string, bool> Values))
 					{
-						Values = new Dictionary<string, bool>();
+						Values = [];
 						ByKeyAndValue[P.Key] = Values;
 						Keys.AddLast(P.Key);
 					}
@@ -1112,7 +1231,7 @@ namespace LegalLab.Models.Legal
 				MainWindow.MouseHourglass();
 
 				string FileName = Path.GetFileName(Dialog.FileName);
-				byte[] Data = await Resources.ReadAllBytesAsync(Dialog.FileName);
+				byte[] Data = await Files.ReadAllBytesAsync(Dialog.FileName);
 				long Size = Data.Length;
 				byte[] Signature = await this.contracts.SignAsync(Data, SignWith.CurrentKeys);
 

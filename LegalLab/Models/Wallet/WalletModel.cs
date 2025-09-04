@@ -7,7 +7,6 @@ using LegalLab.Dialogs.BuyEDaler;
 using LegalLab.Dialogs.SellEDaler;
 using LegalLab.Dialogs.TransferEDaler;
 using LegalLab.Models.Network;
-using NeuroFeatures;
 using NeuroFeatures.EventArguments;
 using System;
 using System.Collections.Generic;
@@ -37,7 +36,7 @@ namespace LegalLab.Models.Wallet
 		private readonly Property<DateTime> timestamp;
 		private readonly Property<string> uri;
 
-		private readonly List<AccountEventWrapper> events = new();
+		private readonly List<AccountEventWrapper> events = [];
 
 		private readonly Command sendUri;
 		private readonly Command transferEDaler;
@@ -240,7 +239,7 @@ namespace LegalLab.Models.Wallet
 			{
 				lock (this.events)
 				{
-					return this.events.ToArray();
+					return [.. this.events];
 				}
 			}
 		}
@@ -398,15 +397,7 @@ namespace LegalLab.Models.Wallet
 
 					await this.networkModel.Legal.SetContractTemplateName(TemplateName, PresetValues);
 
-					foreach (TabItem Item in MainWindow.currentInstance.TabControl.Items)
-					{
-						if (Item.Content == MainWindow.currentInstance.ContractsTab)
-						{
-							MainWindow.currentInstance.TabControl.SelectedItem = Item;
-							break;
-						}
-					}
-
+					MainWindow.SelectTab(MainWindow.currentInstance.ContractsTab);
 					MainWindow.MouseDefault();
 
 					this.optionsTransactionId = Guid.NewGuid().ToString();
@@ -428,7 +419,7 @@ namespace LegalLab.Models.Wallet
 			return Task.CompletedTask;
 		}
 
-		private static void OpenUrl(string Url)
+		internal static void OpenUrl(string Url)
 		{
 			ProcessStartInfo StartInfo = new()
 			{
@@ -539,15 +530,7 @@ namespace LegalLab.Models.Wallet
 
 					await this.networkModel.Legal.SetContractTemplateName(TemplateName, PresetValues);
 
-					foreach (TabItem Item in MainWindow.currentInstance.TabControl.Items)
-					{
-						if (Item.Content == MainWindow.currentInstance.ContractsTab)
-						{
-							MainWindow.currentInstance.TabControl.SelectedItem = Item;
-							break;
-						}
-					}
-
+					MainWindow.SelectTab(MainWindow.currentInstance.ContractsTab);
 					MainWindow.MouseDefault();
 
 					this.optionsTransactionId = Guid.NewGuid().ToString();
@@ -602,7 +585,7 @@ namespace LegalLab.Models.Wallet
 		/// <inheritdoc/>
 		public override async Task Start()
 		{
-			MainWindow.UpdateGui(() =>
+			await MainWindow.UpdateGui(() =>
 			{
 				MainWindow.currentInstance.WalletTab.DataContext = this;
 				return Task.CompletedTask;

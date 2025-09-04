@@ -19,10 +19,13 @@ namespace LegalLab.Models
 	/// <summary>
 	/// Defines a custom command.
 	/// </summary>
-	public class Command : ICommand
+	/// <param name="CanExecuteCallback">Method called to determine if the command can be executed.</param>
+	/// <param name="ExecuteCallback">Method called when the command is executed.</param>
+	public class Command(CanExecuteHandler CanExecuteCallback, ExecuteHandler ExecuteCallback) 
+		: ICommand
 	{
-		private readonly CanExecuteHandler canExecuteCallback;
-		private readonly ExecuteHandler executeCallback;
+		private readonly CanExecuteHandler canExecuteCallback = CanExecuteCallback;
+		private readonly ExecuteHandler executeCallback = ExecuteCallback;
 
 		/// <summary>
 		/// Defines a custom command.
@@ -31,17 +34,6 @@ namespace LegalLab.Models
 		public Command(ExecuteHandler ExecuteCallback)
 			: this(null, ExecuteCallback)
 		{
-		}
-
-		/// <summary>
-		/// Defines a custom command.
-		/// </summary>
-		/// <param name="CanExecuteCallback">Method called to determine if the command can be executed.</param>
-		/// <param name="ExecuteCallback">Method called when the command is executed.</param>
-		public Command(CanExecuteHandler CanExecuteCallback, ExecuteHandler ExecuteCallback)
-		{
-			this.canExecuteCallback = CanExecuteCallback;
-			this.executeCallback = ExecuteCallback;
 		}
 
 		/// <summary>

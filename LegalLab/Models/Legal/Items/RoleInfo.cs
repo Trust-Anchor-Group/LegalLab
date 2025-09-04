@@ -1,5 +1,4 @@
 ﻿using LegalLab.Extensions;
-using LegalLab.Items;
 using LegalLab.Models.Design;
 using LegalLab.Models.Items;
 using System;
@@ -270,7 +269,7 @@ namespace LegalLab.Models.Legal.Items
 			if (Text is null)
 				return null;
 			else
-				return new string[] { await Text.GenerateMarkdown(this.contract, MarkdownType.ForEditing) };
+				return [await Text.GenerateMarkdown(this.contract, MarkdownType.ForEditing)];
 		}
 
 		/// <summary>

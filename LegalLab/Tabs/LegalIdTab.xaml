@@ -71,7 +71,7 @@
 					<TextBlock TextDecorations="Underline">Commands</TextBlock>
 				</Label>
 				<Button Margin="10,10,10,0" Command="{Binding Apply}">Apply</Button>
-            </StackPanel>
+			</StackPanel>
         </ScrollViewer>
         <ListView HorizontalAlignment="Stretch" Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible" 
                   ItemsSource="{Binding Identities}" DockPanel.Dock="Right">
@@ -87,7 +87,13 @@
                             <DataTemplate DataType="LegalLab.Models.Legal.IdentityWrapper">
                                 <StackPanel Orientation="Vertical">
                                     <TextBlock Text="{Binding Id}"/>
-                                    <Image Source="{Binding QrCodeUrl}" Width="200" Height="200" Visibility="{Binding IsSelected, Converter={conv:BooleanToVisibility}}"/>
+									<StackPanel Orientation="Horizontal">
+										<Image Source="{Binding QrCodeUrl}" Width="200" Height="200" Visibility="{Binding IsSelected, Converter={conv:BooleanToVisibility}}"/>
+										<StackPanel Orientation="Vertical" Visibility="{Binding IsSelected, Converter={conv:BooleanToVisibility}}">
+											<Button Margin="10,10,10,0" Padding="20,1" Command="{Binding UploadAttachment}" Visibility="{Binding IsCreated, Converter={conv:BooleanToVisibility}}">Upload Attachment</Button>
+											<Button Margin="10,10,10,0" Padding="20,1" Command="{Binding ReadyForApproval}" Visibility="{Binding IsCreated, Converter={conv:BooleanToVisibility}}">Ready For Approval</Button>
+										</StackPanel>
+									</StackPanel>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

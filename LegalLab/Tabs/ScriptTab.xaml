@@ -14,7 +14,7 @@
             </TextBlock>
             <TextBox Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" HorizontalAlignment="Stretch"
                      VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" ToolTip="Enter script to execute here." AcceptsTab="True"
-                     Margin="0,0,0,0" Height="60" AcceptsReturn="True" PreviewKeyDown="InputPreviewKeyDown">
+                     Margin="0,0,0,0" Height="60" AcceptsReturn="True" PreviewKeyDown="InputPreviewKeyDown" x:Name="InputEdit">
             </TextBox>
         </StackPanel>
         <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" DockPanel.Dock="Top">

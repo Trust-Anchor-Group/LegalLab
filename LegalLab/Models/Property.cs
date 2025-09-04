@@ -7,26 +7,17 @@ namespace LegalLab.Models
 	/// <summary>
 	/// Generic class for properties
 	/// </summary>
-	public class Property<T> : IProperty
+	/// <param name="Category">Property category</param>
+	/// <param name="Name">Property name</param>
+	/// <param name="LiveUpdates">If updates to the parameter should be persisted live.</param>
+	/// <param name="DefaultValue">Default value of property</param>
+	/// <param name="Model">Model hosting the property</param>
+	public class Property<T>(string Name, T DefaultValue, IModel Model) 
+		: IProperty
 	{
-		protected T @value = default;
-		private readonly string name;
-		private readonly IModel model;
-
-		/// <summary>
-		/// Generic class for persistant properties
-		/// </summary>
-		/// <param name="Category">Property category</param>
-		/// <param name="Name">Property name</param>
-		/// <param name="LiveUpdates">If updates to the parameter should be persisted live.</param>
-		/// <param name="DefaultValue">Default value of property</param>
-		/// <param name="Model">Model hosting the property</param>
-		public Property(string Name, T DefaultValue, IModel Model)
-		{
-			this.name = Name;
-			this.@value = DefaultValue;
-			this.model = Model;
-		}
+		protected T @value = DefaultValue;
+		private readonly string name = Name;
+		private readonly IModel model = Model;
 
 		/// <summary>
 		/// Property Name

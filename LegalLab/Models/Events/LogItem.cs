@@ -3,24 +3,16 @@ using System;
 using System.Windows.Media;
 using Waher.Events;
 
-namespace LegalLab.Models.Network.Events
+namespace LegalLab.Models.Events
 {
 	/// <summary>
 	/// Represents one item in an event log output.
 	/// From the IoTGateway project, with permission.
 	/// </summary>
-	public class LogItem : ColorableItem
+	public class LogItem(Event Event) 
+		: ColorableItem(CalcForegroundColor(Event), CalcBackgroundColor(Event))
 	{
-		private readonly Event e;
-
-		/// <summary>
-		/// Represents one item in an event log output.
-		/// </summary>
-		public LogItem(Event Event)
-			: base(CalcForegroundColor(Event), CalcBackgroundColor(Event))
-		{
-			this.e = Event;
-		}
+		private readonly Event e = Event;
 
 		/// <summary>
 		/// Event object
