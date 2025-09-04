@@ -10,9 +10,13 @@
              mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800">
 	<DockPanel LastChildFill="True" Background="#FFE5E5E5">
 		<ScrollViewer DockPanel.Dock="Left">
-			<StackPanel Name="ContractCommands" Orientation="Vertical" Width="250" Margin="10">
-				<Label>Template:</Label>
-				<ComboBox ItemsSource="{Binding Templates}" DisplayMemberPath="TemplateName" SelectedValuePath="TemplateName" 
+            <StackPanel Name="ContractCommands" Orientation="Vertical" Width="250" Margin="10">
+                <Label>Contract Id</Label>
+                <TextBox  Text="{Binding Path=ContractIdInput}"/>
+                <Button >Retrive</Button>
+
+
+                <ComboBox ItemsSource="{Binding Templates}" DisplayMemberPath="TemplateName" SelectedValuePath="TemplateName" 
 						  SelectedValue="{Binding ContractTemplateName}"/>
 				<Label>Existing contracts:</Label>
 				<ComboBox ItemsSource="{Binding ExistingContracts}" DisplayMemberPath="ContractName" SelectedValuePath="ContractId" 
