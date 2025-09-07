@@ -417,7 +417,15 @@ namespace LegalLab
 		{
 			if (currentInstance?.Dispatcher.CheckAccess() ?? false)
 			{
-				await Method(State);
+				try
+				{
+					await Method(State);
+				}
+				catch (Exception ex)
+				{
+					Log.Exception(ex);
+				}
+
 				return true;
 			}
 			else
