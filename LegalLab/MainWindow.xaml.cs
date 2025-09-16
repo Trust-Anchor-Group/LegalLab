@@ -55,7 +55,7 @@ namespace LegalLab
 
 		public MainWindow()
 		{
-			TaskCompletionSource<bool> Completed = new TaskCompletionSource<bool>();
+			TaskCompletionSource<bool> Completed = new();
 			bool StartGuiTask = false;
 
 			lock (guiUpdateQueue)
@@ -103,7 +103,7 @@ namespace LegalLab
 
 				lock (waitingForDb)
 				{
-					WaitingTasks = waitingForDb.ToArray();
+					WaitingTasks = [.. waitingForDb];
 					waitingForDb.Clear();
 				}
 

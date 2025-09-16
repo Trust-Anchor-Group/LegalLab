@@ -167,7 +167,7 @@ namespace LegalLab.Models.Legal
 
 					case MessageBoxResult.No:
 						await this.contracts.PetitionSignatureResponseAsync(e.SignatoryIdentityId,
-							e.ContentToSign, Array.Empty<byte>(), e.PetitionId, e.RequestorFullJid, false);
+							e.ContentToSign, [], e.PetitionId, e.RequestorFullJid, false);
 						break;
 				}
 			});
@@ -272,7 +272,7 @@ namespace LegalLab.Models.Legal
 		private async Task Contracts_ContractCreated(object Sender, ContractReferenceEventArgs e)
 		{
 			Contract Contract = await this.contracts.GetContractAsync(e.ContractId);
-			await UpdateContactReference(Contract);
+			await this.UpdateContactReference(Contract);
 		}
 
 		private Task Contracts_ContractDeleted(object Sender, ContractReferenceEventArgs e)
@@ -295,7 +295,7 @@ namespace LegalLab.Models.Legal
 						break;
 
 					default:
-						await UpdateContactReference(Contract);
+						await this.UpdateContactReference(Contract);
 						break;
 				}
 			}
