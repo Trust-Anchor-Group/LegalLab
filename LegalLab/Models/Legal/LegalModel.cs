@@ -175,9 +175,9 @@ namespace LegalLab.Models.Legal
 			return Task.CompletedTask;
 		}
 
-		private async Task Contracts_PetitionForPeerReviewIDReceived(object Sender, SignaturePetitionEventArgs e)
+		private Task Contracts_PetitionForPeerReviewIDReceived(object Sender, SignaturePetitionEventArgs e)
 		{
-			// TODO
+			return Task.CompletedTask;	// TODO
 		}
 
 		private Task Contracts_PetitionForContractReceived(object Sender, ContractPetitionEventArgs e)
