@@ -255,7 +255,7 @@ namespace LegalLab.Models.Legal
 			MainWindow.UpdateGui(async () =>
 			{
 				if (MessageBox.Show("You have received a proposal to sign a contract as " + 
-					e.Role + ", with the following message:\r\n\r\n" + e.Message + 
+					e.Role + ", with the following message:\r\n\r\n" + e.Message.InnerText + 
 					"\r\n\r\nDo you want to review the contract?", "Confirm",
 					MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
 				{
