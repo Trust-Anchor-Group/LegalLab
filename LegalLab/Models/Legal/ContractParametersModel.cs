@@ -67,21 +67,9 @@ namespace LegalLab.Models.Legal
 		/// <param name="Contract">Contract object.</param>
 		public virtual Task SetContract(Contract Contract)
 		{
-			if (this.contract is not null)
-				this.contract.FormatParameterDisplay -= this.Contract_FormatParameterDisplay;
-
 			this.contract = Contract;
-			this.contract.FormatParameterDisplay += this.Contract_FormatParameterDisplay;
 
 			this.SetParameters(Contract.Parameters);
-
-			return Task.CompletedTask;
-		}
-
-		private Task Contract_FormatParameterDisplay(object Sender, ParameterValueFormattingEventArgs e)
-		{
-			if (e.Value is Waher.Content.Duration D)
-				e.Value = DurationToString.ToString(D);
 
 			return Task.CompletedTask;
 		}

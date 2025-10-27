@@ -183,12 +183,8 @@ namespace LegalLab.Models.Design
 
 		public async Task SetContract(Contract Contract)
 		{
-			if (this.contract is not null)
-				this.contract.FormatParameterDisplay -= this.Contract_FormatParameterDisplay;
-
 			this.contract = Contract;
-			this.contract.FormatParameterDisplay += this.Contract_FormatParameterDisplay;
-
+			
 			this.ContractId = Contract.ContractId;
 			this.ArchiveOptional = Contract.ArchiveOptional;
 			this.ArchiveRequired = Contract.ArchiveRequired;
@@ -283,14 +279,6 @@ namespace LegalLab.Models.Design
 		}
 
 		public static readonly Iso__639_1.Record[] English = new string[] { "en" }.ToIso639_1();
-
-		private Task Contract_FormatParameterDisplay(object Sender, ParameterValueFormattingEventArgs e)
-		{
-			if (e.Value is Waher.Content.Duration D)
-				e.Value = DurationToString.ToString(D);
-
-			return Task.CompletedTask;
-		}
 
 		/// <summary>
 		/// Current contract
