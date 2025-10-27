@@ -468,6 +468,17 @@ into the token.</String>
 				</paragraph>
 			</description>
 		</calcParameter>
+		<calcParameter name="EstimatedCompletion" exp="NowUtc+InstallmentInterval*NrInstallments">
+			<description xml:lang="en">
+				<paragraph>
+					<text>When the </text>
+					<italic>
+						<text>microloan</text>
+					</italic>
+					<text> is paid back in full, if payments are made according to schedule.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
 		<calcParameter name="Expires" exp="NowUtc+Duration('P1D')+InstallmentInterval*Max(NrInstallments,365)">
 			<description xml:lang="en">
 				<paragraph>
@@ -479,6 +490,17 @@ into the token.</String>
 				</paragraph>
 			</description>
 		</calcParameter>
+		<roleParameter index="1" name="LenderCountry" property="COUNTRY" role="Lender">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The country in which the </text>
+					<bold>
+						<text>Lender</text>
+					</bold>
+					<text> resides.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
 	</parameters>
 	<humanReadableText xml:lang="en">
 		<section>
@@ -559,7 +581,9 @@ into the token.</String>
 					</italic>
 					<text> is active until the debt is paid in full. This is estimated to occur after </text>
 					<parameter name="NrInstallments" />
-					<text> installments, if payments are made according to schedule. The estimated </text>
+					<text> installments at </text>
+					<parameter name="EstimatedCompletion"/>
+					<text>, if payments are made according to schedule. The estimated </text>
 					<italic>
 						<text>Return on Investment</text>
 					</italic>
@@ -601,7 +625,17 @@ into the token.</String>
 							<parameter name="DebtLimit"/>
 							<text> </text>
 							<parameter name="Currency"/>
-							<text> however.</text>
+							<text> however. The </text>
+							<italic>
+								<text>microloan</text>
+							</italic>
+							<text> token counting machine expires at </text>
+							<parameter name="Expires" />
+							<text>, after which the </text>
+							<italic>
+								<text>microloan</text>
+							</italic>
+							<text> will be transferred for manual processing.</text>
 						</paragraph>
 					</body>
 				</section>
@@ -627,7 +661,11 @@ into the token.</String>
 							<bold>
 								<text>Lender</text>
 							</bold>
-							<text> resides.</text>
+							<text> resides, which is </text>
+							<bold>
+								<parameter name="LenderCountry"/>
+							</bold>
+							<text>.</text>
 						</paragraph>
 					</body>
 				</section>
