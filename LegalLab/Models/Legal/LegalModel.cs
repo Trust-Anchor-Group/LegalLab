@@ -280,7 +280,7 @@ namespace LegalLab.Models.Legal
 			return this.RemoveContract(e.ContractId);
 		}
 
-		internal async Task Contracts_ContractUpdated(object Sender, ContractReferenceEventArgs e,
+		internal async Task Contracts_ContractUpdated(object _, ContractReferenceEventArgs e,
 			Contract Contract)
 		{
 			try
