@@ -512,7 +512,18 @@ into the token.</String>
 				</paragraph>
 			</description>
 		</roleParameter>
-		<roleParameter index="1" name="LenderCountry" property="COUNTRY" role="Lender">
+		<roleParameter index="1" name="LenderCountryCode" property="COUNTRY" role="Lender">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The code of the country in which the </text>
+					<bold>
+						<text>Lender</text>
+					</bold>
+					<text> resides.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<calcParameter name="LenderCountry" exp="CountryName(LenderCountryCode)">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The country in which the </text>
@@ -522,7 +533,7 @@ into the token.</String>
 					<text> resides.</text>
 				</paragraph>
 			</description>
-		</roleParameter>
+		</calcParameter>
 		<roleParameter index="1" name="BorrowerName" property="FULLNAME" role="Borrower">
 			<description xml:lang="en">
 				<paragraph>
@@ -545,7 +556,18 @@ into the token.</String>
 				</paragraph>
 			</description>
 		</roleParameter>
-		<roleParameter index="1" name="BorrowerCountry" property="COUNTRY" role="Borrower">
+		<roleParameter index="1" name="BorrowerCountryCode" property="COUNTRY" role="Borrower">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The code of the country in which the </text>
+					<bold>
+						<text>Borrower</text>
+					</bold>
+					<text> resides.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<calcParameter name="BorrowerCountry" exp="CountryName(BorrowerCountryCode)">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The country in which the </text>
@@ -555,7 +577,7 @@ into the token.</String>
 					<text> resides.</text>
 				</paragraph>
 			</description>
-		</roleParameter>
+		</calcParameter>
 		<roleParameter index="1" name="CreatorName" property="FULLNAME" role="Creator">
 			<description xml:lang="en">
 				<paragraph>
@@ -578,7 +600,18 @@ into the token.</String>
 				</paragraph>
 			</description>
 		</roleParameter>
-		<roleParameter index="1" name="CreatorCountry" property="COUNTRY" role="Creator">
+		<roleParameter index="1" name="CreatorCountryCode" property="COUNTRY" role="Creator">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The code of the country country in which the </text>
+					<bold>
+						<text>Creator</text>
+					</bold>
+					<text> resides.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<calcParameter name="CreatorCountry" exp="CountryName(CreatorCountryCode)">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The country in which the </text>
@@ -588,7 +621,7 @@ into the token.</String>
 					<text> resides.</text>
 				</paragraph>
 			</description>
-		</roleParameter>
+		</calcParameter>
 	</parameters>
 	<humanReadableText xml:lang="en">
 		<section>
