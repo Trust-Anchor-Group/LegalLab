@@ -30,7 +30,9 @@ namespace LegalLab.Script
         /// <returns>Function result.</returns>
         public override ScriptElements.IElement EvaluateScalar(string Argument, Variables Variables)
         {
-			if (ISO_3166_1.TryGetCountryByName(Argument, out ISO_3166_Country Country))
+			if (string.IsNullOrEmpty(Argument))
+				return new StringValue(string.Empty);
+			else if (ISO_3166_1.TryGetCountryByName(Argument, out ISO_3166_Country Country))
 				return new StringValue(Country.Alpha2);
 			else
 				throw new ScriptRuntimeException("Country not recognized: " + Argument, this);
