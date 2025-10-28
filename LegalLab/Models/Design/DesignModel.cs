@@ -712,6 +712,13 @@ namespace LegalLab.Models.Design
 
 			Variables["Duration"] = this.Duration;
 
+			DateTime? FirstSignature = this.Contract.FirstSignatureAt;
+			if (FirstSignature.HasValue)
+			{
+				Variables["Now"] = FirstSignature.Value.ToLocalTime();
+				Variables["NowUtc"] = FirstSignature.Value.ToUniversalTime();
+			}
+
 			foreach (ParameterInfo P in this.AllParameterInfos)
 				P.Parameter.Populate(Variables);
 

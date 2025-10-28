@@ -7,7 +7,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
-using Waher.Runtime.Language;
 using Waher.Script;
 
 namespace LegalLab.Models.Legal.Items
@@ -30,6 +29,8 @@ namespace LegalLab.Models.Legal.Items
 		private readonly Command removeParameter;
 		protected readonly DesignModel designModel;
 
+		private Parameter parameter;
+
 		/// <summary>
 		/// Contains information about a parameter
 		/// </summary>
@@ -43,6 +44,8 @@ namespace LegalLab.Models.Legal.Items
 		{
 			string Language = DesignModel?.Language ?? Contract.DefaultLanguage;
 
+			this.parameter = Parameter;
+			this.designModel = DesignModel;
 			this.name = new Property<string>(nameof(this.Name), Parameter.Name, this);
 			this.description = new Property<object>(nameof(this.Description), Parameter.ToSimpleXAML(Language, Contract).Result, this);
 			this.descriptionAsMarkdown = new Property<string>(nameof(this.DescriptionAsMarkdown), Parameter.ToMarkdown(Language, Contract, MarkdownType.ForEditing).Result.Trim(), this);
@@ -74,9 +77,26 @@ namespace LegalLab.Models.Legal.Items
 		/// Original parameter object in contract
 		/// </summary>
 		public Parameter Parameter 
-		{ 
-			get;
-			private set;
+		{
+			get => this.parameter;
+			private set
+			{
+				if (this.parameter != value)
+				{
+					this.parameter = value;
+					this.ParameterObjectUpdated();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Updates properties to match the values of the new parameter object.
+		/// </summary>
+		protected virtual void ParameterObjectUpdated()
+		{
+			this.Value = this.parameter.ObjectValue;
+			this.ErrorReason = this.parameter.ErrorReason;
+			this.ErrorText = this.parameter.ErrorText;
 		}
 
 		/// <summary>
@@ -325,17 +345,14 @@ namespace LegalLab.Models.Legal.Items
 		/// <param name="Contract">Updated contract.</param>
 		public virtual void ContractUpdated(Contract Contract)
 		{
-			if (this.Contract != Contract)
-			{
-				this.Contract = Contract;
+			this.Contract = Contract;
 
-				foreach (Parameter P in Contract.Parameters)
+			foreach (Parameter P in Contract.Parameters)
+			{
+				if (P.Name == this.name.Value)
 				{
-					if (P.Name == this.name.Value)
-					{
-						this.Parameter = P;
-						break;
-					}
+					this.Parameter = P;
+					break;
 				}
 			}
 		}
