@@ -246,9 +246,9 @@
 G:=plot2dline(Amount.Timestamp, Amount.Value, "Red")+
 plot2dline(Debt.Timestamp, Debt.Value, "Blue");
 
-G.Title:="Internal state over time";
+G.Title:="Debt over time";
 G.LabelX:="Time";
-G.LabelY:="Amount";
+G.LabelY:="Debt";
 G
 }}
 					]]>
