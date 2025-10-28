@@ -13,7 +13,6 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Waher.Events;
 using Waher.Networking.XMPP.Contracts;
-using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
 using Waher.Persistence;
 using Waher.Runtime.Geo;
@@ -328,6 +327,13 @@ namespace LegalLab.Models.Legal
 						this.parametersByName[Parameter.Name] = ParameterInfo = new CalcParameterInfo(this.contract, CP, TextBox,
 							this.designModel, this.parameters);
 					}
+					else if (Parameter is RoleParameter RP)
+					{
+						TextBox.IsReadOnly = true;
+
+						this.parametersByName[Parameter.Name] = ParameterInfo = new RoleParameterInfo(this.contract, RP, TextBox,
+							this.designModel, this.parameters);
+					}
 					else if (Parameter is ContractReferenceParameter CRP)
 					{
 						if (PresetValue is string s)
@@ -491,7 +497,7 @@ namespace LegalLab.Models.Legal
 				{
 					P.Control.Background = P.Protection.DefaultBrush();
 					P.Control.ToolTip = await P.Parameter.ToSimpleXAML(this.Language, this.contract);
-				
+
 					Log.Informational("Parameter " + P.Name + " is OK.");
 				}
 				else
@@ -519,9 +525,14 @@ namespace LegalLab.Models.Legal
 					string Error = Msg.ToString();
 
 					Log.Error(Error);
-					Ok = false;
-				
 					P.Control.ToolTip = await P.Parameter.ToSimpleXAML(this.Language, this.contract, Error);
+
+					if ((P is not CalcParameterInfo &&
+						P is not RoleParameterInfo) ||
+						this.contract.State == ContractState.Approved)
+					{
+						Ok = false;
+					}
 				}
 			}
 
