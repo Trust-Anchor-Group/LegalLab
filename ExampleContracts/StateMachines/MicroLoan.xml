@@ -490,12 +490,100 @@ into the token.</String>
 				</paragraph>
 			</description>
 		</calcParameter>
+		<roleParameter index="1" name="LenderName" property="FULLNAME" role="Lender">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The full name of the </text>
+					<bold>
+						<text>Lender</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter index="1" name="LenderAddress" property="FULLADDR" role="Lender">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The full address of the </text>
+					<bold>
+						<text>Lender</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
 		<roleParameter index="1" name="LenderCountry" property="COUNTRY" role="Lender">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The country in which the </text>
 					<bold>
 						<text>Lender</text>
+					</bold>
+					<text> resides.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter index="1" name="BorrowerName" property="FULLNAME" role="Borrower">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The full name of the </text>
+					<bold>
+						<text>Borrower</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter index="1" name="BorrowerAddress" property="FULLADDR" role="Borrower">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The full address of the </text>
+					<bold>
+						<text>Borrower</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter index="1" name="BorrowerCountry" property="COUNTRY" role="Borrower">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The country in which the </text>
+					<bold>
+						<text>Borrower</text>
+					</bold>
+					<text> resides.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter index="1" name="CreatorName" property="FULLNAME" role="Creator">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The full name of the </text>
+					<bold>
+						<text>Creator</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter index="1" name="CreatorAddress" property="FULLADDR" role="Creator">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The full address of the </text>
+					<bold>
+						<text>Creator</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter index="1" name="CreatorCountry" property="COUNTRY" role="Creator">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The country in which the </text>
+					<bold>
+						<text>Creator</text>
 					</bold>
 					<text> resides.</text>
 				</paragraph>
@@ -509,14 +597,52 @@ into the token.</String>
 			</header>
 			<body>
 				<paragraph>
-					<text>This contract creates a token representing a </text>
+					<text>This contract represents a </text>
 					<italic>
 						<text>microloan</text>
 					</italic>
-					<text>.</text>
+					<text> between the </text>
+					<bold>
+						<text>Lender</text>
+					</bold>
+					<text> (</text>
+					<parameter name="LenderName"/>
+					<text>, </text>
+					<parameter name="LenderAddress"/>
+					<text>, </text>
+					<parameter name="LenderCountry"/>
+					<text>) and the </text>
+					<bold>
+						<text>Borrower</text>
+					</bold>
+					<text> (</text>
+					<parameter name="BorrowerName"/>
+					<text>, </text>
+					<parameter name="BorrowerAddress"/>
+					<text>, </text>
+					<parameter name="BorrowerCountry"/>
+					<text>). The contract, once signed, also creates a token representing the </text>
+					<italic>
+						<text>microloan</text>
+					</italic>
+					<text>. The token will perform automatic payments and maintain information about the current state of the </text>
+					<italic>
+						<text>microloan</text>
+					</italic>
+					<text>. The token is created by the </text>
+					<bold>
+						<text>Creator</text>
+					</bold>
+					<text> (</text>
+					<parameter name="CreatorName"/>
+					<text>, </text>
+					<parameter name="CreatorAddress"/>
+					<text>, </text>
+					<parameter name="CreatorCountry"/>
+					<text>).</text>
 				</paragraph>
 				<paragraph>
-					<text>A </text>
+					<text>The </text>
 					<bold>
 						<text>Borrower</text>
 					</bold>
@@ -524,7 +650,7 @@ into the token.</String>
 					<parameter name="Amount" />
 					<text> </text>
 					<parameter name="Currency" />
-					<text>) from a </text>
+					<text>) from the </text>
 					<bold>
 						<text>Lender</text>
 					</bold>
