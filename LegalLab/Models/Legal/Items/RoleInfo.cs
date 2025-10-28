@@ -265,7 +265,7 @@ namespace LegalLab.Models.Legal.Items
 		/// <returns>Array of translatable texts, or null if none.</returns>
 		public async Task<string[]> GetTranslatableTexts(string Language)
 		{
-			HumanReadableText Text = this.Role.Descriptions.Find(Language);
+			HumanReadableText Text = this.Role.Descriptions.Find(Language, null);
 			if (Text is null)
 				return null;
 			else

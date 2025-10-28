@@ -400,8 +400,10 @@ namespace LegalLab.Extensions
 		/// </summary>
 		/// <param name="AvailableTexts">Available texts</param>
 		/// <param name="Language">Language</param>
+		/// <param name="DefaultLanguage">Default language to use, 
+		/// if <paramref name="Language"/> is not found.</param>
 		/// <returns>Result, if found.</returns>
-		public static HumanReadableText Find(this HumanReadableText[] AvailableTexts, string Language)
+		public static HumanReadableText Find(this HumanReadableText[] AvailableTexts, string Language, string DefaultLanguage)
 		{
 			foreach (HumanReadableText Text in AvailableTexts)
 			{
@@ -409,17 +411,17 @@ namespace LegalLab.Extensions
 					return Text;
 			}
 
-			if (Language != "en")
+			if (!string.IsNullOrEmpty(DefaultLanguage) && Language != DefaultLanguage)
 			{
 				foreach (HumanReadableText Text in AvailableTexts)
 				{
-					if (Text.Language == "en")
+					if (Text.Language == DefaultLanguage)
 						return Text;
 				}
-			}
 
-			foreach (HumanReadableText Text in AvailableTexts)
-				return Text;
+				foreach (HumanReadableText Text in AvailableTexts)
+					return Text;
+			}
 
 			return null;
 		}

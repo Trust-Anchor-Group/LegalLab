@@ -156,7 +156,7 @@ namespace LegalLab.Models.Legal
 				{
 					foreach (ParameterInfo PI in this.Parameters)
 					{
-						HumanReadableText Text = PI.Parameter.Descriptions.Find(Language);
+						HumanReadableText Text = PI.Parameter.Descriptions.Find(Language, "en");
 
 						if (Text is null)
 							PI.DescriptionAsMarkdown = string.Empty;

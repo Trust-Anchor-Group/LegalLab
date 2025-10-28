@@ -28,7 +28,6 @@ using Waher.Content.Xml;
 using Waher.Events;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
-using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
@@ -399,7 +398,7 @@ namespace LegalLab.Models.Design
 
 							foreach (ParameterInfo PI in this.AllParameterInfos)
 							{
-								Text = PI.Parameter.Descriptions.Find(Language);
+								Text = PI.Parameter.Descriptions.Find(Language, "en");
 
 								if (Text is null)
 									PI.DescriptionAsMarkdown = string.Empty;
@@ -409,7 +408,7 @@ namespace LegalLab.Models.Design
 
 							foreach (RoleInfo RI in this.Roles)
 							{
-								Text = RI.Role.Descriptions.Find(Language);
+								Text = RI.Role.Descriptions.Find(Language, "en");
 
 								if (Text is null)
 									RI.DescriptionAsMarkdown = string.Empty;
@@ -417,7 +416,7 @@ namespace LegalLab.Models.Design
 									RI.DescriptionAsMarkdown = (await Text.GenerateMarkdown(this.contract, MarkdownType.ForEditing) ?? string.Empty).Trim();
 							}
 
-							Text = this.contract.ForHumans.Find(Language);
+							Text = this.contract.ForHumans.Find(Language, "en");
 							if (Text is null)
 								this.HumanReadableMarkdown = string.Empty;
 							else
@@ -513,7 +512,7 @@ namespace LegalLab.Models.Design
 		/// <returns>Array of translatable texts, or null if none.</returns>
 		public async Task<string[]> GetTranslatableTexts(string Language)
 		{
-			HumanReadableText Text = this.contract.ForHumans.Find(Language);
+			HumanReadableText Text = this.contract.ForHumans.Find(Language, null);
 			if (Text is null)
 				return null;
 			else

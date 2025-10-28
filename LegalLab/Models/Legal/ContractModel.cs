@@ -290,7 +290,7 @@ namespace LegalLab.Models.Legal
 				{
 					foreach (RoleInfo RI in this.Roles)
 					{
-						HumanReadableText Text = RI.Role.Descriptions.Find(Language);
+						HumanReadableText Text = RI.Role.Descriptions.Find(Language, "en");
 
 						if (Text is null)
 							RI.DescriptionAsMarkdown = string.Empty;

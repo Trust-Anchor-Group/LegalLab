@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using Waher.Content;
+using Waher.Content.Getters;
+using Waher.Content.Json;
 using Waher.Events;
 
 namespace LegalLab.Models.Design
@@ -36,12 +39,16 @@ namespace LegalLab.Models.Design
 		{
 			int i, c = Texts.Length;
 			string[] Response = new string[c];
-			Task[] Requests = new Task[c];
 
+			Task[] Requests = new Task[c];
+			
 			for (i = 0; i < c; i++)
 				Requests[i] = Translate(Texts[i], From, To, Key, Response, i);
-
+			
 			await Task.WhenAll(Requests);
+
+			//for (i = 0; i < c; i++)
+			//	await Translate(Texts[i], From, To, Key, Response, i);
 
 			return Response;
 		}
@@ -63,9 +70,9 @@ namespace LegalLab.Models.Design
 					new Dictionary<string, object>()
 					{
 						{
-							"model", "gpt-3.5-turbo" 
+							"model", "gpt-3.5-turbo"
 						},
-						{ 
+						{
 							"messages", new Dictionary<string,object>[]
 							{
 								new()
@@ -91,7 +98,21 @@ namespace LegalLab.Models.Design
 						new("Authorization", "Bearer " + Key),
 					]);
 
-				Content.AssertOk();
+				if (Content.HasError)
+				{
+					if (Content.Error is WebException ex &&
+						ex.ContentType == JsonCodec.DefaultContentType &&
+						JSON.Parse(Encoding.UTF8.GetString(ex.RawContent)) is Dictionary<string, object> Dict &&
+						Dict.TryGetValue("error", out object Obj2) &&
+						Obj2 is Dictionary<string, object> Error &&
+						Error.TryGetValue("message", out Obj2) &&
+						Obj2 is string ErrorMessage)
+					{
+						throw new Exception(ErrorMessage);
+					}
+					else
+						Content.AssertOk();
+				}
 
 				object ResponseObj = Content.Decoded;
 
