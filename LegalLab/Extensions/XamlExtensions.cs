@@ -41,6 +41,11 @@ namespace LegalLab.Extensions
 				return Result;
 		}
 
+		private static readonly XamlSettings defaultXamlSettings = new()
+		{
+			CodeBlockBackgroundColor = "#FFF3A0"
+		};
+
 		/// <summary>
 		/// Creates a human-readable XAML document for the contract.
 		/// </summary>
@@ -94,7 +99,7 @@ namespace LegalLab.Extensions
 		{
 			MarkdownDocument Doc = await Text.GenerateMarkdownDocument(Contract);
 			Doc = await Doc.Append(AdditionalMarkdown);
-			return await Doc.GenerateXAML();
+			return await Doc.GenerateXAML(defaultXamlSettings);
 		}
 
 		/// <summary>
@@ -131,7 +136,7 @@ namespace LegalLab.Extensions
 		{
 			MarkdownDocument Doc = await Text.GenerateMarkdownDocument(Contract);
 			Doc = await Doc.Append(AdditionalMarkdown);
-			return await Doc.GenerateXAML();
+			return await Doc.GenerateXAML(defaultXamlSettings);
 		}
 
 		/// <summary>

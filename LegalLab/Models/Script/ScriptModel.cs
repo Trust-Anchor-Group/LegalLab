@@ -295,7 +295,8 @@ namespace LegalLab.Models.Script
 			return new XamlSettings()
 			{
 				TableCellRowBackgroundColor1 = "#20404040",
-				TableCellRowBackgroundColor2 = "#10808080"
+				TableCellRowBackgroundColor2 = "#10808080",
+				CodeBlockBackgroundColor = "LightYellow"
 			};
 		}
 
