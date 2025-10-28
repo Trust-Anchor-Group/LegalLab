@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
+using Waher.Runtime.Language;
 using Waher.Script;
 
 namespace LegalLab.Models.Legal.Items
