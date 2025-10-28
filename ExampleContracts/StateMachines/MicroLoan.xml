@@ -386,7 +386,7 @@ into the token.</String>
 			</description>
 		</numericalParameter>
 		<numericalParameter name="InstallmentAmount" guide="Installment Amount" min="0" minIncluded="false"
-												exp="InstallmentAmount&gt;InterestPerInstallment*DebtLimit">
+												exp="InstallmentAmount&gt;InterestPerInstallment*DebtLimit/100">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Amount paid by the </text>
