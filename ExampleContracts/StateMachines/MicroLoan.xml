@@ -538,7 +538,7 @@ into the token.</String>
 		<roleParameter index="1" name="LenderPnr" property="PNR" role="Lender">
 			<description xml:lang="en">
 				<paragraph>
-					<text>The personal number of the </text>
+					<text>The personal identity number of the </text>
 					<bold>
 						<text>Lender</text>
 					</bold>
@@ -593,7 +593,7 @@ into the token.</String>
 		<roleParameter index="1" name="BorrowerPnr" property="PNR" role="Borrower">
 			<description xml:lang="en">
 				<paragraph>
-					<text>The personal number of the </text>
+					<text>The personal identity number of the </text>
 					<bold>
 						<text>Borrower</text>
 					</bold>
@@ -648,7 +648,7 @@ into the token.</String>
 		<roleParameter index="1" name="CreatorPnr" property="PNR" role="Creator">
 			<description xml:lang="en">
 				<paragraph>
-					<text>The personal number of the </text>
+					<text>The personal identity number of the </text>
 					<bold>
 						<text>Creator</text>
 					</bold>
@@ -678,7 +678,7 @@ into the token.</String>
 					<parameter name="LenderAddress"/>
 					<text>, </text>
 					<parameter name="LenderCountry"/>
-					<text>, personal number </text>
+					<text>, personal identity number </text>
 					<parameter name="LenderPnr"/>
 					<text>) and the </text>
 					<bold>
@@ -690,7 +690,7 @@ into the token.</String>
 					<parameter name="BorrowerAddress"/>
 					<text>, </text>
 					<parameter name="BorrowerCountry"/>
-					<text>, personal number </text>
+					<text>, personal identity number </text>
 					<parameter name="BorrowerPnr"/>
 					<text>). The contract, once signed, also creates a token representing the </text>
 					<italic>
@@ -710,7 +710,7 @@ into the token.</String>
 					<parameter name="CreatorAddress"/>
 					<text>, </text>
 					<parameter name="CreatorCountry"/>
-					<text>, personal number </text>
+					<text>, personal identity number </text>
 					<parameter name="CreatorPnr"/>
 					<text>).</text>
 				</paragraph>
