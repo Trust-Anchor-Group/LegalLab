@@ -535,6 +535,17 @@ into the token.</String>
 				</paragraph>
 			</description>
 		</calcParameter>
+		<roleParameter index="1" name="LenderPnr" property="PNR" role="Lender">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The personal number of the </text>
+					<bold>
+						<text>Lender</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
 		<roleParameter index="1" name="BorrowerName" property="FULLNAME" role="Borrower">
 			<description xml:lang="en">
 				<paragraph>
@@ -579,6 +590,17 @@ into the token.</String>
 				</paragraph>
 			</description>
 		</calcParameter>
+		<roleParameter index="1" name="BorrowerPnr" property="PNR" role="Borrower">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The personal number of the </text>
+					<bold>
+						<text>Borrower</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
 		<roleParameter index="1" name="CreatorName" property="FULLNAME" role="Creator">
 			<description xml:lang="en">
 				<paragraph>
@@ -623,6 +645,17 @@ into the token.</String>
 				</paragraph>
 			</description>
 		</calcParameter>
+		<roleParameter index="1" name="CreatorPnr" property="PNR" role="Creator">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The personal number of the </text>
+					<bold>
+						<text>Creator</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
 	</parameters>
 	<humanReadableText xml:lang="en">
 		<section>
@@ -645,6 +678,8 @@ into the token.</String>
 					<parameter name="LenderAddress"/>
 					<text>, </text>
 					<parameter name="LenderCountry"/>
+					<text>, personal number </text>
+					<parameter name="LenderPnr"/>
 					<text>) and the </text>
 					<bold>
 						<text>Borrower</text>
@@ -655,6 +690,8 @@ into the token.</String>
 					<parameter name="BorrowerAddress"/>
 					<text>, </text>
 					<parameter name="BorrowerCountry"/>
+					<text>, personal number </text>
+					<parameter name="BorrowerPnr"/>
 					<text>). The contract, once signed, also creates a token representing the </text>
 					<italic>
 						<text>microloan</text>
@@ -673,6 +710,8 @@ into the token.</String>
 					<parameter name="CreatorAddress"/>
 					<text>, </text>
 					<parameter name="CreatorCountry"/>
+					<text>, personal number </text>
+					<parameter name="CreatorPnr"/>
 					<text>).</text>
 				</paragraph>
 				<paragraph>
