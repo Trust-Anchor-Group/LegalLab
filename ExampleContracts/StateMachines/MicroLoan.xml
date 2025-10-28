@@ -378,7 +378,15 @@ into the token.</String>
 				</paragraph>
 			</description>
 		</numericalParameter>
-		<numericalParameter name="InstallmentAmount" guide="Installment Amount" min="0" minIncluded="false">
+		<numericalParameter name="DebtLimit" guide="Maximum Debt" exp="DebtLimit&gt;Amount">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The accumulated debt, in case of missing payments, cannot exceed this value.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<numericalParameter name="InstallmentAmount" guide="Installment Amount" min="0" minIncluded="false"
+												exp="InstallmentAmount&gt;InterestPerInstallment*DebtLimit">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Amount paid by the </text>
@@ -390,13 +398,6 @@ into the token.</String>
 						<text>Lender</text>
 					</bold>
 					<text> each installment.</text>
-				</paragraph>
-			</description>
-		</numericalParameter>
-		<numericalParameter name="DebtLimit" guide="Maximum Debt" exp="DebtLimit&gt;Amount">
-			<description xml:lang="en">
-				<paragraph>
-					<text>The accumulated debt, in case of missing payments, cannot exceed this value.</text>
 				</paragraph>
 			</description>
 		</numericalParameter>
