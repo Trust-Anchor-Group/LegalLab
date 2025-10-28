@@ -211,21 +211,33 @@
 				</Action>
 				<ReportPresent>
 					<![CDATA[
-| Variable               | Value                      |
-|------------------------|----------------------------|
-| Amount                 | {{Amount}}                 |
-| Debt                   | {{Debt}}                   |
-| InterestPerInstallment | {{InterestPerInstallment}} |
-| Cost                   | {{Cost}}                   |
-| Currency               | {{Currency}}               |
-| DebtLimit              | {{DebtLimit}}              |
-| InstallmentInterval    | {{InstallmentInterval}}    |
-| InstallmentAmount      | {{InstallmentAmount}}      |
-| Creator                | {{Creator}}                |
-| Lender                 | {{Lender}}                 |
-| Borrower               | {{Borrower}}               |
-| LoanAgreement          | {{LoanAgreement}}          |
-| NrFailedPayments       | {{NrFailedPayments}}       |
+| Variable             | Value                              |
+|----------------------|------------------------------------|
+| Amount               | {{Amount}} {{Currency}}            |
+| Debt                 | {{Debt}} {{Currency}}              |
+| Installment Interval | {{InstallmentInterval}}            |
+| Interest/Installment | {{InterestPerInstallment}}\%       |
+| DebtLimit            | {{DebtLimit}} {{Currency}}         |
+| Installment Amount   | {{InstallmentAmount}} {{Currency}} |
+| Commission           | {{CommissionPercent}}\%            |
+| Cost                 | {{Cost}} {{Currency}}              |
+| Lender               | {{LenderName}}                     |
+|                      | {{LenderPnr}}                      |
+|                      | {{LenderAddress}}                  |
+|                      | {{LenderCountry}}                  |
+|                      | {{Lender}}                         |
+| Borrower             | {{BorrowerName}}                   |
+|                      | {{BorrowerPnr}}                    |
+|                      | {{BorrowerAddress}}                |
+|                      | {{BorrowerCountry}}                |
+|                      | {{Borrower}}                       |
+| Creator              | {{CreatorName}}                    |
+|                      | {{CreatorPnr}}                     |
+|                      | {{CreatorAddress}}                 |
+|                      | {{CreatorCountry}}                 |
+|                      | {{Creator}}                        |
+| LoanAgreement        | {{LoanAgreement}}                  |
+| NrFailedPayments     | {{NrFailedPayments}}               |
 					]]>
 				</ReportPresent>
 				<ReportHistory>
