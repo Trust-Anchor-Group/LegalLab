@@ -1,4 +1,5 @@
-<contract archiveOpt="P2Y" archiveReq="P1Y" canActAsTemplate="true" duration="P2Y" id="DigitalSensorTwin" visibility="Public" xmlns="urn:nf:iot:leg:sc:1.0">
+<contract archiveOpt="P2Y" archiveReq="P1Y" canActAsTemplate="true" duration="P2Y" 
+					id="DigitalSensorTwin" visibility="Public" xmlns="urn:nf:iot:leg:sc:1.0">
 	<Create xmlns="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd">
 		<TokenID>
 			<Random />
