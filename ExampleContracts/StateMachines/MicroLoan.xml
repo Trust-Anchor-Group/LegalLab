@@ -75,17 +75,56 @@
 				<Variable id="Creator">
 					<TagReference tag="Creator"/>
 				</Variable>
+				<Variable id="CreatorPnr">
+					<TagReference tag="CreatorPnr"/>
+				</Variable>
+				<Variable id="CreatorName">
+					<TagReference tag="CreatorName"/>
+				</Variable>
+				<Variable id="CreatorAddress">
+					<TagReference tag="CreatorAddress"/>
+				</Variable>
+				<Variable id="CreatorCountry">
+					<TagReference tag="CreatorCountry"/>
+				</Variable>
 				<Variable id="Lender">
 					<TagReference tag="Lender"/>
 				</Variable>
+				<Variable id="LenderPnr">
+					<TagReference tag="LenderPnr"/>
+				</Variable>
+				<Variable id="LenderName">
+					<TagReference tag="LenderName"/>
+				</Variable>
+				<Variable id="LenderAddress">
+					<TagReference tag="LenderAddress"/>
+				</Variable>
+				<Variable id="LenderCountry">
+					<TagReference tag="LenderCountry"/>
+				</Variable>
 				<Variable id="Borrower">
 					<TagReference tag="Borrower"/>
+				</Variable>
+				<Variable id="BorrowerPnr">
+					<TagReference tag="BorrowerPnr"/>
+				</Variable>
+				<Variable id="BorrowerName">
+					<TagReference tag="BorrowerName"/>
+				</Variable>
+				<Variable id="BorrowerAddress">
+					<TagReference tag="BorrowerAddress"/>
+				</Variable>
+				<Variable id="BorrowerCountry">
+					<TagReference tag="BorrowerCountry"/>
 				</Variable>
 				<Variable id="LoanAgreement">
 					<TokenProperty>CreationContract</TokenProperty>
 				</Variable>
 				<Variable id="NrFailedPayments">
 					<Number>0</Number>
+				</Variable>
+				<Variable id="CommissionPercent">
+					<TagReference tag="CommissionPercent"/>
 				</Variable>
 				<State id="Setup">
 					<OnEnter actionRef="InitialPayments"/>
@@ -279,11 +318,50 @@ G
 		<Tag name="Creator">
 			<RoleReference role="Creator"/>
 		</Tag>
+		<Tag name="CreatorPnr">
+			<ParameterReference parameter="CreatorPnr"/>
+		</Tag>
+		<Tag name="CreatorName">
+			<ParameterReference parameter="CreatorName"/>
+		</Tag>
+		<Tag name="CreatorAddress">
+			<ParameterReference parameter="CreatorAddress"/>
+		</Tag>
+		<Tag name="CreatorCountry">
+			<ParameterReference parameter="CreatorCountry"/>
+		</Tag>
 		<Tag name="Lender">
 			<RoleReference role="Lender"/>
 		</Tag>
+		<Tag name="LenderPnr">
+			<ParameterReference parameter="LenderPnr"/>
+		</Tag>
+		<Tag name="LenderName">
+			<ParameterReference parameter="LenderName"/>
+		</Tag>
+		<Tag name="LenderAddress">
+			<ParameterReference parameter="LenderAddress"/>
+		</Tag>
+		<Tag name="LenderCountry">
+			<ParameterReference parameter="LenderCountry"/>
+		</Tag>
 		<Tag name="Borrower">
 			<RoleReference role="Borrower"/>
+		</Tag>
+		<Tag name="BorrowerPnr">
+			<ParameterReference parameter="BorrowerPnr"/>
+		</Tag>
+		<Tag name="BorrowerName">
+			<ParameterReference parameter="BorrowerName"/>
+		</Tag>
+		<Tag name="BorrowerAddress">
+			<ParameterReference parameter="BorrowerAddress"/>
+		</Tag>
+		<Tag name="BorrowerCountry">
+			<ParameterReference parameter="BorrowerCountry"/>
+		</Tag>
+		<Tag name="CommissionPercent">
+			<ParameterReference parameter="CommissionPercent"/>
 		</Tag>
 		<FriendlyName>
 			<String>Microloan</String>
