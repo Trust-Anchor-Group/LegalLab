@@ -1,11 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<contract xmlns="urn:nf:iot:leg:sc:1.0"
-          id="Microloan"
-          archiveOpt="P3M"
-          archiveReq="P1M"
-          canActAsTemplate="true"
-          duration="P2Y"
-          visibility="Public">
+<contract archiveOpt="P3M" archiveReq="P1M" canActAsTemplate="true" duration="P2Y" id="Microloan" visibility="Public" xmlns="urn:nf:iot:leg:sc:1.0">
 	<Create xmlns="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd">
 		<TokenID>
 			<Random />
@@ -47,7 +40,7 @@
 			<Boolean>false</Boolean>
 		</CertifierCanDestroy>
 		<Definition>
-			<StateMachine xmlns="https://paiwise.tagroot.io/Schema/StateMachines.xsd" startState="Setup">
+			<StateMachine startState="Setup" xmlns="https://paiwise.tagroot.io/Schema/StateMachines.xsd">
 				<Variable id="Amount">
 					<TagReference tag="Amount"/>
 				</Variable>
@@ -135,9 +128,7 @@
 				<State id="Paying">
 					<OnEvent newState="Paid">
 						<OnCondition>
-							<![CDATA[
-							Debt<=0
-							]]>
+						Debt&lt;=0
 						</OnCondition>
 					</OnEvent>
 					<OnEvent actionRef="PayInstallment">
@@ -148,8 +139,8 @@
 					<OnEnter actionRef="Done"/>
 				</State>
 				<Action id="InitialPayments">
-					<LogEvent type="Debug" message="Starting."/>
-					<LogEvent type="Debug" message="Paying loan amount, from Lender to Borrower."/>
+					<LogEvent message="Starting." type="Debug"/>
+					<LogEvent message="Paying loan amount, from Lender to Borrower." type="Debug"/>
 					<Payment>
 						<From value="{Lender}"/>
 						<To value="{Borrower}"/>
@@ -162,15 +153,13 @@
 					<TextNote>
 						<Content>
 							<Calc>
-								<![CDATA[
-								'Loan amount paid by lender to borrower: '+
-									Amount+' '+Currency+
-									'. Debt: '+Debt+' '+Currency+'.'
-								]]>
+							'Loan amount paid by lender to borrower: '+
+								Amount+' '+Currency+
+								'. Debt: '+Debt+' '+Currency+'.'
 							</Calc>
 						</Content>
 					</TextNote>
-					<LogEvent type="Debug" message="Borrower reimbursing creator."/>
+					<LogEvent message="Borrower reimbursing creator." type="Debug"/>
 					<Payment>
 						<From value="{Borrower}"/>
 						<To value="{Creator}"/>
@@ -185,31 +174,27 @@
 				<Action id="PayInstallment">
 					<If condition="Debt&lt;DebtLimit">
 						<Then>
-							<LogEvent type="Debug" message="Adding interest."/>
+							<LogEvent message="Adding interest." type="Debug"/>
 							<PersistVariable name="Debt">
 								<Value>
 									<Calc>
-										<![CDATA[
-										Debt:=Min(Debt*(100+InterestPerInstallment)/100,DebtLimit);
-										round(Debt*100)*0.01
-										]]>
+									Debt:=Min(Debt*(100+InterestPerInstallment)/100,DebtLimit);
+									round(Debt*100)*0.01
 									</Calc>
 								</Value>
 							</PersistVariable>
 							<TextNote content="{'Interest added. Debt: '+Debt+' '+Currency+'.'}"/>
-							<LogEvent type="Debug" message="{'Current debt: '+Debt}"/>
+							<LogEvent message="{'Current debt: '+Debt}" type="Debug"/>
 						</Then>
 					</If>
 					<Script>
-						<![CDATA[
-						Installment:=Min(Debt,InstallmentAmount);
-						Installment+=round(Debt*100)*0.01-Debt
-						]]>
+					Installment:=Min(Debt,InstallmentAmount);
+					Installment+=round(Debt*100)*0.01-Debt
 					</Script>
 					<If condition="Installment&gt;0">
 						<Then>
 							<Try>
-								<LogEvent type="Debug" message="Paying installment."/>
+								<LogEvent message="Paying installment." type="Debug"/>
 								<Payment>
 									<From value="{Borrower}"/>
 									<To value="{Lender}"/>
@@ -222,19 +207,17 @@
 								<PersistVariable name="Debt">
 									<Value>
 										<Calc>
-											<![CDATA[
-											Debt-=Installment;
-											round(Debt*100)*0.01
-											]]>
+										Debt-=Installment;
+										round(Debt*100)*0.01
 										</Calc>
 									</Value>
 								</PersistVariable>
 								<TextNote content="{'Installment paid. Debt: '+Debt+' '+Currency+'.'}"/>
-								<LogEvent type="Debug" message="{'Current debt: '+Debt}"/>
+								<LogEvent message="{'Current debt: '+Debt}" type="Debug"/>
 								<Catch exceptionVariable="ex">
 									<PersistVariable name="NrFailedPayments" value="{NrFailedPayments+1}"/>
 									<TextNote content="{ex.Message}"/>
-									<LogEvent type="Critical" message="{ex.Message}"/>
+									<LogEvent message="{ex.Message}" type="Critical"/>
 								</Catch>
 							</Try>
 						</Then>
@@ -245,11 +228,10 @@
 				</Action>
 				<Action id="Done">
 					<TextNote content="Microloan completed."/>
-					<LogEvent type="Debug" message="Completed."/>
-					<End/>
+					<LogEvent message="Completed." type="Debug"/>
+					<End />
 				</Action>
 				<ReportPresent>
-					<![CDATA[
 | Variable             | Value                              |
 |----------------------|------------------------------------|
 | Amount               | {{Amount}} {{Currency}}            |
@@ -277,10 +259,8 @@
 |                      | {{Creator}}                        |
 | LoanAgreement        | {{LoanAgreement}}                  |
 | NrFailedPayments     | {{NrFailedPayments}}               |
-					]]>
 				</ReportPresent>
 				<ReportHistory>
-					<![CDATA[
 {{
 G:=plot2dline(Amount.Timestamp, Amount.Value, "Red")+
 plot2dline(Debt.Timestamp, Debt.Value, "Blue");
@@ -290,7 +270,6 @@ G.LabelX:="Time";
 G.LabelY:="Debt";
 G
 }}
-					]]>
 				</ReportHistory>
 			</StateMachine>
 		</Definition>
@@ -376,7 +355,7 @@ into the token.</String>
 		</Description>
 		<Glyph contentType="image/png">iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAABFFJREFUeJztWU1IMlsYfrqTFmgLIb5yEURlLQo3YVZUCi1qFUFQUKt2QURWm7IgIkhqJ9IP1EIIWkWuIugPLIh0GVFUBC5SocCkEM2/uYvv3oPDNNM43Thwv3lgYM77d57zeI7nzEwBy7Is/mD8RZsAbSgC0CZAG4oAtAnQhiIAbQK0oQhAmwBtKALQJkAbigC0CdCGIgBtArShCECbAG0oAtAmQBuKALQJ0EahkCMYDGJpaQklJSV5F43H4+jr60NHRwfPNz8/j3g8jmw2i5qaGoyMjORdHwBSqRScTicODg5wfX2N19dXqNVqVFRUoLGxET09Pejv7/+6ECsAn8/HApB9LS4u8mo+PT3x4vJFJpNh29vbJfPY2dkRrSe4BL77uSCTyfBs4+PjPNvCwoLkmqenp2AYBufn55JzHh8fRf0FQh9G3t7ecHx8jOLiYo69tLQUZrOZtLe3t/Hr1y+k02liSyaTMBqNqKqq4nZWUAAA0Gg0iMVixC5FbK/XC6vVyrE1Nzdjbm4O3d3dYBiG2O/v77G7u4vZ2VlMT0/D4XAIF857Dv5mS65oNCopx+FwkBy73c5arVbS3t/fz6tPAOzt7a2kfgOBgHhdSVVEyITD4bxzYrEYe3R0RNoGg0E0d2BggJOfTCbl0P6cl6ykPAXIHWx1dfWndV5eXiT153K55FAWri0rKU8BGhoaSLzH4yF2u91O7ENDQ5/mer3eb+0aX+HHBYhGo6ID+GpwKysrxF9fXy+Hrih+/CRos9nI/dTUFM+fe1hyOp08fygUIvcGg0Fyv3V1dWhtbYXJZBIPlKMa8pgBubHpdJrn9/v9xM8wDM9vs9mIv7e3VxZHMfzoDFhdXSX3FouFs1f/C5PJBI1GA+D34eni4oLjLysrI/eBQOA/5yh4EBJN+udAAwDhcBjl5eWfxhUVFSGZTAIAlpeX0dbWhkQiwYnRarXY2trC5uYmAKCpqQk+n4/4Dw8P0dXVRdpS6eZyFM2RPKcEppfQEri8vJT9HPHx8SHY397eXt4cReOkDVm4uJAALS0tsgUYHR3l1LJYLHlvhVLjf2QJpNNpqFQq0na73UilUoJTkWEYPD8/Y2ZmhthyY6PRKHQ6HWmr1WrEYjEUFgo+zdNdAmNjY8RvNpsl19VqtSTP7XZzfGtra7yZMjg4yPr9fl4dj8dDdwnk+s/OziTXXV9fJ3k6nY7ndzqdspaU6Fgks8tNyikeDAY5PpfL9a2ja27uZ79uKBRia2trJQ++srJStD/hRSSCiYkJqFQqvL+/816ZJRIJTE5OIpvNcrYvqXC73bi6ukI2m8XDwwPvJKfX63F3d4dIJIKNjQ2cnJzg5uYGkUgEDMNAr9fDaDSis7MTw8PD5IwhBFl/gv8n/PFvhRUBaBOgDUUA2gRoQxGANgHaUASgTYA2FAFoE6ANRQDaBGhDEYA2AdpQBKBNgDYUAWgToA1FANoEaONve9o8PVvYS2AAAAAASUVORK5CYII=</Glyph>
 	</Create>
-	<role name="Creator" minCount="1" maxCount="1">
+	<role maxCount="1" minCount="1" name="Creator">
 		<description xml:lang="en">
 			<paragraph>
 				<text>The part that creates the </text>
@@ -394,8 +373,25 @@ into the token.</String>
 				<text>.</text>
 			</paragraph>
 		</description>
+		<description xml:lang="es">
+			<paragraph>
+				<text>La parte que crea el acuerdo de </text>
+				<italic>
+					<text>micropréstamo</text>
+				</italic>
+				<text>, incluido el token de </text>
+				<italic>
+					<text>micropréstamo</text>
+				</italic>
+				<text> y la máquina de estados correspondiente que ejecuta el </text>
+				<italic>
+					<text>micropréstamo</text>
+				</italic>
+				<text>.</text>
+			</paragraph>
+		</description>
 	</role>
-	<role name="Lender" minCount="1" maxCount="1">
+	<role maxCount="1" minCount="1" name="Lender">
 		<description xml:lang="en">
 			<paragraph>
 				<text>The part that lends money to the </text>
@@ -405,8 +401,21 @@ into the token.</String>
 				<text>.</text>
 			</paragraph>
 		</description>
+		<description xml:lang="es">
+			<paragraph>
+				<text>El </text>
+				<bold>
+					<text>prestamista</text>
+				</bold>
+				<text> que presta dinero al </text>
+				<bold>
+					<text>prestatario</text>
+				</bold>
+				<text>.</text>
+			</paragraph>
+		</description>
 	</role>
-	<role name="Borrower" minCount="1" maxCount="1">
+	<role maxCount="1" minCount="1" name="Borrower">
 		<description xml:lang="en">
 			<paragraph>
 				<text>The part that borrows money from the </text>
@@ -416,19 +425,37 @@ into the token.</String>
 				<text>.</text>
 			</paragraph>
 		</description>
+		<description xml:lang="es">
+			<paragraph>
+				<text>El </text>
+				<bold>
+					<text>prestatario</text>
+				</bold>
+				<text> que toma prestado dinero del </text>
+				<bold>
+					<text>prestamista</text>
+				</bold>
+				<text>.</text>
+			</paragraph>
+		</description>
 	</role>
-	<role name="TrustProvider" minCount="1" maxCount="1">
+	<role maxCount="1" minCount="1" name="TrustProvider">
 		<description xml:lang="en">
 			<paragraph>
 				<text>The part that acts as a host of the token and approves its creation.</text>
 			</paragraph>
 		</description>
+		<description xml:lang="es">
+			<paragraph>
+				<text>La parte que actúa como anfitrión del token y aprueba su creación.</text>
+			</paragraph>
+		</description>
 	</role>
 	<parts>
-		<templateOnly/>
+		<templateOnly />
 	</parts>
 	<parameters>
-		<numericalParameter name="Amount" guide="Loan Amount" min="0" minIncluded="false">
+		<numericalParameter guide="Loan Amount" min="0" minIncluded="false" name="Amount">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The amount of money borrowed by the </text>
@@ -442,8 +469,21 @@ into the token.</String>
 					<text>.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>La cantidad de dinero que el </text>
+					<bold>
+						<text>Prestatario</text>
+					</bold>
+					<text> pidió prestada al </text>
+					<bold>
+						<text>Prestamista</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
 		</numericalParameter>
-		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="[A-Z]{3}">
+		<stringParameter guide="Currency" maxLength="3" minLength="3" name="Currency" regEx="[A-Z]{3}">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The currency of the </text>
@@ -453,30 +493,53 @@ into the token.</String>
 					<text>.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>La moneda del </text>
+					<italic>
+						<text>micropréstamo</text>
+					</italic>
+					<text>.</text>
+				</paragraph>
+			</description>
 		</stringParameter>
-		<durationParameter name="InstallmentInterval" guide="P[nY][nM][nD][T[nH][nM][nS]]" min="P0D" minIncluded="false">
+		<durationParameter guide="P[nY][nM][nD][T[nH][nM][nS]]" min="PT0S" minIncluded="false" name="InstallmentInterval">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The interval with which installments are paid and interest calculated.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>El intervalo con el que se pagan las cuotas y se calculan los intereses.</text>
+				</paragraph>
+			</description>
 		</durationParameter>
-		<numericalParameter name="InterestPerInstallment" guide="Interest per Installment (%)" min="0" minIncluded="false">
+		<numericalParameter guide="Interest per Installment (%)" min="0" minIncluded="false" name="InterestPerInstallment">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The interest on the remaining amount of the loan, added every installment interval. Every time the installment interval elapses, the remaining amount on the loan will be incremented by this number of percent.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>El interés sobre el monto restante del préstamo, se suma en cada intervalo de cuota. Cada vez que transcurra el intervalo de cuota, el monto restante del préstamo se incrementará en este porcentaje.</text>
+				</paragraph>
+			</description>
 		</numericalParameter>
-		<numericalParameter name="DebtLimit" guide="Maximum Debt" exp="DebtLimit&gt;Amount">
+		<numericalParameter exp="DebtLimit&gt;Amount" guide="Maximum Debt" name="DebtLimit">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The accumulated debt, in case of missing payments, cannot exceed this value.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>La deuda acumulada, en caso de pagos atrasados, no puede superar este valor.</text>
+				</paragraph>
+			</description>
 		</numericalParameter>
-		<numericalParameter name="InstallmentAmount" guide="Installment Amount" min="0" minIncluded="false"
-												exp="InstallmentAmount&gt;InterestPerInstallment*DebtLimit/100">
+		<numericalParameter exp="InstallmentAmount&gt;InterestPerInstallment*DebtLimit/100" guide="Installment Amount" min="0" minIncluded="false" name="InstallmentAmount">
 			<description xml:lang="en">
 				<paragraph>
 					<text>Amount paid by the </text>
@@ -490,8 +553,21 @@ into the token.</String>
 					<text> each installment.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Cantidad pagada por el </text>
+					<bold>
+						<text>Prestatario</text>
+					</bold>
+					<text> al </text>
+					<bold>
+						<text>Prestamista</text>
+					</bold>
+					<text> en cada cuota.</text>
+				</paragraph>
+			</description>
 		</numericalParameter>
-		<numericalParameter name="CommissionPercent" guide="Commision (%)" min="0" max="100">
+		<numericalParameter guide="Commision (%)" max="100" maxIncluded="true" min="0" minIncluded="true" name="CommissionPercent">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The commission the Trust Provider gets for creating the token and managing the </text>
@@ -513,8 +589,29 @@ into the token.</String>
 					<text>.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>La comisión que recibe el Proveedor de Confianza por crear el token y gestionar el </text>
+					<italic>
+						<text>micropréstamo</text>
+					</italic>
+					<text>. Primero pagada por el </text>
+					<bold>
+						<text>Creador</text>
+					</bold>
+					<text> al crear el token, y luego reembolsada por el </text>
+					<bold>
+						<text>Prestatario</text>
+					</bold>
+					<text> al </text>
+					<bold>
+						<text>Creador</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
 		</numericalParameter>
-		<calcParameter name="Cost" exp="Amount*CommissionPercent/100">
+		<calcParameter exp="Amount*CommissionPercent/100" name="Cost">
 			<description>
 				<paragraph>
 					<text>The cost of creating the </text>
@@ -532,8 +629,25 @@ into the token.</String>
 					<text>.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>El costo de creación del </text>
+					<italic>
+						<text>microcrédito</text>
+					</italic>
+					<text> será pagado por el </text>
+					<bold>
+						<text>Prestatario</text>
+					</bold>
+					<text> al </text>
+					<bold>
+						<text>Creador</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
 		</calcParameter>
-		<calcParameter name="RoI" exp="Debt:=Amount;p:=1+InterestPerInstallment/100;N:=0;S:=0;while Debt>0 do (Debt*=p;I:=Min(Debt,InstallmentAmount);I+=round(Debt*100)*0.01-Debt;I:=max(0,I);Debt-=I;Debt:=round(Debt*100)*0.01;S+=I;N++ > 365 ? Error('Cannot be over a year.'));round((S-Amount)*100)*0.01">
+		<calcParameter exp="Debt:=Amount;p:=1+InterestPerInstallment/100;N:=0;S:=0;while Debt&gt;0 do (Debt*=p;I:=Min(Debt,InstallmentAmount);I+=round(Debt*100)*0.01-Debt;I:=max(0,I);Debt-=I;Debt:=round(Debt*100)*0.01;S+=I;N++ &gt; 365 ? Error('Cannot be over a year.'));round((S-Amount)*100)*0.01" name="RoI">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The estimated </text>
@@ -547,8 +661,21 @@ into the token.</String>
 					<text>, if payments are made regularly according to the agreement.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>La </text>
+					<italic>
+						<text>Tasa de Retorno de la Inversión</text>
+					</italic>
+					<text> estimada para el </text>
+					<bold>
+						<text>Prestamista</text>
+					</bold>
+					<text>, si los pagos se realizan regularmente según lo acordado.</text>
+				</paragraph>
+			</description>
 		</calcParameter>
-		<calcParameter name="NrInstallments" exp="N">
+		<calcParameter exp="N" name="NrInstallments">
 			<description>
 				<paragraph>
 					<text>Number of installments the </text>
@@ -558,8 +685,17 @@ into the token.</String>
 					<text> will be active, if payments are made regularly according to the agreement.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Número de plazos durante los cuales el </text>
+					<italic>
+						<text>microcrédito</text>
+					</italic>
+					<text> estará activo, si los pagos se realizan regularmente según el acuerdo.</text>
+				</paragraph>
+			</description>
 		</calcParameter>
-		<calcParameter name="EstimatedCompletion" exp="NowUtc+InstallmentInterval*NrInstallments">
+		<calcParameter exp="NowUtc+InstallmentInterval*NrInstallments" name="EstimatedCompletion">
 			<description xml:lang="en">
 				<paragraph>
 					<text>When the </text>
@@ -569,8 +705,17 @@ into the token.</String>
 					<text> is paid back in full, if payments are made according to schedule.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Cuando se paga el </text>
+					<italic>
+						<text>micropréstamo</text>
+					</italic>
+					<text> en su totalidad, si los pagos se realizan según lo programado.</text>
+				</paragraph>
+			</description>
 		</calcParameter>
-		<calcParameter name="Expires" exp="NowUtc+Duration('P1D')+InstallmentInterval*Max(NrInstallments,365)">
+		<calcParameter exp="NowUtc+Duration('P1D')+InstallmentInterval*Max(NrInstallments,365)" name="Expires">
 			<description xml:lang="en">
 				<paragraph>
 					<text>When the </text>
@@ -580,6 +725,75 @@ into the token.</String>
 					<text> token expires, if not resolved before.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>Cuando el token de </text>
+					<italic>
+						<text>micropréstamo</text>
+					</italic>
+					<text> expire, si no se resuelve antes.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+		<calcParameter exp="CountryName(LenderCountryCode)" name="LenderCountry">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The country in which the </text>
+					<bold>
+						<text>Lender</text>
+					</bold>
+					<text> resides.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>El país en el que reside el </text>
+					<bold>
+						<text>Prestamista</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+		<calcParameter exp="CountryName(BorrowerCountryCode)" name="BorrowerCountry">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The country in which the </text>
+					<bold>
+						<text>Borrower</text>
+					</bold>
+					<text> resides.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>El país en el que reside el </text>
+					<bold>
+						<text>prestatario</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+		<calcParameter exp="CountryName(CreatorCountryCode)" name="CreatorCountry">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The country in which the </text>
+					<bold>
+						<text>Creator</text>
+					</bold>
+					<text> resides.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>El país en el que reside el </text>
+					<bold>
+						<text>Creador</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
 		</calcParameter>
 		<roleParameter index="1" name="LenderName" property="FULLNAME" role="Lender">
 			<description xml:lang="en">
@@ -587,6 +801,15 @@ into the token.</String>
 					<text>The full name of the </text>
 					<bold>
 						<text>Lender</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>El nombre completo del </text>
+					<bold>
+						<text>Prestamista</text>
 					</bold>
 					<text>.</text>
 				</paragraph>
@@ -602,6 +825,15 @@ into the token.</String>
 					<text>.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>La dirección completa del </text>
+					<bold>
+						<text>Prestamista</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
 		</roleParameter>
 		<roleParameter index="1" name="LenderCountryCode" property="COUNTRY" role="Lender">
 			<description xml:lang="en">
@@ -613,24 +845,31 @@ into the token.</String>
 					<text> resides.</text>
 				</paragraph>
 			</description>
-		</roleParameter>
-		<calcParameter name="LenderCountry" exp="CountryName(LenderCountryCode)">
-			<description xml:lang="en">
+			<description xml:lang="es">
 				<paragraph>
-					<text>The country in which the </text>
+					<text>El código del país en el que reside el </text>
 					<bold>
-						<text>Lender</text>
+						<text>Prestamista</text>
 					</bold>
-					<text> resides.</text>
+					<text>.</text>
 				</paragraph>
 			</description>
-		</calcParameter>
+		</roleParameter>
 		<roleParameter index="1" name="LenderPnr" property="PNR" role="Lender">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The personal identity number of the </text>
 					<bold>
 						<text>Lender</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>El número de identificación personal del </text>
+					<bold>
+						<text>Prestamista</text>
 					</bold>
 					<text>.</text>
 				</paragraph>
@@ -646,6 +885,15 @@ into the token.</String>
 					<text>.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>El nombre completo del </text>
+					<bold>
+						<text>Prestatario</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
 		</roleParameter>
 		<roleParameter index="1" name="BorrowerAddress" property="FULLADDR" role="Borrower">
 			<description xml:lang="en">
@@ -653,6 +901,15 @@ into the token.</String>
 					<text>The full address of the </text>
 					<bold>
 						<text>Borrower</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>La dirección completa del </text>
+					<bold>
+						<text>Prestatario</text>
 					</bold>
 					<text>.</text>
 				</paragraph>
@@ -668,24 +925,31 @@ into the token.</String>
 					<text> resides.</text>
 				</paragraph>
 			</description>
-		</roleParameter>
-		<calcParameter name="BorrowerCountry" exp="CountryName(BorrowerCountryCode)">
-			<description xml:lang="en">
+			<description xml:lang="es">
 				<paragraph>
-					<text>The country in which the </text>
+					<text>El código del país en el que reside el </text>
 					<bold>
-						<text>Borrower</text>
+						<text>Prestatario</text>
 					</bold>
-					<text> resides.</text>
+					<text>.</text>
 				</paragraph>
 			</description>
-		</calcParameter>
+		</roleParameter>
 		<roleParameter index="1" name="BorrowerPnr" property="PNR" role="Borrower">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The personal identity number of the </text>
 					<bold>
 						<text>Borrower</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>El número de identidad personal del </text>
+					<bold>
+						<text>Prestatario</text>
 					</bold>
 					<text>.</text>
 				</paragraph>
@@ -701,6 +965,15 @@ into the token.</String>
 					<text>.</text>
 				</paragraph>
 			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>El nombre completo del </text>
+					<bold>
+						<text>Creador</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
 		</roleParameter>
 		<roleParameter index="1" name="CreatorAddress" property="FULLADDR" role="Creator">
 			<description xml:lang="en">
@@ -708,6 +981,15 @@ into the token.</String>
 					<text>The full address of the </text>
 					<bold>
 						<text>Creator</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>La dirección completa del </text>
+					<bold>
+						<text>Creador</text>
 					</bold>
 					<text>.</text>
 				</paragraph>
@@ -723,24 +1005,31 @@ into the token.</String>
 					<text> resides.</text>
 				</paragraph>
 			</description>
-		</roleParameter>
-		<calcParameter name="CreatorCountry" exp="CountryName(CreatorCountryCode)">
-			<description xml:lang="en">
+			<description xml:lang="es">
 				<paragraph>
-					<text>The country in which the </text>
+					<text>El código del país en el que reside el </text>
 					<bold>
-						<text>Creator</text>
+						<text>Creador</text>
 					</bold>
-					<text> resides.</text>
+					<text>.</text>
 				</paragraph>
 			</description>
-		</calcParameter>
+		</roleParameter>
 		<roleParameter index="1" name="CreatorPnr" property="PNR" role="Creator">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The personal identity number of the </text>
 					<bold>
 						<text>Creator</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+			<description xml:lang="es">
+				<paragraph>
+					<text>El número de identificación personal del </text>
+					<bold>
+						<text>Creador</text>
 					</bold>
 					<text>.</text>
 				</paragraph>
@@ -810,17 +1099,17 @@ into the token.</String>
 						<text>Borrower</text>
 					</bold>
 					<text> borrows a small amount of money (</text>
-					<parameter name="Amount" />
+					<parameter name="Amount"/>
 					<text> </text>
-					<parameter name="Currency" />
+					<parameter name="Currency"/>
 					<text>) from the </text>
 					<bold>
 						<text>Lender</text>
 					</bold>
 					<text>. This has a cost of </text>
-					<parameter name="Cost" />
+					<parameter name="Cost"/>
 					<text> </text>
-					<parameter name="Currency" />
+					<parameter name="Currency"/>
 					<text>, which the </text>
 					<bold>
 						<text>Creator</text>
@@ -845,13 +1134,13 @@ into the token.</String>
 				</paragraph>
 				<paragraph>
 					<text>Every installment (</text>
-					<parameter name="InstallmentInterval" />
+					<parameter name="InstallmentInterval"/>
 					<text>) which this </text>
 					<italic>
 						<text>microloan</text>
 					</italic>
 					<text> is active, the debt is incremented by </text>
-					<parameter name="InterestPerInstallment" />
+					<parameter name="InterestPerInstallment"/>
 					<text>%. The </text>
 					<bold>
 						<text>Borrower</text>
@@ -861,15 +1150,15 @@ into the token.</String>
 						<text>Lender</text>
 					</bold>
 					<text> the amount of </text>
-					<parameter name="InstallmentAmount" />
+					<parameter name="InstallmentAmount"/>
 					<text> </text>
-					<parameter name="Currency" />
+					<parameter name="Currency"/>
 					<text> each installment. The </text>
 					<italic>
 						<text>microloan</text>
 					</italic>
 					<text> is active until the debt is paid in full. This is estimated to occur after </text>
-					<parameter name="NrInstallments" />
+					<parameter name="NrInstallments"/>
 					<text> installments at </text>
 					<parameter name="EstimatedCompletion"/>
 					<text>, if payments are made according to schedule. The estimated </text>
@@ -881,9 +1170,9 @@ into the token.</String>
 						<text>Lender</text>
 					</bold>
 					<text> is </text>
-					<parameter name="RoI" />
+					<parameter name="RoI"/>
 					<text> </text>
-					<parameter name="Currency" />
+					<parameter name="Currency"/>
 					<text> at the end of the </text>
 					<italic>
 						<text>microloan</text>
@@ -919,7 +1208,7 @@ into the token.</String>
 								<text>microloan</text>
 							</italic>
 							<text> token counting machine expires at </text>
-							<parameter name="Expires" />
+							<parameter name="Expires"/>
 							<text>, after which the </text>
 							<italic>
 								<text>microloan</text>
@@ -976,9 +1265,7 @@ into the token.</String>
 							<italic>
 								<text>microloan</text>
 							</italic>
-							<text>. The new owner will take the previous owner</text>
-							<text>’</text>
-							<text>s rights to payments made by the </text>
+							<text>. The new owner will take the previous owner’s rights to payments made by the </text>
 							<bold>
 								<text>Borrower</text>
 							</bold>
@@ -994,6 +1281,257 @@ into the token.</String>
 								<text>microloan</text>
 							</italic>
 							<text> is active.</text>
+						</paragraph>
+					</body>
+				</section>
+			</body>
+		</section>
+	</humanReadableText>
+	<humanReadableText xml:lang="es">
+		<section>
+			<header>
+				<text>Micropréstamo</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>Este contrato representa un </text>
+					<italic>
+						<text>micropréstamo</text>
+					</italic>
+					<text> entre el </text>
+					<bold>
+						<text>Prestamista</text>
+					</bold>
+					<text> (</text>
+					<parameter name="LenderName"/>
+					<text>, </text>
+					<parameter name="LenderAddress"/>
+					<text>, </text>
+					<parameter name="LenderCountry"/>
+					<text>, número de identificación personal </text>
+					<parameter name="LenderPnr"/>
+					<text>) y el </text>
+					<bold>
+						<text>Prestatario</text>
+					</bold>
+					<text> (</text>
+					<parameter name="BorrowerName"/>
+					<text>, </text>
+					<parameter name="BorrowerAddress"/>
+					<text>, </text>
+					<parameter name="BorrowerCountry"/>
+					<text>, número de identificación personal </text>
+					<parameter name="BorrowerPnr"/>
+					<text>). Una vez firmado el contrato, también crea un token que representa el </text>
+					<italic>
+						<text>micropréstamo</text>
+					</italic>
+					<text>. El token realizará pagos automáticos y mantendrá información sobre el estado actual del </text>
+					<italic>
+						<text>micropréstamo</text>
+					</italic>
+					<text>. El token es creado por el </text>
+					<bold>
+						<text>Creador</text>
+					</bold>
+					<text> (</text>
+					<parameter name="CreatorName"/>
+					<text>, </text>
+					<parameter name="CreatorAddress"/>
+					<text>, </text>
+					<parameter name="CreatorCountry"/>
+					<text>, número de identificación personal </text>
+					<parameter name="CreatorPnr"/>
+					<text>).</text>
+				</paragraph>
+				<paragraph>
+					<text>El </text>
+					<bold>
+						<text>Prestatario</text>
+					</bold>
+					<text> toma prestada una pequeña cantidad de dinero (</text>
+					<parameter name="Amount"/>
+					<text> </text>
+					<parameter name="Currency"/>
+					<text>) del </text>
+					<bold>
+						<text>Prestamista</text>
+					</bold>
+					<text>. Esto tiene un costo de </text>
+					<parameter name="Cost"/>
+					<text> </text>
+					<parameter name="Currency"/>
+					<text>, que el </text>
+					<bold>
+						<text>Creador</text>
+					</bold>
+					<text> paga al firmar el contrato. Cuando se firma el contrato, el </text>
+					<bold>
+						<text>Prestamista</text>
+					</bold>
+					<text> transfiere la cantidad al </text>
+					<bold>
+						<text>Prestatario</text>
+					</bold>
+					<text>, que inmediatamente reembolsa al </text>
+					<bold>
+						<text>Creador</text>
+					</bold>
+					<text> por su gasto al crear el </text>
+					<italic>
+						<text>micropréstamo</text>
+					</italic>
+					<text>.</text>
+				</paragraph>
+				<paragraph>
+					<text>Cada cuota (</text>
+					<parameter name="InstallmentAmount"/>
+					<text>) que el </text>
+					<italic>
+						<text>micropréstamo</text>
+					</italic>
+					<text> esté activo, la deuda se incrementa en </text>
+					<parameter name="InterestPerInstallment"/>
+					<text>%. El </text>
+					<bold>
+						<text>Prestatario</text>
+					</bold>
+					<text> también se compromete a pagar al </text>
+					<bold>
+						<text>Prestamista</text>
+					</bold>
+					<text> la cantidad de </text>
+					<parameter name="InstallmentAmount"/>
+					<text> </text>
+					<parameter name="Currency"/>
+					<text> en cada cuota. El </text>
+					<italic>
+						<text>micropréstamo</text>
+					</italic>
+					<text> estará activo hasta que la deuda sea pagada en su totalidad. Se estima que esto ocurrirá después de </text>
+					<parameter name="NrInstallments"/>
+					<text> cuotas en </text>
+					<parameter name="EstimatedCompletion"/>
+					<text>, si los pagos se realizan según lo programado. El </text>
+					<italic>
+						<text>Retorno de la Inversión</text>
+					</italic>
+					<text> estimado (RoI) para el </text>
+					<bold>
+						<text>Prestamista</text>
+					</bold>
+					<text> es de </text>
+					<parameter name="RoI"/>
+					<text> </text>
+					<parameter name="Currency"/>
+					<text> al final del </text>
+					<italic>
+						<text>micropréstamo</text>
+					</italic>
+					<text>.</text>
+				</paragraph>
+				<section>
+					<header>
+						<text>Pagos automáticos</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Las partes de este contrato acuerdan que todos los pagos definidos en el acuerdo se realizarán automáticamente, sin necesidad de más firmas que las proporcionadas en este contrato.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Incapacidad para pagar la cantidad de la cuota</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Si el </text>
+							<bold>
+								<text>Prestatario</text>
+							</bold>
+							<text> no puede pagar una o más cuotas, la deuda se incrementará y se transferirá a las cuotas siguientes. El interés de la cuota se calculará sobre la deuda acumulada. Sin embargo, la deuda acumulada no puede exceder </text>
+							<parameter name="DebtLimit"/>
+							<text> </text>
+							<parameter name="Currency"/>
+							<text>. La máquina contador del token del </text>
+							<italic>
+								<text>micropréstamo</text>
+							</italic>
+							<text> expira en </text>
+							<parameter name="Expires"/>
+							<text>, después de lo cual el </text>
+							<italic>
+								<text>micropréstamo</text>
+							</italic>
+							<text> se transferirá para ser procesado manualmente.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Legalidad</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>Al firmar los contratos, el </text>
+							<bold>
+								<text>Prestatario</text>
+							</bold>
+							<text> afirma que está obligado a pagar al </text>
+							<bold>
+								<text>Prestamista</text>
+							</bold>
+							<text> toda su deuda e intereses incurridos, hasta que el </text>
+							<italic>
+								<text>micropréstamo</text>
+							</italic>
+							<text> haya sido reembolsado en su totalidad. Este acuerdo se considera válido bajo las leyes del país donde reside el </text>
+							<bold>
+								<text>Prestamista</text>
+							</bold>
+							<text>, que es </text>
+							<bold>
+								<parameter name="LenderCountry"/>
+							</bold>
+							<text>.</text>
+						</paragraph>
+					</body>
+				</section>
+				<section>
+					<header>
+						<text>Transferencia de Propiedad</text>
+					</header>
+					<body>
+						<paragraph>
+							<text>El </text>
+							<bold>
+								<text>Prestamista</text>
+							</bold>
+							<text> puede vender los derechos del </text>
+							<italic>
+								<text>micropréstamo</text>
+							</italic>
+							<text> a cualquier tercero de su elección. Esto se hace transfiriendo la propiedad del token correspondiente al </text>
+							<italic>
+								<text>micropréstamo</text>
+							</italic>
+							<text>. El nuevo propietario tomará los derechos del propietario anterior sobre los pagos realizados por el </text>
+							<bold>
+								<text>Prestatario</text>
+							</bold>
+							<text>. El </text>
+							<bold>
+								<text>Prestatario</text>
+							</bold>
+							<text> continuará con sus pagos, según lo definido en este acuerdo, al nuevo propietario.</text>
+						</paragraph>
+						<paragraph>
+							<text>El token puede transferirse cualquier cantidad de veces, siempre y cuando el token y el </text>
+							<italic>
+								<text>micropréstamo</text>
+							</italic>
+							<text> correspondiente estén activos.</text>
 						</paragraph>
 					</body>
 				</section>
