@@ -147,7 +147,7 @@
 						<Amount value="{Amount}"/>
 						<Currency value="{Currency}"/>
 						<ValidDays value="3"/>
-						<Reference value="{LoanAgreement}"/>
+						<Reference value="{'iotsc:'+LoanAgreement}"/>
 						<Contract value="{LoanAgreement}"/>
 					</Payment>
 					<TextNote>
@@ -166,7 +166,7 @@
 						<Amount value="{Cost}"/>
 						<Currency value="{Currency}"/>
 						<ValidDays value="3"/>
-						<Reference value="{LoanAgreement}"/>
+						<Reference value="{'iotsc:'+LoanAgreement}"/>
 						<Contract value="{LoanAgreement}"/>
 					</Payment>
 					<TextNote content="{'Cost reimbursement paid to creator: '+Cost+' '+Currency+'.'}"/>
@@ -201,7 +201,7 @@
 									<Amount value="{Installment}"/>
 									<Currency value="{Currency}"/>
 									<ValidDays value="3"/>
-									<Reference value="{LoanAgreement}"/>
+									<Reference value="{'iotsc:'+LoanAgreement}"/>
 									<Contract value="{LoanAgreement}"/>
 								</Payment>
 								<PersistVariable name="Debt">
