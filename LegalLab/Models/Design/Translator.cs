@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define PARALLEL_TRANSLATION
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,16 +42,17 @@ namespace LegalLab.Models.Design
 			int i, c = Texts.Length;
 			string[] Response = new string[c];
 
+#if PARALLEL_TRANSLATION
 			Task[] Requests = new Task[c];
 			
 			for (i = 0; i < c; i++)
 				Requests[i] = Translate(Texts[i], From, To, Key, Response, i);
 			
 			await Task.WhenAll(Requests);
-
-			//for (i = 0; i < c; i++)
-			//	await Translate(Texts[i], From, To, Key, Response, i);
-
+#else
+			for (i = 0; i < c; i++)
+				await Translate(Texts[i], From, To, Key, Response, i);
+#endif
 			return Response;
 		}
 
