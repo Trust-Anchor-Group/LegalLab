@@ -114,6 +114,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExampleLayouts", "ExampleLa
 		ExampleLayouts\BackgroundLayout.xml = ExampleLayouts\BackgroundLayout.xml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Memberships", "Memberships", "{590CBAF6-5CA3-4A40-91F5-5E755E22742E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Simple", "Simple", "{4D931177-6C9E-43DB-8F31-EECCEBD62305}"
+	ProjectSection(SolutionItems) = preProject
+		ExampleContracts\Memberships\Simple\Membership.xml = ExampleContracts\Memberships\Simple\Membership.xml
+		ExampleContracts\Memberships\Simple\Organization.xml = ExampleContracts\Memberships\Simple\Organization.xml
+		ExampleContracts\Memberships\Simple\SimpleOrganization.xsd = ExampleContracts\Memberships\Simple\SimpleOrganization.xsd
+		ExampleContracts\Memberships\Simple\SimpleOrganizationInit.script = ExampleContracts\Memberships\Simple\SimpleOrganizationInit.script
+		ExampleContracts\Memberships\Simple\SimpleOrganizationLayout.xml = ExampleContracts\Memberships\Simple\SimpleOrganizationLayout.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -149,6 +160,8 @@ Global
 		{02EA681E-C7D8-13C7-8484-4AC65E1B71E8} = {46E61E48-A9A5-4CB8-8B7A-712F716F6FF5}
 		{78334898-08B6-45F0-907C-CAE710C8D0D6} = {5DCAD7B4-A632-4533-8B95-6D2838387720}
 		{FF098B7E-BB24-4E54-94A4-65C9243005F1} = {5DCAD7B4-A632-4533-8B95-6D2838387720}
+		{590CBAF6-5CA3-4A40-91F5-5E755E22742E} = {46E61E48-A9A5-4CB8-8B7A-712F716F6FF5}
+		{4D931177-6C9E-43DB-8F31-EECCEBD62305} = {590CBAF6-5CA3-4A40-91F5-5E755E22742E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {82820A85-2566-4DAB-A5B4-BABDC2569097}

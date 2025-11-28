@@ -1,0 +1,12 @@
+States:=["Preparing","Inactive","Active","Closed"];
+State:=States[0];
+OrganizationContractId:="ABC";
+OrganizationTemplateId:="ABC";
+OrganizationTokenId:="ABC";
+MembershipTemplateId:="ABC";
+NrMembers:=123;
+NrApplications:=345;
+NrApproved:=234;
+NrRejected:=111;
+OrgName:="Example Organization";
+OrgDescription:="This is an example organization.";

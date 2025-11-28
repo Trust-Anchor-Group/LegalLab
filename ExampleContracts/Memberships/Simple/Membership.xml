@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<contract xmlns="urn:nf:iot:leg:sc:1.0"
+          id="Membership"
+          archiveOpt="P3M"
+          archiveReq="P1M"
+          canActAsTemplate="true"
+          duration="P2Y"
+          visibility="Public">
+	<Membership xmlns="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"/>
+	<role name="Member" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The part that applies for membership in the </text>
+				<italic>
+					<text>organization</text>
+				</italic>
+				<text> referred to in the contract.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="Owner" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The part that represents the owner of the </text>
+				<italic>
+					<text>organization token</text>
+				</italic>
+				<text> referred to in the contract.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<templateOnly/>
+	</parts>
+	<parameters>
+		<contractReferenceParameter name="OrganizationReference" localName="Create"
+																namespace="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd"
+																required="true" creatorRole="Creator" guide="Organization Contract"
+																templateId="30bcc563-6ce4-5fe9-9039-a0687ca3a1ce@legal.lab.tagroot.io">
+			<description xml:lang="en">
+				<paragraph>
+					<text>A reference to the contract that created the organization token.</text>
+				</paragraph>
+			</description>
+		</contractReferenceParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Membership</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This contract represents a membership in an </text>
+					<italic>
+						<text>organization</text>
+					</italic>
+					<text>. The membership can be demonstrated by sharing the contract, if the associated signatures are valid and the contract has not been rejected by the organization token.</text>
+				</paragraph>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>

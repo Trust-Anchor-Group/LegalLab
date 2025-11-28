@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<contract xmlns="urn:nf:iot:leg:sc:1.0"
+          id="Organization"
+          archiveOpt="P3M"
+          archiveReq="P1M"
+          canActAsTemplate="true"
+          duration="P2Y"
+          visibility="Public">
+	<Create xmlns="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd">
+		<TokenID>
+			<Random />
+		</TokenID>
+		<Creator>
+			<RoleReference role="Creator"/>
+		</Creator>
+		<Owner>
+			<RoleReference role="Owner"/>
+		</Owner>
+		<Certifier>
+			<RoleReference role="Auditor"/>
+		</Certifier>
+		<TrustProvider>
+			<RoleReference role="TrustProvider"/>
+		</TrustProvider>
+		<Value>
+			<ParameterReference parameter="Value"/>
+		</Value>
+		<Currency>
+			<ParameterReference parameter="Currency"/>
+		</Currency>
+		<CommissionPercent>
+			<ParameterReference parameter="CommissionPercent"/>
+		</CommissionPercent>
+		<Expires>
+			<ParameterReference parameter="Expires"/>
+		</Expires>
+		<CreatorCanDestroy>
+			<Boolean>false</Boolean>
+		</CreatorCanDestroy>
+		<OwnerCanDestroyBatch>
+			<Boolean>true</Boolean>
+		</OwnerCanDestroyBatch>
+		<OwnerCanDestroyIndividual>
+			<Boolean>true</Boolean>
+		</OwnerCanDestroyIndividual>
+		<CertifierCanDestroy>
+			<Boolean>true</Boolean>
+		</CertifierCanDestroy>
+		<Definition>
+			<StateMachine xmlns="https://paiwise.tagroot.io/Schema/StateMachines.xsd" startState="Preparing">
+				<Variable id="OrganizationContractId">
+					<TokenProperty>CreationContract</TokenProperty>
+				</Variable>
+				<Variable id="OrganizationTemplateId">
+					<TokenProperty>CreationContractTemplate</TokenProperty>
+				</Variable>
+				<Variable id="OrganizationTokenId">
+					<TokenProperty>TokenId</TokenProperty>
+				</Variable>
+				<Variable id="OrganizationOwnerId">
+					<TokenProperty>Owner</TokenProperty>
+				</Variable>
+				<Variable id="MembershipTemplateId">
+					<String></String>
+				</Variable>
+				<Variable id="NrMembers">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="NrApplications">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="NrApproved">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="NrRejected">
+					<Number>0</Number>
+				</Variable>
+				<Variable id="OrgName">
+					<TagReference tag="OrgName"/>
+				</Variable>
+				<Variable id="OrgDescription">
+					<TagReference tag="OrgDescription"/>
+				</Variable>
+				<State id="Preparing">
+					<OnEvent actionRef="StoreMembershipTemplateId" newState="Inactive">
+						<OnContractTemplateApproved localName="Membership"
+																				namespace="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"
+																				contractIdVariable="ContractId"
+																				contractXmlVariable="ContractXml"
+																				condition="OrganizationTemplateId=SelectXml(ContractXml,&quot;/default:contract/default:parameters/default:contractReferenceParameter[@name='OrganizationReference']/@templateId&quot;)"
+																				checkExisting="true"/>
+					</OnEvent>
+					<OnEvent newState="Closed">
+						<OnXmlNote localName="Close" namespace="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"/>
+					</OnEvent>
+					<OnEvent actionRef="RejectMembership">
+						<OnContractSigned localName="Membership"
+									namespace="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"
+									contractIdVariable="ContractId"
+									parametersVariable="ContractParameters"
+									rolesVariable="ContractRoles"
+									machineReadableVariable="Membership"
+									condition="ContractParameters.OrganizationReference=OrganizationContractId"/>
+					</OnEvent>
+					<OnEvent actionRef="UpdateOwner">
+						<OnTransferred buyerVariable="NewOwner"/>
+					</OnEvent>
+				</State>
+				<State id="Inactive">
+					<OnEvent newState="Active">
+						<OnXmlNote localName="Activate" namespace="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"/>
+					</OnEvent>
+					<OnEvent newState="Closed">
+						<OnXmlNote localName="Close" namespace="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"/>
+					</OnEvent>
+					<OnEvent actionRef="RejectMembership">
+						<OnContractSigned localName="Membership"
+									namespace="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"
+									contractIdVariable="ContractId"
+									parametersVariable="ContractParameters"
+									rolesVariable="ContractRoles"
+									machineReadableVariable="Membership"
+									condition="ContractParameters.OrganizationReference=OrganizationContractId"/>
+					</OnEvent>
+					<OnEvent actionRef="UpdateOwner">
+						<OnTransferred buyerVariable="NewOwner"/>
+					</OnEvent>
+				</State>
+				<State id="Active">
+					<OnEvent newState="Inactive">
+						<OnXmlNote localName="Deactivate" namespace="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"/>
+					</OnEvent>
+					<OnEvent newState="Closed">
+						<OnXmlNote localName="Close" namespace="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"/>
+					</OnEvent>
+					<OnEvent actionRef="ValidateMembership">
+						<OnContractSigned localName="Membership"
+									namespace="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"
+									contractIdVariable="ContractId"
+									parametersVariable="ContractParameters"
+									rolesVariable="ContractRoles"
+									machineReadableVariable="Membership"
+									condition="ContractParameters.OrganizationReference=OrganizationContractId"/>
+					</OnEvent>
+					<OnEvent actionRef="UpdateOwner">
+						<OnTransferred buyerVariable="NewOwner"/>
+					</OnEvent>
+				</State>
+				<State id="Closed">
+					<OnEnter actionRef="End"/>
+				</State>
+				<Action id="End">
+					<End/>
+				</Action>
+				<Action id="StoreMembershipTemplateId">
+					<PersistVariable name="MembershipTemplateId" value="{ContractId}"/>
+				</Action>
+				<Action id="RejectMembership">
+					<Fail reason="Membership discarded. Organization is not active." contractId="{ContractId}"/>
+				</Action>
+				<Action id="ValidateMembership">
+					<PersistVariable name="NrApplications" value="{NrApplications+1}"/>
+					<Try>
+						<If condition="!exists(ContractRoles.Member) || count(ContractRoles.Member)!=1">
+							<Then>
+								<Error reason="Applications does not have a unique member identified."/>
+							</Then>
+						</If>
+						<If condition="!exists(ContractRoles.Owner) || count(ContractRoles.Owner)!=1">
+							<Then>
+								<Error reason="Applications does not have a unique owner identified."/>
+							</Then>
+						</If>
+						<PersistVariable name="NrApproved" value="{NrApproved+1}"/>
+						<Catch exceptionVariable="ex">
+							<PersistVariable name="NrRejected" value="{NrRejected+1}"/>
+							<Fail reason="{ex.Message}" contractId="{ContractId}"/>
+						</Catch>
+					</Try>
+				</Action>
+				<Action id="UpdateOwner">
+					<PersistVariable name="OrganizationOwnerId" value="{NewOwner}"/>
+				</Action>
+				<NoteCommand id="Activate" ownerNote="true">
+					<Title lang="en">Activate...</Title>
+					<ToolTip lang="en">Activates the organization to receive new memberships.</ToolTip>
+					<NoteContextScript>
+						<![CDATA[
+						CurrentState.State="Created" or CurrentState.State="Inactive"
+						]]>
+					</NoteContextScript>
+					<NoteGenerationScript>
+						<![CDATA[
+						<Activate xmlns='https://lab.tagroot.io/Downloads/SimpleOrganization.xsd'/>
+						]]>
+					</NoteGenerationScript>
+				</NoteCommand>
+				<NoteCommand id="Deactivate" ownerNote="true">
+					<Title lang="en">Deactivate...</Title>
+					<ToolTip lang="en">Deactivates the organization and stop receiving new memberships.</ToolTip>
+					<NoteContextScript>
+						<![CDATA[
+						CurrentState.State="Active"
+						]]>
+					</NoteContextScript>
+					<NoteGenerationScript>
+						<![CDATA[
+						<Deactivate xmlns='https://lab.tagroot.io/Downloads/SimpleOrganization.xsd'/>
+						]]>
+					</NoteGenerationScript>
+				</NoteCommand>
+				<NoteCommand id="Close" ownerNote="true">
+					<Title lang="en">Close...</Title>
+					<ToolTip lang="en">Closes the organization.</ToolTip>
+					<NoteGenerationScript>
+						<![CDATA[
+						<Close xmlns='https://lab.tagroot.io/Downloads/SimpleOrganization.xsd'/>
+						]]>
+					</NoteGenerationScript>
+				</NoteCommand>
+				<ReportPresent>
+					<![CDATA[
+```layout
+<?xml version="1.0" encoding="utf-8" ?>
+<Layout2D xmlns="http://waher.se/Schema/Layout2D.xsd"
+          width="1684px"
+          height="1190px"
+          background="WhiteBackground"
+          pen="BlackPen"
+          font="Text"
+          textColor="Black">
+	<SolidPen id="BlackPen" color="Black" width="1px"/>
+	<SolidPen id="WhitePen" color="White" width="1px"/>
+	<SolidPen id="DarkSemiTransparentPen" color="#00000080" width="3px"/>
+	<SolidPen id="TransparentPen" color="#00000000" width="1px"/>
+	<SolidPen id="DarkGreenPen" color="DarkGreen" width="3px"/>
+	<SolidPen id="DarkRedPen" color="DarkRed" width="3px"/>
+	<SolidPen id="GreenWidePen" color="Green" width="7px"/>
+	<SolidPen id="RedWidePen" color="Red" width="7px"/>
+	<SolidPen id="GreenPen" color="Green" width="5px"/>
+	<SolidPen id="RedPen" color="Red" width="5px"/>
+	<SolidBackground id="SemiTransparentBackground" color="#f8f8f8e0"/>
+	<SolidBackground id="SemiTransparentGreenBackground" color="#e0ffe040"/>
+	<SolidBackground id="SemiTransparentRedBackground" color="#ffe0e040"/>
+	<SolidBackground id="TransparentBackground" color="#00000000"/>
+	<SolidBackground id="WhiteBackground" color="#fffffff0"/>
+	<SolidBackground id="WhiteSmokeBackground" color="WhiteSmoke"/>
+	<Font id="SmallText" name="Roboto" size="12pt" color="#a0a0a0" weight="Normal"/>
+	<Font id="Text" name="Roboto" size="14pt" color="Black" weight="Normal"/>
+	<Font id="LargeText" name="Roboto" size="17pt" color="Black" weight="Normal"/>
+	<Font id="Label" name="Roboto" size="16pt" color="Black" weight="Normal"/>
+	<Font id="DarkGreenLabel" name="Roboto" size="16pt" color="DarkGreen" weight="Normal"/>
+	<Font id="DarkRedLabel" name="Roboto" size="16pt" color="DarkRed" weight="Normal"/>
+	<Font id="DarkGrayLabel" name="Roboto" size="16pt" color="#606060" weight="Normal"/>
+	<Font id="GreenLabel" name="Roboto" size="16pt" color="Green" weight="Normal"/>
+	<Font id="RedLabel" name="Roboto" size="16pt" color="Red" weight="Normal"/>
+	<Font id="Value" name="Roboto" size="20pt" color="Black" weight="Bold"/>
+	<Font id="DarkGreenValue" name="Roboto" size="20pt" color="DarkGreen" weight="Bold"/>
+	<Font id="DarkRedValue" name="Roboto" size="20pt" color="DarkRed" weight="Bold"/>
+	<Font id="DarkGrayValue" name="Roboto" size="20pt" color="#606060" weight="Bold"/>
+	<Font id="DarkGreenValueLarge" name="Roboto" size="40pt" color="DarkGreen" weight="Bold"/>
+	<Font id="Header" name="Roboto" size="24pt" color="Black" weight="Bold"/>
+	<Font id="RedHeader" name="Roboto" size="24pt" color="Red" weight="Bold"/>
+	<Font id="GreenHeader" name="Roboto" size="24pt" color="Green" weight="Bold"/>
+	<Rectangle x="0%" y="0%" x2="100%" y2="100%" pen="BlackPen" fill="WhiteSmokeBackground"/>
+	<Overlays>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<ImageUrl url="https://paiwise.tagroot.io/Images/WavyBG_1684x1190.png"
+			          width="1684px"
+			          height="1190px"
+			          fill="WhiteBackground"
+			          keepAspectRatio="true"
+			          x="0px"
+			          y="0px"
+			          x2="1684px"
+			          y2="1190px"/>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="50px" left="100px" right="100px" bottom="1350px">
+				<RoundedRectangle fill="SemiTransparentBackground" pen="DarkSemiTransparentPen" radiusX="50px" radiusY="50px"/>
+			</Margins>
+			<Margins top="0px" left="120px" right="120px" bottom="1400px">
+				<Rectangle fill="TransparentBackground" pen="TransparentPen">
+					<Paragraph font="Header" halign="Center" valign="Center">
+						<InlineScript expression="OrgName"/>
+					</Paragraph>
+				</Rectangle>
+			</Margins>
+			<Margins top="150px" left="120px" right="120px" bottom="1350px">
+				<Rectangle fill="TransparentBackground" pen="TransparentPen">
+					<Paragraph font="LargeText" halign="Center" valign="Center">
+						<InlineScript expression="OrgDescription"/>
+					</Paragraph>
+				</Rectangle>
+			</Margins>
+	</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Translate translateX="200px" translateY="480px">
+				<Label font="Header" halign="Center" valign="Top" text="Application Counts" x="220px" y="0px"/>
+				<Label font="Label" halign="Left" valign="Top" text="Total Applications:" x="0px" y="90px"/>
+				<Label font="DarkGreenLabel" halign="Left" valign="Top" text="Approved Applications:" x="0px" y="150px"/>
+				<Label font="DarkRedLabel" halign="Left" valign="Top" text="Rejected Applications:" x="0px" y="210px"/>
+				<Script font="Value" halign="Right" valign="Top" expression="NrApplications" x="450px" y="85px"/>
+				<Script font="DarkGreenValue" halign="Right" valign="Top" expression="NrApproved" x="450px" y="145px"/>
+				<Script font="DarkRedValue" halign="Right" valign="Top" expression="NrRejected" x="450px" y="205px"/>
+			</Translate>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Translate translateX="800px" translateY="480px">
+				<Label font="Header" halign="Center" valign="Top" text="Current Members" x="150px" y="0px"/>
+				<Script font="DarkGreenValueLarge" halign="Center" valign="Center" expression="NrMembers" x="150px" y="150px"/>
+			</Translate>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="860px" left="100px" right="475px">
+				<Paragraph font="Text">
+					<Text text="Above is shown the current number of membership applications processed ("/>
+					<Bold>
+						<Text text="Total"/>
+					</Bold>
+					<Text text="), the number that were approved ("/>
+					<TextColor color="DarkGreen">
+						<Bold>
+							<Text text="Approved"/>
+						</Bold>
+					</TextColor>
+					<Text text="), and the number that were rejected ("/>
+					<TextColor color="DarkRed">
+						<Bold>
+							<Text text="Rejected"/>
+						</Bold>
+					</TextColor>
+					<Text text="). The current number of members is also counted."/>
+				</Paragraph>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="1000px" left="100px" right="475px">
+				<Paragraph font="{CurrentState.State='Closed' ? 'Text' : 'LargeText'}">
+					<Bold>
+						<Text text="To apply for membership" visible="{CurrentState.State='Active'}"/>
+						<Text text="To view the state of the organization online" visible="{CurrentState.State!='Active'}"/>
+					</Bold>
+					<Text text=", scan the "/>
+					<Italic>
+						<Text text="QR Code"/>
+					</Italic>
+					<Text text=" to the right using the "/>
+					<Bold>
+						<Text text="Neuro-Access"/>
+					</Bold>
+					<Text text=" App, found in the "/>
+					<Italic>
+						<Text text="App Store"/>
+					</Italic>
+					<Text text=" (for iOS devices) and the "/>
+					<Italic>
+						<Text text="Play Store"/>
+					</Italic>
+					<Text text=" (for Android devices)."/>
+				</Paragraph>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="400px" left="1200px">
+				<Rectangle fill="WhiteSmokeBackground" pen="WhitePen" width="400px" height="400px">
+					<Script expression="QrEncode('iotsc:'+MembershipTemplateId+'?OrganizationReference='+OrganizationContractId+'&amp;Owner='+OrganizationOwnerId,'H',400)" visible="{CurrentState.State='Active'}"/>
+					<Script expression="QrEncode('nfeat:'+OrganizationTokenId,'H',400)" visible="{CurrentState.State!='Active'}"/>
+				</Rectangle>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{CurrentState.State='Active'}">
+			<Margins top="825px" left="1225px" right="100px" bottom="775px">
+				<RoundedRectangle fill="WhiteBackground" pen="GreenWidePen" radiusX="50px" radiusY="50px">
+					<Label font="GreenHeader" halign="Center" valign="Center" text="Active" x="50%" y="50%"/>
+				</RoundedRectangle>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%" visible="{CurrentState.State!='Active'}">
+			<Margins top="825px" left="1225px" right="100px" bottom="775px">
+				<RoundedRectangle fill="WhiteBackground" pen="RedWidePen" radiusX="50px" radiusY="50px">
+					<Label font="RedHeader" halign="Center" valign="Center" text="{CurrentState.State}" x="50%" y="50%"/>
+				</RoundedRectangle>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="1165px" left="10px" right="100px">
+				<Paragraph x="100px" y="100px" halign="Left" valign="Bottom" font="SmallText">
+					<Text text="Organization ID: "/>
+					<Text text="{OrganizationTokenId}"/>
+					<Text text="."/>
+				</Paragraph>
+			</Margins>
+		</Cell>
+	</Overlays>
+</Layout2D>
+```
+]]>
+				</ReportPresent>
+				<ReportHistory>
+					<![CDATA[
+{{
+G:=plot2dline(NrMembers.Timestamp, NrMembers.Value,"Green");
+
+G.Title:="Number of members over time";
+G.LabelX:="Time";
+G.LabelY:="Members";
+G
+}}
+
+{{
+G:=plot2dline(NrApplications.Timestamp, NrApplications.Value, "Blue")+
+	plot2dline(NrApproved.Timestamp, NrApproved.Value, "Green")+
+	plot2dline(NrRejected.Timestamp, NrRejected.Value, "Red");
+
+G.Title:="Number of applications over time";
+G.LabelX:="Time";
+G.LabelY:="Applications";
+G
+}}
+
+{{
+Legend(["Applications","Approved","Rejected"],["Blue","Green","Red"],"White",1)
+}}
+					]]>
+				</ReportHistory>
+			</StateMachine>
+		</Definition>
+		<Tag name="OrgName">
+			<ParameterReference parameter="OrgName"/>
+		</Tag>
+		<Tag name="OrgDescription">
+			<ParameterReference parameter="OrgDescription"/>
+		</Tag>
+		<FriendlyName>
+			<String>Simple Organization</String>
+		</FriendlyName>
+		<Category>
+			<String>Organizations</String>
+		</Category>
+		<Description>
+			<String>Example token used to demonstrate the creation of a simple *organization* using 
+a *state machine* accepting memberships. The internal state is changed by adding *owner* XML 
+Notes to the token, depending on function. The internal state is also affected by signed
+membership contracts.</String>
+		</Description>
+		<Glyph contentType="image/png">iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAABFFJREFUeJztWU1IMlsYfrqTFmgLIb5yEURlLQo3YVZUCi1qFUFQUKt2QURWm7IgIkhqJ9IP1EIIWkWuIugPLIh0GVFUBC5SocCkEM2/uYvv3oPDNNM43Thwv3lgYM77d57zeI7nzEwBy7Is/mD8RZsAbSgC0CZAG4oAtAnQhiIAbQK0oQhAmwBtKALQJkAbigC0CdCGIgBtArShCECbAG0oAtAmQBuKALQJ0EahkCMYDGJpaQklJSV5F43H4+jr60NHRwfPNz8/j3g8jmw2i5qaGoyMjORdHwBSqRScTicODg5wfX2N19dXqNVqVFRUoLGxET09Pejv7/+6ECsAn8/HApB9LS4u8mo+PT3x4vJFJpNh29vbJfPY2dkRrSe4BL77uSCTyfBs4+PjPNvCwoLkmqenp2AYBufn55JzHh8fRf0FQh9G3t7ecHx8jOLiYo69tLQUZrOZtLe3t/Hr1y+k02liSyaTMBqNqKqq4nZWUAAA0Gg0iMVixC5FbK/XC6vVyrE1Nzdjbm4O3d3dYBiG2O/v77G7u4vZ2VlMT0/D4XAIF857Dv5mS65oNCopx+FwkBy73c5arVbS3t/fz6tPAOzt7a2kfgOBgHhdSVVEyITD4bxzYrEYe3R0RNoGg0E0d2BggJOfTCbl0P6cl6ykPAXIHWx1dfWndV5eXiT153K55FAWri0rKU8BGhoaSLzH4yF2u91O7ENDQ5/mer3eb+0aX+HHBYhGo6ID+GpwKysrxF9fXy+Hrih+/CRos9nI/dTUFM+fe1hyOp08fygUIvcGg0Fyv3V1dWhtbYXJZBIPlKMa8pgBubHpdJrn9/v9xM8wDM9vs9mIv7e3VxZHMfzoDFhdXSX3FouFs1f/C5PJBI1GA+D34eni4oLjLysrI/eBQOA/5yh4EBJN+udAAwDhcBjl5eWfxhUVFSGZTAIAlpeX0dbWhkQiwYnRarXY2trC5uYmAKCpqQk+n4/4Dw8P0dXVRdpS6eZyFM2RPKcEppfQEri8vJT9HPHx8SHY397eXt4cReOkDVm4uJAALS0tsgUYHR3l1LJYLHlvhVLjf2QJpNNpqFQq0na73UilUoJTkWEYPD8/Y2ZmhthyY6PRKHQ6HWmr1WrEYjEUFgo+zdNdAmNjY8RvNpsl19VqtSTP7XZzfGtra7yZMjg4yPr9fl4dj8dDdwnk+s/OziTXXV9fJ3k6nY7ndzqdspaU6Fgks8tNyikeDAY5PpfL9a2ja27uZ79uKBRia2trJQ++srJStD/hRSSCiYkJqFQqvL+/816ZJRIJTE5OIpvNcrYvqXC73bi6ukI2m8XDwwPvJKfX63F3d4dIJIKNjQ2cnJzg5uYGkUgEDMNAr9fDaDSis7MTw8PD5IwhBFl/gv8n/PFvhRUBaBOgDUUA2gRoQxGANgHaUASgTYA2FAFoE6ANRQDaBGhDEYA2AdpQBKBNgDYUAWgToA1FANoEaONve9o8PVvYS2AAAAAASUVORK5CYII=</Glyph>
+	</Create>
+	<role name="Creator" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The part that creates the </text>
+				<italic>
+					<text>organization</text>
+				</italic>
+				<text>, including the </text>
+				<italic>
+					<text>organization</text>
+				</italic>
+				<text> token and the corresponding state-machine.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="Owner" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The part that becomes the owner of the </text>
+				<italic>
+					<text>organization</text>
+				</italic>
+				<text> token and can control the state-machine via XML notes.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="Auditor" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>A part that acts as a auditor and certifier of the validity of the organization.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="TrustProvider" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The part that acts as a host of the token and approves its creation.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<templateOnly/>
+	</parts>
+	<parameters>
+		<stringParameter name="OrgName" guide="Name of organization" minLength="1">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The name of the organization.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<stringParameter name="OrgDescription" guide="Description of organization" minLength="1">
+			<description xml:lang="en">
+				<paragraph>
+					<text>A description of the organization to be presented.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<numericalParameter name="Value" guide="Value of token" min="0" minIncluded="false">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The initial value of the token.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="[A-Z]{3}">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The currency of the token.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<numericalParameter name="CommissionPercent" guide="Commision (%)" min="0" max="100">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The commission the Trust Provider gets for creating the token and managing the </text>
+					<italic>
+						<text>organization</text>
+					</italic>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<dateParameter name="Expires" guide="Expiry date" exp="Expires&gt;Now.Date">
+			<description xml:lang="en">
+				<paragraph>
+					<text>When token expires.</text>
+				</paragraph>
+			</description>
+		</dateParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>Simple Organization Token</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This contract creates a simple token representing an </text>
+					<italic>
+						<text>organization</text>
+					</italic>
+					<text>. The owner can activate and deactivate the organization. Only active organizations can accept memberships.</text>
+				</paragraph>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>
