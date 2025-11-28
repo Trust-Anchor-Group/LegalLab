@@ -159,17 +159,25 @@
 							</Calc>
 						</Content>
 					</TextNote>
-					<LogEvent message="Borrower reimbursing creator." type="Debug"/>
-					<Payment>
-						<From value="{Borrower}"/>
-						<To value="{Creator}"/>
-						<Amount value="{Cost}"/>
-						<Currency value="{Currency}"/>
-						<ValidDays value="3"/>
-						<Reference value="{'iotsc:'+LoanAgreement}"/>
-						<Contract value="{LoanAgreement}"/>
-					</Payment>
-					<TextNote content="{'Cost reimbursement paid to creator: '+Cost+' '+Currency+'.'}"/>
+					<If condition="Amount&gt;0">
+						<Then>
+							<LogEvent message="Borrower reimbursing creator." type="Debug"/>
+							<Payment>
+								<From value="{Borrower}"/>
+								<To value="{Creator}"/>
+								<Amount value="{Cost}"/>
+								<Currency value="{Currency}"/>
+								<ValidDays value="3"/>
+								<Reference value="{'iotsc:'+LoanAgreement}"/>
+								<Contract value="{LoanAgreement}"/>
+							</Payment>
+							<TextNote content="{'Cost reimbursement paid to creator: '+Cost+' '+Currency+'.'}"/>
+						</Then>
+						<Else>
+							<LogEvent message="No cost to reimburse creator." type="Debug"/>
+							<TextNote content="No cost to reimburse creator."/>
+						</Else>
+					</If>
 				</Action>
 				<Action id="PayInstallment">
 					<If condition="Debt&lt;DebtLimit">
