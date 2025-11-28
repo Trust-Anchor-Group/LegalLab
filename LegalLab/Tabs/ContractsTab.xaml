@@ -22,6 +22,7 @@
 					<ComboBox ItemsSource="{Binding Languages}" DisplayMemberPath="Language" SelectedValuePath="Code" 
 						  SelectedValue="{Binding Language}" Margin="0,0,0,10"/>
 				</StackPanel>
+				<CheckBox Name="AutoSignProposals" Content="Auto-sign contract proposals." IsChecked="{Binding AutoSignProposals}" Margin="0,0,0,10"/>
 				<StackPanel Name="CreateParameters"/>
 				<StackPanel Name="TemplateCommands" Visibility="Hidden">
 					<Button Margin="0,10,0,0" Command="{Binding CreateContract}" IsEnabled="{Binding ParametersOk}">Create Contract</Button>

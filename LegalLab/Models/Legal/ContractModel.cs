@@ -411,6 +411,15 @@ namespace LegalLab.Models.Legal
 		}
 
 		/// <summary>
+		/// If contract proposals should be auto-signed.
+		/// </summary>
+		public bool AutoSignProposals
+		{
+			get => this.legalModel.AutoSignProposals;
+			set => this.legalModel.AutoSignProposals = value;
+		}
+
+		/// <summary>
 		/// The different parameter options available to choose from when creating a contract.
 		/// </summary>
 		public ObservableCollection<ContractOption> ParameterOptions { get; }
@@ -735,11 +744,22 @@ namespace LegalLab.Models.Legal
 		/// Signs the contract, as the given role
 		/// </summary>
 		/// <param name="Role">Role to sign the contract as.</param>
-		public async Task SignAsRole(string Role)
+		public Task SignAsRole(string Role)
+		{
+			return this.SignAsRole(Role, true);
+		}
+
+		/// <summary>
+		/// Signs the contract, as the given role
+		/// </summary>
+		/// <param name="Role">Role to sign the contract as.</param>
+		/// <param name="ConfirmWithUser">If a confirmation dialog with the user should be shown.</param>
+		public async Task SignAsRole(string Role, bool ConfirmWithUser)
 		{
 			try
 			{
-				if (MessageBox.Show("Are you sure you want to sign the contract as " + Role + "?", "Confirm",
+				if (ConfirmWithUser &&
+					MessageBox.Show("Are you sure you want to sign the contract as " + Role + "?", "Confirm",
 					MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
 				{
 					return;
@@ -751,11 +771,15 @@ namespace LegalLab.Models.Legal
 
 				await this.SetContract(Contract);
 
-				MainWindow.SuccessBox("Contract successfully signed.");
+				if (ConfirmWithUser)
+					MainWindow.SuccessBox("Contract successfully signed.");
 			}
 			catch (Exception ex)
 			{
-				MainWindow.ErrorBox(ex.Message);
+				if (ConfirmWithUser)
+					MainWindow.ErrorBox(ex.Message);
+				else
+					Log.Exception(ex);
 			}
 		}
 

@@ -58,6 +58,8 @@ namespace LegalLab.Models.Legal
 		private readonly PersistedProperty<string> orgRegion;
 		private readonly PersistedProperty<string> orgCountry;
 
+		private readonly PersistedProperty<bool> autoSignProposals;
+
 		private readonly Property<Contract> template;
 		private readonly Property<TemplateReferenceModel[]> templates;
 		private readonly Property<ContractReferenceModel[]> existingContracts;
@@ -111,6 +113,8 @@ namespace LegalLab.Models.Legal
 			this.Add(this.orgCity = new PersistedProperty<string>("Legal", nameof(this.OrgCity), true, string.Empty, this));
 			this.Add(this.orgRegion = new PersistedProperty<string>("Legal", nameof(this.OrgRegion), true, string.Empty, this));
 			this.Add(this.orgCountry = new PersistedProperty<string>("Legal", nameof(this.OrgCountry), true, string.Empty, this));
+
+			this.Add(this.autoSignProposals = new PersistedProperty<bool>("Legal", nameof(this.AutoSignProposals), true, false, this));
 
 			this.template = new Property<Contract>(nameof(this.Template), null, this);
 			this.templates = new Property<TemplateReferenceModel[]>(nameof(this.ExistingContracts), [], this);
@@ -254,16 +258,22 @@ namespace LegalLab.Models.Legal
 		{
 			MainWindow.UpdateGui(async () =>
 			{
-			if (MessageBox.Show("You have received a proposal to sign a contract as " +
-				e.Role + ", with the following message:\r\n\r\n" + e.MessageText + 
-					"\r\n\r\nDo you want to review the contract?", "Confirm",
-					MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
+				if (!this.AutoSignProposals)
 				{
-					return;
+					if (MessageBox.Show("You have received a proposal to sign a contract as " +
+						e.Role + ", with the following message:\r\n\r\n" + e.MessageText +
+						"\r\n\r\nDo you want to review the contract?", "Confirm",
+						MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
+					{
+						return;
+					}
 				}
 
 				MainWindow.SelectTab(MainWindow.currentInstance.ContractsTab);
 				await this.LoadContract(e.ContractId);
+
+				if (this.AutoSignProposals)
+					await this.currentContract.SignAsRole(e.Role, false);
 			});
 
 			return Task.CompletedTask;
@@ -877,6 +887,15 @@ namespace LegalLab.Models.Legal
 		{
 			get => this.orgCountry.Value;
 			set => this.orgCountry.Value = value;
+		}
+
+		/// <summary>
+		/// If contract proposals should be auto-signed.
+		/// </summary>
+		public bool AutoSignProposals
+		{
+			get => this.autoSignProposals.Value;
+			set => this.autoSignProposals.Value = value;
 		}
 
 		#endregion
