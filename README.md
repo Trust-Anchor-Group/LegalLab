@@ -164,6 +164,18 @@ TAG technologies.
 	* [OpenBallotYesNoAbstain.xml](ExampleContracts/OpenBallotYesNoAbstain.xml) is a contract representing a ballot in an open voting procedure.
 	Each signed ballot gets counted in the corresponding open voting procedure and presented by the open voting token.
 
+* [Memberships](ExampleContracts/Memberships) contains examples related to membership tokens.
+
+	* [Simple](ExampleContracts/Memberships/Simple) models a simple organization token that
+	validates and counts membership applications and memberships. Each membership is also
+	modelled as a token. Membership token is modelled as a static membership certificate.
+
+		* [Organization.xml](ExampleContracts/Memberships/Simple/Organization.xml) contains
+		the contract that creates the simple organization.
+
+		* [Membership.xml](ExampleContracts/Memberships/Simple/Membership.xml) contains the 
+		contract that creates the membership application.
+
 * [Logistics](ExampleContracts/Logistics) contains examples related to logistics.
 
 	* [SimpleOrder.xml](ExampleContracts/Logistics/SimpleOrder.xml) shows how to use a contract with calculated parameters and role-reference parameters
