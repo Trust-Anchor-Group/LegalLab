@@ -172,6 +172,7 @@
 							</Then>
 						</If>
 						<PersistVariable name="NrApproved" value="{NrApproved+1}"/>
+						<PersistVariable name="NrMembers" value="{NrMembers+1}"/>
 						<Catch exceptionVariable="ex">
 							<PersistVariable name="NrRejected" value="{NrRejected+1}"/>
 							<Fail reason="{ex.Message}" contractId="{ContractId}"/>
