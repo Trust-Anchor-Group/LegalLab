@@ -6,7 +6,79 @@
           canActAsTemplate="true"
           duration="P2Y"
           visibility="Public">
-	<Membership xmlns="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"/>
+	<Create xmlns="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd">
+		<TokenID>
+			<Random />
+		</TokenID>
+		<Creator>
+			<RoleReference role="Owner"/>
+		</Creator>
+		<Owner>
+			<RoleReference role="Member"/>
+		</Owner>
+		<Certifier>
+			<RoleReference role="Owner"/>
+		</Certifier>
+		<TrustProvider>
+			<RoleReference role="TrustProvider"/>
+		</TrustProvider>
+		<Value>
+			<ParameterReference parameter="Value"/>
+		</Value>
+		<Currency>
+			<ParameterReference parameter="Currency"/>
+		</Currency>
+		<CommissionPercent>
+			<ParameterReference parameter="CommissionPercent"/>
+		</CommissionPercent>
+		<Expires>
+			<ParameterReference parameter="Expires"/>
+		</Expires>
+		<CreatorCanDestroy>
+			<Boolean>true</Boolean>
+		</CreatorCanDestroy>
+		<OwnerCanDestroyBatch>
+			<Boolean>true</Boolean>
+		</OwnerCanDestroyBatch>
+		<OwnerCanDestroyIndividual>
+			<Boolean>true</Boolean>
+		</OwnerCanDestroyIndividual>
+		<CertifierCanDestroy>
+			<Boolean>true</Boolean>
+		</CertifierCanDestroy>
+		<Definition>
+			<Membership xmlns="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"/>
+		</Definition>
+		<Tag name="OrgName">
+			<ParameterReference parameter="OrgName"/>
+		</Tag>
+		<Tag name="OrgDescription">
+			<ParameterReference parameter="OrgDescription"/>
+		</Tag>
+		<Tag name="MemberName">
+			<ParameterReference parameter="MemberName"/>
+		</Tag>
+		<Tag name="MemberPnr">
+			<ParameterReference parameter="MemberPnr"/>
+		</Tag>
+		<Tag name="MemberAddress">
+			<ParameterReference parameter="MemberAddress"/>
+		</Tag>
+		<Tag name="MemberCountry">
+			<ParameterReference parameter="MemberCountry"/>
+		</Tag>
+		<FriendlyName>
+			<String>Membership in Simple Organization</String>
+		</FriendlyName>
+		<Category>
+			<String>Memberships</String>
+		</Category>
+		<Description>
+			<String>Example token used to demonstrate the creation of a token representing membership
+in a simple *organization*.</String>
+		</Description>
+		<Glyph contentType="image/png">iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAABFFJREFUeJztWU1IMlsYfrqTFmgLIb5yEURlLQo3YVZUCi1qFUFQUKt2QURWm7IgIkhqJ9IP1EIIWkWuIugPLIh0GVFUBC5SocCkEM2/uYvv3oPDNNM43Thwv3lgYM77d57zeI7nzEwBy7Is/mD8RZsAbSgC0CZAG4oAtAnQhiIAbQK0oQhAmwBtKALQJkAbigC0CdCGIgBtArShCECbAG0oAtAmQBuKALQJ0EahkCMYDGJpaQklJSV5F43H4+jr60NHRwfPNz8/j3g8jmw2i5qaGoyMjORdHwBSqRScTicODg5wfX2N19dXqNVqVFRUoLGxET09Pejv7/+6ECsAn8/HApB9LS4u8mo+PT3x4vJFJpNh29vbJfPY2dkRrSe4BL77uSCTyfBs4+PjPNvCwoLkmqenp2AYBufn55JzHh8fRf0FQh9G3t7ecHx8jOLiYo69tLQUZrOZtLe3t/Hr1y+k02liSyaTMBqNqKqq4nZWUAAA0Gg0iMVixC5FbK/XC6vVyrE1Nzdjbm4O3d3dYBiG2O/v77G7u4vZ2VlMT0/D4XAIF857Dv5mS65oNCopx+FwkBy73c5arVbS3t/fz6tPAOzt7a2kfgOBgHhdSVVEyITD4bxzYrEYe3R0RNoGg0E0d2BggJOfTCbl0P6cl6ykPAXIHWx1dfWndV5eXiT153K55FAWri0rKU8BGhoaSLzH4yF2u91O7ENDQ5/mer3eb+0aX+HHBYhGo6ID+GpwKysrxF9fXy+Hrih+/CRos9nI/dTUFM+fe1hyOp08fygUIvcGg0Fyv3V1dWhtbYXJZBIPlKMa8pgBubHpdJrn9/v9xM8wDM9vs9mIv7e3VxZHMfzoDFhdXSX3FouFs1f/C5PJBI1GA+D34eni4oLjLysrI/eBQOA/5yh4EBJN+udAAwDhcBjl5eWfxhUVFSGZTAIAlpeX0dbWhkQiwYnRarXY2trC5uYmAKCpqQk+n4/4Dw8P0dXVRdpS6eZyFM2RPKcEppfQEri8vJT9HPHx8SHY397eXt4cReOkDVm4uJAALS0tsgUYHR3l1LJYLHlvhVLjf2QJpNNpqFQq0na73UilUoJTkWEYPD8/Y2ZmhthyY6PRKHQ6HWmr1WrEYjEUFgo+zdNdAmNjY8RvNpsl19VqtSTP7XZzfGtra7yZMjg4yPr9fl4dj8dDdwnk+s/OziTXXV9fJ3k6nY7ndzqdspaU6Fgks8tNyikeDAY5PpfL9a2ja27uZ79uKBRia2trJQ++srJStD/hRSSCiYkJqFQqvL+/816ZJRIJTE5OIpvNcrYvqXC73bi6ukI2m8XDwwPvJKfX63F3d4dIJIKNjQ2cnJzg5uYGkUgEDMNAr9fDaDSis7MTw8PD5IwhBFl/gv8n/PFvhRUBaBOgDUUA2gRoQxGANgHaUASgTYA2FAFoE6ANRQDaBGhDEYA2AdpQBKBNgDYUAWgToA1FANoEaONve9o8PVvYS2AAAAAASUVORK5CYII=</Glyph>
+	</Create>
 	<role name="Member" minCount="1" maxCount="1">
 		<description xml:lang="en">
 			<paragraph>
@@ -35,14 +107,69 @@
 	<parameters>
 		<contractReferenceParameter name="OrganizationReference" localName="Create"
 																namespace="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd"
-																required="true" creatorRole="Creator" guide="Organization Contract"
-																templateId="30bcc563-6ce4-5fe9-9039-a0687ca3a1ce@legal.lab.tagroot.io">
+																required="true" guide="Organization Contract"
+																templateId="30c0c56a-829c-1340-8c19-dc107e789c40@legal.localhost">
 			<description xml:lang="en">
 				<paragraph>
 					<text>A reference to the contract that created the organization token.</text>
 				</paragraph>
 			</description>
 		</contractReferenceParameter>
+		<roleParameter index="1" name="MemberName" property="FULLNAME" role="Member">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The full name of the </text>
+					<bold>
+						<text>Member</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter index="1" name="MemberAddress" property="FULLADDR" role="Member">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The full address of the </text>
+					<bold>
+						<text>Member</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter index="1" name="MemberCountryCode" property="COUNTRY" role="Member">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The code of the country in which the </text>
+					<bold>
+						<text>Member</text>
+					</bold>
+					<text> resides.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<calcParameter exp="CountryName(MemberCountryCode)" name="MemberCountry">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The country in which the </text>
+					<bold>
+						<text>Member</text>
+					</bold>
+					<text> resides.</text>
+				</paragraph>
+			</description>
+		</calcParameter>
+		<roleParameter index="1" name="MemberPnr" property="PNR" role="Member">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The personal identity number of the </text>
+					<bold>
+						<text>Member</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
 	</parameters>
 	<humanReadableText xml:lang="en">
 		<section>
@@ -55,7 +182,23 @@
 					<italic>
 						<text>organization</text>
 					</italic>
-					<text>. The membership can be demonstrated by sharing the contract, if the associated signatures are valid and the contract has not been rejected by the organization token.</text>
+					<text>. The membership is awarded to </text>
+					<bold>
+						<parameter name="MemberName" />
+					</bold>
+					<text> (with personal number </text>
+					<bold>
+						<parameter name="MemberPnr" />
+					</bold>
+					<text>), residing at </text>
+					<bold>
+						<parameter name="MemberAddress" />
+					</bold>
+					<text>, </text>
+					<bold>
+						<parameter name="MemberCountry" />
+					</bold>
+					<text>. The membership can be demonstrated by sharing the token.</text>
 				</paragraph>
 			</body>
 		</section>

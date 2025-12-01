@@ -85,6 +85,7 @@
 					<OnEvent actionRef="StoreMembershipTemplateId" newState="Inactive">
 						<OnContractTemplateApproved localName="Membership"
 																				namespace="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"
+																				nameCheck="TokenCreation"
 																				contractIdVariable="ContractId"
 																				contractXmlVariable="ContractXml"
 																				condition="OrganizationTemplateId=SelectXml(ContractXml,&quot;/default:contract/default:parameters/default:contractReferenceParameter[@name='OrganizationReference']/@templateId&quot;)"
@@ -96,6 +97,7 @@
 					<OnEvent actionRef="RejectMembership">
 						<OnContractSigned localName="Membership"
 									namespace="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"
+									nameCheck="TokenCreation"
 									contractIdVariable="ContractId"
 									parametersVariable="ContractParameters"
 									rolesVariable="ContractRoles"
@@ -116,6 +118,7 @@
 					<OnEvent actionRef="RejectMembership">
 						<OnContractSigned localName="Membership"
 									namespace="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"
+									nameCheck="TokenCreation"
 									contractIdVariable="ContractId"
 									parametersVariable="ContractParameters"
 									rolesVariable="ContractRoles"
@@ -136,6 +139,7 @@
 					<OnEvent actionRef="ValidateMembership">
 						<OnContractSigned localName="Membership"
 									namespace="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"
+									nameCheck="TokenCreation"
 									contractIdVariable="ContractId"
 									parametersVariable="ContractParameters"
 									rolesVariable="ContractRoles"
@@ -213,6 +217,11 @@
 				<NoteCommand id="Close" ownerNote="true">
 					<Title lang="en">Close...</Title>
 					<ToolTip lang="en">Closes the organization.</ToolTip>
+					<NoteContextScript>
+						<![CDATA[
+						!empty(CurrentState.State)
+						]]>
+					</NoteContextScript>
 					<NoteGenerationScript>
 						<![CDATA[
 						<Close xmlns='https://lab.tagroot.io/Downloads/SimpleOrganization.xsd'/>
