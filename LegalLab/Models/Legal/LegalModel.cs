@@ -117,7 +117,7 @@ namespace LegalLab.Models.Legal
 			this.Add(this.autoSignProposals = new PersistedProperty<bool>("Legal", nameof(this.AutoSignProposals), true, false, this));
 
 			this.template = new Property<Contract>(nameof(this.Template), null, this);
-			this.templates = new Property<TemplateReferenceModel[]>(nameof(this.ExistingContracts), [], this);
+			this.templates = new Property<TemplateReferenceModel[]>(nameof(this.Templates), [], this);
 			this.contractTemplateName = new Property<string>(nameof(this.ContractTemplateName), string.Empty, this);
 			this.existingContracts = new Property<ContractReferenceModel[]>(nameof(this.ExistingContracts), [], this);
 			this.existingContractId = new Property<string>(nameof(this.ExistingContractId), string.Empty, this);
