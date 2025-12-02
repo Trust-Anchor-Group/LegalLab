@@ -85,7 +85,7 @@
 					<OnEvent actionRef="StoreMembershipTemplateId" newState="Inactive">
 						<OnContractTemplateApproved localName="Membership"
 																				namespace="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"
-																				nameCheck="TokenCreation"
+																				nameType="TokenCreation"
 																				contractIdVariable="ContractId"
 																				contractXmlVariable="ContractXml"
 																				condition="OrganizationTemplateId=SelectXml(ContractXml,&quot;/default:contract/default:parameters/default:contractReferenceParameter[@name='OrganizationReference']/@templateId&quot;)"
@@ -97,7 +97,7 @@
 					<OnEvent actionRef="RejectMembership">
 						<OnContractSigned localName="Membership"
 									namespace="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"
-									nameCheck="TokenCreation"
+									nameType="TokenCreation"
 									contractIdVariable="ContractId"
 									parametersVariable="ContractParameters"
 									rolesVariable="ContractRoles"
@@ -118,7 +118,7 @@
 					<OnEvent actionRef="RejectMembership">
 						<OnContractSigned localName="Membership"
 									namespace="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"
-									nameCheck="TokenCreation"
+									nameType="TokenCreation"
 									contractIdVariable="ContractId"
 									parametersVariable="ContractParameters"
 									rolesVariable="ContractRoles"
@@ -127,6 +127,14 @@
 					</OnEvent>
 					<OnEvent actionRef="UpdateOwner">
 						<OnTransferred buyerVariable="NewOwner"/>
+					</OnEvent>
+					<OnEvent actionRef="StoreMembershipTemplateId">
+						<OnContractTemplateApproved localName="Membership"
+																				namespace="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"
+																				nameType="TokenCreation"
+																				contractIdVariable="ContractId"
+																				contractXmlVariable="ContractXml"
+																				condition="OrganizationTemplateId=SelectXml(ContractXml,&quot;/default:contract/default:parameters/default:contractReferenceParameter[@name='OrganizationReference']/@templateId&quot;)"/>
 					</OnEvent>
 				</State>
 				<State id="Active">
@@ -139,7 +147,7 @@
 					<OnEvent actionRef="ValidateMembership">
 						<OnContractSigned localName="Membership"
 									namespace="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"
-									nameCheck="TokenCreation"
+									nameType="TokenCreation"
 									contractIdVariable="ContractId"
 									parametersVariable="ContractParameters"
 									rolesVariable="ContractRoles"
@@ -148,6 +156,14 @@
 					</OnEvent>
 					<OnEvent actionRef="UpdateOwner">
 						<OnTransferred buyerVariable="NewOwner"/>
+					</OnEvent>
+					<OnEvent actionRef="StoreMembershipTemplateId">
+						<OnContractTemplateApproved localName="Membership"
+																				namespace="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"
+																				nameType="TokenCreation"
+																				contractIdVariable="ContractId"
+																				contractXmlVariable="ContractXml"
+																				condition="OrganizationTemplateId=SelectXml(ContractXml,&quot;/default:contract/default:parameters/default:contractReferenceParameter[@name='OrganizationReference']/@templateId&quot;)"/>
 					</OnEvent>
 				</State>
 				<State id="Closed">
@@ -187,11 +203,11 @@
 					<PersistVariable name="OrganizationOwnerId" value="{NewOwner}"/>
 				</Action>
 				<NoteCommand id="Activate" ownerNote="true">
-					<Title lang="en">Activate...</Title>
+					<Title lang="en">Activate</Title>
 					<ToolTip lang="en">Activates the organization to receive new memberships.</ToolTip>
 					<NoteContextScript>
 						<![CDATA[
-						CurrentState.State="Created" or CurrentState.State="Inactive"
+						State="Created" or State="Inactive"
 						]]>
 					</NoteContextScript>
 					<NoteGenerationScript>
@@ -201,11 +217,11 @@
 					</NoteGenerationScript>
 				</NoteCommand>
 				<NoteCommand id="Deactivate" ownerNote="true">
-					<Title lang="en">Deactivate...</Title>
+					<Title lang="en">Deactivate</Title>
 					<ToolTip lang="en">Deactivates the organization and stop receiving new memberships.</ToolTip>
 					<NoteContextScript>
 						<![CDATA[
-						CurrentState.State="Active"
+						State="Active"
 						]]>
 					</NoteContextScript>
 					<NoteGenerationScript>
@@ -215,11 +231,11 @@
 					</NoteGenerationScript>
 				</NoteCommand>
 				<NoteCommand id="Close" ownerNote="true">
-					<Title lang="en">Close...</Title>
+					<Title lang="en">Close</Title>
 					<ToolTip lang="en">Closes the organization.</ToolTip>
 					<NoteContextScript>
 						<![CDATA[
-						!empty(CurrentState.State)
+						!empty(State)
 						]]>
 					</NoteContextScript>
 					<NoteGenerationScript>

@@ -50,10 +50,10 @@
 			<Membership xmlns="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"/>
 		</Definition>
 		<Tag name="OrgName">
-			<ParameterReference parameter="OrgName"/>
+			<ParameterReference parameter="OrganizationReference.OrgName"/>
 		</Tag>
 		<Tag name="OrgDescription">
-			<ParameterReference parameter="OrgDescription"/>
+			<ParameterReference parameter="OrganizationReference.OrgDescription"/>
 		</Tag>
 		<Tag name="MemberName">
 			<ParameterReference parameter="MemberName"/>
@@ -101,6 +101,13 @@ in a simple *organization*.</String>
 			</paragraph>
 		</description>
 	</role>
+	<role name="TrustProvider" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The part that acts as a host of the token and approves its creation.</text>
+			</paragraph>
+		</description>
+	</role>
 	<parts>
 		<templateOnly/>
 	</parts>
@@ -108,13 +115,45 @@ in a simple *organization*.</String>
 		<contractReferenceParameter name="OrganizationReference" localName="Create"
 																namespace="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd"
 																required="true" guide="Organization Contract"
-																templateId="30c0c56a-829c-1340-8c19-dc107e789c40@legal.localhost">
+																templateId="30c1df97-9d9b-7d27-1083-a30d3430caae@legal.localhost">
 			<description xml:lang="en">
 				<paragraph>
 					<text>A reference to the contract that created the organization token.</text>
 				</paragraph>
 			</description>
 		</contractReferenceParameter>
+		<numericalParameter name="Value" guide="Value of token" min="0" minIncluded="false">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The initial value of the token.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="[A-Z]{3}">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The currency of the token.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<numericalParameter name="CommissionPercent" guide="Commision (%)" min="0" max="100">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The commission the Trust Provider gets for creating the token and managing the </text>
+					<italic>
+						<text>organization</text>
+					</italic>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<dateParameter name="Expires" guide="Expiry date" exp="Expires&gt;Now.Date">
+			<description xml:lang="en">
+				<paragraph>
+					<text>When token expires.</text>
+				</paragraph>
+			</description>
+		</dateParameter>
 		<roleParameter index="1" name="MemberName" property="FULLNAME" role="Member">
 			<description xml:lang="en">
 				<paragraph>
