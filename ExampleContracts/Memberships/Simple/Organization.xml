@@ -176,6 +176,7 @@
 					<PersistVariable name="MembershipTemplateId" value="{ContractId}"/>
 				</Action>
 				<Action id="RejectMembership">
+					<PersistVariable name="NrRejected" value="{NrRejected+1}"/>
 					<Fail reason="Membership discarded. Organization is not active." contractId="{ContractId}"/>
 				</Action>
 				<Action id="ValidateMembership">
