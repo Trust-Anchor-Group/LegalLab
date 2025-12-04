@@ -194,11 +194,17 @@
 						</If>
 						<PersistVariable name="NrApproved" value="{NrApproved+1}"/>
 						<PersistVariable name="NrMembers" value="{NrMembers+1}"/>
+						<ScheduleAction actionRef="MembershipEnded">
+							<When>{Min(ContractParameters.Expires,NowUtc+ContractParameters.Duration)}</When>
+						</ScheduleAction>
 						<Catch exceptionVariable="ex">
 							<PersistVariable name="NrRejected" value="{NrRejected+1}"/>
 							<Fail reason="{ex.Message}" contractId="{ContractId}"/>
 						</Catch>
 					</Try>
+				</Action>
+				<Action id="MembershipEnded">
+					<PersistVariable name="NrMembers" value="{NrMembers-1}"/>
 				</Action>
 				<Action id="UpdateOwner">
 					<PersistVariable name="OrganizationOwnerId" value="{NewOwner}"/>
