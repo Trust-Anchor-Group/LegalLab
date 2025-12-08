@@ -45,6 +45,7 @@ namespace LegalLab
 	{
 		internal static MainWindow currentInstance = null;
 		private static readonly LinkedList<GuiUpdateTask> guiUpdateQueue = new();
+		private static bool uiInitialized = false;
 		private static string appDataFolder;
 		private static string databaseFolder;
 		private static string eventsFolder;
@@ -144,6 +145,7 @@ namespace LegalLab
 						windowSizeModel = await InstantiateModel<WindowSizeModel>(this.WindowState, this.Left, this.Top, this.Width, this.Height, this.TabControl.SelectedIndex);
 						networkModel = await InstantiateModel<NetworkModel>();
 						designModel = await InstantiateModel<DesignModel>();
+						uiInitialized = true;
 
 						if (StartGuiTask)
 							await this.Dispatcher.BeginInvoke(DoUpdates);
@@ -415,7 +417,7 @@ namespace LegalLab
 
 		private static async Task<bool> UpdateGui(GuiDelegateWithParameter Method, string Name, object State)
 		{
-			if (currentInstance?.Dispatcher.CheckAccess() ?? false)
+			if (uiInitialized && (currentInstance?.Dispatcher.CheckAccess() ?? false))
 			{
 				try
 				{
@@ -443,6 +445,9 @@ namespace LegalLab
 				{
 					Start = (guiUpdateQueue.First is null) && currentInstance is not null;
 					guiUpdateQueue.AddLast(Rec);
+
+					if (!uiInitialized)
+						return true;
 				}
 
 				if (Start)
