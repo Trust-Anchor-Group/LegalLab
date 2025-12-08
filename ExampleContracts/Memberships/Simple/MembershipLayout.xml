@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Layout2D xmlns="http://waher.se/Schema/Layout2D.xsd"
+          width="1684px"
+          height="1190px"
+          background="WhiteBackground"
+          pen="BlackPen"
+          font="Text"
+          textColor="Black">
+	<SolidPen id="BlackPen" color="Black" width="1px"/>
+	<SolidPen id="WhitePen" color="White" width="1px"/>
+	<SolidPen id="DarkSemiTransparentPen" color="#00000080" width="3px"/>
+	<SolidPen id="TransparentPen" color="#00000000" width="1px"/>
+	<SolidBackground id="SemiTransparentBackground" color="#f8f8f8e0"/>
+	<SolidBackground id="SemiTransparentGreenBackground" color="#e0ffe040"/>
+	<SolidBackground id="SemiTransparentRedBackground" color="#ffe0e040"/>
+	<SolidBackground id="TransparentBackground" color="#00000000"/>
+	<SolidBackground id="WhiteBackground" color="#fffffff0"/>
+	<SolidBackground id="WhiteSmokeBackground" color="WhiteSmoke"/>
+	<Font id="SmallText" name="Roboto" size="12pt" color="#a0a0a0" weight="Normal"/>
+	<Font id="Text" name="Roboto" size="14pt" color="Black" weight="Normal"/>
+	<Font id="LargeText" name="Roboto" size="17pt" color="Black" weight="Normal"/>
+	<Font id="Label" name="Roboto" size="16pt" color="Black" weight="Normal"/>
+	<Font id="Value" name="Roboto" size="20pt" color="Black" weight="Bold"/>
+	<Font id="Header" name="Roboto" size="24pt" color="Black" weight="Bold"/>
+	<Rectangle x="0%" y="0%" x2="100%" y2="100%" pen="BlackPen" fill="WhiteSmokeBackground"/>
+	<Overlays>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<ImageUrl url="https://paiwise.tagroot.io/Images/WavyBG_1684x1190.png"
+			          width="1684px"
+			          height="1190px"
+			          fill="WhiteBackground"
+			          keepAspectRatio="true"
+			          x="0px"
+			          y="0px"
+			          x2="1684px"
+			          y2="1190px"/>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="50px" left="100px" right="100px" bottom="1350px">
+				<RoundedRectangle fill="SemiTransparentBackground" pen="DarkSemiTransparentPen" radiusX="50px" radiusY="50px"/>
+			</Margins>
+			<Margins top="100px" left="120px" right="120px" bottom="1400px">
+				<Rectangle fill="TransparentBackground" pen="TransparentPen">
+					<Paragraph font="LargeText" halign="Center" valign="Top">
+						<Text text="Membership card"/>
+					</Paragraph>
+				</Rectangle>
+			</Margins>
+			<Margins top="50px" left="120px" right="120px" bottom="1400px">
+				<Rectangle fill="TransparentBackground" pen="TransparentPen">
+					<Paragraph font="Header" halign="Center" valign="Center">
+						<InlineScript expression="OrgName"/>
+					</Paragraph>
+				</Rectangle>
+			</Margins>
+			<Margins top="170px" left="120px" right="120px" bottom="1350px">
+				<Rectangle fill="TransparentBackground" pen="TransparentPen">
+					<Paragraph font="LargeText" halign="Center" valign="Center">
+						<InlineScript expression="OrgDescription"/>
+					</Paragraph>
+				</Rectangle>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Translate translateX="200px" translateY="480px">
+				<Label font="Header" halign="Center" valign="Top" text="Personal Information" x="280px" y="0px"/>
+				<Label font="Label" halign="Left" valign="Top" text="Name:" x="0px" y="90px"/>
+				<Label font="Label" halign="Left" valign="Top" text="Personal Number:" x="0px" y="150px"/>
+				<Label font="Label" halign="Left" valign="Top" text="Address:" x="0px" y="210px"/>
+				<Label font="Label" halign="Left" valign="Top" text="Country:" x="0px" y="270px"/>
+				<Label font="Label" halign="Left" valign="Top" text="Expires:" x="0px" y="330px"/>
+				<Script font="Value" halign="Left" valign="Top" expression="MemberName" x="350px" y="85px"/>
+				<Script font="Value" halign="Left" valign="Top" expression="MemberPnr" x="350px" y="145px"/>
+				<Script font="Value" halign="Left" valign="Top" expression="MemberAddress" x="350px" y="205px"/>
+				<Script font="Value" halign="Left" valign="Top" expression="MemberCountry" x="350px" y="265px"/>
+				<Script font="Value" halign="Left" valign="Top" expression="Expires.ToShortDateString()" x="350px" y="325px"/>
+			</Translate>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="1000px" left="100px" right="475px">
+				<Paragraph font="Text">
+					<Text text="To "/>
+					<Bold>
+						<Text text="validate"/>
+					</Bold>
+					<Text text=" the membership card, scan the "/>
+					<Italic>
+						<Text text="QR Code"/>
+					</Italic>
+					<Text text=" to the right using the "/>
+					<Bold>
+						<Text text="Neuro-Access"/>
+					</Bold>
+					<Text text=" App, found in the "/>
+					<Italic>
+						<Text text="App Store"/>
+					</Italic>
+					<Text text=" (for iOS devices) and the "/>
+					<Italic>
+						<Text text="Play Store"/>
+					</Italic>
+					<Text text=" (for Android devices)."/>
+				</Paragraph>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="400px" left="1200px">
+				<Rectangle fill="WhiteSmokeBackground" pen="WhitePen" width="400px" height="400px">
+					<ImageInternal cid="ProfilePhoto"
+					               keepAspectRatio="true"
+					               x="0px"
+					               y="0px"
+					               x2="400px"
+					               y2="400px"/>
+				</Rectangle>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="925px" left="1375px">
+				<Rectangle fill="WhiteSmokeBackground" pen="WhitePen" width="225px" height="225px">
+					<Script expression="QrEncode('nfeat:'+TokenId,'H',225)"/>
+				</Rectangle>
+			</Margins>
+		</Cell>
+		<Cell halign="Left" valign="Top" width="100%" height="100%">
+			<Margins top="1165px" left="10px" right="100px">
+				<Paragraph x="100px" y="100px" halign="Left" valign="Bottom" font="SmallText">
+					<Text text="Membership ID: "/>
+					<Text text="{TokenId}"/>
+					<Text text="."/>
+				</Paragraph>
+			</Margins>
+		</Cell>
+	</Overlays>
+</Layout2D>

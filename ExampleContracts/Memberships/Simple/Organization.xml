@@ -254,7 +254,6 @@
 				<ReportPresent>
 					<![CDATA[
 ```layout
-<?xml version="1.0" encoding="utf-8" ?>
 <Layout2D xmlns="http://waher.se/Schema/Layout2D.xsd"
           width="1684px"
           height="1190px"

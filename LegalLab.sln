@@ -119,10 +119,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Simple", "Simple", "{4D931177-6C9E-43DB-8F31-EECCEBD62305}"
 	ProjectSection(SolutionItems) = preProject
 		ExampleContracts\Memberships\Simple\Membership.xml = ExampleContracts\Memberships\Simple\Membership.xml
+		ExampleContracts\Memberships\Simple\MembershipLayout.xml = ExampleContracts\Memberships\Simple\MembershipLayout.xml
+		ExampleContracts\Memberships\Simple\MembershipLayoutInit.script = ExampleContracts\Memberships\Simple\MembershipLayoutInit.script
 		ExampleContracts\Memberships\Simple\Organization.xml = ExampleContracts\Memberships\Simple\Organization.xml
 		ExampleContracts\Memberships\Simple\SimpleOrganization.xsd = ExampleContracts\Memberships\Simple\SimpleOrganization.xsd
-		ExampleContracts\Memberships\Simple\SimpleOrganizationInit.script = ExampleContracts\Memberships\Simple\SimpleOrganizationInit.script
 		ExampleContracts\Memberships\Simple\SimpleOrganizationLayout.xml = ExampleContracts\Memberships\Simple\SimpleOrganizationLayout.xml
+		ExampleContracts\Memberships\Simple\SimpleOrganizationLayoutInit.script = ExampleContracts\Memberships\Simple\SimpleOrganizationLayoutInit.script
 	EndProjectSection
 EndProject
 Global

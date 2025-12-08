@@ -1,18 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="SimpleOrganization"
-    targetNamespace="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"
-    elementFormDefault="qualified"
-    xmlns="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"
-    xmlns:mstns="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+					 targetNamespace="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"
+					 elementFormDefault="qualified"
+					 xmlns="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"
+					 xmlns:mstns="https://lab.tagroot.io/Downloads/SimpleOrganization.xsd"
+					 xmlns:xs="http://www.w3.org/2001/XMLSchema"
+					 xmlns:layout="http://waher.se/Schema/Layout2D.xsd">
 
-	<!-- Test schema used in example contract. -->
+	<xs:import namespace="http://waher.se/Schema/Layout2D.xsd"/>
+
+	<!-- Test schema used in example contracts. -->
 	<!-- Note: Schema is made available via download using the namespace URL. -->
 
 	<xs:element name="Activate" type="Empty"/>
 	<xs:element name="Deactivate" type="Empty"/>
 	<xs:element name="Close" type="Empty"/>
-	<xs:element name="Membership" type="Empty"/>
+
+	<xs:element name="Membership">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="layout:Layout2D" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
 	
 	<xs:complexType name="Empty"/>
 </xs:schema>
