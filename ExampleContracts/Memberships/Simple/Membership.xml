@@ -202,6 +202,9 @@
 		<Tag name="MemberCountry">
 			<ParameterReference parameter="MemberCountry"/>
 		</Tag>
+		<Tag name="ProfilePhoto">
+			<ParameterReference parameter="ProfilePhoto"/>
+		</Tag>
 		<FriendlyName>
 			<String>Membership in Simple Organization</String>
 		</FriendlyName>
@@ -257,21 +260,21 @@ in a simple *organization*.</String>
 				</paragraph>
 			</description>
 		</contractReferenceParameter>
-		<numericalParameter name="Value" guide="Value of token" min="0" minIncluded="false">
+		<numericalParameter name="Value" guide="Value of token" min="0" minIncluded="false" required="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The initial value of the token.</text>
 				</paragraph>
 			</description>
 		</numericalParameter>
-		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="[A-Z]{3}">
+		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="[A-Z]{3}" required="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The currency of the token.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
-		<numericalParameter name="CommissionPercent" guide="Commision (%)" min="0" max="100">
+		<numericalParameter name="CommissionPercent" guide="Commision (%)" min="0" max="100" required="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The commission the Trust Provider gets for creating the token and managing the </text>
@@ -282,14 +285,14 @@ in a simple *organization*.</String>
 				</paragraph>
 			</description>
 		</numericalParameter>
-		<dateParameter name="Expires" guide="Expiry date" exp="Expires&gt;Now.Date">
+		<dateParameter name="Expires" guide="Expiry date" exp="Expires&gt;Now.Date" required="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>When token expires.</text>
 				</paragraph>
 			</description>
 		</dateParameter>
-		<roleParameter index="1" name="MemberName" property="FULLNAME" role="Member">
+		<roleParameter index="1" name="MemberName" property="FULLNAME" role="Member" required="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The full name of the </text>
@@ -300,7 +303,7 @@ in a simple *organization*.</String>
 				</paragraph>
 			</description>
 		</roleParameter>
-		<roleParameter index="1" name="MemberAddress" property="FULLADDR" role="Member">
+		<roleParameter index="1" name="MemberAddress" property="FULLADDR" role="Member" required="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The full address of the </text>
@@ -311,7 +314,7 @@ in a simple *organization*.</String>
 				</paragraph>
 			</description>
 		</roleParameter>
-		<roleParameter index="1" name="MemberCountryCode" property="COUNTRY" role="Member">
+		<roleParameter index="1" name="MemberCountryCode" property="COUNTRY" role="Member" required="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The code of the country in which the </text>
@@ -333,10 +336,21 @@ in a simple *organization*.</String>
 				</paragraph>
 			</description>
 		</calcParameter>
-		<roleParameter index="1" name="MemberPnr" property="PNR" role="Member">
+		<roleParameter index="1" name="MemberPnr" property="PNR" role="Member" required="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The personal identity number of the </text>
+					<bold>
+						<text>Member</text>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</roleParameter>
+		<roleParameter index="1" name="ProfilePhoto" property="ProfilePhoto" role="Member" required="true">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The profile photo of the </text>
 					<bold>
 						<text>Member</text>
 					</bold>

@@ -522,35 +522,35 @@ membership contracts.</String>
 		<templateOnly/>
 	</parts>
 	<parameters>
-		<stringParameter name="OrgName" guide="Name of organization" minLength="1">
+		<stringParameter name="OrgName" guide="Name of organization" minLength="1" required="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The name of the organization.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
-		<stringParameter name="OrgDescription" guide="Description of organization" minLength="1">
+		<stringParameter name="OrgDescription" guide="Description of organization" minLength="1" required="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>A description of the organization to be presented.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
-		<numericalParameter name="Value" guide="Value of token" min="0" minIncluded="false">
+		<numericalParameter name="Value" guide="Value of token" min="0" minIncluded="false" required="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The initial value of the token.</text>
 				</paragraph>
 			</description>
 		</numericalParameter>
-		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="[A-Z]{3}">
+		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="[A-Z]{3}" required="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The currency of the token.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
-		<numericalParameter name="CommissionPercent" guide="Commision (%)" min="0" max="100">
+		<numericalParameter name="CommissionPercent" guide="Commision (%)" min="0" max="100" required="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The commission the Trust Provider gets for creating the token and managing the </text>
@@ -561,7 +561,7 @@ membership contracts.</String>
 				</paragraph>
 			</description>
 		</numericalParameter>
-		<dateParameter name="Expires" guide="Expiry date" exp="Expires&gt;Now.Date">
+		<dateParameter name="Expires" guide="Expiry date" exp="Expires&gt;Now.Date" required="true">
 			<description xml:lang="en">
 				<paragraph>
 					<text>When token expires.</text>
