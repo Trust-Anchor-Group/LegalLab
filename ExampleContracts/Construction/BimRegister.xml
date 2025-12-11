@@ -55,6 +55,9 @@
 					<OnEvent actionRef="RegisterDocument">
 						<OnXmlNote localName="BIMProject" namespace="https://lab.tagroot.io/Downloads/BimRegister.xsd" noteVariable="Note"/>
 					</OnEvent>
+					<OnEvent actionRef="RegisterDocument">
+						<OnExternalXmlNote localName="BIMProject" namespace="https://lab.tagroot.io/Downloads/BimRegister.xsd" noteVariable="Note"/>
+					</OnEvent>
 					<OnEvent newState="Done">
 						<OnXmlNote localName="Done" namespace="https://lab.tagroot.io/Downloads/Calculator.xsd"/>
 					</OnEvent>
