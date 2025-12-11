@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<contract xmlns="urn:nf:iot:leg:sc:1.0"
+          id="BimRegister"
+          archiveOpt="P3M"
+          archiveReq="P1M"
+          canActAsTemplate="true"
+          duration="P2Y"
+          visibility="Public">
+	<Create xmlns="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd">
+		<TokenID>
+			<Random />
+		</TokenID>
+		<Creator>
+			<RoleReference role="Creator"/>
+		</Creator>
+		<Owner>
+			<RoleReference role="Creator"/>
+		</Owner>
+		<TrustProvider>
+			<RoleReference role="TrustProvider"/>
+		</TrustProvider>
+		<Value>
+			<ParameterReference parameter="Value"/>
+		</Value>
+		<Currency>
+			<ParameterReference parameter="Currency"/>
+		</Currency>
+		<CommissionPercent>
+			<ParameterReference parameter="CommissionPercent"/>
+		</CommissionPercent>
+		<Expires>
+			<ParameterReference parameter="Expires"/>
+		</Expires>
+		<CreatorCanDestroy>
+			<Boolean>false</Boolean>
+		</CreatorCanDestroy>
+		<OwnerCanDestroyBatch>
+			<Boolean>false</Boolean>
+		</OwnerCanDestroyBatch>
+		<OwnerCanDestroyIndividual>
+			<Boolean>true</Boolean>
+		</OwnerCanDestroyIndividual>
+		<CertifierCanDestroy>
+			<Boolean>false</Boolean>
+		</CertifierCanDestroy>
+		<Definition>
+			<StateMachine xmlns="https://paiwise.tagroot.io/Schema/StateMachines.xsd" startState="Registering">
+				<Variable id="BuildingId">
+					<TagReference tag="BuildingId"/>
+				</Variable>
+				<Variable id="NrDocumentsRegistered">
+					<Number>0</Number>
+				</Variable>
+				<State id="Registering">
+					<OnEvent actionRef="RegisterDocument">
+						<OnXmlNote localName="BIMProject" namespace="https://lab.tagroot.io/Downloads/BimRegister.xsd" noteVariable="Note"/>
+					</OnEvent>
+					<OnEvent newState="Done">
+						<OnXmlNote localName="Done" namespace="https://lab.tagroot.io/Downloads/Calculator.xsd"/>
+					</OnEvent>
+				</State>
+				<State id="Done">
+					<OnEnter actionRef="End"/>
+				</State>
+				<Action id="RegisterDocument">
+					<LogEvent message="Processing BIM document." type="Notice"/>
+					<PersistVariable name="Document" value="{Note}"/>
+					<PersistVariable name="NrDocumentsRegistered" value="{NrDocumentsRegistered+1}"/>
+					<LogEvent message="BIM document processed." type="Informational"/>
+					<TextNote content="BIM document processed."/>
+					<TextNote content="{'Number of registry entries: '+NrDocumentsRegistered}"/>
+				</Action>
+				<Action id="End">
+					<End/>
+				</Action>
+				<NoteCommand id="Done" ownerNote="true">
+					<Title lang="en">Done</Title>
+					<ToolTip lang="en">Terminates the token.</ToolTip>
+					<NoteContextScript>
+						<![CDATA[
+						State="Registering"
+						]]>
+					</NoteContextScript>
+					<NoteGenerationScript>
+						<![CDATA[
+						<Done xmlns='https://lab.tagroot.io/Downloads/Calculator.xsd'/>
+						]]>
+					</NoteGenerationScript>
+				</NoteCommand>
+				<ReportPresent>
+					<![CDATA[
+{{BuildingId}}
+=================
+
+Number of BIM documents registered: **{{NrDocumentsRegistered}}**
+					]]>
+				</ReportPresent>
+				<ReportHistory>
+					<![CDATA[
+Documents Registered
+-------------------------
+
+{{
+G:=plot2dline(NrDocumentsRegistered.Timestamp, NrDocumentsRegistered.Value);
+
+G.Title:="Documents registered for "+BuildingId;
+G.LabelX:="Time";
+G.LabelY:="#Documents";
+G
+}}
+
+{{
+c:=count(NrDocumentsRegistered);
+i:=0;
+
+foreach Doc in Document do
+(
+	]]
+### ((NrDocumentsRegistered[i++].Timestamp))
+
+```xml
+((Doc))
+```
+
+[[
+)
+}}
+					]]>
+				</ReportHistory>
+			</StateMachine>
+		</Definition>
+		<Tag name="BuildingId">
+			<ParameterReference parameter="BuildingId"/>
+		</Tag>
+		<FriendlyName>
+			<String>BIM Register</String>
+		</FriendlyName>
+		<Category>
+			<String>Example</String>
+		</Category>
+		<Description>
+			<String>Example token used to demonstrate the creation of a simple token that registers
+BIM documents representing changes to a building.</String>
+		</Description>
+		<Glyph contentType="image/png">iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAABFFJREFUeJztWU1IMlsYfrqTFmgLIb5yEURlLQo3YVZUCi1qFUFQUKt2QURWm7IgIkhqJ9IP1EIIWkWuIugPLIh0GVFUBC5SocCkEM2/uYvv3oPDNNM43Thwv3lgYM77d57zeI7nzEwBy7Is/mD8RZsAbSgC0CZAG4oAtAnQhiIAbQK0oQhAmwBtKALQJkAbigC0CdCGIgBtArShCECbAG0oAtAmQBuKALQJ0EahkCMYDGJpaQklJSV5F43H4+jr60NHRwfPNz8/j3g8jmw2i5qaGoyMjORdHwBSqRScTicODg5wfX2N19dXqNVqVFRUoLGxET09Pejv7/+6ECsAn8/HApB9LS4u8mo+PT3x4vJFJpNh29vbJfPY2dkRrSe4BL77uSCTyfBs4+PjPNvCwoLkmqenp2AYBufn55JzHh8fRf0FQh9G3t7ecHx8jOLiYo69tLQUZrOZtLe3t/Hr1y+k02liSyaTMBqNqKqq4nZWUAAA0Gg0iMVixC5FbK/XC6vVyrE1Nzdjbm4O3d3dYBiG2O/v77G7u4vZ2VlMT0/D4XAIF857Dv5mS65oNCopx+FwkBy73c5arVbS3t/fz6tPAOzt7a2kfgOBgHhdSVVEyITD4bxzYrEYe3R0RNoGg0E0d2BggJOfTCbl0P6cl6ykPAXIHWx1dfWndV5eXiT153K55FAWri0rKU8BGhoaSLzH4yF2u91O7ENDQ5/mer3eb+0aX+HHBYhGo6ID+GpwKysrxF9fXy+Hrih+/CRos9nI/dTUFM+fe1hyOp08fygUIvcGg0Fyv3V1dWhtbYXJZBIPlKMa8pgBubHpdJrn9/v9xM8wDM9vs9mIv7e3VxZHMfzoDFhdXSX3FouFs1f/C5PJBI1GA+D34eni4oLjLysrI/eBQOA/5yh4EBJN+udAAwDhcBjl5eWfxhUVFSGZTAIAlpeX0dbWhkQiwYnRarXY2trC5uYmAKCpqQk+n4/4Dw8P0dXVRdpS6eZyFM2RPKcEppfQEri8vJT9HPHx8SHY397eXt4cReOkDVm4uJAALS0tsgUYHR3l1LJYLHlvhVLjf2QJpNNpqFQq0na73UilUoJTkWEYPD8/Y2ZmhthyY6PRKHQ6HWmr1WrEYjEUFgo+zdNdAmNjY8RvNpsl19VqtSTP7XZzfGtra7yZMjg4yPr9fl4dj8dDdwnk+s/OziTXXV9fJ3k6nY7ndzqdspaU6Fgks8tNyikeDAY5PpfL9a2ja27uZ79uKBRia2trJQ++srJStD/hRSSCiYkJqFQqvL+/816ZJRIJTE5OIpvNcrYvqXC73bi6ukI2m8XDwwPvJKfX63F3d4dIJIKNjQ2cnJzg5uYGkUgEDMNAr9fDaDSis7MTw8PD5IwhBFl/gv8n/PFvhRUBaBOgDUUA2gRoQxGANgHaUASgTYA2FAFoE6ANRQDaBGhDEYA2AdpQBKBNgDYUAWgToA1FANoEaONve9o8PVvYS2AAAAAASUVORK5CYII=</Glyph>
+	</Create>
+	<role name="Creator" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The part that creates the </text>
+				<italic>
+					<text>token</text>
+				</italic>
+				<text> and the corresponding state-machine that executes the </text>
+				<italic>
+					<text>register</text>
+				</italic>
+				<text>.</text>
+			</paragraph>
+		</description>
+	</role>
+	<role name="TrustProvider" minCount="1" maxCount="1">
+		<description xml:lang="en">
+			<paragraph>
+				<text>The part that acts as a host of the token and approves its creation.</text>
+			</paragraph>
+		</description>
+	</role>
+	<parts>
+		<templateOnly/>
+	</parts>
+	<parameters>
+		<stringParameter name="BuildingId" guide="ID of building" minlen="1">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The identifier of the building associated with the register.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<numericalParameter name="Value" guide="Value of token" min="0" minIncluded="false">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The initial value of the token.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="[A-Z]{3}">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The currency of the token.</text>
+				</paragraph>
+			</description>
+		</stringParameter>
+		<numericalParameter name="CommissionPercent" guide="Commision (%)" min="0" max="100">
+			<description xml:lang="en">
+				<paragraph>
+					<text>The commission the Trust Provider gets for creating the token and managing the </text>
+					<italic>
+						<text>register</text>
+					</italic>
+					<text>.</text>
+				</paragraph>
+			</description>
+		</numericalParameter>
+		<dateParameter name="Expires" guide="Expiry date" exp="Expires&gt;Now.Date">
+			<description xml:lang="en">
+				<paragraph>
+					<text>When token expires.</text>
+				</paragraph>
+			</description>
+		</dateParameter>
+	</parameters>
+	<humanReadableText xml:lang="en">
+		<section>
+			<header>
+				<text>BIM Register</text>
+			</header>
+			<body>
+				<paragraph>
+					<text>This contract creates a token representing a </text>
+					<italic>
+						<text>register</text>
+					</italic>
+					<text> of BIM documents. Each BIM document represents a change in a building, with identifier </text>
+					<bold>
+						<parameter name="BuildingId"/>
+					</bold>
+					<text>.</text>
+				</paragraph>
+			</body>
+		</section>
+	</humanReadableText>
+</contract>

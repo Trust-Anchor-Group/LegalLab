@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+Original namespace:   http://www.bimxml.org/xsd/001
+Source:               https://bimxml.org/
+Download:             https://bimxml.org/BIMXML-documentation-V7b.zip
+Harmonized namespace: https://lab.tagroot.io/Downloads/BimRegister.xsd
+-->
+<xs:schema elementFormDefault="qualified" 
+					 targetNamespace="https://lab.tagroot.io/Downloads/BimRegister.xsd" 
+					 xmlns="https://lab.tagroot.io/Downloads/BimRegister.xsd" 
+					 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="BIMProject">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element maxOccurs="1" name="BIMApplication">
+					<xs:complexType>
+						<xs:attribute name="Name" type="xs:string" use="required"/>
+						<xs:attribute name="Version" type="xs:string" use="optional"/>
+						<xs:attribute name="Developer" type="xs:string" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element maxOccurs="1" minOccurs="1" name="BIMSite">
+					<xs:complexType>
+						<xs:choice minOccurs="0" maxOccurs="unbounded">
+							<xs:element maxOccurs="1" name="GeoReference">
+								<xs:complexType>
+									<xs:attribute name="Angle" type="angle" use="required"/>
+									<!-- to use the same values as in KML, the angle is in degrees -->
+									<xs:attribute name="Latitude" type="xs:double" use="required"/>
+									<xs:attribute name="Longitude" type="xs:double" use="required"/>
+									<xs:attribute name="HeightAboveSeaLevel" type="xs:double" use="required"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element maxOccurs="1" minOccurs="0" name="PSet" type="pSet"/>
+							<xs:element maxOccurs="1" minOccurs="0" name="Representation" type="representation"/>
+							<xs:element maxOccurs="1" minOccurs="0" name="Placement" type="placement"/>
+							<xs:element maxOccurs="unbounded" minOccurs="1" name="BIMBldg">
+								<xs:complexType>
+									<xs:choice minOccurs="0" maxOccurs="unbounded">
+										<xs:element maxOccurs="1" minOccurs="0" name="Placement" type="placement"/>
+										<xs:element maxOccurs="1" minOccurs="0" name="PSet" type="pSet"/>
+										<xs:element maxOccurs="unbounded" minOccurs="1" name="BIMFloor">
+											<xs:complexType>
+												<xs:choice minOccurs="0" maxOccurs="unbounded">
+													<xs:element maxOccurs="1" minOccurs="1" name="Placement" type="placementFloor"/>
+													<xs:element maxOccurs="1" minOccurs="0" name="PSet" type="pSet"/>
+													<xs:element maxOccurs="unbounded" minOccurs="1" name="BIMSlab">
+														<xs:complexType>
+															<xs:choice minOccurs="0" maxOccurs="unbounded">
+																<xs:element maxOccurs="1" minOccurs="1" name="Placement" type="placement"/>
+																<xs:element maxOccurs="1" minOccurs="1" name="Representation" type="representation"/>
+															</xs:choice>
+															<xs:attribute name="GlobalId" type="guid" use="required"/>
+															<xs:attribute name="Name" type="xs:string" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+													<xs:element maxOccurs="unbounded" minOccurs="1" name="BIMSpace">
+														<xs:complexType>
+															<xs:choice minOccurs="0" maxOccurs="unbounded">
+																<xs:element maxOccurs="1" minOccurs="1" name="Placement" type="placement"/>
+																<xs:element maxOccurs="1" minOccurs="1" name="Representation" type="representation"/>
+																<xs:element maxOccurs="1" minOccurs="0" name="PSet" type="pSet"/>
+																<xs:element maxOccurs="unbounded" minOccurs="0" name="BIMFurn" type="bimFurn"/>
+															</xs:choice>
+															<xs:attribute name="Name" type="xs:string" use="required"/>
+															<xs:attribute name="GlobalId" type="guid" use="required"/>
+															<xs:attribute name="SpaceNumber" type="xs:string" use="optional"/>
+															<xs:attribute name="CATName" type="xs:string" use="optional"/>
+															<xs:attribute name="CATCode" type="xs:string" use="optional"/>
+															<xs:attribute name="R" type="rgb" use="optional"/>
+															<xs:attribute name="G" type="rgb" use="optional"/>
+															<xs:attribute name="B" type="rgb" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+													<xs:element maxOccurs="unbounded" minOccurs="0" name="BIMRelAdj">
+														<xs:complexType mixed="true">
+															<xs:attribute name="GlobalId" type="guid" use="required"/>
+															<xs:attribute name="Name" type="xs:string" use="required"/>
+															<xs:attribute name="RGB" type="xs:string" use="required"/>
+															<xs:attribute name="RegisterID" fixed="True" use="required"/>
+														</xs:complexType>
+													</xs:element>
+												</xs:choice>
+												<xs:attribute name="Name" type="xs:string" use="required"/>
+												<xs:attribute name="GlobalId" type="guid" use="optional"/>
+												<xs:attribute name="FloorIndex" type="xs:integer" use="required"/>
+												<xs:attribute name="FloorHeight" type="floorHeight" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+										<!-- End BIMFloor -->
+									</xs:choice>
+									<xs:attribute name="Name" type="xs:string" use="optional"/>
+									<xs:attribute name="GlobalId" type="guid" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element maxOccurs="unbounded" minOccurs="1" name="BIMFurn" type="bimFurn"/>
+							<!-- End BIMBldg -->
+						</xs:choice>
+						<xs:attribute name="Name" type="xs:string" use="optional"/>
+						<xs:attribute name="GlobalId" type="guid" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+				<!-- End BIMSite -->
+			</xs:choice>
+			<xs:attribute name="Name" type="xs:string" use="optional"/>
+			<xs:attribute name="GlobalId" type="guid" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- End BIMProject -->
+	<!-- begin global elements -->
+	<xs:complexType name="pSet">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="Attrib" maxOccurs="unbounded" minOccurs="0">
+				<xs:complexType>
+					<xs:attribute name="Group" type="xs:string" use="optional"/>
+					<xs:attribute name="Name" type="xs:string" use="required"/>
+					<xs:attribute name="Value" type="xs:string" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="bimFurn">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element maxOccurs="1" minOccurs="1" name="Placement" type="placement"/>
+			<xs:element name="PSet" maxOccurs="1" minOccurs="1">
+				<xs:complexType>
+					<xs:sequence>
+						<!-- 
+						Three first element references (for names A, B and zzyzx) cause validation
+						errors in some XML tools:
+						
+						<xs:element name="Attrib" maxOccurs="1" minOccurs="1">
+							<xs:complexType>
+								<xs:attribute name="Name" fixed="A" use="required"/>
+								<xs:attribute name="Value" type="xs:double" use="required"/>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="Attrib" maxOccurs="1" minOccurs="1">
+							<xs:complexType>
+								<xs:attribute name="Name" fixed="B" use="required"/>
+								<xs:attribute name="Value" type="xs:double" use="required"/>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="Attrib" maxOccurs="1" minOccurs="0">
+							<xs:complexType>
+								<xs:attribute name="Name" fixed="zzyzx" use="required"/>
+								<xs:attribute name="Value" type="xs:double" use="required"/>
+							</xs:complexType>
+						</xs:element>
+						-->
+						<xs:element name="Attrib" maxOccurs="unbounded" minOccurs="0">
+							<xs:complexType>
+								<xs:attribute name="Name" type="xs:string" use="required"/>
+								<xs:attribute name="Value" type="xs:string" use="required"/>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="ComplexAttrib" maxOccurs="1" minOccurs="0">
+							<xs:complexType>
+								<xs:choice minOccurs="0" maxOccurs="unbounded">
+									<xs:element name="Attrib" maxOccurs="unbounded" minOccurs="1">
+										<xs:complexType>
+											<xs:attribute name="Name" type="xs:string" use="required"/>
+											<xs:attribute name="Value" type="xs:string" use="required"/>
+										</xs:complexType>
+									</xs:element>
+								</xs:choice>
+								<xs:attribute fixed="children" name="Name" type="xs:string" use="required"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="Name" type="xs:string" use="required"/>
+		<xs:attribute name="GlobalId" type="guid" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="representation">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element maxOccurs="1" minOccurs="1" name="ExtrudedAreaSolid">
+				<xs:complexType>
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element maxOccurs="1" minOccurs="1" name="CurveProfile">
+							<xs:complexType>
+								<xs:choice minOccurs="0" maxOccurs="unbounded">
+									<xs:element maxOccurs="1" minOccurs="1" name="Points" type="xs:string"/>
+									<xs:element maxOccurs="unbounded" minOccurs="0" name="Arcs" type="xs:string"/>
+								</xs:choice>
+								<xs:attribute name="Side" use="required"/>
+								<xs:attribute name="OrthoShape" use="optional"/>
+								<!--depreciated attribute-->
+								<xs:anyAttribute/>
+							</xs:complexType>
+						</xs:element>
+					</xs:choice>
+					<xs:attribute name="Depth" type="xs:double" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="placement">
+		<xs:attribute name="Rotation" type="xs:double" use="optional"/>
+		<!-- Rotation is in radians -->
+		<xs:attribute name="MirrorY" type="mirror" use="optional"/>
+		<xs:attribute name="MirrorX" type="mirror" use="optional"/>
+		<xs:attribute name="X" type="xs:double" use="required"/>
+		<xs:attribute name="Y" type="xs:double" use="required"/>
+		<xs:attribute name="Z" type="xs:double" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="placementFloor">
+		<xs:attribute name="Rotation" type="xs:double" use="optional"/>
+		<xs:attribute name="MirrorY" type="mirror" use="optional"/>
+		<xs:attribute name="MirrorX" type="mirror" use="optional"/>
+		<xs:attribute name="X" type="xs:double" use="optional"/>
+		<xs:attribute name="Y" type="xs:double" use="optional"/>
+		<xs:attribute name="Z" type="xs:double" use="required"/>
+		<!-- only this attribute is used for BIMFloor -->
+	</xs:complexType>
+	<xs:simpleType name="angle">
+		<xs:restriction base="xs:double"/>
+	</xs:simpleType>
+	<xs:simpleType name="floorHeight">
+		<xs:restriction base="xs:double">
+			<xs:minExclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="guid">
+		<xs:restriction base="xs:string">
+			<xs:length value="22"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="rgb">
+		<xs:restriction base="xs:double">
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="256"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="mirror">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="False"/>
+			<xs:enumeration value="True"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

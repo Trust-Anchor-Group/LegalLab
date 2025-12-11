@@ -127,6 +127,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Simple", "Simple", "{4D9311
 		ExampleContracts\Memberships\Simple\SimpleOrganizationLayoutInit.script = ExampleContracts\Memberships\Simple\SimpleOrganizationLayoutInit.script
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Construction", "Construction", "{C7731311-A284-4253-85F7-19BD8D936F7B}"
+	ProjectSection(SolutionItems) = preProject
+		ExampleContracts\Construction\BimRegister.xml = ExampleContracts\Construction\BimRegister.xml
+		ExampleContracts\Construction\BimRegister.xsd = ExampleContracts\Construction\BimRegister.xsd
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -164,6 +170,7 @@ Global
 		{FF098B7E-BB24-4E54-94A4-65C9243005F1} = {5DCAD7B4-A632-4533-8B95-6D2838387720}
 		{590CBAF6-5CA3-4A40-91F5-5E755E22742E} = {46E61E48-A9A5-4CB8-8B7A-712F716F6FF5}
 		{4D931177-6C9E-43DB-8F31-EECCEBD62305} = {590CBAF6-5CA3-4A40-91F5-5E755E22742E}
+		{C7731311-A284-4253-85F7-19BD8D936F7B} = {46E61E48-A9A5-4CB8-8B7A-712F716F6FF5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {82820A85-2566-4DAB-A5B4-BABDC2569097}

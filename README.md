@@ -176,6 +176,12 @@ TAG technologies.
 		* [Membership.xml](ExampleContracts/Memberships/Simple/Membership.xml) contains the 
 		contract that creates the membership application.
 
+* [Construction](ExampleContracts/Construction) contains examples related to construction.
+
+	* [BimRegister.xml](ExampleContracts/Construction/BimRegister.xml) shows how to use a 
+	token as a processor of [BIMXML documents](https://bimxml.org/) to reflect changes made 
+	to buildings.
+
 * [Logistics](ExampleContracts/Logistics) contains examples related to logistics.
 
 	* [SimpleOrder.xml](ExampleContracts/Logistics/SimpleOrder.xml) shows how to use a contract with calculated parameters and role-reference parameters
