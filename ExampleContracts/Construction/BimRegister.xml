@@ -67,11 +67,11 @@
 				</State>
 				<Action id="RegisterDocument">
 					<LogEvent message="Processing BIM document." type="Notice"/>
-					<PersistVariable name="Document" value="{Note}"/>
+					<PersistVariable name="Document" value="{PrettyXml(Note)}"/>
 					<PersistVariable name="NrDocumentsRegistered" value="{NrDocumentsRegistered+1}"/>
-					<LogEvent message="BIM document processed." type="Informational"/>
 					<TextNote content="BIM document processed."/>
 					<TextNote content="{'Number of registry entries: '+NrDocumentsRegistered}"/>
+					<LogEvent message="BIM document processed." type="Informational"/>
 				</Action>
 				<Action id="End">
 					<End/>
