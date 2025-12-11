@@ -170,7 +170,7 @@ BIM documents representing changes to a building.</String>
 		<templateOnly/>
 	</parts>
 	<parameters>
-		<stringParameter name="BuildingId" guide="ID of building" minlen="1">
+		<stringParameter name="BuildingId" guide="ID of building" minLength="1">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The identifier of the building associated with the register.</text>
