@@ -1,0 +1,34 @@
+﻿<Window x:Class="LegalLab.Dialogs.AddXmlNote.AddXmlNoteDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LegalLab.Dialogs.AddXmlNote"
+        xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        mc:Ignorable="d" FocusManager.FocusedElement="{Binding ElementName=XmlEditor}"
+        Title="Add XML Note" Height="768" Width="1024" Background="#FFE5E5E5"
+		WindowStartupLocation="CenterOwner">
+	<DockPanel Margin="10,10,10,0" LastChildFill="True">
+		<Label Content="Enter XML to add:" DockPanel.Dock="Top"/>
+		<StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Top" Margin="0,10,0,10">
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+				<Button Command="{Binding Add}" Content="Add" Width="100" IsDefault="True"/>
+				<Button Command="{Binding Cancel}" Content="Cancel" Width="100" Margin="10,0,0,0" IsCancel="True"/>
+			</StackPanel>
+		</StackPanel>
+		<avalonedit:TextEditor x:Name="XmlEditor" IsReadOnly="False" DockPanel.Dock="Top" 
+							   BorderBrush="Black" BorderThickness="1" Padding="5" 
+							   VerticalAlignment="Stretch" TextChanged="XmlEditor_TextChanged"
+							   FontFamily="Courier New" MinHeight="100" Height="Auto" WordWrap="False" SyntaxHighlighting="XML"
+							   VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+			<avalonedit:TextEditor.Options>
+				<avalonedit:TextEditorOptions ShowSpaces="False" ShowTabs="False"/>
+			</avalonedit:TextEditor.Options>
+			<avalonedit:TextEditor.ContextMenu>
+				<ContextMenu>
+					<MenuItem Command="Copy" />
+				</ContextMenu>
+			</avalonedit:TextEditor.ContextMenu>
+		</avalonedit:TextEditor>
+	</DockPanel>
+</Window>

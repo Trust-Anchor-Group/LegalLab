@@ -1,4 +1,5 @@
-﻿using LegalLab.Extensions;
+﻿using LegalLab.Dialogs.AddXmlNote;
+using LegalLab.Extensions;
 using LegalLab.Models.Tokens.Events;
 using LegalLab.Tabs;
 using NeuroFeatures;
@@ -391,7 +392,20 @@ namespace LegalLab.Models.Tokens
 
 			do
 			{
-				s = MainWindow.PromptUser("Add XML Note", "Enter XML note to add to token:", s);
+				AddXmlNoteDialog Dialog = new()
+				{
+					Owner = MainWindow.currentInstance
+				};
+				AddXmlNoteModel Model = new(Dialog)
+				{
+					XmlInput = s
+				};
+
+				bool? Result = Dialog.ShowDialog();
+				if (!Result.HasValue || !Result.Value)
+					return;
+
+				s = Model.XmlInput;
 				if (string.IsNullOrEmpty(s))
 					return;
 			}
