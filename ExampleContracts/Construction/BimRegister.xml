@@ -113,16 +113,13 @@ G
 }}
 
 {{
-c:=count(NrDocumentsRegistered);
-i:=0;
-
 foreach Doc in Document do
 (
 	]]
-### ((NrDocumentsRegistered[i++].Timestamp))
+### ((Doc.Timestamp))
 
 ```xml
-((Doc))
+((Doc.Value))
 ```
 
 [[
