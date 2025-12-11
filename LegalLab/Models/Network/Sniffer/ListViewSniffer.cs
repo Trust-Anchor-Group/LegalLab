@@ -15,7 +15,7 @@ namespace LegalLab.Models.Network.Sniffer
 	/// From the IoTGateway project, with permission.
 	/// </summary>
 	public class ListViewSniffer(ListView View, int MaxCount) 
-		: SnifferBase()
+		: SnifferBase("ListView sniffer")
 	{
 		private readonly ListView view = View;
 		private readonly int maxCount = MaxCount;
