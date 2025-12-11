@@ -104,18 +104,25 @@ Documents Registered
 -------------------------
 
 {{
-G:=plot2dline(NrDocumentsRegistered.Timestamp, NrDocumentsRegistered.Value);
+if count(NrDocumentsRegistered)>=2 then
+(
+	G:=plot2dline(NrDocumentsRegistered.Timestamp, NrDocumentsRegistered.Value);
 
-G.Title:="Documents registered for "+BuildingId;
-G.LabelX:="Time";
-G.LabelY:="#Documents";
-G
+	G.Title:="Documents registered for "+BuildingId;
+	G.LabelX:="Time";
+	G.LabelY:="#Documents";
+	G
+)
+else
+	"No documents registered."
 }}
 
 {{
+First:=true;
 foreach Doc in Document do
 (
-	]]
+	if First then First:= false else ]]
+	
 ### ((Doc.Timestamp))
 
 ```xml
