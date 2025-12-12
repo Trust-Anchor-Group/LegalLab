@@ -108,7 +108,7 @@ if count(NrDocumentsRegistered)>=2 then
 (
 	G:=plot2dline(NrDocumentsRegistered.Timestamp, NrDocumentsRegistered.Value);
 
-	G.Title:="Documents registered for "+BuildingId[0];
+	G.Title:="Documents registered for "+BuildingId[0].Value;
 	G.LabelX:="Time";
 	G.LabelY:="#Documents";
 	G
