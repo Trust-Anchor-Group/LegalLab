@@ -1,0 +1,50 @@
+<BIMProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+						xmlns="https://lab.tagroot.io/Downloads/BimRegister.xsd" 
+						Name="Vivienda Alihuen 102.12 m2" 
+						GlobalId="FUyvoa8Hh5BMsvglV_zwqe">
+	<!--  Aplicación que genera el registro  -->
+	<BIMApplication Name="Revit + edición manual BIMXML" Version="2024" Developer="Carlos Mulchi"/>
+	<!--  Sitio del proyecto  -->
+	<BIMSite Name="Vivienda Alihuen">
+		<!--  Edificio principal  -->
+		<BIMBldg Name="Vivienda unifamiliar Alihuen 102.12 m2">
+			<!--  Segundo piso donde está la ventana cambiada  -->
+			<BIMFloor Name="Segundo piso" FloorIndex="2">
+				<!--  Altura del piso (aprox. nivel +3.00 m)  -->
+				<Placement Z="3.0"/>
+				<!--  Información general del cambio  -->
+				<PSet>
+					<Attrib Name="CambioId" Value="CAMBIO_VENTANA_SEGUNDO_PISO_01"/>
+					<Attrib Name="Elemento" Value="Ventana exterior posterior segundo piso"/>
+					<Attrib Name="Categoria" Value="Window"/>
+					<Attrib Name="NivelRevit" Value="Nivel 2"/>
+					<Attrib Name="Ubicacion" Value="Fachada posterior, ventana derecha (segundo piso)"/>
+					<Attrib Name="MotivoCambio" Value="Ajuste dimensional para mejorar iluminación y diseño de fachada"/>
+					<Attrib Name="AutorCambio" Value="Carlos Mulchi"/>
+					<Attrib Name="FechaCambio" Value="2025-11-27"/>
+					<Attrib Name="ModeloOrigen" Value="Vivienda_Alihuen_102_12m2_v0.1.rvt"/>
+				</PSet>
+				<!--  Estado ANTERIOR del elemento  -->
+				<PSet>
+					<Attrib Name="IdRevit_Anterior" Value="413550"/>
+					<Attrib Name="IFC_GUID_Anterior" Value="07mqkaalrzwwgI$bhxjhQ8"/>
+					<Attrib Name="TipoRevit_Anterior" Value="M_ventana-proyectable-variable"/>
+					<Attrib Name="Altura_mm_Anterior" Value="1315"/>
+					<Attrib Name="Anchura_mm_Anterior" Value="2285"/>
+					<Attrib Name="AlturaAntepecho_mm_Anterior" Value="900"/>
+					<Attrib Name="Marca_Anterior" Value="20"/>
+				</PSet>
+				<!--  Estado NUEVO del elemento  -->
+				<PSet>
+					<Attrib Name="IdRevit_Nuevo" Value="431287"/>
+					<Attrib Name="IFC_GUID_Nuevo" Value="330cwwir2h63ezn743wqgG5"/>
+					<Attrib Name="TipoRevit_Nuevo" Value="M_ventana-proyectable-variable"/>
+					<Attrib Name="Altura_mm_Nuevo" Value="1400"/>
+					<Attrib Name="Anchura_mm_Nuevo" Value="2600"/>
+					<Attrib Name="AlturaAntepecho_mm_Nuevo" Value="750"/>
+					<Attrib Name="Marca_Nueva" Value="27"/>
+				</PSet>
+			</BIMFloor>
+		</BIMBldg>
+	</BIMSite>
+</BIMProject>

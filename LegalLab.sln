@@ -129,8 +129,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Simple", "Simple", "{4D9311
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Construction", "Construction", "{C7731311-A284-4253-85F7-19BD8D936F7B}"
 	ProjectSection(SolutionItems) = preProject
-		ExampleContracts\Construction\BimExample.xml = ExampleContracts\Construction\BimExample.xml
+		ExampleContracts\Construction\BimExample2.xml = ExampleContracts\Construction\BimExample2.xml
 		ExampleContracts\Construction\BimRegister.xml = ExampleContracts\Construction\BimRegister.xml
+		ExampleContracts\Construction\BimExample1.xml = ExampleContracts\Construction\BimExample1.xml
 		ExampleContracts\Construction\BimRegister.xsd = ExampleContracts\Construction\BimRegister.xsd
 	EndProjectSection
 EndProject
