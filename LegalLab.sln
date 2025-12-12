@@ -121,17 +121,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Simple", "Simple", "{4D9311
 		ExampleContracts\Memberships\Simple\Membership.xml = ExampleContracts\Memberships\Simple\Membership.xml
 		ExampleContracts\Memberships\Simple\MembershipLayout.xml = ExampleContracts\Memberships\Simple\MembershipLayout.xml
 		ExampleContracts\Memberships\Simple\MembershipLayoutInit.script = ExampleContracts\Memberships\Simple\MembershipLayoutInit.script
-		ExampleContracts\Memberships\Simple\Organization.xml = ExampleContracts\Memberships\Simple\Organization.xml
 		ExampleContracts\Memberships\Simple\SimpleOrganization.xsd = ExampleContracts\Memberships\Simple\SimpleOrganization.xsd
+		ExampleContracts\Memberships\Simple\SimpleOrganization.xml = ExampleContracts\Memberships\Simple\SimpleOrganization.xml
 		ExampleContracts\Memberships\Simple\SimpleOrganizationLayout.xml = ExampleContracts\Memberships\Simple\SimpleOrganizationLayout.xml
 		ExampleContracts\Memberships\Simple\SimpleOrganizationLayoutInit.script = ExampleContracts\Memberships\Simple\SimpleOrganizationLayoutInit.script
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Construction", "Construction", "{C7731311-A284-4253-85F7-19BD8D936F7B}"
 	ProjectSection(SolutionItems) = preProject
+		ExampleContracts\Construction\BimExample1.xml = ExampleContracts\Construction\BimExample1.xml
 		ExampleContracts\Construction\BimExample2.xml = ExampleContracts\Construction\BimExample2.xml
 		ExampleContracts\Construction\BimRegister.xml = ExampleContracts\Construction\BimRegister.xml
-		ExampleContracts\Construction\BimExample1.xml = ExampleContracts\Construction\BimExample1.xml
 		ExampleContracts\Construction\BimRegister.xsd = ExampleContracts\Construction\BimRegister.xsd
 	EndProjectSection
 EndProject

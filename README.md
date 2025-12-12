@@ -170,8 +170,8 @@ TAG technologies.
 	validates and counts membership applications and memberships. Each membership is also
 	modelled as a token. Membership token is modelled as a static membership certificate.
 
-		* [Organization.xml](ExampleContracts/Memberships/Simple/Organization.xml) contains
-		the contract that creates the simple organization.
+		* [SimpleOrganization.xml](ExampleContracts/Memberships/Simple/SimpleOrganization.xml) 
+		contains the contract that creates the simple organization.
 
 		* [Membership.xml](ExampleContracts/Memberships/Simple/Membership.xml) contains the 
 		contract that creates the membership application.
