@@ -253,28 +253,28 @@ in a simple *organization*.</String>
 		<contractReferenceParameter name="OrganizationReference" localName="Create"
 																namespace="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd"
 																required="true" guide="Organization Contract"
-																templateId="30c58d08-b8f1-fcea-e830-f947c2492107@legal.localhost">
+																templateId="30cf645d-5f3e-71e8-3479-bb9db82b33bc@legal.localhost">
 			<description xml:lang="en">
 				<paragraph>
 					<text>A reference to the contract that created the organization token.</text>
 				</paragraph>
 			</description>
 		</contractReferenceParameter>
-		<numericalParameter name="Value" guide="Value of token" min="0" minIncluded="false" required="true">
+		<numericalParameter name="Value" guide="Value of token" min="0" minIncluded="false">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The initial value of the token.</text>
 				</paragraph>
 			</description>
 		</numericalParameter>
-		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="[A-Z]{3}" required="true">
+		<stringParameter name="Currency" guide="Currency" minLength="3" maxLength="3" regEx="[A-Z]{3}">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The currency of the token.</text>
 				</paragraph>
 			</description>
 		</stringParameter>
-		<numericalParameter name="CommissionPercent" guide="Commision (%)" min="0" max="100" required="true">
+		<numericalParameter name="CommissionPercent" guide="Commision (%)" min="0" max="100">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The commission the Trust Provider gets for creating the token and managing the </text>
@@ -285,7 +285,7 @@ in a simple *organization*.</String>
 				</paragraph>
 			</description>
 		</numericalParameter>
-		<dateParameter name="Expires" guide="Expiry date" exp="Expires&gt;Now.Date" required="true">
+		<dateParameter name="Expires" guide="Expiry date" exp="Expires&gt;Now.Date">
 			<description xml:lang="en">
 				<paragraph>
 					<text>When token expires.</text>
