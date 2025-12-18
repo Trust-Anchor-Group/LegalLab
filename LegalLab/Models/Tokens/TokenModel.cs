@@ -146,6 +146,7 @@ namespace LegalLab.Models.Tokens
 				new TokenDetail("TrustProviderJid", Result.token.TrustProviderJid, false),
 				new TokenDetail("Reference", Result.token.Reference, false),
 				new TokenDetail("Definition", Result.token.Definition, false),
+				new TokenDetail("DefinitionLocalName", Result.token.DefinitionParsed?.DocumentElement?.LocalName, false),
 				new TokenDetail("DefinitionNamespace", Result.token.DefinitionNamespace, false),
 				new TokenDetail("CreationContract", Result.token.CreationContract, false),
 				new TokenDetail("CreationContractTemplate", Result.token.CreationContractTemplate, false),

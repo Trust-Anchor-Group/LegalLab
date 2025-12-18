@@ -42,6 +42,8 @@ namespace LegalLab.Models.Tokens.Events
 				return new TransferredDetail(Transferred);
 			else if (Event is Donated Donated)
 				return new DonatedDetail(Donated);
+			else if (Event is Killed Killed)
+				return new KilledDetail(Killed);
 			else
 				return null;
 		}
