@@ -59,9 +59,8 @@
 					<SolidPen id="WhitePen" color="White" width="1px"/>
 					<SolidPen id="DarkSemiTransparentPen" color="#00000080" width="3px"/>
 					<SolidPen id="TransparentPen" color="#00000000" width="1px"/>
+					<SolidBackground id="PhotoBackground" color="#00000010"/>
 					<SolidBackground id="SemiTransparentBackground" color="#f8f8f8e0"/>
-					<SolidBackground id="SemiTransparentGreenBackground" color="#e0ffe040"/>
-					<SolidBackground id="SemiTransparentRedBackground" color="#ffe0e040"/>
 					<SolidBackground id="TransparentBackground" color="#00000000"/>
 					<SolidBackground id="WhiteBackground" color="#fffffff0"/>
 					<SolidBackground id="WhiteSmokeBackground" color="WhiteSmoke"/>
@@ -153,14 +152,14 @@
 							</Margins>
 						</Cell>
 						<Cell halign="Left" valign="Top" width="100%" height="100%">
-							<Margins top="400px" left="1200px">
-								<Rectangle fill="WhiteSmokeBackground" pen="WhitePen" width="400px" height="400px">
+							<Margins top="400px" left="1180px">
+								<Rectangle fill="PhotoBackground" pen="TransparentPen" width="420px" height="420px">
 									<ImageInternal cid="ProfilePhoto"
 																 keepAspectRatio="true"
-																 x="0px"
-																 y="0px"
-																 x2="400px"
-																 y2="400px"/>
+																 x="10px"
+																 y="10px"
+																 x2="410px"
+																 y2="410px"/>
 								</Rectangle>
 							</Margins>
 						</Cell>
@@ -201,6 +200,9 @@
 		</Tag>
 		<Tag name="MemberCountry">
 			<ParameterReference parameter="MemberCountry"/>
+		</Tag>
+		<Tag name="Expires">
+			<ParameterReference parameter="Expires"/>
 		</Tag>
 		<Tag name="ProfilePhoto">
 			<ParameterReference parameter="ProfilePhoto"/>
