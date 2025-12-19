@@ -17,7 +17,7 @@ namespace LegalLab.Models.Tokens.Reports
 		/// Gets the title of report.
 		/// </summary>
 		/// <returns>Title</returns>
-		public override Task<string> GetTitle() => Task.FromResult<string>("Present");
+		public override Task<string> GetTitle() => Task.FromResult("Present");
 
 		/// <summary>
 		/// Gets the XAML for the report.
