@@ -191,31 +191,45 @@ namespace LegalLab.Models.Tokens
 					Command = this.addXmlNote
 				});
 
-				Items.Add(new Separator());
-
-				Items.Add(new MenuItem()
+				if (Model.Token.HasStateMachine)
 				{
-					Header = "Present State...",
-					Command = Model.ViewPresentReport
-				});
+					Items.Add(new Separator());
 
-				Items.Add(new MenuItem()
-				{
-					Header = "History...",
-					Command = Model.ViewHistoryReport
-				});
+					Items.Add(new MenuItem()
+					{
+						Header = "Present State...",
+						Command = Model.ViewPresentReport
+					});
 
-				Items.Add(new MenuItem()
-				{
-					Header = "State Diagram...",
-					Command = Model.ViewStateDiagramReport
-				});
+					Items.Add(new MenuItem()
+					{
+						Header = "History...",
+						Command = Model.ViewHistoryReport
+					});
 
-				Items.Add(new MenuItem()
+					Items.Add(new MenuItem()
+					{
+						Header = "State Diagram...",
+						Command = Model.ViewStateDiagramReport
+					});
+
+					Items.Add(new MenuItem()
+					{
+						Header = "Profiling...",
+						Command = Model.ViewProfilingReport
+					});
+				}
+
+				if (Model.Token.HasEmbeddedLayout)
 				{
-					Header = "Profiling...",
-					Command = Model.ViewProfilingReport
-				});
+					Items.Add(new Separator());
+
+					Items.Add(new MenuItem()
+					{
+						Header = "Layout...",
+						Command = Model.ViewEmbeddedLayout
+					});
+				}
 
 				KeyValuePair<NoteCommand, int>[] Commands = await Model.GetContextSpecificNoteCommands(true);
 

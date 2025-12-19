@@ -44,6 +44,7 @@ namespace LegalLab.Models.Tokens
 		private readonly Command viewHistoryReport;
 		private readonly Command viewStateDiagramReport;
 		private readonly Command viewProfilingReport;
+		private readonly Command viewEmbeddedLayout;
 		private readonly ParametrizedCommand executeNoteCommand;
 
 		/// <summary>
@@ -64,6 +65,7 @@ namespace LegalLab.Models.Tokens
 			this.viewHistoryReport = new Command(this.CanExecuteViewStateMachineReport, this.ExecuteViewHistoryReport);
 			this.viewStateDiagramReport = new Command(this.CanExecuteViewStateMachineReport, this.ExecuteViewStateDiagramReport);
 			this.viewProfilingReport = new Command(this.CanExecuteViewStateMachineReport, this.ExecuteViewProfilingReport);
+			this.viewEmbeddedLayout = new Command(this.CanExecuteViewEmbeddedLayout, this.ExecuteViewEmbeddedLayout);
 			this.executeNoteCommand = new ParametrizedCommand(this.CanExecuteNoteCommand, this.ExecuteNoteCommand);
 		}
 
@@ -96,6 +98,11 @@ namespace LegalLab.Models.Tokens
 		/// Command for showing the profiling report.
 		/// </summary>
 		public Command ViewProfilingReport => this.viewProfilingReport;
+
+		/// <summary>
+		/// Command for showing the embedded layout.
+		/// </summary>
+		public Command ViewEmbeddedLayout => this.viewEmbeddedLayout;
 
 		/// <summary>
 		/// Command for executing a note command.
@@ -209,6 +216,17 @@ namespace LegalLab.Models.Tokens
 				}, false));
 
 				await Result.AddNoteCommands(Details);
+			}
+
+			if (Result.token.HasEmbeddedLayout)
+			{
+				Details.Add(new TokenDetail("Embedded Layout", new Button()
+				{
+					Command = Result.viewEmbeddedLayout,
+					Content = "Layout...",
+					Margin = new Thickness(10, 2, 10, 2),
+					MinWidth = 150
+				}, false));
 			}
 
 			Result.details = [.. Details];
@@ -452,6 +470,17 @@ namespace LegalLab.Models.Tokens
 			{
 				MainWindow.MouseDefault();
 			}
+		}
+
+		private bool CanExecuteViewEmbeddedLayout()
+		{
+			return this.token?.HasEmbeddedLayout ?? false;
+		}
+
+		private async Task ExecuteViewEmbeddedLayout()
+		{
+			if (this.token is not null)
+				await AddReport(new TokenEmbeddedLayout(this.client, this.token));
 		}
 
 		private bool CanExecuteNoteCommand(object Parameter)

@@ -22,7 +22,11 @@ namespace LegalLab.Models.Tokens.Reports
 		: IDelayedAction
 	{
 		private readonly string tokenId = TokenId;
-		private ReportTab tab;
+
+		/// <summary>
+		/// Report tab
+		/// </summary>
+		protected ReportTab tab;
 
 		/// <summary>
 		/// Refernce to the Neuro-Features client.
@@ -216,7 +220,7 @@ namespace LegalLab.Models.Tokens.Reports
 		/// Generates the report.
 		/// </summary>
 		/// <param name="Tab">Report Tab</param>
-		public async Task GenerateReport(ReportTab Tab)
+		public virtual async Task GenerateReport(ReportTab Tab)
 		{
 			this.tab = Tab;
 			
