@@ -347,7 +347,8 @@ in a simple *organization*.</String>
 				</paragraph>
 			</description>
 		</roleParameter>
-		<roleParameter index="1" name="ProfilePhoto" property="ProfilePhoto" role="Member" required="true">
+		<roleParameter index="1" name="ProfilePhoto" property="ProfilePhoto" role="Member" 
+									 required="true" contentType="image/*">
 			<description xml:lang="en">
 				<paragraph>
 					<text>The profile photo of the </text>
