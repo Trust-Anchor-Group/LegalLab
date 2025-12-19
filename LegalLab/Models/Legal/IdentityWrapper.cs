@@ -127,7 +127,7 @@ namespace LegalLab.Models.Legal
 
 				if (FileName.EndsWith(".pdf", StringComparison.CurrentCultureIgnoreCase))
 					ContentType = "application/pdf";
-				else if (!InternetContent.TryGetContentType(FileName, out ContentType))
+				else if (!InternetContent.TryGetContentType(Path.GetExtension(FileName), out ContentType))
 					throw new Exception("Unsupported file type: " + FileName);
 
 				byte[] Signature = await this.legalModel.Contracts.SignAsync(fs, SignWith.CurrentKeys);
