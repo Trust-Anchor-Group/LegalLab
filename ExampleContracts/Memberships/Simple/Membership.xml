@@ -255,7 +255,7 @@ in a simple *organization*.</String>
 		<contractReferenceParameter name="OrganizationReference" localName="Create"
 																namespace="https://paiwise.tagroot.io/Schema/NeuroFeatures.xsd"
 																required="true" guide="Organization Contract"
-																templateId="30cf645d-5f3e-71e8-3479-bb9db82b33bc@legal.localhost">
+																templateId="30ee9a44-af4e-95e7-7c56-d051e803f9c2@legal.lab.tagroot.io">
 			<description xml:lang="en">
 				<paragraph>
 					<text>A reference to the contract that created the organization token.</text>
