@@ -982,7 +982,8 @@ namespace LegalLab.Models.Legal
 
 					foreach (LegalIdentity OldIdentity in Identities)
 					{
-						if (OldIdentity.State == IdentityState.Approved)
+						if (OldIdentity.State == IdentityState.Approved ||
+							OldIdentity.State == IdentityState.Created)
 						{
 							try
 							{
