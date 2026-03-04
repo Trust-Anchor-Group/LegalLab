@@ -1032,6 +1032,7 @@ namespace LegalLab.Models.Legal
 				AddProperty(Properties, "ORGREGION", this.OrgRegion);
 				AddProperty(Properties, "ORGCOUNTRY", this.OrgCountry);
 
+				AddProperty(Properties, "PREVIEW", this.PreviewId);
 				AddProperty(Properties, "JID", this.contracts.Client.BareJID);
 
 				LegalIdentity Identity = await this.contracts.ApplyAsync([.. Properties], Preview);
