@@ -58,6 +58,7 @@ namespace LegalLab.Models.Legal
 		private readonly PersistedProperty<string> orgRegion;
 		private readonly PersistedProperty<string> orgCountry;
 
+		private readonly PersistedProperty<string> previewId;
 		private readonly PersistedProperty<bool> autoSignProposals;
 
 		private readonly Property<Contract> template;
@@ -70,6 +71,7 @@ namespace LegalLab.Models.Legal
 
 		private readonly Dictionary<string, IdentityWrapper> identities = [];
 
+		private readonly Command preview;
 		private readonly Command apply;
 
 		private readonly ContractsClient contracts;
@@ -114,6 +116,7 @@ namespace LegalLab.Models.Legal
 			this.Add(this.orgRegion = new PersistedProperty<string>("Legal", nameof(this.OrgRegion), true, string.Empty, this));
 			this.Add(this.orgCountry = new PersistedProperty<string>("Legal", nameof(this.OrgCountry), true, string.Empty, this));
 
+			this.Add(this.previewId = new PersistedProperty<string>("Legal", nameof(this.PreviewId), true, string.Empty, this));
 			this.Add(this.autoSignProposals = new PersistedProperty<bool>("Legal", nameof(this.AutoSignProposals), true, false, this));
 
 			this.template = new Property<Contract>(nameof(this.Template), null, this);
@@ -124,6 +127,7 @@ namespace LegalLab.Models.Legal
 			this.isTemplate = new Property<bool>(nameof(this.IsTemplate), false, this);
 			this.isContract = new Property<bool>(nameof(this.IsContract), false, this);
 
+			this.preview = new Command(this.CanExecuteApply, this.ExecutePreview);
 			this.apply = new Command(this.CanExecuteApply, this.ExecuteApply);
 
 			this.contracts = new ContractsClient(Client, ComponentJid);
@@ -181,7 +185,7 @@ namespace LegalLab.Models.Legal
 
 		private Task Contracts_PetitionForPeerReviewIDReceived(object Sender, SignaturePetitionEventArgs e)
 		{
-			return Task.CompletedTask;	// TODO
+			return Task.CompletedTask;  // TODO
 		}
 
 		private Task Contracts_PetitionForContractReceived(object Sender, ContractPetitionEventArgs e)
@@ -251,7 +255,7 @@ namespace LegalLab.Models.Legal
 
 		private Task Contracts_IdentityReview(object Sender, IdentityReviewEventArgs e)
 		{
-			return Task.CompletedTask;	// TODO
+			return Task.CompletedTask;  // TODO
 		}
 
 		private Task Contracts_ContractProposalReceived(object Sender, ContractProposalEventArgs e)
@@ -890,6 +894,15 @@ namespace LegalLab.Models.Legal
 		}
 
 		/// <summary>
+		/// Preview ID of legal identity application
+		/// </summary>
+		public string PreviewId
+		{
+			get => this.previewId.Value;
+			set => this.previewId.Value = value;
+		}
+
+		/// <summary>
 		/// If contract proposals should be auto-signed.
 		/// </summary>
 		public bool AutoSignProposals
@@ -935,6 +948,11 @@ namespace LegalLab.Models.Legal
 		#region Apply for new Legal Identity
 
 		/// <summary>
+		/// Preview command
+		/// </summary>
+		public ICommand Preview => this.preview;
+
+		/// <summary>
 		/// Apply command
 		/// </summary>
 		public ICommand Apply => this.apply;
@@ -944,23 +962,36 @@ namespace LegalLab.Models.Legal
 			return this.contracts.Client.State == XmppState.Connected;
 		}
 
-		private async Task ExecuteApply()
+		private Task ExecuteApply()
+		{
+			return this.ExecuteApply(false);
+		}
+
+		private Task ExecutePreview()
+		{
+			return this.ExecuteApply(true);
+		}
+
+		private async Task ExecuteApply(bool Preview)
 		{
 			try
 			{
-				LegalIdentity[] Identities = await this.contracts.GetLegalIdentitiesAsync();
-
-				foreach (LegalIdentity OldIdentity in Identities)
+				if (!Preview)
 				{
-					if (OldIdentity.State == IdentityState.Approved)
+					LegalIdentity[] Identities = await this.contracts.GetLegalIdentitiesAsync();
+
+					foreach (LegalIdentity OldIdentity in Identities)
 					{
-						try
+						if (OldIdentity.State == IdentityState.Approved)
 						{
-							await this.contracts.ObsoleteLegalIdentityAsync(OldIdentity.Id);
-						}
-						catch (Exception ex)
-						{
-							MainWindow.ErrorBox(ex.Message);
+							try
+							{
+								await this.contracts.ObsoleteLegalIdentityAsync(OldIdentity.Id);
+							}
+							catch (Exception ex)
+							{
+								MainWindow.ErrorBox(ex.Message);
+							}
 						}
 					}
 				}
@@ -1003,14 +1034,28 @@ namespace LegalLab.Models.Legal
 
 				AddProperty(Properties, "JID", this.contracts.Client.BareJID);
 
-				LegalIdentity Identity = await this.contracts.ApplyAsync([.. Properties]);
+				LegalIdentity Identity = await this.contracts.ApplyAsync([.. Properties], Preview);
 
-				lock (this.identities)
+				if (Preview)
 				{
-					this.identities[Identity.Id] = new IdentityWrapper(this.contracts.Client.Domain, Identity, this);
-				}
+					string s = Identity.Id;
+					int i = s.IndexOf('@');
+					if (i > 0)
+						s = s[..i];
 
-				this.RaisePropertyChanged(nameof(this.Identities));
+					this.PreviewId = s;
+				}
+				else
+				{
+					lock (this.identities)
+					{
+						this.identities[Identity.Id] = new IdentityWrapper(this.contracts.Client.Domain, Identity, this);
+					}
+
+					this.RaisePropertyChanged(nameof(this.Identities));
+
+					this.PreviewId = string.Empty;
+				}
 			}
 			catch (Exception ex)
 			{
@@ -1047,12 +1092,12 @@ namespace LegalLab.Models.Legal
 				switch (MessageBox.Show(Question.ToString(), "Petition received", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No))
 				{
 					case MessageBoxResult.Yes:
-						await this.contracts.PetitionIdentityResponseAsync(e.RequestedIdentityId, 
+						await this.contracts.PetitionIdentityResponseAsync(e.RequestedIdentityId,
 							e.PetitionId, e.RequestorFullJid, true);
 						break;
 
 					case MessageBoxResult.No:
-						await this.contracts.PetitionIdentityResponseAsync(e.RequestedIdentityId, 
+						await this.contracts.PetitionIdentityResponseAsync(e.RequestedIdentityId,
 							e.PetitionId, e.RequestorFullJid, false);
 						break;
 				}
