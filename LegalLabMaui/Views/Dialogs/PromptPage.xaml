@@ -5,13 +5,21 @@
              x:Class="LegalLabMaui.Views.Dialogs.PromptPage"
              x:DataType="dialogs:PromptModel"
              Title="{Binding Title}">
-    <VerticalStackLayout Padding="16" Spacing="12" VerticalOptions="Center">
-        <Label Text="{Binding Label}" FontAttributes="Bold"/>
-        <Entry Text="{Binding Text}"
-               x:Name="UserInput"/>
-        <HorizontalStackLayout HorizontalOptions="Center" Spacing="16">
-            <Button Text="{Binding OkText}" Command="{Binding Ok}" WidthRequest="100"/>
-            <Button Text="{Binding CancelText}" Command="{Binding Cancel}" WidthRequest="100"/>
-        </HorizontalStackLayout>
-    </VerticalStackLayout>
+        <VerticalStackLayout Padding="16"
+                        Spacing="12"
+                        VerticalOptions="Center">
+                <Label Text="{Binding Label}"
+                                FontAttributes="Bold"/>
+                <Entry Text="{Binding Text}"
+                       x:Name="UserInput"/>
+                <HorizontalStackLayout HorizontalOptions="Center"
+                                Spacing="16">
+                        <Button Text="{Binding OkText}"
+                                        Command="{Binding Ok}"
+                                        WidthRequest="100"/>
+                        <Button Text="{Binding CancelText}"
+                                        Command="{Binding Cancel}"
+                                        WidthRequest="100"/>
+                </HorizontalStackLayout>
+        </VerticalStackLayout>
 </ContentPage>

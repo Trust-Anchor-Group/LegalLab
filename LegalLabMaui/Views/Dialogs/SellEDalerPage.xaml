@@ -5,55 +5,55 @@
              x:Class="LegalLabMaui.Views.Dialogs.SellEDalerPage"
              x:DataType="dialogs:SellEDalerModel"
              Title="Sell eDaler®">
-    <ScrollView>
-        <VerticalStackLayout Padding="16"
-                Spacing="12">
-            <Label Text="Select Service Provider:"
-                    FontAttributes="Bold"/>
-            <CollectionView ItemsSource="{Binding ServiceProviders}"
-                            SelectionMode="Single"
-                            SelectedItem="{Binding SelectedServiceProvider}"
-                            HeightRequest="180">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Horizontal"
-                            ItemSpacing="8"/>
-                </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="dialogs:ServiceProviderModel">
-                        <VerticalStackLayout WidthRequest="100"
-                                HeightRequest="100"
-                                Padding="4">
-                            <Image Source="{Binding IconUrl}"
-                                   WidthRequest="{Binding IconWidth}"
-                                   HeightRequest="{Binding IconHeight}"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
-                        </VerticalStackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+        <ScrollView>
+                <VerticalStackLayout Padding="16"
+                                Spacing="12">
+                        <Label Text="Select Service Provider:"
+                                        FontAttributes="Bold"/>
+                        <CollectionView ItemsSource="{Binding ServiceProviders}"
+                                        SelectionMode="Single"
+                                        SelectedItem="{Binding SelectedServiceProvider}"
+                                        HeightRequest="180">
+                                <CollectionView.ItemsLayout>
+                                        <LinearItemsLayout Orientation="Horizontal"
+                                                        ItemSpacing="8"/>
+                                </CollectionView.ItemsLayout>
+                                <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="dialogs:ServiceProviderModel">
+                                                <VerticalStackLayout WidthRequest="100"
+                                                                HeightRequest="100"
+                                                                Padding="4">
+                                                        <Image Source="{Binding IconUrl}"
+                                                               WidthRequest="{Binding IconWidth}"
+                                                               HeightRequest="{Binding IconHeight}"
+                                                               HorizontalOptions="Center"
+                                                               VerticalOptions="Center"/>
+                                                </VerticalStackLayout>
+                                        </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                        </CollectionView>
 
-            <Label Text="Amount:"
-                    FontAttributes="Bold"/>
-            <Entry x:Name="Amount"
-                    Text="{Binding Amount}"
-                    Keyboard="Numeric"/>
+                        <Label Text="Amount:"
+                                        FontAttributes="Bold"/>
+                        <Entry x:Name="Amount"
+                                        Text="{Binding Amount}"
+                                        Keyboard="Numeric"/>
 
-            <Label Text="Currency:"
-                    FontAttributes="Bold"/>
-            <Entry x:Name="Currency"
-                    Text="{Binding Currency}"/>
+                        <Label Text="Currency:"
+                                        FontAttributes="Bold"/>
+                        <Entry x:Name="Currency"
+                                        Text="{Binding Currency}"/>
 
-            <HorizontalStackLayout HorizontalOptions="Center"
-                    Spacing="16"
-                    Margin="0,8,0,0">
-                <Button Text="Sell"
-                        Command="{Binding Sell}"
-                        WidthRequest="100"/>
-                <Button Text="Cancel"
-                        Command="{Binding Cancel}"
-                        WidthRequest="100"/>
-            </HorizontalStackLayout>
-        </VerticalStackLayout>
-    </ScrollView>
+                        <HorizontalStackLayout HorizontalOptions="Center"
+                                        Spacing="16"
+                                        Margin="0,8,0,0">
+                                <Button Text="Sell"
+                                                Command="{Binding Sell}"
+                                                WidthRequest="100"/>
+                                <Button Text="Cancel"
+                                                Command="{Binding Cancel}"
+                                                WidthRequest="100"/>
+                        </HorizontalStackLayout>
+                </VerticalStackLayout>
+        </ScrollView>
 </ContentPage>

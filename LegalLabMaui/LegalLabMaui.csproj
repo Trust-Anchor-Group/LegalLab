@@ -1,13 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net10.0-android;net10.0-windows10.0.19041.0</TargetFrameworks>
+    <TargetFrameworks>net10.0-android;net10.0-windows10.0.19041.57</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <RootNamespace>LegalLabMaui</RootNamespace>
     <UseMaui>true</UseMaui>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
-	<WindowsPackageType>MSIX</WindowsPackageType>
-	<SingleProject>true</SingleProject>
+    <SingleProject>true</SingleProject>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -15,7 +14,7 @@
     <ApplicationTitle>LegalLab</ApplicationTitle>
 
     <!-- App Identifier -->
-    <ApplicationId>com.tag.legallab</ApplicationId>
+    <ApplicationId>com.tagroot.legallab</ApplicationId>
 
     <!-- Versions -->
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -25,7 +24,6 @@
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
     <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
     <Nullable>enable</Nullable>
-    <DefaultLanguage>en-US</DefaultLanguage>
   </PropertyGroup>
 
   <ItemGroup>

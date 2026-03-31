@@ -97,7 +97,7 @@ namespace LegalLabMaui.Models.Script
 
 		private Task ExecuteRunAsync()
 		{
-			this.Execute();
+			this.Execute(this.Input);
 			return Task.CompletedTask;
 		}
 
@@ -106,23 +106,36 @@ namespace LegalLabMaui.Models.Script
 		/// </summary>
 		public void Execute()
 		{
+			this.Execute(this.Input);
+		}
+
+		/// <summary>
+		/// Executes a provided script text.
+		/// </summary>
+		public void Execute(string? ScriptText)
+		{
 			Waher.Script.Expression Exp;
-			string ScriptText = this.Input;
+			ScriptText ??= string.Empty;
+
+			if (string.IsNullOrWhiteSpace(ScriptText))
+				return;
+
+			if (this.Input == ScriptText)
+				this.Input = string.Empty;
 
 			try
 			{
 				Exp = new Waher.Script.Expression(ScriptText);
-				this.Input = string.Empty;
 			}
 			catch (Exception ex)
 			{
 				ex = Log.UnnestException(ex);
-				AppService.ErrorBox(ex.Message);
+				this.History.Insert(0, CreateHistoryItem(ScriptText, ex.Message, true));
 				return;
 			}
 
-			ScriptHistoryItem HistoryItem = new() { Script = ScriptText };
-			this.History.Add(HistoryItem);
+			ScriptHistoryItem HistoryItem = CreateHistoryItem(ScriptText, string.Empty, false);
+			this.History.Insert(0, HistoryItem);
 
 			Task.Run(async () =>
 			{
@@ -134,9 +147,10 @@ namespace LegalLabMaui.Models.Script
 					{
 						AppService.UpdateGui(async () =>
 						{
-							string ResultText = await this.FormatResult(e2.Preview);
-							HistoryItem.Result = ResultText;
-							this.AppendOutput(ScriptText, ResultText);
+							ScriptResultView ResultView = await this.FormatResult(e2.Preview);
+							HistoryItem.Result = ResultView.Text;
+							HistoryItem.IsError = ResultView.IsError;
+							this.AppendOutput(ScriptText, ResultView.Text);
 						});
 
 						return Task.CompletedTask;
@@ -164,20 +178,36 @@ namespace LegalLabMaui.Models.Script
 
 					await AppService.UpdateGui(async () =>
 					{
-						string ResultText = await this.FormatResult(Ans);
-						HistoryItem.Result = ResultText;
-						this.AppendOutput(ScriptText, ResultText);
+						ScriptResultView ResultView = await this.FormatResult(Ans);
+						HistoryItem.Result = ResultView.Text;
+						HistoryItem.IsError = ResultView.IsError;
+						this.AppendOutput(ScriptText, ResultView.Text);
 					});
 				}
 				catch (Exception ex)
 				{
 					ex = Log.UnnestException(ex);
-					await AppService.MessageBox(ex.Message, "Unable to parse script.");
+					await AppService.UpdateGui(() =>
+					{
+						HistoryItem.Result = ex.Message;
+						HistoryItem.IsError = true;
+						return Task.CompletedTask;
+					});
 				}
 			});
 		}
 
-		private async Task<string> FormatResult(Waher.Script.Abstraction.Elements.IElement Ans)
+		private static ScriptHistoryItem CreateHistoryItem(string scriptText, string resultText, bool isError)
+		{
+			return new ScriptHistoryItem
+			{
+				Script = scriptText,
+				Result = resultText,
+				IsError = isError
+			};
+		}
+
+		private async Task<ScriptResultView> FormatResult(Waher.Script.Abstraction.Elements.IElement Ans)
 		{
 			try
 			{
@@ -192,10 +222,10 @@ namespace LegalLabMaui.Models.Script
 						{
 							sb.AppendLine(ex3.Message);
 						}
-						return sb.ToString().TrimEnd();
+						return new ScriptResultView(sb.ToString().TrimEnd(), true);
 					}
 					else
-						return ex.Message;
+						return new ScriptResultView(ex.Message, true);
 				}
 				else if (Ans.AssociatedObjectValue is ObjectMatrix M && M.ColumnNames != null)
 				{
@@ -236,20 +266,20 @@ namespace LegalLabMaui.Models.Script
 						Markdown.AppendLine(" |");
 					}
 
-					return Markdown.ToString().TrimEnd();
+					return new ScriptResultView(Markdown.ToString().TrimEnd(), false);
 				}
 				else if (Ans is Graph G)
 				{
 					// In MAUI, graphs are returned as formatted text description
-					return "(Graph: " + G.ToString() + ")";
+					return new ScriptResultView("(Graph: " + G.ToString() + ")", false);
 				}
 				else
-					return Ans.ToString();
+					return new ScriptResultView(Ans.ToString(), false);
 			}
 			catch (Exception ex)
 			{
 				ex = Log.UnnestException(ex);
-				return ex.Message;
+				return new ScriptResultView(ex.Message, true);
 			}
 		}
 
@@ -311,6 +341,7 @@ namespace LegalLabMaui.Models.Script
 	{
 		private string script = string.Empty;
 		private string result = string.Empty;
+		private bool isError;
 
 		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
@@ -346,7 +377,37 @@ namespace LegalLabMaui.Models.Script
 			}
 		}
 
+		public bool IsError
+		{
+			get => this.isError;
+			set
+			{
+				if (this.isError != value)
+				{
+					this.isError = value;
+					this.PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(this.IsError)));
+					this.PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(this.HeaderText)));
+					this.PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(this.StatusText)));
+					this.PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(this.CardStroke)));
+					this.PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(this.CardBackground)));
+					this.PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(this.StatusBadgeBackground)));
+					this.PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(this.StatusBadgeTextColor)));
+					this.PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(this.ResultTextColor)));
+				}
+			}
+		}
+
+		public string HeaderText => this.isError ? "Error" : "Expression";
+		public string StatusText => this.isError ? "ERROR" : "RESULT";
+		public string CardStroke => this.isError ? "#D46A6A" : "#D3DCE6";
+		public string CardBackground => this.isError ? "#FFF4F4" : "#F8FAFC";
+		public string StatusBadgeBackground => this.isError ? "#FCE3E3" : "#E8EEF5";
+		public string StatusBadgeTextColor => this.isError ? "#A12E2E" : "#41576D";
+		public string ResultTextColor => this.isError ? "#8F1D1D" : "#1D2A36";
+
 		/// <inheritdoc/>
 		public override string ToString() => this.Script;
 	}
+
+	internal sealed record ScriptResultView(string Text, bool IsError);
 }
