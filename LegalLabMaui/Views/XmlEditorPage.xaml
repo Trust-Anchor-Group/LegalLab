@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:conv="clr-namespace:LegalLabMaui.Converters"
+             x:Class="LegalLabMaui.Views.XmlEditorPage"
+             Title="XML Editor">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Toolbar -->
+        <HorizontalStackLayout Grid.Row="0" Padding="8,4" Spacing="8" BackgroundColor="#F0F0F0">
+            <Button Text="New" Command="{Binding NewDocument}" WidthRequest="70"/>
+            <Button Text="Load" Command="{Binding LoadDocument}" WidthRequest="70"/>
+            <Button Text="Save" Command="{Binding SaveDocument}"
+                    IsEnabled="{Binding Changed}" WidthRequest="70"/>
+            <Label Text="Zoom:" VerticalOptions="Center"/>
+            <Picker x:Name="ZoomPicker" WidthRequest="130"
+                    SelectedItem="{Binding SelectedZoom}"
+                    SelectedIndexChanged="ZoomPicker_SelectedIndexChanged">
+                <Picker.Items>
+                    <x:String>Fit to size</x:String>
+                    <x:String>10%</x:String>
+                    <x:String>25%</x:String>
+                    <x:String>50%</x:String>
+                    <x:String>75%</x:String>
+                    <x:String>90%</x:String>
+                    <x:String>100%</x:String>
+                    <x:String>110%</x:String>
+                    <x:String>125%</x:String>
+                    <x:String>150%</x:String>
+                    <x:String>200%</x:String>
+                </Picker.Items>
+            </Picker>
+        </HorizontalStackLayout>
+
+        <!-- Editor and visualization split -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- XML Editor -->
+            <Editor Grid.Column="0"
+                    x:Name="XmlEditor"
+                    Text="{Binding Xml}"
+                    FontFamily="Courier New"
+                    FontSize="13"
+                    AutoSize="TextChanges"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    Margin="4"/>
+
+            <!-- Visualization / preview -->
+            <ScrollView Grid.Column="1" x:Name="VisualizationViewer">
+                <Label Text="{Binding VisualizationText}"
+                       Padding="8"
+                       FontSize="{Binding ZoomFontSize}"
+                       LineBreakMode="WordWrap"/>
+            </ScrollView>
+        </Grid>
+    </Grid>
+</ContentPage>

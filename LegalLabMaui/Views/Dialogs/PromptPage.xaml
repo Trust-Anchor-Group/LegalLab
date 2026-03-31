@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LegalLabMaui.Views.Dialogs.PromptPage"
+             Title="{Binding Title}">
+    <VerticalStackLayout Padding="16" Spacing="12" VerticalOptions="Center">
+        <Label Text="{Binding Label}" FontAttributes="Bold"/>
+        <Entry Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"
+               x:Name="UserInput"/>
+        <HorizontalStackLayout HorizontalOptions="Center" Spacing="16">
+            <Button Text="{Binding OkText}" Command="{Binding Ok}" WidthRequest="100"/>
+            <Button Text="{Binding CancelText}" Command="{Binding Cancel}" WidthRequest="100"/>
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>

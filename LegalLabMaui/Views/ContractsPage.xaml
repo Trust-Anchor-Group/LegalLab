@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:conv="clr-namespace:LegalLabMaui.Converters"
+             x:Class="LegalLabMaui.Views.ContractsPage"
+             Title="Contracts">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Left: Template/contract selection and commands -->
+        <ScrollView Grid.Column="0">
+            <VerticalStackLayout Padding="16" Spacing="6">
+                <Label Text="Template:"/>
+                <Picker ItemsSource="{Binding Templates}"
+                        ItemDisplayBinding="{Binding TemplateName}"
+                        SelectedItem="{Binding SelectedTemplate}"/>
+
+                <Label Text="Existing contracts:" Margin="0,8,0,0"/>
+                <Picker ItemsSource="{Binding ExistingContracts}"
+                        ItemDisplayBinding="{Binding ContractName}"
+                        SelectedItem="{Binding SelectedExistingContract}"/>
+
+                <Label Text="Language:" Margin="0,8,0,0"/>
+                <Picker ItemsSource="{Binding Languages}"
+                        ItemDisplayBinding="{Binding Language}"
+                        SelectedItem="{Binding SelectedLanguage}"/>
+
+                <CheckBox IsChecked="{Binding AutoSignProposals}" Margin="0,8,0,0"/>
+                <Label Text="Auto-sign contract proposals." Margin="0,-4,0,0"/>
+
+                <Button Text="Create Contract" Command="{Binding CreateContract}"
+                        IsEnabled="{Binding ParametersOk}" Margin="0,12,0,0"/>
+                <Button Text="Remove Template" Command="{Binding RemoveTemplate}"
+                        IsVisible="{Binding IsTemplate}" Margin="0,4,0,0"/>
+                <Button Text="Remove Contract" Command="{Binding RemoveContract}"
+                        IsVisible="{Binding IsContract}" Margin="0,4,0,0"/>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Right: Contract details -->
+        <ScrollView Grid.Column="1">
+            <VerticalStackLayout Padding="16" Spacing="8">
+
+                <Label Text="Contract ID" FontSize="20" FontAttributes="Bold"/>
+                <Label Text="ID of the contract:"/>
+                <Entry Text="{Binding ContractId}" IsReadOnly="True"/>
+                <Label Text="Scan this code to access the contract from another device:"/>
+                <Image Source="{Binding QrCodeUri}" WidthRequest="200" HeightRequest="200"
+                       HorizontalOptions="Start" Margin="16"
+                       IsVisible="{Binding HasId}"/>
+
+                <Label Text="General Information" FontSize="20" FontAttributes="Bold" Margin="0,8,0,0"/>
+                <Label Text="Following is some general information about the loaded contract:"/>
+                <CollectionView ItemsSource="{Binding GeneralInformation}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="4,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="160"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Text="{Binding Name}" FontAttributes="Bold" FontSize="12"/>
+                                <Label Grid.Column="1" Text="{Binding Value}" FontSize="12"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Label Text="Roles" FontSize="20" FontAttributes="Bold" Margin="0,8,0,0"/>
+                <Label Text="Following are roles defined in the contract:"/>
+                <CollectionView ItemsSource="{Binding Roles}">
+                    <CollectionView.Header>
+                        <Grid Padding="4,2" BackgroundColor="#DDDDDD">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="70"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Text="Role" FontAttributes="Bold"/>
+                            <Label Grid.Column="1" Text="Description" FontAttributes="Bold"/>
+                            <Label Grid.Column="2" Text="Min" FontAttributes="Bold"/>
+                            <Label Grid.Column="3" Text="Max" FontAttributes="Bold"/>
+                            <Label Grid.Column="4" Text="Can Revoke" FontAttributes="Bold"/>
+                        </Grid>
+                    </CollectionView.Header>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="4,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="70"/>
+                                    <ColumnDefinition Width="70"/>
+                                    <ColumnDefinition Width="70"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Text="{Binding Name}" FontSize="12"/>
+                                <Label Grid.Column="1" Text="{Binding DescriptionAsText}" FontSize="12"/>
+                                <Label Grid.Column="2" Text="{Binding MinCount}" FontSize="12"/>
+                                <Label Grid.Column="3" Text="{Binding MaxCount}" FontSize="12"/>
+                                <Label Grid.Column="4" Text="{Binding CanRevoke, Converter={conv:BooleanToYesNo}}" FontSize="12"/>
+                                <Button Grid.Column="5" Text="Sign" Command="{Binding SignAsRole}"
+                                        IsEnabled="{Binding CanBeSigned}" Padding="4,0" FontSize="11"/>
+                                <Button Grid.Column="6" Text="Propose" Command="{Binding ProposeForRole}"
+                                        IsEnabled="{Binding CanBeSigned}" Padding="4,0" FontSize="11"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Label Text="Parts" FontSize="20" FontAttributes="Bold" Margin="0,8,0,0"/>
+                <Label Text="Following are parts defined in the contract:"/>
+                <CollectionView ItemsSource="{Binding Parts}">
+                    <CollectionView.Header>
+                        <Grid Padding="4,2" BackgroundColor="#DDDDDD">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Text="Legal ID" FontAttributes="Bold"/>
+                            <Label Grid.Column="1" Text="Role" FontAttributes="Bold"/>
+                        </Grid>
+                    </CollectionView.Header>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="4,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="60"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Text="{Binding LegalId}" FontSize="12"/>
+                                <Picker Grid.Column="1" ItemsSource="{Binding Roles}"
+                                        SelectedItem="{Binding Role}" FontSize="12"/>
+                                <Button Grid.Column="2" Text="Up" Command="{Binding MoveUp}" Padding="4,0" FontSize="11"/>
+                                <Button Grid.Column="3" Text="Down" Command="{Binding MoveDown}" Padding="4,0" FontSize="11"/>
+                                <Button Grid.Column="4" Text="Remove" Command="{Binding RemovePart}" Padding="4,0" FontSize="11"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                <Button Text="Add Part" Command="{Binding AddPart}" HorizontalOptions="Start" WidthRequest="100"/>
+
+                <Label Text="Parameters" FontSize="20" FontAttributes="Bold" Margin="0,8,0,0"/>
+                <Label Text="Following are parameters defined in the contract:"/>
+                <CollectionView ItemsSource="{Binding Parameters}">
+                    <CollectionView.Header>
+                        <Grid Padding="4,2" BackgroundColor="#DDDDDD">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Text="Parameter" FontAttributes="Bold"/>
+                            <Label Grid.Column="1" Text="Value" FontAttributes="Bold"/>
+                            <Label Grid.Column="2" Text="Description" FontAttributes="Bold"/>
+                        </Grid>
+                    </CollectionView.Header>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="4,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Text="{Binding Name}" FontSize="12"/>
+                                <Label Grid.Column="1" Text="{Binding Value, Converter={conv:MoneyToString}}" FontSize="12"/>
+                                <Label Grid.Column="2" Text="{Binding DescriptionAsText}" FontSize="12"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Label Text="Machine-Readable Content" FontSize="20" FontAttributes="Bold" Margin="0,8,0,0"/>
+                <Label Text="Following is the embedded Machine-readable content of the contract:"/>
+                <Editor x:Name="MachineReadableXmlEditor"
+                        FontFamily="Courier New"
+                        FontSize="13"
+                        IsReadOnly="True"
+                        AutoSize="TextChanges"
+                        MinimumHeightRequest="100"/>
+
+                <Label Text="Human-Readable Content" FontSize="20" FontAttributes="Bold" Margin="0,8,0,0"/>
+                <Label Text="{Binding HumanReadableText}" BackgroundColor="White" Padding="10"/>
+
+                <Label Text="Attachments" FontSize="20" FontAttributes="Bold" Margin="0,8,0,0"/>
+                <Label Text="Following attachments have been uploaded to the contract:"/>
+                <CollectionView ItemsSource="{Binding Attachments}">
+                    <CollectionView.Header>
+                        <Grid Padding="4,2" BackgroundColor="#DDDDDD">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="70"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Text="Attachment ID" FontAttributes="Bold"/>
+                            <Label Grid.Column="1" Text="Filename" FontAttributes="Bold"/>
+                            <Label Grid.Column="2" Text="Content-Type" FontAttributes="Bold"/>
+                            <Label Grid.Column="3" Text="Timestamp" FontAttributes="Bold"/>
+                        </Grid>
+                    </CollectionView.Header>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="4,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="70"/>
+                                    <ColumnDefinition Width="70"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Text="{Binding Id}" FontSize="12"/>
+                                <Label Grid.Column="1" Text="{Binding FileName}" FontSize="12"/>
+                                <Label Grid.Column="2" Text="{Binding ContentType}" FontSize="12"/>
+                                <Label Grid.Column="3" Text="{Binding Timestamp, Converter={conv:DateTimeToString}}" FontSize="12"/>
+                                <Button Grid.Column="4" Text="Download" Command="{Binding DownloadAttachment}"
+                                        IsEnabled="{Binding CanDownloadAttachment}" Padding="4,0" FontSize="11"/>
+                                <Button Grid.Column="5" Text="Remove" Command="{Binding RemoveAttachment}"
+                                        IsEnabled="{Binding CanRemoveAttachment}" Padding="4,0" FontSize="11"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                <Button Text="Upload Attachment" Command="{Binding UploadAttachment}"
+                        IsEnabled="{Binding CanUploadAttachment}" HorizontalOptions="Start" WidthRequest="160"/>
+
+                <Label Text="Client Signatures" FontSize="20" FontAttributes="Bold" Margin="0,8,0,0"/>
+                <Label Text="Following are client signatures available in the contract:"/>
+                <CollectionView ItemsSource="{Binding ClientSignatures}">
+                    <CollectionView.Header>
+                        <Grid Padding="4,2" BackgroundColor="#DDDDDD">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Text="Network JID" FontAttributes="Bold"/>
+                            <Label Grid.Column="1" Text="Legal ID" FontAttributes="Bold"/>
+                            <Label Grid.Column="2" Text="Role" FontAttributes="Bold"/>
+                            <Label Grid.Column="3" Text="Timestamp" FontAttributes="Bold"/>
+                            <Label Grid.Column="4" Text="Transferable" FontAttributes="Bold"/>
+                            <Label Grid.Column="5" Text="Signature" FontAttributes="Bold"/>
+                        </Grid>
+                    </CollectionView.Header>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="4,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Text="{Binding BareJid}" FontSize="12"/>
+                                <Label Grid.Column="1" Text="{Binding LegalId}" FontSize="12"/>
+                                <Label Grid.Column="2" Text="{Binding Role}" FontSize="12"/>
+                                <Label Grid.Column="3" Text="{Binding Timestamp, Converter={conv:DateTimeToString}}" FontSize="12"/>
+                                <Label Grid.Column="4" Text="{Binding Transferable, Converter={conv:BooleanToYesNo}}" FontSize="12"/>
+                                <Label Grid.Column="5" Text="{Binding Signature, Converter={conv:ToBase64}}" FontSize="12"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Label Text="Server Signature" FontSize="20" FontAttributes="Bold" Margin="0,8,0,0"/>
+                <Label Text="Following is any server signature available in the contract:"/>
+                <CollectionView ItemsSource="{Binding ServerSignatures}">
+                    <CollectionView.Header>
+                        <Grid Padding="4,2" BackgroundColor="#DDDDDD">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Text="Timestamp" FontAttributes="Bold"/>
+                            <Label Grid.Column="1" Text="Signature" FontAttributes="Bold"/>
+                        </Grid>
+                    </CollectionView.Header>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="4,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Text="{Binding Timestamp, Converter={conv:DateTimeToString}}" FontSize="12"/>
+                                <Label Grid.Column="1" Text="{Binding Signature, Converter={conv:ToBase64}}" FontSize="12"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="LegalLabMaui.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:LegalLabMaui.Views"
+    Shell.FlyoutBehavior="Disabled">
+
+    <TabBar>
+        <ShellContent Title="Network"
+                      Icon="network.svg"
+                      ContentTemplate="{DataTemplate views:NetworkPage}"/>
+        <ShellContent Title="Legal ID"
+                      Icon="identity.svg"
+                      ContentTemplate="{DataTemplate views:LegalIdPage}"/>
+        <ShellContent Title="Wallet"
+                      Icon="wallet.svg"
+                      ContentTemplate="{DataTemplate views:WalletPage}"/>
+        <ShellContent Title="Tokens"
+                      Icon="tokens.svg"
+                      ContentTemplate="{DataTemplate views:TokensPage}"/>
+        <ShellContent Title="Design"
+                      Icon="design.svg"
+                      ContentTemplate="{DataTemplate views:DesignPage}"/>
+        <ShellContent Title="Contracts"
+                      Icon="contracts.svg"
+                      ContentTemplate="{DataTemplate views:ContractsPage}"/>
+        <ShellContent Title="Events"
+                      Icon="events.svg"
+                      ContentTemplate="{DataTemplate views:EventsPage}"/>
+        <ShellContent Title="Script"
+                      Icon="script.svg"
+                      ContentTemplate="{DataTemplate views:ScriptPage}"/>
+        <ShellContent Title="XML"
+                      Icon="xml.svg"
+                      ContentTemplate="{DataTemplate views:XmlEditorPage}"/>
+        <ShellContent Title="Report"
+                      Icon="report.svg"
+                      ContentTemplate="{DataTemplate views:ReportPage}"/>
+    </TabBar>
+
+</Shell>

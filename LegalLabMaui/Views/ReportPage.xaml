@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LegalLabMaui.Views.ReportPage"
+             Title="Report">
+    <ScrollView x:Name="ReportScrollView">
+        <VerticalStackLayout x:Name="ReportPanel" Padding="10" Spacing="8">
+            <!-- Report content is added programmatically via UpdateReport() -->
+            <Label x:Name="ReportContentLabel"
+                   Text="{Binding ReportText}"
+                   LineBreakMode="WordWrap"
+                   FontSize="14"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

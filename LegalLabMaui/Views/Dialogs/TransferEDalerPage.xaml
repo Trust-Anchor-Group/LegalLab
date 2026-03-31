@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LegalLabMaui.Views.Dialogs.TransferEDalerPage"
+             Title="Transfer eDaler®">
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="12">
+            <Label Text="Recipient: (JID)" FontAttributes="Bold"/>
+            <Entry x:Name="Recipient" Text="{Binding Recipient}" Keyboard="Email"/>
+
+            <Label Text="Amount:" FontAttributes="Bold"/>
+            <Entry x:Name="Amount" Text="{Binding Amount}" Keyboard="Numeric"/>
+
+            <Label Text="Amount Extra:" FontAttributes="Bold"/>
+            <Entry x:Name="AmountExtra" Text="{Binding AmountExtra}" Keyboard="Numeric"/>
+
+            <Label Text="Currency:" FontAttributes="Bold"/>
+            <Entry x:Name="Currency" Text="{Binding Currency}"/>
+
+            <Label Text="URI expiry (#days):" FontAttributes="Bold"/>
+            <Entry x:Name="ValidNrDays" Text="{Binding ValidNrDays}" Keyboard="Numeric"/>
+
+            <Label Text="Message:" FontAttributes="Bold"/>
+            <Entry x:Name="Message" Text="{Binding Message}"/>
+
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="16" Margin="0,8,0,0">
+                <Button Text="Transfer" Command="{Binding Transfer}" WidthRequest="100"/>
+                <Button Text="Cancel" Command="{Binding Cancel}" WidthRequest="100"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

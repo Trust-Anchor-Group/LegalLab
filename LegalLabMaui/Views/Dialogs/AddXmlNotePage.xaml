@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LegalLabMaui.Views.Dialogs.AddXmlNotePage"
+             Title="Add XML Note">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" Text="Enter XML to add:" Padding="16,16,16,4" FontAttributes="Bold"/>
+
+        <Editor Grid.Row="1"
+                x:Name="XmlEditor"
+                Text="{Binding XmlInput}"
+                FontFamily="Courier New"
+                FontSize="13"
+                AutoSize="TextChanges"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill"
+                Margin="16,0"
+                MinimumHeightRequest="200"
+                TextChanged="XmlEditor_TextChanged"/>
+
+        <HorizontalStackLayout Grid.Row="2" HorizontalOptions="Center" Spacing="16" Padding="16">
+            <Button Text="Add" Command="{Binding Add}" WidthRequest="100"/>
+            <Button Text="Cancel" Command="{Binding Cancel}" WidthRequest="100"/>
+        </HorizontalStackLayout>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:conv="clr-namespace:LegalLabMaui.Converters"
+             x:Class="LegalLabMaui.Views.TokensPage"
+             Title="Tokens">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Token totals summary -->
+        <VerticalStackLayout Grid.Row="0" Padding="16,8">
+            <Label Text="Total number of tokens:" FontAttributes="Bold"/>
+            <CollectionView ItemsSource="{Binding Totals}" HeightRequest="120">
+                <CollectionView.Header>
+                    <Grid Padding="8,4" BackgroundColor="#DDDDDD">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="120"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Text="Currency" FontAttributes="Bold"/>
+                        <Label Grid.Column="1" Text="Nr" FontAttributes="Bold"/>
+                        <Label Grid.Column="2" Text="Total Value" FontAttributes="Bold"/>
+                    </Grid>
+                </CollectionView.Header>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="8,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="120"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Text="{Binding Currency}"/>
+                            <Label Grid.Column="1" Text="{Binding NrTokens, Converter={conv:ToString}}" HorizontalOptions="End"/>
+                            <Label Grid.Column="2" Text="{Binding Total, Converter={conv:MoneyToString}}" HorizontalOptions="End"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+
+        <!-- Main tokens list -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Tokens}"
+                        SelectionMode="Single"
+                        SelectionChanged="OnTokenSelected">
+            <CollectionView.Header>
+                <Grid Padding="8,4" BackgroundColor="#DDDDDD">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="80"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Text="Friendly Name" FontAttributes="Bold"/>
+                    <Label Grid.Column="1" Text="Category" FontAttributes="Bold"/>
+                    <Label Grid.Column="2" Text="ID" FontAttributes="Bold"/>
+                    <Label Grid.Column="3" Text="Expires" FontAttributes="Bold"/>
+                    <Label Grid.Column="4" Text="Value" FontAttributes="Bold"/>
+                    <Label Grid.Column="5" Text="Currency" FontAttributes="Bold"/>
+                    <Label Grid.Column="6" Text="Updated" FontAttributes="Bold"/>
+                    <Label Grid.Column="7" Text="Visibility" FontAttributes="Bold"/>
+                </Grid>
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="8,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Text="{Binding FriendlyName}" FontSize="12"/>
+                        <Label Grid.Column="1" Text="{Binding Category}" FontSize="12"/>
+                        <Label Grid.Column="2" Text="{Binding TokenId}" FontSize="12" LineBreakMode="CharacterWrap"/>
+                        <Label Grid.Column="3" Text="{Binding Expires, Converter={conv:DateToXmlString}}" FontSize="12"/>
+                        <Label Grid.Column="4" Text="{Binding Value, Converter={conv:MoneyToString}}" FontSize="12" HorizontalOptions="End"/>
+                        <Label Grid.Column="5" Text="{Binding Currency}" FontSize="12"/>
+                        <Label Grid.Column="6" Text="{Binding Updated, Converter={conv:DateToXmlString}}" FontSize="12"/>
+                        <Label Grid.Column="7" Text="{Binding Visibility, Converter={conv:ToString}}" FontSize="12" HorizontalOptions="Center"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Token events (bottom) -->
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding Events}"
+                        IsVisible="{Binding Events, Converter={conv:VisibleIfNotNull}}"
+                        HeightRequest="120">
+            <CollectionView.Header>
+                <Grid Padding="8,4" BackgroundColor="#DDDDDD">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Text="Timestamp" FontAttributes="Bold"/>
+                    <Label Grid.Column="1" Text="Personal" FontAttributes="Bold"/>
+                    <Label Grid.Column="2" Text="Message" FontAttributes="Bold"/>
+                    <Label Grid.Column="3" Text="Value" FontAttributes="Bold"/>
+                    <Label Grid.Column="4" Text="Currency" FontAttributes="Bold"/>
+                    <Label Grid.Column="5" Text="Owner" FontAttributes="Bold"/>
+                    <Label Grid.Column="6" Text="Ownership Contract" FontAttributes="Bold"/>
+                </Grid>
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="8,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Text="{Binding Timestamp, Converter={conv:DateTimeToString}}" FontSize="12"/>
+                        <Label Grid.Column="1" Text="{Binding Personal}" FontSize="12" HorizontalOptions="Center"/>
+                        <Label Grid.Column="2" Text="{Binding Message}" FontSize="12"/>
+                        <Label Grid.Column="3" Text="{Binding Value}" FontSize="12" HorizontalOptions="End"/>
+                        <Label Grid.Column="4" Text="{Binding Currency}" FontSize="12"/>
+                        <Label Grid.Column="5" Text="{Binding Owner}" FontSize="12"/>
+                        <Label Grid.Column="6" Text="{Binding OwnershipContract}" FontSize="12"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Selected token details -->
+        <CollectionView Grid.Row="3"
+                        ItemsSource="{Binding SelectedToken.Details}"
+                        IsVisible="{Binding SelectedToken, Converter={conv:VisibleIfNotNull}}"
+                        HeightRequest="200">
+            <CollectionView.Header>
+                <Grid Padding="8,4" BackgroundColor="#DDDDDD">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Text="Property" FontAttributes="Bold"/>
+                    <Label Grid.Column="1" Text="Value" FontAttributes="Bold"/>
+                </Grid>
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="8,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Text="{Binding Name}" FontSize="12"/>
+                        <Label Grid.Column="1" Text="{Binding Value}" FontSize="12"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

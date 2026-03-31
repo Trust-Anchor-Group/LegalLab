@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="80" fill="#1a1a2e"/>
+  <!-- Balance beam -->
+  <rect x="236" y="100" width="40" height="220" rx="6" fill="#e8c84a"/>
+  <!-- Top pivot -->
+  <circle cx="256" cy="95" r="22" fill="#e8c84a"/>
+  <!-- Horizontal bar -->
+  <rect x="100" y="148" width="312" height="18" rx="9" fill="#e8c84a"/>
+  <!-- Left chain -->
+  <line x1="140" y1="166" x2="140" y2="210" stroke="#e8c84a" stroke-width="6" stroke-linecap="round"/>
+  <!-- Left pan -->
+  <ellipse cx="140" cy="230" rx="55" ry="16" fill="none" stroke="#e8c84a" stroke-width="6"/>
+  <path d="M85 222 Q140 255 195 222" fill="none" stroke="#e8c84a" stroke-width="6" stroke-linecap="round"/>
+  <!-- Right chain -->
+  <line x1="372" y1="166" x2="372" y2="210" stroke="#e8c84a" stroke-width="6" stroke-linecap="round"/>
+  <!-- Right pan -->
+  <ellipse cx="372" cy="230" rx="55" ry="16" fill="none" stroke="#e8c84a" stroke-width="6"/>
+  <path d="M317 222 Q372 255 427 222" fill="none" stroke="#e8c84a" stroke-width="6" stroke-linecap="round"/>
+  <!-- Base -->
+  <rect x="200" y="316" width="112" height="14" rx="7" fill="#e8c84a"/>
+  <rect x="176" y="326" width="160" height="14" rx="7" fill="#e8c84a"/>
+  <!-- Flask (lab beaker) in bottom right -->
+  <path d="M360 360 L360 390 L340 420 L400 420 L380 390 L380 360 Z" fill="none" stroke="#4ab8e8" stroke-width="8" stroke-linejoin="round"/>
+  <rect x="355" y="352" width="30" height="10" rx="4" fill="#4ab8e8"/>
+  <ellipse cx="370" cy="408" rx="18" ry="8" fill="#4ab8e8" opacity="0.6"/>
+</svg>
