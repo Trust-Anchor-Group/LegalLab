@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:legal="clr-namespace:LegalLabMaui.Models.Legal"
              x:Class="LegalLabMaui.Views.Dialogs.ParametersPage"
+             x:DataType="legal:ContractParametersModel"
              Title="Parameters">
     <Grid>
         <Grid.RowDefinitions>
@@ -10,16 +12,23 @@
         </Grid.RowDefinitions>
 
         <ScrollView Grid.Row="0">
-            <VerticalStackLayout x:Name="ParametersPanel" Padding="16" Spacing="8">
+            <VerticalStackLayout x:Name="ParametersPanel"
+                    Padding="16"
+                    Spacing="8">
                 <!-- Parameters are added programmatically -->
             </VerticalStackLayout>
         </ScrollView>
 
-        <HorizontalStackLayout Grid.Row="1" HorizontalOptions="Center" Spacing="16" Padding="16">
-            <Button Text="OK" WidthRequest="100"
+        <HorizontalStackLayout Grid.Row="1"
+                HorizontalOptions="Center"
+                Spacing="16"
+                Padding="16">
+            <Button Text="OK"
+                    WidthRequest="100"
                     IsEnabled="{Binding ParametersOk}"
                     Clicked="OkButton_Clicked"/>
-            <Button Text="Cancel" WidthRequest="100"
+            <Button Text="Cancel"
+                    WidthRequest="100"
                     Clicked="CancelButton_Clicked"/>
         </HorizontalStackLayout>
     </Grid>

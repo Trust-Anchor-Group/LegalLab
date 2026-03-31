@@ -421,6 +421,22 @@ namespace LegalLabMaui.Models.Legal
 			set => this.legalModel.AutoSignProposals = value;
 		}
 
+		public TemplateReferenceModel[] Templates => this.legalModel.Templates;
+
+		public TemplateReferenceModel? SelectedTemplate
+		{
+			get => Array.Find(this.legalModel.Templates, reference => reference.TemplateName == this.legalModel.ContractTemplateName);
+			set => this.legalModel.ContractTemplateName = value?.TemplateName ?? string.Empty;
+		}
+
+		public ContractReferenceModel[] ExistingContracts => this.legalModel.ExistingContracts;
+
+		public ContractReferenceModel? SelectedExistingContract
+		{
+			get => Array.Find(this.legalModel.ExistingContracts, reference => reference.ContractId == this.legalModel.ExistingContractId);
+			set => this.legalModel.ExistingContractId = value?.ContractId ?? string.Empty;
+		}
+
 		/// <summary>
 		/// The different parameter options available to choose from when creating a contract.
 		/// </summary>

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:script="clr-namespace:LegalLabMaui.Models.Script"
              x:Class="LegalLabMaui.Views.ScriptPage"
+             x:DataType="script:ScriptModel"
              Title="Script">
     <Grid>
         <Grid.RowDefinitions>
@@ -25,13 +27,13 @@
                 </Label.FormattedText>
             </Label>
             <Editor x:Name="InputEdit"
-                    Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding Input}"
                     AutoSize="TextChanges"
                     MinimumHeightRequest="60"
                     MaximumHeightRequest="120"
                     Placeholder="Enter script to execute here."
                     HorizontalOptions="Fill"/>
-            <Button Text="Run" Command="{Binding Execute}"
+                <Button Text="Run" Command="{Binding Run}"
                     HorizontalOptions="End" WidthRequest="100"/>
         </VerticalStackLayout>
     </Grid>

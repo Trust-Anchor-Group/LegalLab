@@ -25,8 +25,6 @@ public partial class App : Application
     {
         InitializeComponent();
 
-        MainPage = new AppShell();
-
         TypesLoader.Initialize();
 
         Task.Run(Initialize);
@@ -137,7 +135,7 @@ public partial class App : Application
 
     protected override Window CreateWindow(IActivationState? activationState)
     {
-        Window window = base.CreateWindow(activationState);
+        Window window = new(new AppShell());
 
         window.Destroying += (s, e) =>
         {

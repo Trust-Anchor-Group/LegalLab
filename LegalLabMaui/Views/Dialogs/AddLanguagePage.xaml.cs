@@ -14,7 +14,10 @@ public partial class AddLanguagePage : ContentPage
 
     private async Task WaitAndGoBack()
     {
-        await model.WaitForResult();
+        bool confirmed = await model.WaitForResult();
+        if (confirmed)
+            AppService.DesignModel?.OnLanguageAdded(model.SelectedLanguage);
+
         await MainThread.InvokeOnMainThreadAsync(() => Shell.Current.GoToAsync(".."));
     }
 }

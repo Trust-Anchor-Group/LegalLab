@@ -2,7 +2,11 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:conv="clr-namespace:LegalLabMaui.Converters"
+             xmlns:design="clr-namespace:LegalLabMaui.Models.Design"
+             xmlns:legal="clr-namespace:LegalLabMaui.Models.Legal.Items"
+             xmlns:standards="clr-namespace:LegalLabMaui.Models.Standards"
              x:Class="LegalLabMaui.Views.DesignPage"
+             x:DataType="design:DesignModel"
              Title="Design">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -12,34 +16,47 @@
 
         <!-- Left: commands panel -->
         <ScrollView Grid.Column="0">
-            <VerticalStackLayout Padding="16" Spacing="8">
-                <Button Text="New" Command="{Binding New}"/>
-                <Button Text="Load" Command="{Binding LoadCommand}"/>
-                <Button Text="Import" Command="{Binding ImportCommand}"/>
-                <Button Text="Save" Command="{Binding SaveCommand}"/>
-                <Button Text="Propose" Command="{Binding Propose}"/>
+            <VerticalStackLayout Padding="16"
+                    Spacing="8">
+                <Button Text="New"
+                        Command="{Binding New}"/>
+                <Button Text="Load"
+                        Command="{Binding LoadCommand}"/>
+                <Button Text="Import"
+                        Command="{Binding ImportCommand}"/>
+                <Button Text="Save"
+                        Command="{Binding SaveCommand}"/>
+                <Button Text="Propose"
+                        Command="{Binding Propose}"/>
 
-                <Label Text="Language:" Margin="0,8,0,0"/>
+                <Label Text="Language:"
+                        Margin="0,8,0,0"/>
                 <Picker ItemsSource="{Binding Languages}"
-                        ItemDisplayBinding="{Binding Language}"
+                        ItemDisplayBinding="{Binding Language, x:DataType=standards:Iso__639_1+Record}"
                         SelectedItem="{Binding SelectedLanguage}"/>
-                <Button Text="Add Language" Command="{Binding AddLanguage}"/>
-                <Button Text="Remove Language" Command="{Binding RemoveLanguage}"/>
+                <Button Text="Add Language"
+                        Command="{Binding AddLanguage}"/>
+                <Button Text="Remove Language"
+                        Command="{Binding RemoveLanguage}"/>
 
                 <Label Margin="0,8,0,0">
                     <Label.FormattedText>
                         <FormattedString>
                             <Span Text="OpenAI Key: "/>
-                            <Span Text="*" TextColor="Red"/>
+                            <Span Text="*"
+                                    TextColor="Red"/>
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
-                <Entry x:Name="OpenAiKeyEntry" IsPassword="True"
+                <Entry x:Name="OpenAiKeyEntry"
+                        IsPassword="True"
                        TextChanged="OpenAiKey_TextChanged"/>
-                <Label FontSize="12" TextColor="Gray">
+                <Label FontSize="12"
+                        TextColor="Gray">
                     <Label.FormattedText>
                         <FormattedString>
-                            <Span Text="* " TextColor="Red"/>
+                            <Span Text="* "
+                                    TextColor="Red"/>
                             <Span Text="By adding an OpenAI Key, localized texts can be automatically machine translated across languages when designing contracts. You also get access to ChatGPT, to help you create content for your smart contracts."/>
                         </FormattedString>
                     </Label.FormattedText>
@@ -49,54 +66,70 @@
 
         <!-- Right: contract design editor -->
         <ScrollView Grid.Column="1">
-            <VerticalStackLayout Padding="16" Spacing="8">
+            <VerticalStackLayout Padding="16"
+                    Spacing="8">
 
-                <Label Text="General Information" FontSize="20" FontAttributes="Bold"/>
+                <Label Text="General Information"
+                        FontSize="20"
+                        FontAttributes="Bold"/>
                 <Label Text="General information about the contract being designed:"/>
 
-                <FlexLayout Wrap="Wrap" Direction="Row">
-                    <VerticalStackLayout WidthRequest="110" Margin="0,0,8,8">
+                <FlexLayout Wrap="Wrap"
+                        Direction="Row">
+                    <VerticalStackLayout WidthRequest="110"
+                            Margin="0,0,8,8">
                         <Label Text="ID:"/>
                         <Entry Text="{Binding ContractId}"/>
                     </VerticalStackLayout>
-                    <VerticalStackLayout WidthRequest="110" Margin="0,0,8,8">
+                    <VerticalStackLayout WidthRequest="110"
+                            Margin="0,0,8,8">
                         <Label Text="Visibility:"/>
                         <Picker ItemsSource="{Binding Visibilities}"
                                 SelectedItem="{Binding Visibility, Converter={conv:ContractVisibilityToString}}"/>
                     </VerticalStackLayout>
-                    <VerticalStackLayout WidthRequest="110" Margin="0,0,8,8">
+                    <VerticalStackLayout WidthRequest="110"
+                            Margin="0,0,8,8">
                         <Label Text="Duration:"/>
                         <Entry Text="{Binding Duration, Converter={conv:DurationToString}}"/>
                     </VerticalStackLayout>
-                    <VerticalStackLayout WidthRequest="110" Margin="0,0,8,8">
+                    <VerticalStackLayout WidthRequest="110"
+                            Margin="0,0,8,8">
                         <Label Text="Archiving (Req.):"/>
                         <Entry Text="{Binding ArchiveRequired, Converter={conv:DurationToString}}"/>
                     </VerticalStackLayout>
-                    <VerticalStackLayout WidthRequest="110" Margin="0,0,8,8">
+                    <VerticalStackLayout WidthRequest="110"
+                            Margin="0,0,8,8">
                         <Label Text="Archiving (Opt.):"/>
                         <Entry Text="{Binding ArchiveOptional, Converter={conv:DurationToString}}"/>
                     </VerticalStackLayout>
-                    <VerticalStackLayout WidthRequest="110" Margin="0,0,8,8">
+                    <VerticalStackLayout WidthRequest="110"
+                            Margin="0,0,8,8">
                         <Label Text="Parts:"/>
                         <Picker ItemsSource="{Binding PartsModes}"
                                 SelectedItem="{Binding PartsMode, Converter={conv:ContractPartsToString}}"/>
                     </VerticalStackLayout>
-                    <VerticalStackLayout WidthRequest="110" Margin="0,0,8,8">
+                    <VerticalStackLayout WidthRequest="110"
+                            Margin="0,0,8,8">
                         <Label Text="Sign After:"/>
                         <Entry Text="{Binding SignAfter, Converter={conv:DateTimeToString}}"/>
                     </VerticalStackLayout>
-                    <VerticalStackLayout WidthRequest="110" Margin="0,0,8,8">
+                    <VerticalStackLayout WidthRequest="110"
+                            Margin="0,0,8,8">
                         <Label Text="Sign Before:"/>
                         <Entry Text="{Binding SignBefore, Converter={conv:DateTimeToString}}"/>
                     </VerticalStackLayout>
                 </FlexLayout>
 
                 <!-- Roles section -->
-                <Label Text="Roles" FontSize="20" FontAttributes="Bold" Margin="0,16,0,0"/>
+                <Label Text="Roles"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        Margin="0,16,0,0"/>
                 <Label Text="Following are roles defined in the contract:"/>
                 <CollectionView ItemsSource="{Binding Roles}">
                     <CollectionView.Header>
-                        <Grid Padding="4,2" BackgroundColor="#DDDDDD">
+                        <Grid Padding="4,2"
+                                BackgroundColor="#DDDDDD">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="*"/>
@@ -107,15 +140,25 @@
                                 <ColumnDefinition Width="50"/>
                                 <ColumnDefinition Width="60"/>
                             </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" Text="Role" FontAttributes="Bold"/>
-                            <Label Grid.Column="1" Text="Description" FontAttributes="Bold"/>
-                            <Label Grid.Column="2" Text="Min" FontAttributes="Bold"/>
-                            <Label Grid.Column="3" Text="Max" FontAttributes="Bold"/>
-                            <Label Grid.Column="4" Text="Can Revoke" FontAttributes="Bold"/>
+                            <Label Grid.Column="0"
+                                    Text="Role"
+                                    FontAttributes="Bold"/>
+                            <Label Grid.Column="1"
+                                    Text="Description"
+                                    FontAttributes="Bold"/>
+                            <Label Grid.Column="2"
+                                    Text="Min"
+                                    FontAttributes="Bold"/>
+                            <Label Grid.Column="3"
+                                    Text="Max"
+                                    FontAttributes="Bold"/>
+                            <Label Grid.Column="4"
+                                    Text="Can Revoke"
+                                    FontAttributes="Bold"/>
                         </Grid>
                     </CollectionView.Header>
                     <CollectionView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="legal:RoleInfo">
                             <Grid Padding="4,2">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="100"/>
@@ -127,26 +170,54 @@
                                     <ColumnDefinition Width="50"/>
                                     <ColumnDefinition Width="60"/>
                                 </Grid.ColumnDefinitions>
-                                <Entry Grid.Column="0" Text="{Binding Name}" FontSize="12"/>
-                                <Entry Grid.Column="1" Text="{Binding DescriptionAsMarkdown}" FontSize="12"/>
-                                <Entry Grid.Column="2" Text="{Binding MinCount}" FontSize="12"/>
-                                <Entry Grid.Column="3" Text="{Binding MaxCount}" FontSize="12"/>
-                                <CheckBox Grid.Column="4" IsChecked="{Binding CanRevoke}"/>
-                                <Button Grid.Column="5" Text="Up" Command="{Binding MoveUp}" Padding="4,0" FontSize="11"/>
-                                <Button Grid.Column="6" Text="Down" Command="{Binding MoveDown}" Padding="4,0" FontSize="11"/>
-                                <Button Grid.Column="7" Text="Remove" Command="{Binding RemoveRole}" Padding="4,0" FontSize="11"/>
+                                <Entry Grid.Column="0"
+                                        Text="{Binding Name}"
+                                        FontSize="12"/>
+                                <Entry Grid.Column="1"
+                                        Text="{Binding DescriptionAsMarkdown}"
+                                        FontSize="12"/>
+                                <Entry Grid.Column="2"
+                                        Text="{Binding MinCount}"
+                                        FontSize="12"/>
+                                <Entry Grid.Column="3"
+                                        Text="{Binding MaxCount}"
+                                        FontSize="12"/>
+                                <CheckBox Grid.Column="4"
+                                        IsChecked="{Binding CanRevoke}"/>
+                                <Button Grid.Column="5"
+                                        Text="Up"
+                                        Command="{Binding MoveUp}"
+                                        Padding="4,0"
+                                        FontSize="11"/>
+                                <Button Grid.Column="6"
+                                        Text="Down"
+                                        Command="{Binding MoveDown}"
+                                        Padding="4,0"
+                                        FontSize="11"/>
+                                <Button Grid.Column="7"
+                                        Text="Remove"
+                                        Command="{Binding RemoveRole}"
+                                        Padding="4,0"
+                                        FontSize="11"/>
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-                <Button Text="Add Role" Command="{Binding AddRole}" HorizontalOptions="Start" WidthRequest="100"/>
+                <Button Text="Add Role"
+                        Command="{Binding AddRole}"
+                        HorizontalOptions="Start"
+                        WidthRequest="100"/>
 
                 <!-- Parts section -->
-                <Label Text="Parts" FontSize="20" FontAttributes="Bold" Margin="0,16,0,0"/>
+                <Label Text="Parts"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        Margin="0,16,0,0"/>
                 <Label Text="Following are parts defined in the contract:"/>
                 <CollectionView ItemsSource="{Binding Parts}">
                     <CollectionView.Header>
-                        <Grid Padding="4,2" BackgroundColor="#DDDDDD">
+                        <Grid Padding="4,2"
+                                BackgroundColor="#DDDDDD">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="120"/>
@@ -154,12 +225,16 @@
                                 <ColumnDefinition Width="50"/>
                                 <ColumnDefinition Width="60"/>
                             </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" Text="Legal ID" FontAttributes="Bold"/>
-                            <Label Grid.Column="1" Text="Role" FontAttributes="Bold"/>
+                            <Label Grid.Column="0"
+                                    Text="Legal ID"
+                                    FontAttributes="Bold"/>
+                            <Label Grid.Column="1"
+                                    Text="Role"
+                                    FontAttributes="Bold"/>
                         </Grid>
                     </CollectionView.Header>
                     <CollectionView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="legal:PartInfo">
                             <Grid Padding="4,2">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -168,24 +243,47 @@
                                     <ColumnDefinition Width="50"/>
                                     <ColumnDefinition Width="60"/>
                                 </Grid.ColumnDefinitions>
-                                <Entry Grid.Column="0" Text="{Binding LegalId}" FontSize="12"/>
-                                <Picker Grid.Column="1" ItemsSource="{Binding Roles}"
-                                        SelectedItem="{Binding Role}" FontSize="12"/>
-                                <Button Grid.Column="2" Text="Up" Command="{Binding MoveUp}" Padding="4,0" FontSize="11"/>
-                                <Button Grid.Column="3" Text="Down" Command="{Binding MoveDown}" Padding="4,0" FontSize="11"/>
-                                <Button Grid.Column="4" Text="Remove" Command="{Binding RemovePart}" Padding="4,0" FontSize="11"/>
+                                <Entry Grid.Column="0"
+                                        Text="{Binding LegalId}"
+                                        FontSize="12"/>
+                                <Picker Grid.Column="1"
+                                        ItemsSource="{Binding Roles}"
+                                        SelectedItem="{Binding Role}"
+                                        FontSize="12"/>
+                                <Button Grid.Column="2"
+                                        Text="Up"
+                                        Command="{Binding MoveUp}"
+                                        Padding="4,0"
+                                        FontSize="11"/>
+                                <Button Grid.Column="3"
+                                        Text="Down"
+                                        Command="{Binding MoveDown}"
+                                        Padding="4,0"
+                                        FontSize="11"/>
+                                <Button Grid.Column="4"
+                                        Text="Remove"
+                                        Command="{Binding RemovePart}"
+                                        Padding="4,0"
+                                        FontSize="11"/>
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-                <Button Text="Add Part" Command="{Binding AddPart}" HorizontalOptions="Start" WidthRequest="100"/>
+                <Button Text="Add Part"
+                        Command="{Binding AddPart}"
+                        HorizontalOptions="Start"
+                        WidthRequest="100"/>
 
                 <!-- Editable Parameters section -->
-                <Label Text="Editable Parameters" FontSize="20" FontAttributes="Bold" Margin="0,16,0,0"/>
+                <Label Text="Editable Parameters"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        Margin="0,16,0,0"/>
                 <Label Text="Following are the editable parameters defined in the contract:"/>
                 <CollectionView ItemsSource="{Binding Parameters}">
                     <CollectionView.Header>
-                        <Grid Padding="4,2" BackgroundColor="#DDDDDD">
+                        <Grid Padding="4,2"
+                                BackgroundColor="#DDDDDD">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="*"/>
@@ -195,14 +293,22 @@
                                 <ColumnDefinition Width="50"/>
                                 <ColumnDefinition Width="60"/>
                             </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" Text="Parameter" FontAttributes="Bold"/>
-                            <Label Grid.Column="1" Text="Value" FontAttributes="Bold"/>
-                            <Label Grid.Column="2" Text="Description" FontAttributes="Bold"/>
-                            <Label Grid.Column="3" Text="Protection" FontAttributes="Bold"/>
+                            <Label Grid.Column="0"
+                                    Text="Parameter"
+                                    FontAttributes="Bold"/>
+                            <Label Grid.Column="1"
+                                    Text="Value"
+                                    FontAttributes="Bold"/>
+                            <Label Grid.Column="2"
+                                    Text="Description"
+                                    FontAttributes="Bold"/>
+                            <Label Grid.Column="3"
+                                    Text="Protection"
+                                    FontAttributes="Bold"/>
                         </Grid>
                     </CollectionView.Header>
                     <CollectionView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="legal:ParameterInfo">
                             <Grid Padding="4,2">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="100"/>
@@ -213,32 +319,93 @@
                                     <ColumnDefinition Width="50"/>
                                     <ColumnDefinition Width="60"/>
                                 </Grid.ColumnDefinitions>
-                                <Entry Grid.Column="0" Text="{Binding Name}" FontSize="12"/>
-                                <Entry Grid.Column="1" Text="{Binding Expression}" FontSize="12"/>
-                                <Entry Grid.Column="2" Text="{Binding DescriptionAsMarkdown}" FontSize="12"/>
-                                <Picker Grid.Column="3" ItemsSource="{Binding ProtectionLevels}"
-                                        SelectedItem="{Binding Protection, Converter={conv:ProtectionLevelToString}}" FontSize="11"/>
-                                <Button Grid.Column="4" Text="Up" Command="{Binding MoveUp}" Padding="4,0" FontSize="11"/>
-                                <Button Grid.Column="5" Text="Down" Command="{Binding MoveDown}" Padding="4,0" FontSize="11"/>
-                                <Button Grid.Column="6" Text="Remove" Command="{Binding RemoveParameter}" Padding="4,0" FontSize="11"/>
+                                <Entry Grid.Column="0"
+                                        Text="{Binding Name}"
+                                        FontSize="12"/>
+                                <Entry Grid.Column="1"
+                                        Text="{Binding Expression}"
+                                        FontSize="12"/>
+                                <Entry Grid.Column="2"
+                                        Text="{Binding DescriptionAsMarkdown}"
+                                        FontSize="12"/>
+                                <Picker Grid.Column="3"
+                                        ItemsSource="{Binding ProtectionLevels}"
+                                        SelectedItem="{Binding Protection, Converter={conv:ProtectionLevelToString}}"
+                                        FontSize="11"/>
+                                <Button Grid.Column="4"
+                                        Text="Up"
+                                        Command="{Binding MoveUp}"
+                                        Padding="4,0"
+                                        FontSize="11"/>
+                                <Button Grid.Column="5"
+                                        Text="Down"
+                                        Command="{Binding MoveDown}"
+                                        Padding="4,0"
+                                        FontSize="11"/>
+                                <Button Grid.Column="6"
+                                        Text="Remove"
+                                        Command="{Binding RemoveParameter}"
+                                        Padding="4,0"
+                                        FontSize="11"/>
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-                <FlexLayout Wrap="Wrap" Direction="Row" Margin="0,4,0,0">
-                    <Button Text="Add Numeric" Command="{Binding AddNumericParameter}" WidthRequest="110" Margin="0,0,4,4" FontSize="12"/>
-                    <Button Text="Add String" Command="{Binding AddStringParameter}" WidthRequest="110" Margin="0,0,4,4" FontSize="12"/>
-                    <Button Text="Add Boolean" Command="{Binding AddBooleanParameter}" WidthRequest="110" Margin="0,0,4,4" FontSize="12"/>
-                    <Button Text="Add Date" Command="{Binding AddDateParameter}" WidthRequest="110" Margin="0,0,4,4" FontSize="12"/>
-                    <Button Text="Add Date &amp; Time" Command="{Binding AddDateTimeParameter}" WidthRequest="110" Margin="0,0,4,4" FontSize="12"/>
-                    <Button Text="Add Time" Command="{Binding AddTimeParameter}" WidthRequest="110" Margin="0,0,4,4" FontSize="12"/>
-                    <Button Text="Add Duration" Command="{Binding AddDurationParameter}" WidthRequest="110" Margin="0,0,4,4" FontSize="12"/>
-                    <Button Text="Add Geo" Command="{Binding AddGeoParameter}" WidthRequest="110" Margin="0,0,4,4" FontSize="12"/>
-                    <Button Text="Add Calculation" Command="{Binding AddCalcParameter}" WidthRequest="110" Margin="0,0,4,4" FontSize="12"/>
+                <FlexLayout Wrap="Wrap"
+                        Direction="Row"
+                        Margin="0,4,0,0">
+                    <Button Text="Add Numeric"
+                            Command="{Binding AddNumericParameter}"
+                            WidthRequest="110"
+                            Margin="0,0,4,4"
+                            FontSize="12"/>
+                    <Button Text="Add String"
+                            Command="{Binding AddStringParameter}"
+                            WidthRequest="110"
+                            Margin="0,0,4,4"
+                            FontSize="12"/>
+                    <Button Text="Add Boolean"
+                            Command="{Binding AddBooleanParameter}"
+                            WidthRequest="110"
+                            Margin="0,0,4,4"
+                            FontSize="12"/>
+                    <Button Text="Add Date"
+                            Command="{Binding AddDateParameter}"
+                            WidthRequest="110"
+                            Margin="0,0,4,4"
+                            FontSize="12"/>
+                    <Button Text="Add Date &amp; Time"
+                            Command="{Binding AddDateTimeParameter}"
+                            WidthRequest="110"
+                            Margin="0,0,4,4"
+                            FontSize="12"/>
+                    <Button Text="Add Time"
+                            Command="{Binding AddTimeParameter}"
+                            WidthRequest="110"
+                            Margin="0,0,4,4"
+                            FontSize="12"/>
+                    <Button Text="Add Duration"
+                            Command="{Binding AddDurationParameter}"
+                            WidthRequest="110"
+                            Margin="0,0,4,4"
+                            FontSize="12"/>
+                    <Button Text="Add Geo"
+                            Command="{Binding AddGeoParameter}"
+                            WidthRequest="110"
+                            Margin="0,0,4,4"
+                            FontSize="12"/>
+                    <Button Text="Add Calculation"
+                            Command="{Binding AddCalcParameter}"
+                            WidthRequest="110"
+                            Margin="0,0,4,4"
+                            FontSize="12"/>
                 </FlexLayout>
 
                 <!-- Machine-Readable Content -->
-                <Label Text="Machine-Readable Content" FontSize="20" FontAttributes="Bold" Margin="0,16,0,0"/>
+                <Label Text="Machine-Readable Content"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        Margin="0,16,0,0"/>
                 <Label Text="Following is the embedded Machine-readable content of the contract (as XML):"/>
                 <Editor x:Name="MachineReadableXmlEditor"
                         FontFamily="Courier New"
@@ -248,7 +415,10 @@
                         TextChanged="MachineReadableXmlEditor_TextChanged"/>
 
                 <!-- Human-Readable Content -->
-                <Label Text="Human-Readable Content" FontSize="20" FontAttributes="Bold" Margin="0,16,0,0"/>
+                <Label Text="Human-Readable Content"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        Margin="0,16,0,0"/>
                 <Label Text="Following is the human-readable text of the contract (as Markdown):"/>
                 <Editor x:Name="HumanReadableMarkdownEditor"
                         FontFamily="Courier New"
@@ -257,7 +427,9 @@
                         MinimumHeightRequest="100"
                         TextChanged="HumanReadableMarkdownEditor_TextChanged"/>
                 <Label Text="The human-readable text will be rendered as follows:"/>
-                <Label Text="{Binding HumanReadable}" BackgroundColor="White" Padding="10"/>
+                <Label Text="{Binding HumanReadable}"
+                        BackgroundColor="White"
+                        Padding="10"/>
             </VerticalStackLayout>
         </ScrollView>
     </Grid>

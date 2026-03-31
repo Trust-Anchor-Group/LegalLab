@@ -2,7 +2,10 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:conv="clr-namespace:LegalLabMaui.Converters"
+             xmlns:legal="clr-namespace:LegalLabMaui.Models.Legal"
+             xmlns:standards="clr-namespace:LegalLabMaui.Models.Standards"
              x:Class="LegalLabMaui.Views.LegalIdPage"
+             x:DataType="legal:LegalModel"
              Title="Legal ID">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -12,85 +15,131 @@
 
         <!-- Left: Personal/Organization fields -->
         <ScrollView Grid.Column="0">
-            <VerticalStackLayout Padding="16" Spacing="6">
+            <VerticalStackLayout Padding="16"
+                    Spacing="6">
 
-                <Label Text="Personal Information" FontAttributes="Bold" FontSize="18"
-                       HorizontalOptions="Center" TextDecorations="Underline"/>
+                <Label Text="Personal Information"
+                        FontAttributes="Bold"
+                        FontSize="18"
+                       HorizontalOptions="Center"
+                        TextDecorations="Underline"/>
 
                 <Label Text="First Name:"/>
                 <Entry Text="{Binding FirstName}"/>
-                <Label Text="Middle Name:" Margin="0,8,0,0"/>
+                <Label Text="Middle Name:"
+                        Margin="0,8,0,0"/>
                 <Entry Text="{Binding MiddleName}"/>
-                <Label Text="Last Name:" Margin="0,8,0,0"/>
+                <Label Text="Last Name:"
+                        Margin="0,8,0,0"/>
                 <Entry Text="{Binding LastName}"/>
-                <Label Text="Personal Number:" Margin="0,8,0,0"/>
+                <Label Text="Personal Number:"
+                        Margin="0,8,0,0"/>
                 <Entry Text="{Binding PersonalNumber}"/>
-                <Label Text="Address:" Margin="0,8,0,0"/>
+                <Label Text="Address:"
+                        Margin="0,8,0,0"/>
                 <Entry Text="{Binding Address}"/>
-                <Label Text="Address, row 2:" Margin="0,8,0,0"/>
+                <Label Text="Address, row 2:"
+                        Margin="0,8,0,0"/>
                 <Entry Text="{Binding Address2}"/>
-                <Label Text="Postal Code (or ZIP):" Margin="0,8,0,0"/>
+                <Label Text="Postal Code (or ZIP):"
+                        Margin="0,8,0,0"/>
                 <Entry Text="{Binding Zip}"/>
-                <Label Text="Area:" Margin="0,8,0,0"/>
+                <Label Text="Area:"
+                        Margin="0,8,0,0"/>
                 <Entry Text="{Binding Area}"/>
-                <Label Text="City:" Margin="0,8,0,0"/>
+                <Label Text="City:"
+                        Margin="0,8,0,0"/>
                 <Entry Text="{Binding City}"/>
-                <Label Text="Region:" Margin="0,8,0,0"/>
+                <Label Text="Region:"
+                        Margin="0,8,0,0"/>
                 <Entry Text="{Binding Region}"/>
-                <Label Text="Country:" Margin="0,8,0,0"/>
+                <Label Text="Country:"
+                        Margin="0,8,0,0"/>
                 <Picker ItemsSource="{Binding CountryCodes}"
-                        ItemDisplayBinding="{Binding Country}"
+                        ItemDisplayBinding="{Binding Country, x:DataType=standards:Iso_3166_1+Record}"
                         SelectedItem="{Binding SelectedCountry}"/>
-                <Label Text="Nationality:" Margin="0,8,0,0"/>
+                <Label Text="Nationality:"
+                        Margin="0,8,0,0"/>
                 <Picker ItemsSource="{Binding CountryCodes}"
-                        ItemDisplayBinding="{Binding Country}"
+                        ItemDisplayBinding="{Binding Country, x:DataType=standards:Iso_3166_1+Record}"
                         SelectedItem="{Binding SelectedNationality}"/>
-                <Label Text="Gender:" Margin="0,8,0,0"/>
+                <Label Text="Gender:"
+                        Margin="0,8,0,0"/>
                 <Picker ItemsSource="{Binding GenderCodes}"
-                        ItemDisplayBinding="{Binding Gender}"
+                        ItemDisplayBinding="{Binding Gender, x:DataType=standards:Iso_5218+Record}"
                         SelectedItem="{Binding SelectedGender}"/>
-                <Label Text="Birth Date:" Margin="0,8,0,0"/>
+                <Label Text="Birth Date:"
+                        Margin="0,8,0,0"/>
                 <Entry Text="{Binding BirthDate, Converter={conv:DateToString}}"/>
-                <Label Text="E-mail address:" Margin="0,8,0,0"/>
-                <Entry Text="{Binding EMail}" Keyboard="Email"/>
+                <Label Text="E-mail address:"
+                        Margin="0,8,0,0"/>
+                <Entry Text="{Binding EMail}"
+                        Keyboard="Email"/>
 
-                <Label Text="Organization Information" FontAttributes="Bold" FontSize="18"
-                       HorizontalOptions="Center" TextDecorations="Underline" Margin="0,16,0,0"/>
+                <Label Text="Organization Information"
+                        FontAttributes="Bold"
+                        FontSize="18"
+                       HorizontalOptions="Center"
+                        TextDecorations="Underline"
+                        Margin="0,16,0,0"/>
 
                 <Label Text="Name:"/>
                 <Entry Text="{Binding OrgName}"/>
-                <Label Text="Department:" Margin="0,8,0,0"/>
+                <Label Text="Department:"
+                        Margin="0,8,0,0"/>
                 <Entry Text="{Binding OrgDepartment}"/>
-                <Label Text="Role:" Margin="0,8,0,0"/>
+                <Label Text="Role:"
+                        Margin="0,8,0,0"/>
                 <Entry Text="{Binding OrgRole}"/>
-                <Label Text="Organization Number:" Margin="0,8,0,0"/>
+                <Label Text="Organization Number:"
+                        Margin="0,8,0,0"/>
                 <Entry Text="{Binding OrgNumber}"/>
-                <Label Text="Address:" Margin="0,8,0,0"/>
+                <Label Text="Address:"
+                        Margin="0,8,0,0"/>
                 <Entry Text="{Binding OrgAddress}"/>
-                <Label Text="Address, row 2:" Margin="0,8,0,0"/>
+                <Label Text="Address, row 2:"
+                        Margin="0,8,0,0"/>
                 <Entry Text="{Binding OrgAddress2}"/>
-                <Label Text="Postal Code (or ZIP):" Margin="0,8,0,0"/>
+                <Label Text="Postal Code (or ZIP):"
+                        Margin="0,8,0,0"/>
                 <Entry Text="{Binding OrgZip}"/>
-                <Label Text="Area:" Margin="0,8,0,0"/>
+                <Label Text="Area:"
+                        Margin="0,8,0,0"/>
                 <Entry Text="{Binding OrgArea}"/>
-                <Label Text="City:" Margin="0,8,0,0"/>
+                <Label Text="City:"
+                        Margin="0,8,0,0"/>
                 <Entry Text="{Binding OrgCity}"/>
-                <Label Text="Region:" Margin="0,8,0,0"/>
+                <Label Text="Region:"
+                        Margin="0,8,0,0"/>
                 <Entry Text="{Binding OrgRegion}"/>
-                <Label Text="Country:" Margin="0,8,0,0"/>
+                <Label Text="Country:"
+                        Margin="0,8,0,0"/>
                 <Picker ItemsSource="{Binding CountryCodes}"
-                        ItemDisplayBinding="{Binding Country}"
+                        ItemDisplayBinding="{Binding Country, x:DataType=standards:Iso_3166_1+Record}"
                         SelectedItem="{Binding SelectedOrgCountry}"/>
 
-                <Label Text="Other" FontAttributes="Bold" FontSize="18"
-                       HorizontalOptions="Center" TextDecorations="Underline" Margin="0,16,0,0"/>
-                <Label Text="Preview ID:" Margin="0,8,0,0"/>
+                <Label Text="Other"
+                        FontAttributes="Bold"
+                        FontSize="18"
+                       HorizontalOptions="Center"
+                        TextDecorations="Underline"
+                        Margin="0,16,0,0"/>
+                <Label Text="Preview ID:"
+                        Margin="0,8,0,0"/>
                 <Entry Text="{Binding PreviewId}"/>
 
-                <Label Text="Commands" FontAttributes="Bold" FontSize="18"
-                       HorizontalOptions="Center" TextDecorations="Underline" Margin="0,16,0,0"/>
-                <Button Text="Preview" Command="{Binding Preview}" Margin="0,8,0,0"/>
-                <Button Text="Apply" Command="{Binding Apply}" Margin="0,4,0,0"/>
+                <Label Text="Commands"
+                        FontAttributes="Bold"
+                        FontSize="18"
+                       HorizontalOptions="Center"
+                        TextDecorations="Underline"
+                        Margin="0,16,0,0"/>
+                <Button Text="Preview"
+                        Command="{Binding Preview}"
+                        Margin="0,8,0,0"/>
+                <Button Text="Apply"
+                        Command="{Binding Apply}"
+                        Margin="0,4,0,0"/>
             </VerticalStackLayout>
         </ScrollView>
 
@@ -99,19 +148,26 @@
                         ItemsSource="{Binding Identities}"
                         SelectionMode="Single">
             <CollectionView.Header>
-                <Grid Padding="8,4" BackgroundColor="#DDDDDD">
+                <Grid Padding="8,4"
+                        BackgroundColor="#DDDDDD">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="120"/>
                         <ColumnDefinition Width="90"/>
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Column="0" Text="ID" FontAttributes="Bold"/>
-                    <Label Grid.Column="1" Text="Created" FontAttributes="Bold"/>
-                    <Label Grid.Column="2" Text="State" FontAttributes="Bold"/>
+                    <Label Grid.Column="0"
+                            Text="ID"
+                            FontAttributes="Bold"/>
+                    <Label Grid.Column="1"
+                            Text="Created"
+                            FontAttributes="Bold"/>
+                    <Label Grid.Column="2"
+                            Text="State"
+                            FontAttributes="Bold"/>
                 </Grid>
             </CollectionView.Header>
             <CollectionView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="legal:IdentityWrapper">
                     <Grid Padding="8,4">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -119,18 +175,33 @@
                             <ColumnDefinition Width="90"/>
                         </Grid.ColumnDefinitions>
                         <VerticalStackLayout Grid.Column="0">
-                            <Label Text="{Binding Id}" LineBreakMode="CharacterWrap" FontSize="12"/>
-                            <Image Source="{Binding QrCodeUrl}" WidthRequest="150" HeightRequest="150"
-                                   IsVisible="{Binding IsSelected}" Margin="0,4,0,0"/>
-                            <Button Text="Upload Attachment" Command="{Binding UploadAttachment}"
-                                    IsVisible="{Binding IsCreated}" Margin="0,4,0,0" Padding="8,2"/>
-                            <Button Text="Ready For Approval" Command="{Binding ReadyForApproval}"
-                                    IsVisible="{Binding IsCreated}" Margin="0,4,0,0" Padding="8,2"/>
+                            <Label Text="{Binding Id}"
+                                    LineBreakMode="CharacterWrap"
+                                    FontSize="12"/>
+                            <Image Source="{Binding QrCodeUrl}"
+                                    WidthRequest="150"
+                                    HeightRequest="150"
+                                   IsVisible="{Binding IsSelected}"
+                                    Margin="0,4,0,0"/>
+                            <Button Text="Upload Attachment"
+                                    Command="{Binding UploadAttachment}"
+                                    IsVisible="{Binding IsCreated}"
+                                    Margin="0,4,0,0"
+                                    Padding="8,2"/>
+                            <Button Text="Ready For Approval"
+                                    Command="{Binding ReadyForApproval}"
+                                    IsVisible="{Binding IsCreated}"
+                                    Margin="0,4,0,0"
+                                    Padding="8,2"/>
                         </VerticalStackLayout>
-                        <Label Grid.Column="1" Text="{Binding Created, Converter={conv:DateTimeToString}}"
-                               FontSize="12" VerticalOptions="Start"/>
-                        <Label Grid.Column="2" Text="{Binding State, Converter={conv:ToString}}"
-                               FontSize="12" VerticalOptions="Start"/>
+                        <Label Grid.Column="1"
+                                Text="{Binding Created, Converter={conv:DateTimeToString}}"
+                               FontSize="12"
+                                VerticalOptions="Start"/>
+                        <Label Grid.Column="2"
+                                Text="{Binding State, Converter={conv:ToString}}"
+                               FontSize="12"
+                                VerticalOptions="Start"/>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

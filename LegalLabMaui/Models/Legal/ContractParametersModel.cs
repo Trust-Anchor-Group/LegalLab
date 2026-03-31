@@ -108,6 +108,12 @@ public class ContractParametersModel : Model
         set => this.languages.Value = value;
     }
 
+    public Iso__639_1.Record? SelectedLanguage
+    {
+        get => Array.Find(this.Languages, record => record.Code == this.Language);
+        set => this.Language = value?.Code ?? string.Empty;
+    }
+
     protected virtual async Task<bool> SetLanguage(string Language)
     {
         try

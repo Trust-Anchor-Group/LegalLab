@@ -14,7 +14,13 @@ public partial class WalletPage : ContentPage
 
     private void OnTransactionSelected(object sender, SelectionChangedEventArgs e)
     {
-        if (BindingContext is WalletModel model && e.CurrentSelection.Count > 0)
-            model.SelectedItem = e.CurrentSelection[0] as AccountEventWrapper;
+        if (BindingContext is not WalletModel model)
+            return;
+
+        if (model.SelectedItem is not null)
+            model.SelectedItem.IsSelected = false;
+
+        if (e.CurrentSelection.Count > 0 && e.CurrentSelection[0] is AccountEventWrapper item)
+            item.IsSelected = true;
     }
 }

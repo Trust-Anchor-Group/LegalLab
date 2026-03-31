@@ -48,6 +48,12 @@ namespace LegalLabMaui.Views.Dialogs
 		/// </summary>
 		public static Iso__639_1.Record[] Languages => Iso__639_1.Data;
 
+		public Iso__639_1.Record? SelectedLanguageRecord
+		{
+			get => Array.Find(Languages, record => record.Code == this.SelectedLanguage);
+			set => this.SelectedLanguage = value?.Code ?? string.Empty;
+		}
+
 		/// <summary>
 		/// Add Command
 		/// </summary>

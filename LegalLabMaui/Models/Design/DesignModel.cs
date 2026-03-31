@@ -574,6 +574,12 @@ namespace LegalLabMaui.Models.Design
 			}
 		}
 
+		public Iso__639_1.Record? SelectedLanguage
+		{
+			get => Array.Find(this.Languages, record => record.Code == this.Language);
+			set => this.Language = value?.Code ?? string.Empty;
+		}
+
 		/// <summary>
 		/// If contract must be signed before a specific time.
 		/// </summary>

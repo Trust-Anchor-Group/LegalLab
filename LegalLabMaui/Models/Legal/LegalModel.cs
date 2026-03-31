@@ -743,6 +743,12 @@ namespace LegalLabMaui.Models.Legal
 		/// </summary>
 		public static Iso_3166_1.Record[] CountryCodes => Iso_3166_1.Data;
 
+		public Iso_3166_1.Record? SelectedCountry
+		{
+			get => Array.Find(CountryCodes, record => record.Code == this.Country);
+			set => this.Country = value?.Code ?? string.Empty;
+		}
+
 		/// <summary>
 		/// ISO 5218 gender codes
 		/// </summary>
@@ -755,6 +761,18 @@ namespace LegalLabMaui.Models.Legal
 		{
 			get => this.nationality.Value;
 			set => this.nationality.Value = value;
+		}
+
+		public Iso_3166_1.Record? SelectedNationality
+		{
+			get => Array.Find(CountryCodes, record => record.Code == this.Nationality);
+			set => this.Nationality = value?.Code ?? string.Empty;
+		}
+
+		public Iso_5218.Record? SelectedGender
+		{
+			get => Array.Find(GenderCodes, record => record.LegalId == this.Gender || record.Code.ToString() == this.Gender);
+			set => this.Gender = value?.LegalId ?? string.Empty;
 		}
 
 		/// <summary>
@@ -881,6 +899,12 @@ namespace LegalLabMaui.Models.Legal
 		{
 			get => this.orgCountry.Value;
 			set => this.orgCountry.Value = value;
+		}
+
+		public Iso_3166_1.Record? SelectedOrgCountry
+		{
+			get => Array.Find(CountryCodes, record => record.Code == this.OrgCountry);
+			set => this.OrgCountry = value?.Code ?? string.Empty;
 		}
 
 		/// <summary>

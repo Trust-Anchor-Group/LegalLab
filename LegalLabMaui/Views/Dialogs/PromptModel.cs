@@ -1,5 +1,8 @@
 namespace LegalLabMaui.Views.Dialogs
 {
+	using System.Windows.Input;
+	using Command = LegalLabMaui.Models.Command;
+
 	/// <summary>
 	/// View model for the prompt dialog.
 	/// Replaces the WPF PromptDialog / ShowDialog pattern — callers should use
@@ -10,6 +13,15 @@ namespace LegalLabMaui.Views.Dialogs
 	/// </summary>
 	public class PromptModel
 	{
+		private readonly ICommand ok;
+		private readonly ICommand cancel;
+
+		public PromptModel()
+		{
+			this.ok = new Command(() => Task.CompletedTask);
+			this.cancel = new Command(() => Task.CompletedTask);
+		}
+
 		/// <summary>
 		/// Title of dialog
 		/// </summary>
@@ -34,6 +46,10 @@ namespace LegalLabMaui.Views.Dialogs
 		/// Text of the Cancel button
 		/// </summary>
 		public string CancelText { get; set; } = "Cancel";
+
+		public ICommand Ok => this.ok;
+
+		public ICommand Cancel => this.cancel;
 
 		/// <summary>
 		/// Shows the prompt using the MAUI Shell and stores the result in <see cref="Text"/>.

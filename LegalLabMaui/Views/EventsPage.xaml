@@ -2,12 +2,15 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:conv="clr-namespace:LegalLabMaui.Converters"
+             xmlns:events="clr-namespace:LegalLabMaui.Models.Events"
              x:Class="LegalLabMaui.Views.EventsPage"
+             x:DataType="events:ObservableEventSink"
              Title="Events">
     <CollectionView ItemsSource="{Binding Events}"
                     SelectionMode="Single">
         <CollectionView.Header>
-            <Grid Padding="8,4" BackgroundColor="#DDDDDD">
+            <Grid Padding="8,4"
+                    BackgroundColor="#DDDDDD">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="70"/>
                     <ColumnDefinition Width="70"/>
@@ -17,18 +20,33 @@
                     <ColumnDefinition Width="200"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Text="Time" FontAttributes="Bold"/>
-                <Label Grid.Column="1" Text="Type" FontAttributes="Bold"/>
-                <Label Grid.Column="2" Text="Level" FontAttributes="Bold"/>
-                <Label Grid.Column="3" Text="Event ID" FontAttributes="Bold"/>
-                <Label Grid.Column="4" Text="Object" FontAttributes="Bold"/>
-                <Label Grid.Column="5" Text="Actor" FontAttributes="Bold"/>
-                <Label Grid.Column="6" Text="Message" FontAttributes="Bold"/>
+                <Label Grid.Column="0"
+                        Text="Time"
+                        FontAttributes="Bold"/>
+                <Label Grid.Column="1"
+                        Text="Type"
+                        FontAttributes="Bold"/>
+                <Label Grid.Column="2"
+                        Text="Level"
+                        FontAttributes="Bold"/>
+                <Label Grid.Column="3"
+                        Text="Event ID"
+                        FontAttributes="Bold"/>
+                <Label Grid.Column="4"
+                        Text="Object"
+                        FontAttributes="Bold"/>
+                <Label Grid.Column="5"
+                        Text="Actor"
+                        FontAttributes="Bold"/>
+                <Label Grid.Column="6"
+                        Text="Message"
+                        FontAttributes="Bold"/>
             </Grid>
         </CollectionView.Header>
         <CollectionView.ItemTemplate>
-            <DataTemplate>
-                <Grid Padding="8,2" BackgroundColor="{Binding BackgroundColor}">
+            <DataTemplate x:DataType="events:LogItem">
+                <Grid Padding="8,2"
+                        BackgroundColor="{Binding BackgroundColor}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="70"/>
                         <ColumnDefinition Width="70"/>
@@ -38,19 +56,33 @@
                         <ColumnDefinition Width="200"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Column="0" Text="{Binding Time}" FontSize="12"
+                    <Label Grid.Column="0"
+                            Text="{Binding Time}"
+                            FontSize="12"
                            TextColor="{Binding ForegroundColor}"/>
-                    <Label Grid.Column="1" Text="{Binding Type}" FontSize="12"
+                    <Label Grid.Column="1"
+                            Text="{Binding Type}"
+                            FontSize="12"
                            TextColor="{Binding ForegroundColor}"/>
-                    <Label Grid.Column="2" Text="{Binding Level}" FontSize="12"
+                    <Label Grid.Column="2"
+                            Text="{Binding Level}"
+                            FontSize="12"
                            TextColor="{Binding ForegroundColor}"/>
-                    <Label Grid.Column="3" Text="{Binding EventId}" FontSize="12"
+                    <Label Grid.Column="3"
+                            Text="{Binding EventId}"
+                            FontSize="12"
                            TextColor="{Binding ForegroundColor}"/>
-                    <Label Grid.Column="4" Text="{Binding Object}" FontSize="12"
+                    <Label Grid.Column="4"
+                            Text="{Binding Object}"
+                            FontSize="12"
                            TextColor="{Binding ForegroundColor}"/>
-                    <Label Grid.Column="5" Text="{Binding Actor}" FontSize="12"
+                    <Label Grid.Column="5"
+                            Text="{Binding Actor}"
+                            FontSize="12"
                            TextColor="{Binding ForegroundColor}"/>
-                    <Label Grid.Column="6" Text="{Binding Message}" FontSize="12"
+                    <Label Grid.Column="6"
+                            Text="{Binding Message}"
+                            FontSize="12"
                            LineBreakMode="WordWrap"
                            TextColor="{Binding ForegroundColor}"/>
                 </Grid>

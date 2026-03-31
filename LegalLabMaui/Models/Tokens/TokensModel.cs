@@ -87,6 +87,7 @@ namespace LegalLabMaui.Models.Tokens
 			{
 				this.selectedItem = null;
 				this.RaisePropertyChanged(nameof(this.SelectedItem));
+				this.RaisePropertyChanged(nameof(this.SelectedToken));
 
 				this.events = null;
 				this.RaisePropertyChanged(nameof(this.Events));
@@ -102,6 +103,7 @@ namespace LegalLabMaui.Models.Tokens
 			{
 				this.selectedItem = sender as TokenModel;
 				this.RaisePropertyChanged(nameof(this.SelectedItem));
+				this.RaisePropertyChanged(nameof(this.SelectedToken));
 
 				bool PrepareMenuItems = true;
 
@@ -281,8 +283,18 @@ namespace LegalLabMaui.Models.Tokens
 		public TokenModel? SelectedItem
 		{
 			get => this.selectedItem;
-			set => this.selectedItem = value;
+			set
+			{
+				if (!ReferenceEquals(this.selectedItem, value))
+				{
+					this.selectedItem = value;
+					this.RaisePropertyChanged(nameof(this.SelectedItem));
+					this.RaisePropertyChanged(nameof(this.SelectedToken));
+				}
+			}
 		}
+
+		public TokenModel? SelectedToken => this.selectedItem;
 
 		/// <summary>
 		/// Events of selected item.

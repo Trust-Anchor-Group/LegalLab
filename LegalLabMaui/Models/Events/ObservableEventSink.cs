@@ -11,6 +11,7 @@ public class ObservableEventSink(int MaxCount) : EventSink(string.Empty)
 {
     private readonly int maxCount = MaxCount;
     public ObservableCollection<LogItem> Items { get; } = [];
+    public ObservableCollection<LogItem> Events => this.Items;
 
     public override Task Queue(Event Event)
     {

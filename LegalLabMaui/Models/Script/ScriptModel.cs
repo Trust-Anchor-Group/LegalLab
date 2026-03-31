@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Waher.Content.Markdown;
 using Waher.Content.Markdown.Rendering;
 using Waher.Events;
@@ -14,6 +15,8 @@ using Waher.Script.Objects.Matrices;
 
 namespace LegalLabMaui.Models.Script
 {
+	using Command = LegalLabMaui.Models.Command;
+
 	/// <summary>
 	/// Interaction logic for the script view.
 	/// From the IoTGateway project, with permission.
@@ -26,6 +29,7 @@ namespace LegalLabMaui.Models.Script
 		private readonly Property<string> input;
 		private readonly Property<string> output;
 		private readonly Property<ObservableCollection<ScriptHistoryItem>> history;
+		private readonly ICommand run;
 
 		/// <summary>
 		/// Interaction logic for the script view.
@@ -36,6 +40,7 @@ namespace LegalLabMaui.Models.Script
 			this.input = new Property<string>(nameof(this.Input), string.Empty, this);
 			this.output = new Property<string>(nameof(this.Output), string.Empty, this);
 			this.history = new Property<ObservableCollection<ScriptHistoryItem>>(nameof(this.History), [], this);
+			this.run = new Command(this.ExecuteRunAsync);
 
 			variables.ConsoleOut = new PrintOutput(this);
 		}
@@ -77,12 +82,23 @@ namespace LegalLabMaui.Models.Script
 		/// </summary>
 		public static Variables Variables => variables;
 
+		/// <summary>
+		/// Command used to execute the current script input.
+		/// </summary>
+		public ICommand Run => this.run;
+
 		public static HtmlSettings GetHtmlSettings()
 		{
 			return new HtmlSettings()
 			{
 				XmlEntitiesOnly = true
 			};
+		}
+
+		private Task ExecuteRunAsync()
+		{
+			this.Execute();
+			return Task.CompletedTask;
 		}
 
 		/// <summary>

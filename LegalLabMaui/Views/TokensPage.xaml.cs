@@ -14,7 +14,13 @@ public partial class TokensPage : ContentPage
 
     private void OnTokenSelected(object sender, SelectionChangedEventArgs e)
     {
-        if (BindingContext is TokensModel model && e.CurrentSelection.Count > 0)
-            model.SelectedItem = e.CurrentSelection[0] as TokenModel;
+        if (BindingContext is not TokensModel model)
+            return;
+
+        if (model.SelectedItem is not null)
+            model.SelectedItem.IsSelected = false;
+
+        if (e.CurrentSelection.Count > 0 && e.CurrentSelection[0] is TokenModel item)
+            item.IsSelected = true;
     }
 }

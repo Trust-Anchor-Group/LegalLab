@@ -245,6 +245,7 @@ public class NetworkModel : PersistedModel
     public WalletModel? Wallet => this.walletModel;
     public TokensModel? Tokens => this.tokensModel;
     public ObservableSniffer? Sniffer => this.sniffer;
+    public ObservableCollection<SniffItem> SnifferItems => this.sniffer?.Items ?? [];
 
     // ── Commands ─────────────────────────────────────────────────────────────
 
@@ -264,6 +265,7 @@ public class NetworkModel : PersistedModel
     {
         this.sniffer = new ObservableSniffer(1000);
         this.sniffer.SelectionChanged += this.Sniffer_SelectionChanged;
+        this.RaisePropertyChanged(nameof(this.SnifferItems));
 
         if (this.ConnectOnStartup)
             await this.ExecuteConnect();

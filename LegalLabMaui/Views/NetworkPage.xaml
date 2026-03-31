@@ -2,7 +2,10 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:conv="clr-namespace:LegalLabMaui.Converters"
+             xmlns:network="clr-namespace:LegalLabMaui.Models.Network"
+             xmlns:sniffer="clr-namespace:LegalLabMaui.Models.Network.Sniffer"
              x:Class="LegalLabMaui.Views.NetworkPage"
+             x:DataType="network:NetworkModel"
              Title="Network">
     <Grid>
         <Grid.RowDefinitions>
@@ -12,39 +15,57 @@
 
         <!-- Connection settings panel -->
         <ScrollView Grid.Row="0">
-            <VerticalStackLayout Padding="16" Spacing="6">
-                <Label Text="XMPP Server:" FontAttributes="Bold"/>
-                <Entry Text="{Binding XmppServer}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+            <VerticalStackLayout Padding="16"
+                    Spacing="6">
+                <Label Text="XMPP Server:"
+                        FontAttributes="Bold"/>
+                <Entry Text="{Binding XmppServer}"
+                        IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
 
-                <Label Text="Account:" FontAttributes="Bold" Margin="0,8,0,0"/>
-                <Entry Text="{Binding Account}" IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                <Label Text="Account:"
+                        FontAttributes="Bold"
+                        Margin="0,8,0,0"/>
+                <Entry Text="{Binding Account}"
+                        IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
 
-                <Label Text="Password:" FontAttributes="Bold" Margin="0,8,0,0"/>
-                <Entry x:Name="XmppPassword" IsPassword="True"
+                <Label Text="Password:"
+                        FontAttributes="Bold"
+                        Margin="0,8,0,0"/>
+                <Entry x:Name="XmppPassword"
+                        IsPassword="True"
                        IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"
                        TextChanged="XmppPassword_TextChanged"/>
 
                 <CheckBox IsChecked="{Binding CreateAccount}"
                           IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"
                           Margin="0,8,0,0"/>
-                <Label Text="Create Account, if none exists." Margin="0,-4,0,0"/>
+                <Label Text="Create Account, if none exists."
+                        Margin="0,-4,0,0"/>
 
-                <Label Text="Repeat Password:" FontAttributes="Bold" Margin="0,8,0,0"
+                <Label Text="Repeat Password:"
+                        FontAttributes="Bold"
+                        Margin="0,8,0,0"
                        IsVisible="{Binding CreateAccount}"/>
-                <Entry x:Name="XmppPassword2" IsPassword="True"
+                <Entry x:Name="XmppPassword2"
+                        IsPassword="True"
                        IsVisible="{Binding CreateAccount}"
                        IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"
                        TextChanged="XmppPassword2_TextChanged"/>
 
-                <Label Text="API Key (for creating accounts):" FontAttributes="Bold" Margin="0,8,0,0"
+                <Label Text="API Key (for creating accounts):"
+                        FontAttributes="Bold"
+                        Margin="0,8,0,0"
                        IsVisible="{Binding CreateAccount}"/>
                 <Entry Text="{Binding ApiKey}"
                        IsVisible="{Binding CreateAccount}"
                        IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
 
-                <Label Text="API Key Secret (for creating accounts):" FontAttributes="Bold" Margin="0,8,0,0"
+                <Label Text="API Key Secret (for creating accounts):"
+                        FontAttributes="Bold"
+                        Margin="0,8,0,0"
                        IsVisible="{Binding CreateAccount}"/>
-                <Entry x:Name="ApiKeySecret" IsPassword="True"
+                <Entry x:Name="ApiKeySecret"
+                        IsPassword="True"
                        IsVisible="{Binding CreateAccount}"
                        IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"
                        TextChanged="ApiKeySecret_TextChanged"/>
@@ -52,30 +73,48 @@
                 <CheckBox IsChecked="{Binding TrustServerCertificate}"
                           IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"
                           Margin="0,8,0,0"/>
-                <Label Text="Trust server certificate." Margin="0,-4,0,0"/>
+                <Label Text="Trust server certificate."
+                        Margin="0,-4,0,0"/>
 
                 <CheckBox IsChecked="{Binding AllowInsecureAlgorithms}"
                           IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"
                           Margin="0,4,0,0"/>
-                <Label Text="Allow insecure authentication." Margin="0,-4,0,0"/>
+                <Label Text="Allow insecure authentication."
+                        Margin="0,-4,0,0"/>
 
                 <CheckBox IsChecked="{Binding StorePasswordInsteadOfDigest}"
                           IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"
                           Margin="0,4,0,0"/>
-                <Label Text="Store password instead of digest." Margin="0,-4,0,0"/>
+                <Label Text="Store password instead of digest."
+                        Margin="0,-4,0,0"/>
 
-                <Button Text="Connect" Command="{Binding Connect}" Margin="0,8,0,0"
+                <Button Text="Connect"
+                        Command="{Binding Connect}"
+                        Margin="0,8,0,0"
                         IsVisible="{Binding Connected, Converter={conv:Not}}"/>
-                <Button Text="Disconnect" Command="{Binding Disconnect}" Margin="0,8,0,0"
+                <Button Text="Disconnect"
+                        Command="{Binding Disconnect}"
+                        Margin="0,8,0,0"
                         IsVisible="{Binding Connected}"/>
-                <Button Text="Randomize Password" Command="{Binding RandomizePassword}"
-                        IsEnabled="{Binding Connected, Converter={conv:Not}}" Margin="0,4,0,0"/>
-                <Button Text="New Account" Command="{Binding NewAccount}" Margin="0,4,0,0"/>
-                <Button Text="Save Credentials" Command="{Binding SaveCredentials}" Margin="0,4,0,0"/>
-                <Button Text="Delete Credentials" Command="{Binding DeleteCredentials}" Margin="0,4,0,0"/>
+                <Button Text="Randomize Password"
+                        Command="{Binding RandomizePassword}"
+                        IsEnabled="{Binding Connected, Converter={conv:Not}}"
+                        Margin="0,4,0,0"/>
+                <Button Text="New Account"
+                        Command="{Binding NewAccount}"
+                        Margin="0,4,0,0"/>
+                <Button Text="Save Credentials"
+                        Command="{Binding SaveCredentials}"
+                        Margin="0,4,0,0"/>
+                <Button Text="Delete Credentials"
+                        Command="{Binding DeleteCredentials}"
+                        Margin="0,4,0,0"/>
 
-                <Label Text="Saved accounts:" FontAttributes="Bold" Margin="0,8,0,0"/>
-                <Picker ItemsSource="{Binding SavedAccounts}" SelectedItem="{Binding SelectedAccount}"/>
+                <Label Text="Saved accounts:"
+                        FontAttributes="Bold"
+                        Margin="0,8,0,0"/>
+                <Picker ItemsSource="{Binding SavedAccounts}"
+                        SelectedItem="{Binding SelectedAccount}"/>
             </VerticalStackLayout>
         </ScrollView>
 
@@ -84,30 +123,38 @@
                         ItemsSource="{Binding SnifferItems}"
                         Margin="0,4,0,0">
             <CollectionView.Header>
-                <Grid Padding="8,4" BackgroundColor="#DDDDDD">
+                <Grid Padding="8,4"
+                        BackgroundColor="#DDDDDD">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Column="0" Text="Time" FontAttributes="Bold"/>
-                    <Label Grid.Column="1" Text="Content" FontAttributes="Bold"/>
+                    <Label Grid.Column="0"
+                            Text="Time"
+                            FontAttributes="Bold"/>
+                    <Label Grid.Column="1"
+                            Text="Content"
+                            FontAttributes="Bold"/>
                 </Grid>
             </CollectionView.Header>
             <CollectionView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="sniffer:SniffItem">
                     <Grid Padding="8,2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="80"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Column="0" Text="{Binding Time}"
+                        <Label Grid.Column="0"
+                                Text="{Binding Time}"
                                TextColor="{Binding ForegroundColor}"
                                BackgroundColor="{Binding BackgroundColor}"
                                FontSize="12"/>
-                        <Label Grid.Column="1" Text="{Binding Message}"
+                        <Label Grid.Column="1"
+                                Text="{Binding Message}"
                                TextColor="{Binding ForegroundColor}"
                                BackgroundColor="{Binding BackgroundColor}"
-                               FontSize="12" LineBreakMode="WordWrap"/>
+                               FontSize="12"
+                                LineBreakMode="WordWrap"/>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
