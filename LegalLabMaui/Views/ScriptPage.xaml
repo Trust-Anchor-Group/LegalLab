@@ -17,6 +17,7 @@
                         ItemsSource="{Binding History}"
                         SelectionMode="Single"
                         SelectionChanged="HistoryCollectionView_SelectionChanged"
+                        ItemsUpdatingScrollMode="KeepItemsInView"
                         Margin="0,0,0,4">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical"

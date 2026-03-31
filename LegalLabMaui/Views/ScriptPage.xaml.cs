@@ -63,12 +63,13 @@ public partial class ScriptPage : ContentPage
     }
 
     private async void History_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
+    {/*
         await MainThread.InvokeOnMainThreadAsync(() =>
         {
             if (this.attachedModel?.History.FirstOrDefault() is ScriptHistoryItem first)
                 HistoryCollectionView.ScrollTo(first, position: ScrollToPosition.Start, animate: true);
         });
+        */
     }
 
     private void HistoryCollectionView_SelectionChanged(
@@ -89,8 +90,8 @@ public partial class ScriptPage : ContentPage
         {
             InputEdit.CursorPosition = script.Length;
             InputEdit.SelectionLength = 0;
-            InputEdit.Focus();
             HistoryCollectionView.SelectedItem = null;
+            InputEdit.Focus();
         });
     }
 
