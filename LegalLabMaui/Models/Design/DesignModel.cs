@@ -341,7 +341,7 @@ namespace LegalLabMaui.Models.Design
 		/// <summary>
 		/// Contract visibilities.
 		/// </summary>
-		public static string[] Visibilities => Enum.GetNames(typeof(ContractVisibility));
+		public string[] Visibilities => Enum.GetNames(typeof(ContractVisibility));
 
 		/// <summary>
 		/// Contract parts mode
@@ -360,7 +360,7 @@ namespace LegalLabMaui.Models.Design
 		/// <summary>
 		/// Contract parts modes
 		/// </summary>
-		public static string[] PartsModes => Enum.GetNames(typeof(ContractParts));
+		public string[] PartsModes => Enum.GetNames(typeof(ContractParts));
 
 		/// <summary>
 		/// Optional archiving time

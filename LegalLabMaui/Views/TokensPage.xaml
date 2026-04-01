@@ -13,18 +13,18 @@
                         <Border Style="{StaticResource SectionCardStyle}">
                                 <VerticalStackLayout Spacing="6">
                                         <Label Text="Tokens"
-                                                   Style="{StaticResource PageTitleStyle}"/>
+                                               Style="{StaticResource PageTitleStyle}"/>
                                         <Label Text="Inspect token inventory, current totals, event history, and item-level details in one review flow."
-                                                   Style="{StaticResource SectionCaptionStyle}"/>
+                                               Style="{StaticResource SectionCaptionStyle}"/>
                                 </VerticalStackLayout>
                         </Border>
 
                         <Border Style="{StaticResource SectionCardStyle}">
                                 <VerticalStackLayout Spacing="14">
                                         <Label Text="Totals"
-                                                   Style="{StaticResource SectionTitleStyle}"/>
+                                               Style="{StaticResource SectionTitleStyle}"/>
                                         <CollectionView ItemsSource="{Binding Totals}"
-                                                                        HeightRequest="150">
+                                                        HeightRequest="150">
                                                 <CollectionView.Header>
                                                         <Grid Style="{StaticResource DenseHeaderGridStyle}">
                                                                 <Grid.ColumnDefinitions>
@@ -33,14 +33,14 @@
                                                                         <ColumnDefinition Width="160"/>
                                                                 </Grid.ColumnDefinitions>
                                                                 <Label Grid.Column="0"
-                                                                           Text="Currency"
-                                                                           Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                       Text="Currency"
+                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
                                                                 <Label Grid.Column="1"
-                                                                           Text="Count"
-                                                                           Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                       Text="Count"
+                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
                                                                 <Label Grid.Column="2"
-                                                                           Text="Total Value"
-                                                                           Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                       Text="Total Value"
+                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
                                                         </Grid>
                                                 </CollectionView.Header>
                                                 <CollectionView.ItemTemplate>
@@ -52,16 +52,16 @@
                                                                                 <ColumnDefinition Width="160"/>
                                                                         </Grid.ColumnDefinitions>
                                                                         <Label Grid.Column="0"
-                                                                                   Text="{Binding Currency}"
-                                                                                   Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                               Text="{Binding Currency}"
+                                                                               Style="{StaticResource DenseCellLabelStyle}"/>
                                                                         <Label Grid.Column="1"
-                                                                                   Text="{Binding NrTokens, Converter={conv:ToString}}"
-                                                                                   Style="{StaticResource DenseCellLabelStyle}"
-                                                                                   HorizontalOptions="End"/>
+                                                                               Text="{Binding NrTokens, Converter={conv:ToString}}"
+                                                                               Style="{StaticResource DenseCellLabelStyle}"
+                                                                               HorizontalOptions="End"/>
                                                                         <Label Grid.Column="2"
-                                                                                   Text="{Binding Total, Converter={conv:MoneyToString}}"
-                                                                                   Style="{StaticResource DenseCellLabelStyle}"
-                                                                                   HorizontalOptions="End"/>
+                                                                               Text="{Binding Total, Converter={conv:MoneyToString}}"
+                                                                               Style="{StaticResource DenseCellLabelStyle}"
+                                                                               HorizontalOptions="End"/>
                                                                 </Grid>
                                                         </DataTemplate>
                                                 </CollectionView.ItemTemplate>
@@ -72,11 +72,11 @@
                         <Border Style="{StaticResource SectionCardStyle}">
                                 <VerticalStackLayout Spacing="14">
                                         <Label Text="Token Inventory"
-                                                   Style="{StaticResource SectionTitleStyle}"/>
+                                               Style="{StaticResource SectionTitleStyle}"/>
                                         <CollectionView ItemsSource="{Binding Tokens}"
-                                                                        SelectionMode="Single"
-                                                                        SelectionChanged="OnTokenSelected"
-                                                                        HeightRequest="360">
+                                                        SelectionMode="Single"
+                                                        SelectionChanged="OnTokenSelected"
+                                                        HeightRequest="360">
                                                 <CollectionView.Header>
                                                         <Grid Style="{StaticResource DenseHeaderGridStyle}">
                                                                 <Grid.ColumnDefinitions>
@@ -88,29 +88,29 @@
                                                                         <ColumnDefinition Width="90"/>
                                                                 </Grid.ColumnDefinitions>
                                                                 <Label Grid.Column="0"
-                                                                           Text="Friendly Name"
-                                                                           Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                       Text="Friendly Name"
+                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
                                                                 <Label Grid.Column="1"
-                                                                           Text="Category"
-                                                                           Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                       Text="Category"
+                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
                                                                 <Label Grid.Column="2"
-                                                                           Text="ID"
-                                                                           Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                       Text="ID"
+                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
                                                                 <Label Grid.Column="3"
-                                                                           Text="Expires"
-                                                                           Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                       Text="Expires"
+                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
                                                                 <Label Grid.Column="4"
-                                                                           Text="Value"
-                                                                           Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                       Text="Value"
+                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
                                                                 <Label Grid.Column="5"
-                                                                           Text="Visibility"
-                                                                           Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                       Text="Visibility"
+                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
                                                         </Grid>
                                                 </CollectionView.Header>
                                                 <CollectionView.ItemTemplate>
                                                         <DataTemplate x:DataType="tokens:TokenModel">
                                                                 <Grid Padding="10,6"
-                                                                          ColumnSpacing="10">
+                                                                      ColumnSpacing="10">
                                                                         <Grid.ColumnDefinitions>
                                                                                 <ColumnDefinition Width="140"/>
                                                                                 <ColumnDefinition Width="120"/>
@@ -120,25 +120,25 @@
                                                                                 <ColumnDefinition Width="90"/>
                                                                         </Grid.ColumnDefinitions>
                                                                         <Label Grid.Column="0"
-                                                                                   Text="{Binding FriendlyName}"
-                                                                                   Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                               Text="{Binding FriendlyName}"
+                                                                               Style="{StaticResource DenseCellLabelStyle}"/>
                                                                         <Label Grid.Column="1"
-                                                                                   Text="{Binding Category}"
-                                                                                   Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                               Text="{Binding Category}"
+                                                                               Style="{StaticResource DenseCellLabelStyle}"/>
                                                                         <Label Grid.Column="2"
-                                                                                   Text="{Binding TokenId}"
-                                                                                   Style="{StaticResource DenseCellLabelStyle}"
-                                                                                   LineBreakMode="CharacterWrap"/>
+                                                                               Text="{Binding TokenId}"
+                                                                               Style="{StaticResource DenseCellLabelStyle}"
+                                                                               LineBreakMode="CharacterWrap"/>
                                                                         <Label Grid.Column="3"
-                                                                                   Text="{Binding Expires, Converter={conv:DateToXmlString}}"
-                                                                                   Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                               Text="{Binding Expires, Converter={conv:DateToXmlString}}"
+                                                                               Style="{StaticResource DenseCellLabelStyle}"/>
                                                                         <Label Grid.Column="4"
-                                                                                   Text="{Binding Value, Converter={conv:MoneyToString}}"
-                                                                                   Style="{StaticResource DenseCellLabelStyle}"
-                                                                                   HorizontalOptions="End"/>
+                                                                               Text="{Binding Value, Converter={conv:MoneyToString}}"
+                                                                               Style="{StaticResource DenseCellLabelStyle}"
+                                                                               HorizontalOptions="End"/>
                                                                         <Label Grid.Column="5"
-                                                                                   Text="{Binding Visibility, Converter={conv:ToString}}"
-                                                                                   Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                               Text="{Binding Visibility, Converter={conv:ToString}}"
+                                                                               Style="{StaticResource DenseCellLabelStyle}"/>
                                                                 </Grid>
                                                         </DataTemplate>
                                                 </CollectionView.ItemTemplate>
@@ -147,12 +147,12 @@
                         </Border>
 
                         <Border Style="{StaticResource SectionCardStyle}"
-                                        IsVisible="{Binding SelectedToken, Converter={conv:VisibleIfNotNull}}">
+                                IsVisible="{Binding SelectedToken, Converter={conv:VisibleIfNotNull}}">
                                 <VerticalStackLayout Spacing="14">
                                         <Label Text="Selected Token Details"
-                                                   Style="{StaticResource SectionTitleStyle}"/>
+                                               Style="{StaticResource SectionTitleStyle}"/>
                                         <CollectionView ItemsSource="{Binding SelectedToken.Details}"
-                                                                        HeightRequest="220">
+                                                        HeightRequest="220">
                                                 <CollectionView.Header>
                                                         <Grid Style="{StaticResource DenseHeaderGridStyle}">
                                                                 <Grid.ColumnDefinitions>
@@ -160,28 +160,28 @@
                                                                         <ColumnDefinition Width="*"/>
                                                                 </Grid.ColumnDefinitions>
                                                                 <Label Grid.Column="0"
-                                                                           Text="Property"
-                                                                           Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                       Text="Property"
+                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
                                                                 <Label Grid.Column="1"
-                                                                           Text="Value"
-                                                                           Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                       Text="Value"
+                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
                                                         </Grid>
                                                 </CollectionView.Header>
                                                 <CollectionView.ItemTemplate>
                                                         <DataTemplate x:DataType="tokens:TokenDetail">
                                                                 <Grid Padding="10,6"
-                                                                          ColumnSpacing="10">
+                                                                      ColumnSpacing="10">
                                                                         <Grid.ColumnDefinitions>
                                                                                 <ColumnDefinition Width="180"/>
                                                                                 <ColumnDefinition Width="*"/>
                                                                         </Grid.ColumnDefinitions>
                                                                         <Label Grid.Column="0"
-                                                                                   Text="{Binding Name}"
-                                                                                   Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                               Text="{Binding Name}"
+                                                                               Style="{StaticResource DenseCellLabelStyle}"/>
                                                                         <Label Grid.Column="1"
-                                                                                   Text="{Binding Value}"
-                                                                                   Style="{StaticResource DenseCellLabelStyle}"
-                                                                                   LineBreakMode="WordWrap"/>
+                                                                               Text="{Binding Value}"
+                                                                               Style="{StaticResource DenseCellLabelStyle}"
+                                                                               LineBreakMode="WordWrap"/>
                                                                 </Grid>
                                                         </DataTemplate>
                                                 </CollectionView.ItemTemplate>
@@ -190,12 +190,12 @@
                         </Border>
 
                         <Border Style="{StaticResource SectionCardStyle}"
-                                        IsVisible="{Binding Events, Converter={conv:VisibleIfNotNull}}">
+                                IsVisible="{Binding Events, Converter={conv:VisibleIfNotNull}}">
                                 <VerticalStackLayout Spacing="14">
                                         <Label Text="Selected Token Event History"
-                                                   Style="{StaticResource SectionTitleStyle}"/>
+                                               Style="{StaticResource SectionTitleStyle}"/>
                                         <CollectionView ItemsSource="{Binding Events}"
-                                                                        HeightRequest="220">
+                                                        HeightRequest="220">
                                                 <CollectionView.Header>
                                                         <Grid Style="{StaticResource DenseHeaderGridStyle}">
                                                                 <Grid.ColumnDefinitions>
@@ -206,26 +206,26 @@
                                                                         <ColumnDefinition Width="90"/>
                                                                 </Grid.ColumnDefinitions>
                                                                 <Label Grid.Column="0"
-                                                                           Text="Timestamp"
-                                                                           Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                       Text="Timestamp"
+                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
                                                                 <Label Grid.Column="1"
-                                                                           Text="Personal"
-                                                                           Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                       Text="Personal"
+                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
                                                                 <Label Grid.Column="2"
-                                                                           Text="Message"
-                                                                           Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                       Text="Message"
+                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
                                                                 <Label Grid.Column="3"
-                                                                           Text="Value"
-                                                                           Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                       Text="Value"
+                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
                                                                 <Label Grid.Column="4"
-                                                                           Text="Owner"
-                                                                           Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                       Text="Owner"
+                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
                                                         </Grid>
                                                 </CollectionView.Header>
                                                 <CollectionView.ItemTemplate>
                                                         <DataTemplate x:DataType="details:TokenEventDetail">
                                                                 <Grid Padding="10,6"
-                                                                          ColumnSpacing="10">
+                                                                      ColumnSpacing="10">
                                                                         <Grid.ColumnDefinitions>
                                                                                 <ColumnDefinition Width="160"/>
                                                                                 <ColumnDefinition Width="70"/>
@@ -234,21 +234,21 @@
                                                                                 <ColumnDefinition Width="90"/>
                                                                         </Grid.ColumnDefinitions>
                                                                         <Label Grid.Column="0"
-                                                                                   Text="{Binding Timestamp, Converter={conv:DateTimeToString}}"
-                                                                                   Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                               Text="{Binding Timestamp, Converter={conv:DateTimeToString}}"
+                                                                               Style="{StaticResource DenseCellLabelStyle}"/>
                                                                         <Label Grid.Column="1"
-                                                                                   Text="{Binding Personal}"
-                                                                                   Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                               Text="{Binding Personal}"
+                                                                               Style="{StaticResource DenseCellLabelStyle}"/>
                                                                         <Label Grid.Column="2"
-                                                                                   Text="{Binding Message}"
-                                                                                   Style="{StaticResource DenseCellLabelStyle}"
-                                                                                   LineBreakMode="WordWrap"/>
+                                                                               Text="{Binding Message}"
+                                                                               Style="{StaticResource DenseCellLabelStyle}"
+                                                                               LineBreakMode="WordWrap"/>
                                                                         <Label Grid.Column="3"
-                                                                                   Text="{Binding Value}"
-                                                                                   Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                               Text="{Binding Value}"
+                                                                               Style="{StaticResource DenseCellLabelStyle}"/>
                                                                         <Label Grid.Column="4"
-                                                                                   Text="{Binding Owner}"
-                                                                                   Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                               Text="{Binding Owner}"
+                                                                               Style="{StaticResource DenseCellLabelStyle}"/>
                                                                 </Grid>
                                                         </DataTemplate>
                                                 </CollectionView.ItemTemplate>

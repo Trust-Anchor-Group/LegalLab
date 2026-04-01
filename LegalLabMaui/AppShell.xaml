@@ -6,64 +6,64 @@
     xmlns:views="clr-namespace:LegalLabMaui.Views"
     Shell.FlyoutBehavior="Flyout">
 
-        <FlyoutItem Title="Core"
-            Route="Core"
-            FlyoutDisplayOptions="AsSingleItem">
+    <FlyoutItem Title="Core"
+                Route="Core"
+                FlyoutDisplayOptions="AsSingleItem">
         <ShellContent Route="NetworkPage"
-                  Title="Network"
-                  Icon="network.svg"
-                  ContentTemplate="{DataTemplate views:NetworkPage}"/>
+                      Title="Network"
+                      Icon="network.svg"
+                      ContentTemplate="{DataTemplate views:NetworkPage}"/>
         <ShellContent Route="LegalIdPage"
-                  Title="Legal ID"
-                  Icon="identity.svg"
-                  ContentTemplate="{DataTemplate views:LegalIdPage}"/>
+                      Title="Legal ID"
+                      Icon="identity.svg"
+                      ContentTemplate="{DataTemplate views:LegalIdPage}"/>
         <ShellContent Route="EventsPage"
-                  Title="Events"
-                  Icon="events.svg"
-                  ContentTemplate="{DataTemplate views:EventsPage}"/>
+                      Title="Events"
+                      Icon="events.svg"
+                      ContentTemplate="{DataTemplate views:EventsPage}"/>
         <ShellContent Route="ScriptPage"
-                  Title="Script"
-                  Icon="script.svg"
-                  ContentTemplate="{DataTemplate views:ScriptPage}"/>
+                      Title="Script"
+                      Icon="script.svg"
+                      ContentTemplate="{DataTemplate views:ScriptPage}"/>
     </FlyoutItem>
 
     <FlyoutItem Title="Wallet"
-            Route="Wallet"
-            FlyoutDisplayOptions="AsSingleItem">
+                Route="Wallet"
+                FlyoutDisplayOptions="AsSingleItem">
         <ShellContent Route="WalletPage"
-                  Title="Wallet"
-                  Icon="wallet.svg"
-                  ContentTemplate="{DataTemplate views:WalletPage}"/>
+                      Title="Wallet"
+                      Icon="wallet.svg"
+                      ContentTemplate="{DataTemplate views:WalletPage}"/>
         <ShellContent Route="TokensPage"
-                  Title="Tokens"
-                  Icon="tokens.svg"
-                  ContentTemplate="{DataTemplate views:TokensPage}"/>
+                      Title="Tokens"
+                      Icon="tokens.svg"
+                      ContentTemplate="{DataTemplate views:TokensPage}"/>
     </FlyoutItem>
 
     <FlyoutItem Title="Contracts"
-            Route="Contracts"
-            FlyoutDisplayOptions="AsSingleItem">
+                Route="Contracts"
+                FlyoutDisplayOptions="AsSingleItem">
         <ShellContent Route="DesignPage"
-                  Title="Design"
-                  Icon="design.svg"
-                  ContentTemplate="{DataTemplate views:DesignPage}"/>
+                      Title="Design"
+                      Icon="design.svg"
+                      ContentTemplate="{DataTemplate views:DesignPage}"/>
         <ShellContent Route="ContractsPage"
-                  Title="Contracts"
-                  Icon="contracts.svg"
-                  ContentTemplate="{DataTemplate views:ContractsPage}"/>
+                      Title="Contracts"
+                      Icon="contracts.svg"
+                      ContentTemplate="{DataTemplate views:ContractsPage}"/>
     </FlyoutItem>
 
     <FlyoutItem Title="Tools"
-            Route="Tools"
-            FlyoutDisplayOptions="AsSingleItem">
+                Route="Tools"
+                FlyoutDisplayOptions="AsSingleItem">
         <ShellContent Route="XmlEditorPage"
-                  Title="XML"
-                  Icon="xml.svg"
-                  ContentTemplate="{DataTemplate views:XmlEditorPage}"/>
+                      Title="XML"
+                      Icon="xml.svg"
+                      ContentTemplate="{DataTemplate views:XmlEditorPage}"/>
         <ShellContent Route="ReportPage"
-                  Title="Report"
-                  Icon="report.svg"
-                  ContentTemplate="{DataTemplate views:ReportPage}"/>
+                      Title="Report"
+                      Icon="report.svg"
+                      ContentTemplate="{DataTemplate views:ReportPage}"/>
     </FlyoutItem>
 
 </Shell>

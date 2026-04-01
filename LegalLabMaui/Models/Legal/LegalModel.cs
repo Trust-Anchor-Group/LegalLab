@@ -131,6 +131,7 @@ namespace LegalLabMaui.Models.Legal
 
 			this.contracts = new ContractsClient(Client, ComponentJid);
 			this.contracts.EnableE2eEncryption(true);
+			this.contracts.Client.OnStateChanged += this.ContractsClient_OnStateChanged;
 			this.contracts.IdentityUpdated += this.Contracts_IdentityUpdated;
 			this.contracts.ContractCreated += this.Contracts_ContractCreated;
 			this.contracts.ContractDeleted += this.Contracts_ContractDeleted;
@@ -575,7 +576,23 @@ namespace LegalLabMaui.Models.Legal
 		/// <inheritdoc/>
 		public void Dispose()
 		{
+			this.contracts.Client.OnStateChanged -= this.ContractsClient_OnStateChanged;
 			this.contracts.Dispose();
+		}
+
+		private Task ContractsClient_OnStateChanged(object Sender, XmppState NewState)
+		{
+			this.preview.RaiseCanExecuteChanged();
+			this.apply.RaiseCanExecuteChanged();
+
+			IdentityWrapper[] wrappers;
+			lock (this.identities)
+				wrappers = [.. this.identities.Values];
+
+			foreach (IdentityWrapper wrapper in wrappers)
+				wrapper.RefreshCommandStates();
+
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -741,7 +758,7 @@ namespace LegalLabMaui.Models.Legal
 		/// <summary>
 		/// ISO 3166-1 country codes
 		/// </summary>
-		public static Iso_3166_1.Record[] CountryCodes => Iso_3166_1.Data;
+		public Iso_3166_1.Record[] CountryCodes => Iso_3166_1.Data;
 
 		public Iso_3166_1.Record? SelectedCountry
 		{
@@ -752,7 +769,7 @@ namespace LegalLabMaui.Models.Legal
 		/// <summary>
 		/// ISO 5218 gender codes
 		/// </summary>
-		public static Iso_5218.Record[] GenderCodes => Iso_5218.Data;
+		public Iso_5218.Record[] GenderCodes => Iso_5218.Data;
 
 		/// <summary>
 		/// Nationality

@@ -153,6 +153,12 @@ namespace LegalLabMaui.Models.Legal
 		/// </summary>
 		public ICommand ReadyForApproval => this.readyForApproval;
 
+		internal void RefreshCommandStates()
+		{
+			this.uploadAttachment.RaiseCanExecuteChanged();
+			this.readyForApproval.RaiseCanExecuteChanged();
+		}
+
 		private bool CanExecuteReadyForApproval()
 		{
 			return this.identity is not null &&

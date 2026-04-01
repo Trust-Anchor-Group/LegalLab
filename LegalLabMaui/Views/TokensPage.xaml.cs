@@ -9,7 +9,7 @@ public partial class TokensPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        BindingContext ??= AppService.NetworkModel?.Tokens;
+        BindingContext = AppService.NetworkModel?.Tokens;
     }
 
     private void OnTokenSelected(object sender, SelectionChangedEventArgs e)

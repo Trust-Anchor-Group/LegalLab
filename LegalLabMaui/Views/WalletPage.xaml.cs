@@ -9,7 +9,7 @@ public partial class WalletPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        BindingContext ??= AppService.WalletModel;
+        BindingContext = AppService.WalletModel;
     }
 
     private void OnTransactionSelected(object sender, SelectionChangedEventArgs e)

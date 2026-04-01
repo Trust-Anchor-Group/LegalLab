@@ -1,52 +1,67 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                         xmlns:conv="clr-namespace:LegalLabMaui.Converters"
-                         xmlns:design="clr-namespace:LegalLabMaui.Models.Design"
-                         xmlns:legal="clr-namespace:LegalLabMaui.Models.Legal.Items"
-                         xmlns:standards="clr-namespace:LegalLabMaui.Models.Standards"
-                         x:Class="LegalLabMaui.Views.DesignPage"
-                         x:DataType="design:DesignModel"
-                         Title="Design">
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:conv="clr-namespace:LegalLabMaui.Converters"
+             xmlns:design="clr-namespace:LegalLabMaui.Models.Design"
+             xmlns:legal="clr-namespace:LegalLabMaui.Models.Legal.Items"
+             xmlns:standards="clr-namespace:LegalLabMaui.Models.Standards"
+             x:Class="LegalLabMaui.Views.DesignPage"
+             x:DataType="design:DesignModel"
+             Title="Design">
         <ScrollView>
                 <VerticalStackLayout Style="{StaticResource PageStackStyle}">
                         <Border Style="{StaticResource SectionCardStyle}">
                                 <VerticalStackLayout Spacing="6">
                                         <Label Text="Contract Design"
-                                                   Style="{StaticResource PageTitleStyle}"/>
+                                               Style="{StaticResource PageTitleStyle}"/>
                                         <Label Text="Author machine-readable and human-readable contract content, manage roles and parameters, and prepare proposals from one workspace."
-                                                   Style="{StaticResource SectionCaptionStyle}"/>
+                                               Style="{StaticResource SectionCaptionStyle}"/>
                                 </VerticalStackLayout>
                         </Border>
 
                         <Border Style="{StaticResource SectionCardStyle}">
                                 <VerticalStackLayout Spacing="14">
                                         <Label Text="Actions and Language"
-                                                   Style="{StaticResource SectionTitleStyle}"/>
+                                               Style="{StaticResource SectionTitleStyle}"/>
                                         <FlexLayout Wrap="Wrap"
-                                                                Direction="Row">
-                                                <Button Text="New" Command="{Binding New}"/>
-                                                <Button Text="Load" Command="{Binding LoadCommand}" Style="{StaticResource SecondaryButtonStyle}"/>
-                                                <Button Text="Import" Command="{Binding ImportCommand}" Style="{StaticResource SecondaryButtonStyle}"/>
-                                                <Button Text="Save" Command="{Binding SaveCommand}" Style="{StaticResource SecondaryButtonStyle}"/>
-                                                <Button Text="Propose" Command="{Binding Propose}"/>
+                                                    Direction="Row">
+                                                <Button Text="New"
+                                                                Command="{Binding New}"/>
+                                                <Button Text="Load"
+                                                                Command="{Binding LoadCommand}"
+                                                                Style="{StaticResource SecondaryButtonStyle}"/>
+                                                <Button Text="Import"
+                                                                Command="{Binding ImportCommand}"
+                                                                Style="{StaticResource SecondaryButtonStyle}"/>
+                                                <Button Text="Save"
+                                                                Command="{Binding SaveCommand}"
+                                                                Style="{StaticResource SecondaryButtonStyle}"/>
+                                                <Button Text="Propose"
+                                                                Command="{Binding Propose}"/>
                                         </FlexLayout>
 
                                         <Grid ColumnDefinitions="*,*"
-                                                  RowDefinitions="Auto,Auto,Auto,Auto"
-                                                  ColumnSpacing="16"
-                                                  RowSpacing="12">
+                                              RowDefinitions="Auto,Auto,Auto,Auto"
+                                              ColumnSpacing="16"
+                                              RowSpacing="12">
                                                 <VerticalStackLayout Spacing="6">
-                                                        <Label Text="Language" Style="{StaticResource FieldLabelStyle}"/>
+                                                        <Label Text="Language"
+                                                                        Style="{StaticResource FieldLabelStyle}"/>
                                                         <Picker ItemsSource="{Binding Languages}"
-                                                                        ItemDisplayBinding="{Binding Language, x:DataType=standards:Iso__639_1+Record}"
-                                                                        SelectedItem="{Binding SelectedLanguage}"/>
+                                                                ItemDisplayBinding="{Binding Language, x:DataType=standards:Iso__639_1+Record}"
+                                                                SelectedItem="{Binding SelectedLanguage}"/>
                                                 </VerticalStackLayout>
-                                                <VerticalStackLayout Grid.Column="1" Spacing="6">
-                                                        <Label Text="Language Actions" Style="{StaticResource FieldLabelStyle}"/>
+                                                <VerticalStackLayout Grid.Column="1"
+                                                                Spacing="6">
+                                                        <Label Text="Language Actions"
+                                                                        Style="{StaticResource FieldLabelStyle}"/>
                                                         <HorizontalStackLayout Spacing="10">
-                                                                <Button Text="Add Language" Command="{Binding AddLanguage}" Style="{StaticResource SecondaryButtonStyle}"/>
-                                                                <Button Text="Remove Language" Command="{Binding RemoveLanguage}" Style="{StaticResource SecondaryButtonStyle}"/>
+                                                                <Button Text="Add Language"
+                                                                                Command="{Binding AddLanguage}"
+                                                                                Style="{StaticResource SecondaryButtonStyle}"/>
+                                                                <Button Text="Remove Language"
+                                                                                Command="{Binding RemoveLanguage}"
+                                                                                Style="{StaticResource SecondaryButtonStyle}"/>
                                                         </HorizontalStackLayout>
                                                 </VerticalStackLayout>
                                         </Grid>
@@ -56,55 +71,73 @@
                         <Border Style="{StaticResource SectionCardStyle}">
                                 <VerticalStackLayout Spacing="12">
                                         <Label Text="AI Translation Key"
-                                                   Style="{StaticResource SectionTitleStyle}"/>
+                                               Style="{StaticResource SectionTitleStyle}"/>
                                         <Label Text="Optional. Adding an OpenAI key allows assisted text generation and translation while designing contracts."
-                                                   Style="{StaticResource SectionCaptionStyle}"/>
+                                               Style="{StaticResource SectionCaptionStyle}"/>
                                         <Entry x:Name="OpenAiKeyEntry"
-                                                   IsPassword="True"
-                                                   Placeholder="Enter OpenAI key"
-                                                   TextChanged="OpenAiKey_TextChanged"/>
+                                               IsPassword="True"
+                                               Placeholder="Enter OpenAI key"
+                                               TextChanged="OpenAiKey_TextChanged"/>
                                 </VerticalStackLayout>
                         </Border>
 
                         <Border Style="{StaticResource SectionCardStyle}">
                                 <VerticalStackLayout Spacing="14">
                                         <Label Text="Contract Metadata"
-                                                   Style="{StaticResource SectionTitleStyle}"/>
+                                               Style="{StaticResource SectionTitleStyle}"/>
                                         <Grid ColumnDefinitions="*,*"
-                                                  ColumnSpacing="16"
-                                                  RowSpacing="12">
+                                              ColumnSpacing="16"
+                                              RowSpacing="12">
                                                 <VerticalStackLayout Spacing="6">
-                                                        <Label Text="Contract ID" Style="{StaticResource FieldLabelStyle}"/>
+                                                        <Label Text="Contract ID"
+                                                                        Style="{StaticResource FieldLabelStyle}"/>
                                                         <Entry Text="{Binding ContractId}"/>
                                                 </VerticalStackLayout>
-                                                <VerticalStackLayout Grid.Column="1" Spacing="6">
-                                                        <Label Text="Visibility" Style="{StaticResource FieldLabelStyle}"/>
+                                                <VerticalStackLayout Grid.Column="1"
+                                                                Spacing="6">
+                                                        <Label Text="Visibility"
+                                                                        Style="{StaticResource FieldLabelStyle}"/>
                                                         <Picker ItemsSource="{Binding Visibilities}"
-                                                                        SelectedItem="{Binding Visibility, Converter={conv:ContractVisibilityToString}}"/>
+                                                                SelectedItem="{Binding Visibility, Converter={conv:ContractVisibilityToString}}"/>
                                                 </VerticalStackLayout>
-                                                <VerticalStackLayout Grid.Row="1" Spacing="6">
-                                                        <Label Text="Duration" Style="{StaticResource FieldLabelStyle}"/>
+                                                <VerticalStackLayout Grid.Row="1"
+                                                                Spacing="6">
+                                                        <Label Text="Duration"
+                                                                        Style="{StaticResource FieldLabelStyle}"/>
                                                         <Entry Text="{Binding Duration, Converter={conv:DurationToString}}"/>
                                                 </VerticalStackLayout>
-                                                <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="6">
-                                                        <Label Text="Required Archive" Style="{StaticResource FieldLabelStyle}"/>
+                                                <VerticalStackLayout Grid.Row="1"
+                                                                Grid.Column="1"
+                                                                Spacing="6">
+                                                        <Label Text="Required Archive"
+                                                                        Style="{StaticResource FieldLabelStyle}"/>
                                                         <Entry Text="{Binding ArchiveRequired, Converter={conv:DurationToString}}"/>
                                                 </VerticalStackLayout>
-                                                <VerticalStackLayout Grid.Row="2" Spacing="6">
-                                                        <Label Text="Optional Archive" Style="{StaticResource FieldLabelStyle}"/>
+                                                <VerticalStackLayout Grid.Row="2"
+                                                                Spacing="6">
+                                                        <Label Text="Optional Archive"
+                                                                        Style="{StaticResource FieldLabelStyle}"/>
                                                         <Entry Text="{Binding ArchiveOptional, Converter={conv:DurationToString}}"/>
                                                 </VerticalStackLayout>
-                                                <VerticalStackLayout Grid.Row="2" Grid.Column="1" Spacing="6">
-                                                        <Label Text="Parts Mode" Style="{StaticResource FieldLabelStyle}"/>
+                                                <VerticalStackLayout Grid.Row="2"
+                                                                Grid.Column="1"
+                                                                Spacing="6">
+                                                        <Label Text="Parts Mode"
+                                                                        Style="{StaticResource FieldLabelStyle}"/>
                                                         <Picker ItemsSource="{Binding PartsModes}"
-                                                                        SelectedItem="{Binding PartsMode, Converter={conv:ContractPartsToString}}"/>
+                                                                SelectedItem="{Binding PartsMode, Converter={conv:ContractPartsToString}}"/>
                                                 </VerticalStackLayout>
-                                                <VerticalStackLayout Grid.Row="3" Spacing="6">
-                                                        <Label Text="Sign After" Style="{StaticResource FieldLabelStyle}"/>
+                                                <VerticalStackLayout Grid.Row="3"
+                                                                Spacing="6">
+                                                        <Label Text="Sign After"
+                                                                        Style="{StaticResource FieldLabelStyle}"/>
                                                         <Entry Text="{Binding SignAfter, Converter={conv:DateTimeToString}}"/>
                                                 </VerticalStackLayout>
-                                                <VerticalStackLayout Grid.Row="3" Grid.Column="1" Spacing="6">
-                                                        <Label Text="Sign Before" Style="{StaticResource FieldLabelStyle}"/>
+                                                <VerticalStackLayout Grid.Row="3"
+                                                                Grid.Column="1"
+                                                                Spacing="6">
+                                                        <Label Text="Sign Before"
+                                                                        Style="{StaticResource FieldLabelStyle}"/>
                                                         <Entry Text="{Binding SignBefore, Converter={conv:DateTimeToString}}"/>
                                                 </VerticalStackLayout>
                                         </Grid>
@@ -113,10 +146,12 @@
 
                         <Border Style="{StaticResource SectionCardStyle}">
                                 <VerticalStackLayout Spacing="14">
-                                        <Label Text="Roles" Style="{StaticResource SectionTitleStyle}"/>
+                                        <Label Text="Roles"
+                                                        Style="{StaticResource SectionTitleStyle}"/>
                                         <Label Text="Edit role definitions, descriptions, counts, and revocation behavior."
-                                                   Style="{StaticResource SectionCaptionStyle}"/>
-                                        <CollectionView ItemsSource="{Binding Roles}" HeightRequest="280">
+                                               Style="{StaticResource SectionCaptionStyle}"/>
+                                        <CollectionView ItemsSource="{Binding Roles}"
+                                                        HeightRequest="280">
                                                 <CollectionView.Header>
                                                         <Grid Style="{StaticResource DenseHeaderGridStyle}">
                                                                 <Grid.ColumnDefinitions>
@@ -129,16 +164,27 @@
                                                                         <ColumnDefinition Width="60"/>
                                                                         <ColumnDefinition Width="84"/>
                                                                 </Grid.ColumnDefinitions>
-                                                                <Label Grid.Column="0" Text="Role" Style="{StaticResource DenseHeaderLabelStyle}"/>
-                                                                <Label Grid.Column="1" Text="Description" Style="{StaticResource DenseHeaderLabelStyle}"/>
-                                                                <Label Grid.Column="2" Text="Min" Style="{StaticResource DenseHeaderLabelStyle}"/>
-                                                                <Label Grid.Column="3" Text="Max" Style="{StaticResource DenseHeaderLabelStyle}"/>
-                                                                <Label Grid.Column="4" Text="Revoke" Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                <Label Grid.Column="0"
+                                                                                Text="Role"
+                                                                                Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                <Label Grid.Column="1"
+                                                                                Text="Description"
+                                                                                Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                <Label Grid.Column="2"
+                                                                                Text="Min"
+                                                                                Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                <Label Grid.Column="3"
+                                                                                Text="Max"
+                                                                                Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                <Label Grid.Column="4"
+                                                                                Text="Revoke"
+                                                                                Style="{StaticResource DenseHeaderLabelStyle}"/>
                                                         </Grid>
                                                 </CollectionView.Header>
                                                 <CollectionView.ItemTemplate>
                                                         <DataTemplate x:DataType="legal:RoleInfo">
-                                                                <Grid Padding="10,6" ColumnSpacing="8">
+                                                                <Grid Padding="10,6"
+                                                                                ColumnSpacing="8">
                                                                         <Grid.ColumnDefinitions>
                                                                                 <ColumnDefinition Width="110"/>
                                                                                 <ColumnDefinition Width="*"/>
@@ -149,26 +195,49 @@
                                                                                 <ColumnDefinition Width="60"/>
                                                                                 <ColumnDefinition Width="84"/>
                                                                         </Grid.ColumnDefinitions>
-                                                                        <Entry Grid.Column="0" Text="{Binding Name}" FontSize="12"/>
-                                                                        <Entry Grid.Column="1" Text="{Binding DescriptionAsMarkdown}" FontSize="12"/>
-                                                                        <Entry Grid.Column="2" Text="{Binding MinCount}" FontSize="12"/>
-                                                                        <Entry Grid.Column="3" Text="{Binding MaxCount}" FontSize="12"/>
-                                                                        <CheckBox Grid.Column="4" IsChecked="{Binding CanRevoke}"/>
-                                                                        <Button Grid.Column="5" Text="Up" Command="{Binding MoveUp}" Style="{StaticResource CompactButtonStyle}"/>
-                                                                        <Button Grid.Column="6" Text="Down" Command="{Binding MoveDown}" Style="{StaticResource CompactButtonStyle}"/>
-                                                                        <Button Grid.Column="7" Text="Remove" Command="{Binding RemoveRole}" Style="{StaticResource CompactButtonStyle}"/>
+                                                                        <Entry Grid.Column="0"
+                                                                                        Text="{Binding Name}"
+                                                                                        FontSize="12"/>
+                                                                        <Entry Grid.Column="1"
+                                                                                        Text="{Binding DescriptionAsMarkdown}"
+                                                                                        FontSize="12"/>
+                                                                        <Entry Grid.Column="2"
+                                                                                        Text="{Binding MinCount}"
+                                                                                        FontSize="12"/>
+                                                                        <Entry Grid.Column="3"
+                                                                                        Text="{Binding MaxCount}"
+                                                                                        FontSize="12"/>
+                                                                        <CheckBox Grid.Column="4"
+                                                                                        IsChecked="{Binding CanRevoke}"/>
+                                                                        <Button Grid.Column="5"
+                                                                                        Text="Up"
+                                                                                        Command="{Binding MoveUp}"
+                                                                                        Style="{StaticResource CompactButtonStyle}"/>
+                                                                        <Button Grid.Column="6"
+                                                                                        Text="Down"
+                                                                                        Command="{Binding MoveDown}"
+                                                                                        Style="{StaticResource CompactButtonStyle}"/>
+                                                                        <Button Grid.Column="7"
+                                                                                        Text="Remove"
+                                                                                        Command="{Binding RemoveRole}"
+                                                                                        Style="{StaticResource CompactButtonStyle}"/>
                                                                 </Grid>
                                                         </DataTemplate>
                                                 </CollectionView.ItemTemplate>
                                         </CollectionView>
-                                        <Button Text="Add Role" Command="{Binding AddRole}" HorizontalOptions="Start" WidthRequest="120"/>
+                                        <Button Text="Add Role"
+                                                        Command="{Binding AddRole}"
+                                                        HorizontalOptions="Start"
+                                                        WidthRequest="120"/>
                                 </VerticalStackLayout>
                         </Border>
 
                         <Border Style="{StaticResource SectionCardStyle}">
                                 <VerticalStackLayout Spacing="14">
-                                        <Label Text="Parts" Style="{StaticResource SectionTitleStyle}"/>
-                                        <CollectionView ItemsSource="{Binding Parts}" HeightRequest="240">
+                                        <Label Text="Parts"
+                                                        Style="{StaticResource SectionTitleStyle}"/>
+                                        <CollectionView ItemsSource="{Binding Parts}"
+                                                        HeightRequest="240">
                                                 <CollectionView.Header>
                                                         <Grid Style="{StaticResource DenseHeaderGridStyle}">
                                                                 <Grid.ColumnDefinitions>
@@ -178,13 +247,18 @@
                                                                         <ColumnDefinition Width="60"/>
                                                                         <ColumnDefinition Width="84"/>
                                                                 </Grid.ColumnDefinitions>
-                                                                <Label Grid.Column="0" Text="Legal ID" Style="{StaticResource DenseHeaderLabelStyle}"/>
-                                                                <Label Grid.Column="1" Text="Role" Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                <Label Grid.Column="0"
+                                                                                Text="Legal ID"
+                                                                                Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                <Label Grid.Column="1"
+                                                                                Text="Role"
+                                                                                Style="{StaticResource DenseHeaderLabelStyle}"/>
                                                         </Grid>
                                                 </CollectionView.Header>
                                                 <CollectionView.ItemTemplate>
                                                         <DataTemplate x:DataType="legal:PartInfo">
-                                                                <Grid Padding="10,6" ColumnSpacing="8">
+                                                                <Grid Padding="10,6"
+                                                                                ColumnSpacing="8">
                                                                         <Grid.ColumnDefinitions>
                                                                                 <ColumnDefinition Width="*"/>
                                                                                 <ColumnDefinition Width="130"/>
@@ -192,23 +266,42 @@
                                                                                 <ColumnDefinition Width="60"/>
                                                                                 <ColumnDefinition Width="84"/>
                                                                         </Grid.ColumnDefinitions>
-                                                                        <Entry Grid.Column="0" Text="{Binding LegalId}" FontSize="12"/>
-                                                                        <Picker Grid.Column="1" ItemsSource="{Binding Roles}" SelectedItem="{Binding Role}" FontSize="12"/>
-                                                                        <Button Grid.Column="2" Text="Up" Command="{Binding MoveUp}" Style="{StaticResource CompactButtonStyle}"/>
-                                                                        <Button Grid.Column="3" Text="Down" Command="{Binding MoveDown}" Style="{StaticResource CompactButtonStyle}"/>
-                                                                        <Button Grid.Column="4" Text="Remove" Command="{Binding RemovePart}" Style="{StaticResource CompactButtonStyle}"/>
+                                                                        <Entry Grid.Column="0"
+                                                                                        Text="{Binding LegalId}"
+                                                                                        FontSize="12"/>
+                                                                        <Picker Grid.Column="1"
+                                                                                        ItemsSource="{Binding Roles}"
+                                                                                        SelectedItem="{Binding Role}"
+                                                                                        FontSize="12"/>
+                                                                        <Button Grid.Column="2"
+                                                                                        Text="Up"
+                                                                                        Command="{Binding MoveUp}"
+                                                                                        Style="{StaticResource CompactButtonStyle}"/>
+                                                                        <Button Grid.Column="3"
+                                                                                        Text="Down"
+                                                                                        Command="{Binding MoveDown}"
+                                                                                        Style="{StaticResource CompactButtonStyle}"/>
+                                                                        <Button Grid.Column="4"
+                                                                                        Text="Remove"
+                                                                                        Command="{Binding RemovePart}"
+                                                                                        Style="{StaticResource CompactButtonStyle}"/>
                                                                 </Grid>
                                                         </DataTemplate>
                                                 </CollectionView.ItemTemplate>
                                         </CollectionView>
-                                        <Button Text="Add Part" Command="{Binding AddPart}" HorizontalOptions="Start" WidthRequest="120"/>
+                                        <Button Text="Add Part"
+                                                        Command="{Binding AddPart}"
+                                                        HorizontalOptions="Start"
+                                                        WidthRequest="120"/>
                                 </VerticalStackLayout>
                         </Border>
 
                         <Border Style="{StaticResource SectionCardStyle}">
                                 <VerticalStackLayout Spacing="14">
-                                        <Label Text="Editable Parameters" Style="{StaticResource SectionTitleStyle}"/>
-                                        <CollectionView ItemsSource="{Binding Parameters}" HeightRequest="320">
+                                        <Label Text="Editable Parameters"
+                                                        Style="{StaticResource SectionTitleStyle}"/>
+                                        <CollectionView ItemsSource="{Binding Parameters}"
+                                                        HeightRequest="320">
                                                 <CollectionView.Header>
                                                         <Grid Style="{StaticResource DenseHeaderGridStyle}">
                                                                 <Grid.ColumnDefinitions>
@@ -220,15 +313,24 @@
                                                                         <ColumnDefinition Width="60"/>
                                                                         <ColumnDefinition Width="84"/>
                                                                 </Grid.ColumnDefinitions>
-                                                                <Label Grid.Column="0" Text="Parameter" Style="{StaticResource DenseHeaderLabelStyle}"/>
-                                                                <Label Grid.Column="1" Text="Expression" Style="{StaticResource DenseHeaderLabelStyle}"/>
-                                                                <Label Grid.Column="2" Text="Description" Style="{StaticResource DenseHeaderLabelStyle}"/>
-                                                                <Label Grid.Column="3" Text="Protection" Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                <Label Grid.Column="0"
+                                                                                Text="Parameter"
+                                                                                Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                <Label Grid.Column="1"
+                                                                                Text="Expression"
+                                                                                Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                <Label Grid.Column="2"
+                                                                                Text="Description"
+                                                                                Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                <Label Grid.Column="3"
+                                                                                Text="Protection"
+                                                                                Style="{StaticResource DenseHeaderLabelStyle}"/>
                                                         </Grid>
                                                 </CollectionView.Header>
                                                 <CollectionView.ItemTemplate>
                                                         <DataTemplate x:DataType="legal:ParameterInfo">
-                                                                <Grid Padding="10,6" ColumnSpacing="8">
+                                                                <Grid Padding="10,6"
+                                                                                ColumnSpacing="8">
                                                                         <Grid.ColumnDefinitions>
                                                                                 <ColumnDefinition Width="110"/>
                                                                                 <ColumnDefinition Width="*"/>
@@ -238,61 +340,97 @@
                                                                                 <ColumnDefinition Width="60"/>
                                                                                 <ColumnDefinition Width="84"/>
                                                                         </Grid.ColumnDefinitions>
-                                                                        <Entry Grid.Column="0" Text="{Binding Name}" FontSize="12"/>
-                                                                        <Entry Grid.Column="1" Text="{Binding Expression}" FontSize="12"/>
-                                                                        <Entry Grid.Column="2" Text="{Binding DescriptionAsMarkdown}" FontSize="12"/>
+                                                                        <Entry Grid.Column="0"
+                                                                                        Text="{Binding Name}"
+                                                                                        FontSize="12"/>
+                                                                        <Entry Grid.Column="1"
+                                                                                        Text="{Binding Expression}"
+                                                                                        FontSize="12"/>
+                                                                        <Entry Grid.Column="2"
+                                                                                        Text="{Binding DescriptionAsMarkdown}"
+                                                                                        FontSize="12"/>
                                                                         <Picker Grid.Column="3"
-                                                                                        ItemsSource="{Binding ProtectionLevels}"
-                                                                                        SelectedItem="{Binding Protection, Converter={conv:ProtectionLevelToString}}"
-                                                                                        FontSize="11"/>
-                                                                        <Button Grid.Column="4" Text="Up" Command="{Binding MoveUp}" Style="{StaticResource CompactButtonStyle}"/>
-                                                                        <Button Grid.Column="5" Text="Down" Command="{Binding MoveDown}" Style="{StaticResource CompactButtonStyle}"/>
-                                                                        <Button Grid.Column="6" Text="Remove" Command="{Binding RemoveParameter}" Style="{StaticResource CompactButtonStyle}"/>
+                                                                                ItemsSource="{Binding ProtectionLevels}"
+                                                                                SelectedItem="{Binding Protection, Converter={conv:ProtectionLevelToString}}"
+                                                                                FontSize="11"/>
+                                                                        <Button Grid.Column="4"
+                                                                                        Text="Up"
+                                                                                        Command="{Binding MoveUp}"
+                                                                                        Style="{StaticResource CompactButtonStyle}"/>
+                                                                        <Button Grid.Column="5"
+                                                                                        Text="Down"
+                                                                                        Command="{Binding MoveDown}"
+                                                                                        Style="{StaticResource CompactButtonStyle}"/>
+                                                                        <Button Grid.Column="6"
+                                                                                        Text="Remove"
+                                                                                        Command="{Binding RemoveParameter}"
+                                                                                        Style="{StaticResource CompactButtonStyle}"/>
                                                                 </Grid>
                                                         </DataTemplate>
                                                 </CollectionView.ItemTemplate>
                                         </CollectionView>
-                                        <FlexLayout Wrap="Wrap" Direction="Row">
-                                                <Button Text="Add Numeric" Command="{Binding AddNumericParameter}" Style="{StaticResource SecondaryButtonStyle}"/>
-                                                <Button Text="Add String" Command="{Binding AddStringParameter}" Style="{StaticResource SecondaryButtonStyle}"/>
-                                                <Button Text="Add Boolean" Command="{Binding AddBooleanParameter}" Style="{StaticResource SecondaryButtonStyle}"/>
-                                                <Button Text="Add Date" Command="{Binding AddDateParameter}" Style="{StaticResource SecondaryButtonStyle}"/>
-                                                <Button Text="Add Date &amp; Time" Command="{Binding AddDateTimeParameter}" Style="{StaticResource SecondaryButtonStyle}"/>
-                                                <Button Text="Add Time" Command="{Binding AddTimeParameter}" Style="{StaticResource SecondaryButtonStyle}"/>
-                                                <Button Text="Add Duration" Command="{Binding AddDurationParameter}" Style="{StaticResource SecondaryButtonStyle}"/>
-                                                <Button Text="Add Geo" Command="{Binding AddGeoParameter}" Style="{StaticResource SecondaryButtonStyle}"/>
-                                                <Button Text="Add Calculation" Command="{Binding AddCalcParameter}" Style="{StaticResource SecondaryButtonStyle}"/>
+                                        <FlexLayout Wrap="Wrap"
+                                                        Direction="Row">
+                                                <Button Text="Add Numeric"
+                                                                Command="{Binding AddNumericParameter}"
+                                                                Style="{StaticResource SecondaryButtonStyle}"/>
+                                                <Button Text="Add String"
+                                                                Command="{Binding AddStringParameter}"
+                                                                Style="{StaticResource SecondaryButtonStyle}"/>
+                                                <Button Text="Add Boolean"
+                                                                Command="{Binding AddBooleanParameter}"
+                                                                Style="{StaticResource SecondaryButtonStyle}"/>
+                                                <Button Text="Add Date"
+                                                                Command="{Binding AddDateParameter}"
+                                                                Style="{StaticResource SecondaryButtonStyle}"/>
+                                                <Button Text="Add Date &amp; Time"
+                                                                Command="{Binding AddDateTimeParameter}"
+                                                                Style="{StaticResource SecondaryButtonStyle}"/>
+                                                <Button Text="Add Time"
+                                                                Command="{Binding AddTimeParameter}"
+                                                                Style="{StaticResource SecondaryButtonStyle}"/>
+                                                <Button Text="Add Duration"
+                                                                Command="{Binding AddDurationParameter}"
+                                                                Style="{StaticResource SecondaryButtonStyle}"/>
+                                                <Button Text="Add Geo"
+                                                                Command="{Binding AddGeoParameter}"
+                                                                Style="{StaticResource SecondaryButtonStyle}"/>
+                                                <Button Text="Add Calculation"
+                                                                Command="{Binding AddCalcParameter}"
+                                                                Style="{StaticResource SecondaryButtonStyle}"/>
                                         </FlexLayout>
                                 </VerticalStackLayout>
                         </Border>
 
                         <Border Style="{StaticResource SectionCardStyle}">
                                 <VerticalStackLayout Spacing="12">
-                                        <Label Text="Machine-Readable Content" Style="{StaticResource SectionTitleStyle}"/>
+                                        <Label Text="Machine-Readable Content"
+                                                        Style="{StaticResource SectionTitleStyle}"/>
                                         <Label Text="Edit the XML representation directly when you need precise control over contract behavior."
-                                                   Style="{StaticResource SectionCaptionStyle}"/>
+                                               Style="{StaticResource SectionCaptionStyle}"/>
                                         <Editor x:Name="MachineReadableXmlEditor"
-                                                        Style="{StaticResource MonoEditorStyle}"
-                                                        AutoSize="TextChanges"
-                                                        MinimumHeightRequest="220"
-                                                        TextChanged="MachineReadableXmlEditor_TextChanged"/>
+                                                Style="{StaticResource MonoEditorStyle}"
+                                                AutoSize="TextChanges"
+                                                MinimumHeightRequest="220"
+                                                TextChanged="MachineReadableXmlEditor_TextChanged"/>
                                 </VerticalStackLayout>
                         </Border>
 
                         <Border Style="{StaticResource SectionCardStyle}">
                                 <VerticalStackLayout Spacing="12">
-                                        <Label Text="Human-Readable Content" Style="{StaticResource SectionTitleStyle}"/>
+                                        <Label Text="Human-Readable Content"
+                                                        Style="{StaticResource SectionTitleStyle}"/>
                                         <Label Text="Edit the markdown source and review the rendered output below."
-                                                   Style="{StaticResource SectionCaptionStyle}"/>
+                                               Style="{StaticResource SectionCaptionStyle}"/>
                                         <Editor x:Name="HumanReadableMarkdownEditor"
-                                                        Style="{StaticResource MonoEditorStyle}"
-                                                        AutoSize="TextChanges"
-                                                        MinimumHeightRequest="180"
-                                                        TextChanged="HumanReadableMarkdownEditor_TextChanged"/>
+                                                Style="{StaticResource MonoEditorStyle}"
+                                                AutoSize="TextChanges"
+                                                MinimumHeightRequest="180"
+                                                TextChanged="HumanReadableMarkdownEditor_TextChanged"/>
                                         <Border Style="{StaticResource CompactSectionCardStyle}"
-                                                        BackgroundColor="{StaticResource SurfaceMuted}">
+                                                BackgroundColor="{StaticResource SurfaceMuted}">
                                                 <Label Text="{Binding HumanReadable}"
-                                                           LineBreakMode="WordWrap"/>
+                                                       LineBreakMode="WordWrap"/>
                                         </Border>
                                 </VerticalStackLayout>
                         </Border>

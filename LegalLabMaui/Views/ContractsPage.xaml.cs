@@ -9,6 +9,6 @@ public partial class ContractsPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        BindingContext ??= AppService.LegalModel?.CurrentContract;
+        BindingContext = AppService.LegalModel?.CurrentContract;
     }
 }

@@ -6,86 +6,86 @@
              x:DataType="dialogs:TransferEDalerModel"
              Title="Transfer eDaler®">
         <ScrollView>
-                  <VerticalStackLayout Style="{StaticResource PageStackStyle}">
-                           <Border Style="{StaticResource SectionCardStyle}">
-                                    <VerticalStackLayout Spacing="6">
-                                             <Label Text="Transfer eDaler®"
-                                                     Style="{StaticResource SectionTitleStyle}"/>
-                                             <Label Text="Prepare a transfer, URI validity period, and optional note for the recipient."
-                                                     Style="{StaticResource SectionCaptionStyle}"/>
-                                    </VerticalStackLayout>
-                           </Border>
+                <VerticalStackLayout Style="{StaticResource PageStackStyle}">
+                        <Border Style="{StaticResource SectionCardStyle}">
+                                <VerticalStackLayout Spacing="6">
+                                        <Label Text="Transfer eDaler®"
+                                               Style="{StaticResource SectionTitleStyle}"/>
+                                        <Label Text="Prepare a transfer, URI validity period, and optional note for the recipient."
+                                               Style="{StaticResource SectionCaptionStyle}"/>
+                                </VerticalStackLayout>
+                        </Border>
 
-                           <Border Style="{StaticResource SectionCardStyle}">
-                                    <Grid ColumnDefinitions="*,*"
-                                           RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
-                                           ColumnSpacing="16"
-                                           RowSpacing="12">
-                                             <Label Grid.Row="0"
-                                                     Grid.ColumnSpan="2"
-                                                     Text="Recipient (JID)"
-                                                     Style="{StaticResource FieldLabelStyle}"/>
-                                             <Entry Grid.Row="1"
-                                                     Grid.ColumnSpan="2"
-                                                     x:Name="Recipient"
-                                                     Text="{Binding Recipient}"
-                                                     Keyboard="Email"/>
+                        <Border Style="{StaticResource SectionCardStyle}">
+                                <Grid ColumnDefinitions="*,*"
+                                      RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+                                      ColumnSpacing="16"
+                                      RowSpacing="12">
+                                        <Label Grid.Row="0"
+                                               Grid.ColumnSpan="2"
+                                               Text="Recipient (JID)"
+                                               Style="{StaticResource FieldLabelStyle}"/>
+                                        <Entry Grid.Row="1"
+                                               Grid.ColumnSpan="2"
+                                               x:Name="Recipient"
+                                               Text="{Binding Recipient}"
+                                               Keyboard="Email"/>
 
-                                             <Label Grid.Row="2"
-                                                     Grid.Column="0"
-                                                     Text="Amount"
-                                                     Style="{StaticResource FieldLabelStyle}"/>
-                                             <Label Grid.Row="2"
-                                                     Grid.Column="1"
-                                                     Text="Amount Extra"
-                                                     Style="{StaticResource FieldLabelStyle}"/>
-                                             <Entry Grid.Row="3"
-                                                     Grid.Column="0"
-                                                     x:Name="Amount"
-                                                     Text="{Binding Amount}"
-                                                     Keyboard="Numeric"/>
-                                             <Entry Grid.Row="3"
-                                                     Grid.Column="1"
-                                                     x:Name="AmountExtra"
-                                                     Text="{Binding AmountExtra}"
-                                                     Keyboard="Numeric"/>
+                                        <Label Grid.Row="2"
+                                               Grid.Column="0"
+                                               Text="Amount"
+                                               Style="{StaticResource FieldLabelStyle}"/>
+                                        <Label Grid.Row="2"
+                                               Grid.Column="1"
+                                               Text="Amount Extra"
+                                               Style="{StaticResource FieldLabelStyle}"/>
+                                        <Entry Grid.Row="3"
+                                               Grid.Column="0"
+                                               x:Name="Amount"
+                                               Text="{Binding Amount}"
+                                               Keyboard="Numeric"/>
+                                        <Entry Grid.Row="3"
+                                               Grid.Column="1"
+                                               x:Name="AmountExtra"
+                                               Text="{Binding AmountExtra}"
+                                               Keyboard="Numeric"/>
 
-                                             <Label Grid.Row="4"
-                                                     Grid.Column="0"
-                                                     Text="Currency"
-                                                     Style="{StaticResource FieldLabelStyle}"/>
-                                             <Label Grid.Row="4"
-                                                     Grid.Column="1"
-                                                     Text="URI Expiry (#days)"
-                                                     Style="{StaticResource FieldLabelStyle}"/>
-                                             <Entry Grid.Row="5"
-                                                     Grid.Column="0"
-                                                     x:Name="Currency"
-                                                     Text="{Binding Currency}"/>
-                                             <Entry Grid.Row="5"
-                                                     Grid.Column="1"
-                                                     x:Name="ValidNrDays"
-                                                     Text="{Binding ValidNrDays}"
-                                                     Keyboard="Numeric"/>
-                                    </Grid>
-                           </Border>
+                                        <Label Grid.Row="4"
+                                               Grid.Column="0"
+                                               Text="Currency"
+                                               Style="{StaticResource FieldLabelStyle}"/>
+                                        <Label Grid.Row="4"
+                                               Grid.Column="1"
+                                               Text="URI Expiry (#days)"
+                                               Style="{StaticResource FieldLabelStyle}"/>
+                                        <Entry Grid.Row="5"
+                                               Grid.Column="0"
+                                               x:Name="Currency"
+                                               Text="{Binding Currency}"/>
+                                        <Entry Grid.Row="5"
+                                               Grid.Column="1"
+                                               x:Name="ValidNrDays"
+                                               Text="{Binding ValidNrDays}"
+                                               Keyboard="Numeric"/>
+                                </Grid>
+                        </Border>
 
-                           <Border Style="{StaticResource SectionCardStyle}">
-                                    <VerticalStackLayout Spacing="10">
-                                             <Label Text="Message"
-                                                     Style="{StaticResource FieldLabelStyle}"/>
-                                             <Entry x:Name="Message"
-                                                     Text="{Binding Message}"/>
-                                    </VerticalStackLayout>
-                           </Border>
+                        <Border Style="{StaticResource SectionCardStyle}">
+                                <VerticalStackLayout Spacing="10">
+                                        <Label Text="Message"
+                                               Style="{StaticResource FieldLabelStyle}"/>
+                                        <Entry x:Name="Message"
+                                               Text="{Binding Message}"/>
+                                </VerticalStackLayout>
+                        </Border>
 
-                           <HorizontalStackLayout HorizontalOptions="End"
-                                                     Spacing="12">
-                                    <Button Text="Cancel"
-                                             Command="{Binding Cancel}"
-                                             Style="{StaticResource SecondaryButtonStyle}"/>
-                                    <Button Text="Transfer"
-                                             Command="{Binding Transfer}"/>
+                        <HorizontalStackLayout HorizontalOptions="End"
+                                               Spacing="12">
+                                <Button Text="Cancel"
+                                        Command="{Binding Cancel}"
+                                        Style="{StaticResource SecondaryButtonStyle}"/>
+                                <Button Text="Transfer"
+                                        Command="{Binding Transfer}"/>
                         </HorizontalStackLayout>
                 </VerticalStackLayout>
         </ScrollView>

@@ -24,33 +24,33 @@
                                                         SelectionMode="Single"
                                                         SelectedItem="{Binding SelectedServiceProvider}"
                                                         HeightRequest="180">
-                                <CollectionView.ItemsLayout>
-                                        <LinearItemsLayout Orientation="Horizontal"
-                                                        ItemSpacing="8"/>
-                                </CollectionView.ItemsLayout>
-                                <CollectionView.ItemTemplate>
-                                        <DataTemplate x:DataType="dialogs:ServiceProviderModel">
-                                                <Border Stroke="{StaticResource BorderSubtleBrush}"
-                                                        StrokeThickness="1"
-                                                        BackgroundColor="{StaticResource SurfaceMuted}"
-                                                        StrokeShape="RoundRectangle 16"
-                                                        Padding="12"
-                                                        Margin="0,0,8,0">
-                                                        <VerticalStackLayout WidthRequest="100"
-                                                                             HeightRequest="100"
-                                                                             Spacing="8"
-                                                                             VerticalOptions="Center"
-                                                                             HorizontalOptions="Center">
-                                                                <Image Source="{Binding IconUrl}"
-                                                                       WidthRequest="{Binding IconWidth}"
-                                                                       HeightRequest="{Binding IconHeight}"
-                                                                       HorizontalOptions="Center"
-                                                                       VerticalOptions="Center"/>
-                                                        </VerticalStackLayout>
-                                                </Border>
-                                        </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                        </CollectionView>
+                                                <CollectionView.ItemsLayout>
+                                                        <LinearItemsLayout Orientation="Horizontal"
+                                                                           ItemSpacing="8"/>
+                                                </CollectionView.ItemsLayout>
+                                                <CollectionView.ItemTemplate>
+                                                        <DataTemplate x:DataType="dialogs:ServiceProviderModel">
+                                                                <Border Stroke="{StaticResource BorderSubtleBrush}"
+                                                                        StrokeThickness="1"
+                                                                        BackgroundColor="{StaticResource SurfaceMuted}"
+                                                                        StrokeShape="RoundRectangle 16"
+                                                                        Padding="12"
+                                                                        Margin="0,0,8,0">
+                                                                        <VerticalStackLayout WidthRequest="100"
+                                                                                             HeightRequest="100"
+                                                                                             Spacing="8"
+                                                                                             VerticalOptions="Center"
+                                                                                             HorizontalOptions="Center">
+                                                                                <Image Source="{Binding IconUrl}"
+                                                                                       WidthRequest="{Binding IconWidth}"
+                                                                                       HeightRequest="{Binding IconHeight}"
+                                                                                       HorizontalOptions="Center"
+                                                                                       VerticalOptions="Center"/>
+                                                                        </VerticalStackLayout>
+                                                                </Border>
+                                                        </DataTemplate>
+                                                </CollectionView.ItemTemplate>
+                                        </CollectionView>
                                 </VerticalStackLayout>
                         </Border>
 

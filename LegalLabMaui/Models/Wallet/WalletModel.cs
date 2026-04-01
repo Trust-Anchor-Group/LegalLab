@@ -74,6 +74,7 @@ namespace LegalLabMaui.Models.Wallet
 			this.networkModel = Network;
 
 			this.eDalerClient = new EDalerClient(Client, Contracts, ComponentJid);
+			this.eDalerClient.Client.OnStateChanged += this.Client_OnStateChanged;
 			this.eDalerClient.BalanceUpdated += this.EDalerClient_BalanceUpdated;
 			this.eDalerClient.BuyEDalerClientUrlReceived += this.EDalerClient_BuyEDalerClientUrlReceived;
 			this.eDalerClient.BuyEDalerCompleted += this.EDalerClient_BuyEDalerCompleted;
@@ -123,7 +124,17 @@ namespace LegalLabMaui.Models.Wallet
 		/// <inheritdoc/>
 		public void Dispose()
 		{
+			this.eDalerClient.Client.OnStateChanged -= this.Client_OnStateChanged;
 			this.eDalerClient.Dispose();
+		}
+
+		private Task Client_OnStateChanged(object Sender, XmppState NewState)
+		{
+			this.sendUri.RaiseCanExecuteChanged();
+			this.transferEDaler.RaiseCanExecuteChanged();
+			this.buyEDaler.RaiseCanExecuteChanged();
+			this.sellEDaler.RaiseCanExecuteChanged();
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
