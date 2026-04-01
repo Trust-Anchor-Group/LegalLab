@@ -271,6 +271,7 @@ namespace LegalLabMaui.Models.Design
 			}
 
 			this.HumanReadableMarkdown = (await Contract.ToMarkdown(this.Language, MarkdownType.ForEditing))?.Trim() ?? string.Empty;
+			this.propose.RaiseCanExecuteChanged();
 		}
 
 		/// <summary>

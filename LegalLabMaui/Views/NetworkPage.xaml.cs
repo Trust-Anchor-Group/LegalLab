@@ -12,7 +12,7 @@ public partial class NetworkPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        BindingContext ??= AppService.NetworkModel;
+        BindingContext = AppService.NetworkModel;
 
         if (BindingContext is NetworkModel model && !ReferenceEquals(this.attachedModel, model))
         {

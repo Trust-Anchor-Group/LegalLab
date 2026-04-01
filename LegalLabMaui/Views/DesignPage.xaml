@@ -74,10 +74,10 @@
                                                Style="{StaticResource SectionTitleStyle}"/>
                                         <Label Text="Optional. Adding an OpenAI key allows assisted text generation and translation while designing contracts."
                                                Style="{StaticResource SectionCaptionStyle}"/>
-                                        <Entry x:Name="OpenAiKeyEntry"
+                                             <Entry x:Name="OpenAiKeyEntry"
                                                IsPassword="True"
                                                Placeholder="Enter OpenAI key"
-                                               TextChanged="OpenAiKey_TextChanged"/>
+                                                     Text="{Binding OpenAiKey}"/>
                                 </VerticalStackLayout>
                         </Border>
 
@@ -85,9 +85,10 @@
                                 <VerticalStackLayout Spacing="14">
                                         <Label Text="Contract Metadata"
                                                Style="{StaticResource SectionTitleStyle}"/>
-                                        <Grid ColumnDefinitions="*,*"
-                                              ColumnSpacing="16"
-                                              RowSpacing="12">
+                                                    <Grid ColumnDefinitions="*,*"
+                                                            RowDefinitions="Auto,Auto,Auto,Auto"
+                                                            ColumnSpacing="16"
+                                                            RowSpacing="12">
                                                 <VerticalStackLayout Spacing="6">
                                                         <Label Text="Contract ID"
                                                                         Style="{StaticResource FieldLabelStyle}"/>
@@ -412,7 +413,7 @@
                                                 Style="{StaticResource MonoEditorStyle}"
                                                 AutoSize="TextChanges"
                                                 MinimumHeightRequest="220"
-                                                TextChanged="MachineReadableXmlEditor_TextChanged"/>
+                                                Text="{Binding MachineReadable}"/>
                                 </VerticalStackLayout>
                         </Border>
 
@@ -426,10 +427,10 @@
                                                 Style="{StaticResource MonoEditorStyle}"
                                                 AutoSize="TextChanges"
                                                 MinimumHeightRequest="180"
-                                                TextChanged="HumanReadableMarkdownEditor_TextChanged"/>
+                                                Text="{Binding HumanReadableMarkdown}"/>
                                         <Border Style="{StaticResource CompactSectionCardStyle}"
-                                                BackgroundColor="{StaticResource SurfaceMuted}">
-                                                <Label Text="{Binding HumanReadable}"
+                                                BackgroundColor="Transparent">
+                                                <Label Text="{Binding HumanReadableText}"
                                                        LineBreakMode="WordWrap"/>
                                         </Border>
                                 </VerticalStackLayout>
