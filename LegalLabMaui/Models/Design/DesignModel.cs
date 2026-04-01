@@ -83,6 +83,7 @@ namespace LegalLabMaui.Models.Design
 
 		private Contract contract = null!;
 		private NetworkModel? networkModel;
+		private bool connected;
 		private string lastLanguage = string.Empty;
 
 		/// <summary>
@@ -289,12 +290,27 @@ namespace LegalLabMaui.Models.Design
 		{
 			await base.Start();
 
-			this.networkModel = AppService.NetworkModel;
-			if (this.networkModel is not null)
+			this.BindNetworkModel(AppService.NetworkModel);
+		}
+
+		internal void BindNetworkModel(NetworkModel? NetworkModel)
+		{
+			if (ReferenceEquals(this.networkModel, NetworkModel))
 			{
-				this.networkModel.OnStateChanged += this.NetworkModel_OnStateChanged;
-				this.Connected = this.networkModel.State == XmppState.Connected;
+				if (NetworkModel is not null)
+					this.Connected = NetworkModel.State == XmppState.Connected;
+
+				return;
 			}
+
+			if (this.networkModel is not null)
+				this.networkModel.OnStateChanged -= this.NetworkModel_OnStateChanged;
+
+			this.networkModel = NetworkModel;
+			this.Connected = NetworkModel?.State == XmppState.Connected;
+
+			if (this.networkModel is not null)
+				this.networkModel.OnStateChanged += this.NetworkModel_OnStateChanged;
 		}
 
 		private Task NetworkModel_OnStateChanged(object? Sender, XmppState NewState)
@@ -319,7 +335,19 @@ namespace LegalLabMaui.Models.Design
 		/// <summary>
 		/// Whether the XMPP connection is currently established.
 		/// </summary>
-		public bool Connected { get; private set; }
+		public bool Connected
+		{
+			get => this.connected;
+			private set
+			{
+				if (this.connected == value)
+					return;
+
+				this.connected = value;
+				this.RaisePropertyChanged(nameof(this.Connected));
+				this.propose.RaiseCanExecuteChanged();
+			}
+		}
 
 		/// <summary>
 		/// Current network model.

@@ -56,14 +56,14 @@
                                                                 Spacing="6">
                                                         <Label Text="Language Actions"
                                                                         Style="{StaticResource FieldLabelStyle}"/>
-                                                        <HorizontalStackLayout Spacing="10">
+                                                        <FlexLayout>
                                                                 <Button Text="Add Language"
                                                                                 Command="{Binding AddLanguage}"
                                                                                 Style="{StaticResource SecondaryButtonStyle}"/>
                                                                 <Button Text="Remove Language"
                                                                                 Command="{Binding RemoveLanguage}"
                                                                                 Style="{StaticResource SecondaryButtonStyle}"/>
-                                                        </HorizontalStackLayout>
+                                                        </FlexLayout>
                                                 </VerticalStackLayout>
                                         </Grid>
                                 </VerticalStackLayout>

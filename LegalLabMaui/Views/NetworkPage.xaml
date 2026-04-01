@@ -25,7 +25,8 @@
                                                   IsVisible="{Binding Connected}">
                                                  <Label Text="Connected"
                                                         TextColor="{StaticResource Success}"
-                                                        FontAttributes="Bold"/>
+                                                        FontAttributes="Bold"
+                                                        VerticalOptions="Center"/>
                                           </Border>
                                    </Grid>
 

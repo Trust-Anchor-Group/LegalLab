@@ -152,6 +152,8 @@ public static class AppService
         windowSizeModel = wsm;
         networkModel = nm;
         designModel = dm;
+
+        designModel.BindNetworkModel(networkModel);
     }
 
     /// <summary>
