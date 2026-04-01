@@ -15,7 +15,9 @@ using System.Xml;
 using Waher.Content.Markdown;
 using Waher.Content.Markdown.Model;
 using Waher.Content.Markdown.Wpf;
+using Waher.Content.Xml;
 using Waher.Events;
+using Waher.Persistence;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.IO;
 using Waher.Script;
@@ -41,6 +43,7 @@ namespace LegalLab.Models.XmlEditor
 		private readonly Command newDocument;
 		private readonly Command loadDocument;
 		private readonly Command saveDocument;
+		private readonly Command exportDatabase;
 
 		private Timer timer = null;
 
@@ -65,6 +68,7 @@ namespace LegalLab.Models.XmlEditor
 			this.newDocument = new Command(this.ExecuteNewDocument);
 			this.loadDocument = new Command(this.ExecuteLoadDocument);
 			this.saveDocument = new Command(this.ExecuteSaveDocument);
+			this.exportDatabase = new Command(this.ExecuteExportDatabase);
 		}
 
 		/// <summary>
@@ -510,6 +514,63 @@ namespace LegalLab.Models.XmlEditor
 				}
 
 				return Result;
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+				return null;
+			}
+		}
+
+		/// <summary>
+		/// Command for exporting the database.
+		/// </summary>
+		public ICommand ExportDatabase => this.exportDatabase;
+
+		/// <summary>
+		/// Saves a document.
+		/// </summary>
+		public async Task ExecuteExportDatabase()
+		{
+			await this.ExportDatabaseToXml();
+		}
+
+		private async Task<bool?> ExportDatabaseToXml()
+		{
+			try
+			{
+				if (this.Changed)
+				{
+					switch (MessageBox.Show("You have unsaved changes. Do you want to save your changes first?", "Confirm", MessageBoxButton.YesNoCancel, MessageBoxImage.Question))
+					{
+						case MessageBoxResult.Yes:
+							bool? Result = await this.SaveXml();
+							if (!Result.HasValue || !Result.Value)
+								return null;
+							break;
+
+						case MessageBoxResult.No:
+							break;
+
+						case MessageBoxResult.Cancel:
+						default:
+							return null;
+					}
+				}
+
+				StringBuilder Xml = new();
+				XmlWriter XmlOutput = XmlWriter.Create(Xml, XML.WriterSettings(true, true));
+				using XmlDatabaseExport Output = new(XmlOutput, 256);
+				{
+					await Database.Export(Output);
+				}
+
+				XmlOutput.Close();
+				XmlOutput.Flush();
+				this.Xml = Xml.ToString();
+				this.Changed = !string.IsNullOrEmpty(this.Xml);
+
+				return true;
 			}
 			catch (Exception ex)
 			{
