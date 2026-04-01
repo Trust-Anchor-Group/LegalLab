@@ -7,21 +7,16 @@ public partial class NetworkPage : ContentPage
 {
     private NetworkModel? attachedModel;
 
-    public NetworkPage() => InitializeComponent();
+    public NetworkPage()
+    {
+        InitializeComponent();
+        AppService.ModelsChanged += this.AppService_ModelsChanged;
+    }
 
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        BindingContext = AppService.NetworkModel;
-
-        if (BindingContext is NetworkModel model && !ReferenceEquals(this.attachedModel, model))
-        {
-            if (this.attachedModel is not null)
-                this.attachedModel.SnifferItems.CollectionChanged -= SnifferItems_CollectionChanged;
-
-            this.attachedModel = model;
-            this.attachedModel.SnifferItems.CollectionChanged += SnifferItems_CollectionChanged;
-        }
+        this.BindNetworkModel();
     }
 
     protected override void OnDisappearing()
@@ -33,6 +28,25 @@ public partial class NetworkPage : ContentPage
         }
 
         base.OnDisappearing();
+    }
+
+    private void AppService_ModelsChanged()
+    {
+        MainThread.BeginInvokeOnMainThread(this.BindNetworkModel);
+    }
+
+    private void BindNetworkModel()
+    {
+        this.BindingContext = AppService.NetworkModel;
+
+        if (this.BindingContext is NetworkModel model && !ReferenceEquals(this.attachedModel, model))
+        {
+            if (this.attachedModel is not null)
+                this.attachedModel.SnifferItems.CollectionChanged -= SnifferItems_CollectionChanged;
+
+            this.attachedModel = model;
+            this.attachedModel.SnifferItems.CollectionChanged += SnifferItems_CollectionChanged;
+        }
     }
 
     private async void SnifferItems_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

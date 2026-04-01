@@ -28,6 +28,8 @@ public static class AppService
     private static ScriptModel scriptModel = null!;
     private static XmlEditorModel xmlEditorModel = null!;
 
+    public static event Action? ModelsChanged;
+
     /// <summary>
     /// Window/navigation size model
     /// </summary>
@@ -154,6 +156,7 @@ public static class AppService
         designModel = dm;
 
         designModel.BindNetworkModel(networkModel);
+        ModelsChanged?.Invoke();
     }
 
     /// <summary>

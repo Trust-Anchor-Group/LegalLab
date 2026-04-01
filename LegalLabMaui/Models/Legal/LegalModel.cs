@@ -651,6 +651,14 @@ namespace LegalLabMaui.Models.Legal
 
 			this.ExistingContracts = ExistingContracts.ToValueArray();
 
+			if (this.currentContract is null)
+			{
+				if (Templates.Count > 0)
+					await this.SetContractTemplateName(Templates.Values.First().TemplateName, null);
+				else if (ExistingContracts.Count > 0)
+					this.ExistingContractId = ExistingContracts.Values.First().ContractId;
+			}
+
 			await base.Start();
 		}
 
@@ -1261,6 +1269,9 @@ namespace LegalLabMaui.Models.Legal
 			Templates[TemplateName] = new TemplateReferenceModel(TemplateName, Contract.ContractId);
 
 			this.Templates = Templates.ToValueArray();
+
+			if (this.currentContract is null)
+				this.ContractTemplateName = TemplateName;
 		}
 
 		/// <summary>
@@ -1278,6 +1289,9 @@ namespace LegalLabMaui.Models.Legal
 			ExistingContracts[Name] = new ContractReferenceModel(Name, Contract.ContractId);
 
 			this.ExistingContracts = ExistingContracts.ToValueArray();
+
+			if (this.currentContract is null && this.Templates.Length == 0)
+				this.ExistingContractId = Contract.ContractId;
 		}
 
 		private async Task LoadTemplate(string TemplateName, Dictionary<CaseInsensitiveString, object> PresetValues)

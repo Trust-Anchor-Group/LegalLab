@@ -432,8 +432,12 @@ namespace LegalLabMaui.Models.Legal
 		/// </summary>
 		public string HumanReadableText
 		{
-			get => this.humanReadableText.Value;
-			set => this.humanReadableText.Value = value;
+			get => this.humanReadableText?.Value ?? string.Empty;
+			set
+			{
+				if (this.humanReadableText is not null)
+					this.humanReadableText.Value = value;
+			}
 		}
 
 		/// <summary>
