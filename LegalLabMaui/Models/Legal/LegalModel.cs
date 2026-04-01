@@ -1298,6 +1298,7 @@ namespace LegalLabMaui.Models.Legal
 					await this.currentContract.Stop();
 
 				this.currentContract = await ContractModel.CreateAsync(this.contracts, this.Template, AppService.DesignModel);
+				this.RaisePropertyChanged(nameof(this.CurrentContract));
 
 				await this.currentContract.Start();
 
@@ -1328,6 +1329,7 @@ namespace LegalLabMaui.Models.Legal
 					await this.currentContract.Stop();
 
 				this.currentContract = await ContractModel.CreateAsync(this.contracts, this.Template, AppService.DesignModel);
+				this.RaisePropertyChanged(nameof(this.CurrentContract));
 
 				await this.currentContract.Start();
 

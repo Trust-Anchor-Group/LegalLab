@@ -4,6 +4,7 @@ using LegalLabMaui.Models.Design;
 using LegalLabMaui.Models.Legal.Items;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
@@ -232,6 +233,7 @@ namespace LegalLabMaui.Models.Legal
 		/// <inheritdoc/>
 		public override Task Start()
 		{
+			this.legalModel.PropertyChanged += this.LegalModel_PropertyChanged;
 			this.contracts.ContractUpdated += this.Contracts_ContractUpdated;
 			this.contracts.ContractSigned += this.Contracts_ContractSigned;
 
@@ -241,10 +243,50 @@ namespace LegalLabMaui.Models.Legal
 		/// <inheritdoc/>
 		public override Task Stop()
 		{
+			this.legalModel.PropertyChanged -= this.LegalModel_PropertyChanged;
 			this.contracts.ContractUpdated -= this.Contracts_ContractUpdated;
 			this.contracts.ContractSigned -= this.Contracts_ContractSigned;
 
 			return base.Stop();
+		}
+
+		private void LegalModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+			switch (e.PropertyName)
+			{
+				case nameof(LegalModel.Templates):
+					this.RaisePropertyChanged(nameof(this.Templates));
+					this.RaisePropertyChanged(nameof(this.SelectedTemplate));
+					break;
+
+				case nameof(LegalModel.ContractTemplateName):
+					this.RaisePropertyChanged(nameof(this.SelectedTemplate));
+					break;
+
+				case nameof(LegalModel.ExistingContracts):
+					this.RaisePropertyChanged(nameof(this.ExistingContracts));
+					this.RaisePropertyChanged(nameof(this.SelectedExistingContract));
+					break;
+
+				case nameof(LegalModel.ExistingContractId):
+					this.RaisePropertyChanged(nameof(this.SelectedExistingContract));
+					break;
+
+				case nameof(LegalModel.AutoSignProposals):
+					this.RaisePropertyChanged(nameof(this.AutoSignProposals));
+					break;
+
+				case nameof(LegalModel.IsTemplate):
+					this.RaisePropertyChanged(nameof(this.IsTemplate));
+					this.removeTemplate.RaiseCanExecuteChanged();
+					this.createContract.RaiseCanExecuteChanged();
+					break;
+
+				case nameof(LegalModel.IsContract):
+					this.RaisePropertyChanged(nameof(this.IsContract));
+					this.removeContract.RaiseCanExecuteChanged();
+					break;
+			}
 		}
 
 		private async Task Contracts_ContractSigned(object Sender, ContractSignedEventArgs e)
@@ -420,6 +462,10 @@ namespace LegalLabMaui.Models.Legal
 			get => this.legalModel.AutoSignProposals;
 			set => this.legalModel.AutoSignProposals = value;
 		}
+
+		public bool IsTemplate => this.legalModel.IsTemplate;
+
+		public bool IsContract => this.legalModel.IsContract;
 
 		public TemplateReferenceModel[] Templates => this.legalModel.Templates;
 

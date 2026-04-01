@@ -56,14 +56,14 @@
                                                                 Spacing="6">
                                                         <Label Text="Language Actions"
                                                                         Style="{StaticResource FieldLabelStyle}"/>
-                                                        <FlexLayout>
+                                                        <HorizontalStackLayout Spacing="10">
                                                                 <Button Text="Add Language"
                                                                                 Command="{Binding AddLanguage}"
                                                                                 Style="{StaticResource SecondaryButtonStyle}"/>
                                                                 <Button Text="Remove Language"
                                                                                 Command="{Binding RemoveLanguage}"
                                                                                 Style="{StaticResource SecondaryButtonStyle}"/>
-                                                        </FlexLayout>
+                                                        </HorizontalStackLayout>
                                                 </VerticalStackLayout>
                                         </Grid>
                                 </VerticalStackLayout>
@@ -152,10 +152,14 @@
                                                         Style="{StaticResource SectionTitleStyle}"/>
                                         <Label Text="Edit role definitions, descriptions, counts, and revocation behavior."
                                                Style="{StaticResource SectionCaptionStyle}"/>
-                                        <CollectionView ItemsSource="{Binding Roles}"
-                                                        HeightRequest="280">
-                                                <CollectionView.Header>
-                                                        <Grid Style="{StaticResource DenseHeaderGridStyle}">
+                                        <ScrollView Orientation="Horizontal">
+                                                <CollectionView ItemsSource="{Binding Roles}"
+                                                                HeightRequest="280"
+                                                                WidthRequest="640"
+                                                                HorizontalOptions="Start">
+                                                        <CollectionView.Header>
+                                                                <Grid Style="{StaticResource DenseHeaderGridStyle}"
+                                                                      WidthRequest="640">
                                                                 <Grid.ColumnDefinitions>
                                                                         <ColumnDefinition Width="110"/>
                                                                         <ColumnDefinition Width="*"/>
@@ -181,12 +185,13 @@
                                                                 <Label Grid.Column="4"
                                                                                 Text="Revoke"
                                                                                 Style="{StaticResource DenseHeaderLabelStyle}"/>
-                                                        </Grid>
-                                                </CollectionView.Header>
-                                                <CollectionView.ItemTemplate>
-                                                        <DataTemplate x:DataType="legal:RoleInfo">
-                                                                <Grid Padding="10,6"
-                                                                                ColumnSpacing="8">
+                                                                </Grid>
+                                                        </CollectionView.Header>
+                                                        <CollectionView.ItemTemplate>
+                                                                <DataTemplate x:DataType="legal:RoleInfo">
+                                                                        <Grid Padding="10,6"
+                                                                              ColumnSpacing="8"
+                                                                              WidthRequest="640">
                                                                         <Grid.ColumnDefinitions>
                                                                                 <ColumnDefinition Width="110"/>
                                                                                 <ColumnDefinition Width="*"/>
@@ -223,10 +228,11 @@
                                                                                         Text="Remove"
                                                                                         Command="{Binding RemoveRole}"
                                                                                         Style="{StaticResource CompactButtonStyle}"/>
-                                                                </Grid>
-                                                        </DataTemplate>
-                                                </CollectionView.ItemTemplate>
-                                        </CollectionView>
+                                                                        </Grid>
+                                                                </DataTemplate>
+                                                        </CollectionView.ItemTemplate>
+                                                </CollectionView>
+                                        </ScrollView>
                                         <Button Text="Add Role"
                                                         Command="{Binding AddRole}"
                                                         HorizontalOptions="Start"
@@ -238,10 +244,14 @@
                                 <VerticalStackLayout Spacing="14">
                                         <Label Text="Parts"
                                                         Style="{StaticResource SectionTitleStyle}"/>
-                                        <CollectionView ItemsSource="{Binding Parts}"
-                                                        HeightRequest="240">
-                                                <CollectionView.Header>
-                                                        <Grid Style="{StaticResource DenseHeaderGridStyle}">
+                                        <ScrollView Orientation="Horizontal">
+                                                <CollectionView ItemsSource="{Binding Parts}"
+                                                                HeightRequest="240"
+                                                                WidthRequest="520"
+                                                                HorizontalOptions="Start">
+                                                        <CollectionView.Header>
+                                                                <Grid Style="{StaticResource DenseHeaderGridStyle}"
+                                                                      WidthRequest="520">
                                                                 <Grid.ColumnDefinitions>
                                                                         <ColumnDefinition Width="*"/>
                                                                         <ColumnDefinition Width="130"/>
@@ -255,12 +265,13 @@
                                                                 <Label Grid.Column="1"
                                                                                 Text="Role"
                                                                                 Style="{StaticResource DenseHeaderLabelStyle}"/>
-                                                        </Grid>
-                                                </CollectionView.Header>
-                                                <CollectionView.ItemTemplate>
-                                                        <DataTemplate x:DataType="legal:PartInfo">
-                                                                <Grid Padding="10,6"
-                                                                                ColumnSpacing="8">
+                                                                </Grid>
+                                                        </CollectionView.Header>
+                                                        <CollectionView.ItemTemplate>
+                                                                <DataTemplate x:DataType="legal:PartInfo">
+                                                                        <Grid Padding="10,6"
+                                                                              ColumnSpacing="8"
+                                                                              WidthRequest="520">
                                                                         <Grid.ColumnDefinitions>
                                                                                 <ColumnDefinition Width="*"/>
                                                                                 <ColumnDefinition Width="130"/>
@@ -287,10 +298,11 @@
                                                                                         Text="Remove"
                                                                                         Command="{Binding RemovePart}"
                                                                                         Style="{StaticResource CompactButtonStyle}"/>
-                                                                </Grid>
-                                                        </DataTemplate>
-                                                </CollectionView.ItemTemplate>
-                                        </CollectionView>
+                                                                        </Grid>
+                                                                </DataTemplate>
+                                                        </CollectionView.ItemTemplate>
+                                                </CollectionView>
+                                        </ScrollView>
                                         <Button Text="Add Part"
                                                         Command="{Binding AddPart}"
                                                         HorizontalOptions="Start"
@@ -302,10 +314,14 @@
                                 <VerticalStackLayout Spacing="14">
                                         <Label Text="Editable Parameters"
                                                         Style="{StaticResource SectionTitleStyle}"/>
-                                        <CollectionView ItemsSource="{Binding Parameters}"
-                                                        HeightRequest="320">
-                                                <CollectionView.Header>
-                                                        <Grid Style="{StaticResource DenseHeaderGridStyle}">
+                                        <ScrollView Orientation="Horizontal">
+                                                <CollectionView ItemsSource="{Binding Parameters}"
+                                                                HeightRequest="320"
+                                                                WidthRequest="760"
+                                                                HorizontalOptions="Start">
+                                                        <CollectionView.Header>
+                                                                <Grid Style="{StaticResource DenseHeaderGridStyle}"
+                                                                      WidthRequest="760">
                                                                 <Grid.ColumnDefinitions>
                                                                         <ColumnDefinition Width="110"/>
                                                                         <ColumnDefinition Width="*"/>
@@ -327,12 +343,13 @@
                                                                 <Label Grid.Column="3"
                                                                                 Text="Protection"
                                                                                 Style="{StaticResource DenseHeaderLabelStyle}"/>
-                                                        </Grid>
-                                                </CollectionView.Header>
-                                                <CollectionView.ItemTemplate>
-                                                        <DataTemplate x:DataType="legal:ParameterInfo">
-                                                                <Grid Padding="10,6"
-                                                                                ColumnSpacing="8">
+                                                                </Grid>
+                                                        </CollectionView.Header>
+                                                        <CollectionView.ItemTemplate>
+                                                                <DataTemplate x:DataType="legal:ParameterInfo">
+                                                                        <Grid Padding="10,6"
+                                                                              ColumnSpacing="8"
+                                                                              WidthRequest="760">
                                                                         <Grid.ColumnDefinitions>
                                                                                 <ColumnDefinition Width="110"/>
                                                                                 <ColumnDefinition Width="*"/>
@@ -367,10 +384,11 @@
                                                                                         Text="Remove"
                                                                                         Command="{Binding RemoveParameter}"
                                                                                         Style="{StaticResource CompactButtonStyle}"/>
-                                                                </Grid>
-                                                        </DataTemplate>
-                                                </CollectionView.ItemTemplate>
-                                        </CollectionView>
+                                                                        </Grid>
+                                                                </DataTemplate>
+                                                        </CollectionView.ItemTemplate>
+                                                </CollectionView>
+                                        </ScrollView>
                                         <FlexLayout Wrap="Wrap"
                                                         Direction="Row">
                                                 <Button Text="Add Numeric"
