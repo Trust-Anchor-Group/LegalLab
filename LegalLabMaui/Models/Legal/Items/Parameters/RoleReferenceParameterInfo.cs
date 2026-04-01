@@ -64,6 +64,8 @@ public class RoleReferenceParameterInfo : ParameterInfo
             this.RaisePropertyChanged(nameof(this.Roles));
     }
 
+    public override bool CanEditValue => false;
+
     public override void SetValue(string Value)
     {
         throw new Exception("Role reference parameter cannot be set.");

@@ -50,6 +50,9 @@ public class ContractParametersModel : Model
 
     protected void SetParameters(Parameter[] ContractParameters)
     {
+        foreach (ParameterInfo parameter in this.Parameters)
+            parameter.PropertyChanged -= this.ParameterInfo_PropertyChanged;
+
         this.contractParameters = ContractParameters;
 
         string PrevLanguage = this.Language;
@@ -242,12 +245,30 @@ public class ContractParametersModel : Model
             if (pi is not null)
             {
                 this.parametersByName[Parameter.Name] = pi;
+                pi.PropertyChanged += this.ParameterInfo_PropertyChanged;
                 ParameterList.Add(pi);
             }
         }
 
         this.Parameters = [.. ParameterList];
         return this.ValidateParameters();
+    }
+
+    private async void ParameterInfo_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (sender is not ParameterInfo parameter)
+            return;
+
+        if (e.PropertyName == nameof(ParameterInfo.Value))
+        {
+            await this.ValidateParameters();
+            await this.RaiseParametersChanged();
+        }
+        else if ((e.PropertyName == nameof(ParameterInfo.ErrorText) || e.PropertyName == nameof(ParameterInfo.ErrorReason)) &&
+                 !string.IsNullOrEmpty(parameter.ErrorText))
+        {
+            this.ParametersOk = false;
+        }
     }
 
     protected async Task RaiseParametersChanged()

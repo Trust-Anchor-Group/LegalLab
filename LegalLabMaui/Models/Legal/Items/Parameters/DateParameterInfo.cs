@@ -14,6 +14,23 @@ public class DateParameterInfo : ParameterInfo
         set { this.Value = value; }
     }
 
+    public override string EditableValue
+    {
+        get => this.DateValue.ToString("yyyy-MM-dd");
+        set => this.SetValue(value);
+    }
+
+    public override void SetValue(string Value)
+    {
+        if (DateTime.TryParse(Value, out DateTime parsed))
+        {
+            this.ClearInputError();
+            this.DateValue = parsed.Date;
+        }
+        else
+            this.SetInputError("Enter a valid date.");
+    }
+
     protected override void SetParameterValue(object? value)
     {
         if (this.Parameter is DateParameter dp && value is DateTime dt)

@@ -316,13 +316,21 @@
                                                                                         <Label Grid.Column="0"
                                                                                                Text="{Binding Name}"
                                                                                                Style="{StaticResource DenseCellLabelStyle}"/>
-                                                                                        <Label Grid.Column="1"
-                                                                                               Text="{Binding Value, Converter={conv:MoneyToString}}"
-                                                                                               Style="{StaticResource DenseCellLabelStyle}"/>
-                                                                                        <Label Grid.Column="2"
-                                                                                               Text="{Binding DescriptionAsText}"
-                                                                                               Style="{StaticResource DenseCellLabelStyle}"
-                                                                                               LineBreakMode="WordWrap"/>
+                                                                                        <Entry Grid.Column="1"
+                                                                                               Text="{Binding EditableValue}"
+                                                                                               IsEnabled="{Binding CanEditValue}"
+                                                                                               FontSize="12"/>
+                                                                                        <VerticalStackLayout Grid.Column="2"
+                                                                                                             Spacing="4">
+                                                                                                <Label Text="{Binding DescriptionAsText}"
+                                                                                                       Style="{StaticResource DenseCellLabelStyle}"
+                                                                                                       LineBreakMode="WordWrap"/>
+                                                                                                <Label Text="{Binding ErrorText}"
+                                                                                                       TextColor="{StaticResource Danger}"
+                                                                                                       FontSize="11"
+                                                                                                       IsVisible="{Binding ErrorText, Converter={conv:VisibleIfNotNull}}"
+                                                                                                       LineBreakMode="WordWrap"/>
+                                                                                        </VerticalStackLayout>
                                                                                 </Grid>
                                                                         </DataTemplate>
                                                                 </CollectionView.ItemTemplate>

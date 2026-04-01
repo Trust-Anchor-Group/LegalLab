@@ -14,6 +14,11 @@ public class StringParameterInfo : ParameterInfo
         set { this.Value = value; }
     }
 
+    public override void SetValue(string Value)
+    {
+        this.StringValue = Value;
+    }
+
     protected override void SetParameterValue(object? value)
     {
         if (this.Parameter is StringParameter sp)

@@ -25,8 +25,7 @@
                                                   IsVisible="{Binding Connected}">
                                                  <Label Text="Connected"
                                                         TextColor="{StaticResource Success}"
-                                                        FontAttributes="Bold"
-                                                        VerticalOptions="Center"/>
+                                                        FontAttributes="Bold"/>
                                           </Border>
                                    </Grid>
 
@@ -66,36 +65,36 @@
                                                         VerticalOptions="Center"/>
                                           </HorizontalStackLayout>
 
-                                                 <VerticalStackLayout IsVisible="{Binding CreateAccount}"
-                                                                      Spacing="12">
-                                                        <Grid ColumnDefinitions="*,*"
-                                                              ColumnSpacing="16">
-                                                               <VerticalStackLayout Grid.Column="0"
-                                                                                    Spacing="6">
-                                                                      <Label Text="Repeat Password"
-                                                                             Style="{StaticResource FieldLabelStyle}"/>
-                                                                      <Entry x:Name="XmppPassword2"
-                                                                             IsPassword="True"
-                                                                             IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"
-                                                                             TextChanged="XmppPassword2_TextChanged"/>
-                                                               </VerticalStackLayout>
-                                                               <VerticalStackLayout Grid.Column="1"
-                                                                                    Spacing="6">
-                                                                      <Label Text="API Key"
-                                                                             Style="{StaticResource FieldLabelStyle}"/>
-                                                                      <Entry Text="{Binding ApiKey}"
-                                                                             IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
-                                                               </VerticalStackLayout>
-                                                        </Grid>
-                                                        <VerticalStackLayout Spacing="6">
-                                                               <Label Text="API Key Secret"
+                                          <VerticalStackLayout IsVisible="{Binding CreateAccount}"
+                                                               Spacing="12">
+                                                 <Grid ColumnDefinitions="*,*"
+                                                       ColumnSpacing="16">
+                                                        <VerticalStackLayout Grid.Column="0"
+                                                                             Spacing="6">
+                                                               <Label Text="Repeat Password"
                                                                       Style="{StaticResource FieldLabelStyle}"/>
-                                                               <Entry x:Name="ApiKeySecret"
+                                                               <Entry x:Name="XmppPassword2"
                                                                       IsPassword="True"
                                                                       IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"
-                                                                      TextChanged="ApiKeySecret_TextChanged"/>
+                                                                      TextChanged="XmppPassword2_TextChanged"/>
                                                         </VerticalStackLayout>
+                                                        <VerticalStackLayout Grid.Column="1"
+                                                                             Spacing="6">
+                                                               <Label Text="API Key"
+                                                                      Style="{StaticResource FieldLabelStyle}"/>
+                                                               <Entry Text="{Binding ApiKey}"
+                                                                      IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                                                        </VerticalStackLayout>
+                                                 </Grid>
+                                                 <VerticalStackLayout Spacing="6">
+                                                        <Label Text="API Key Secret"
+                                                               Style="{StaticResource FieldLabelStyle}"/>
+                                                        <Entry x:Name="ApiKeySecret"
+                                                               IsPassword="True"
+                                                               IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"
+                                                               TextChanged="ApiKeySecret_TextChanged"/>
                                                  </VerticalStackLayout>
+                                          </VerticalStackLayout>
 
                                           <HorizontalStackLayout Spacing="10">
                                                  <CheckBox IsChecked="{Binding TrustServerCertificate}"

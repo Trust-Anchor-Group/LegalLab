@@ -82,7 +82,21 @@ public class ContractReferenceParameterInfo : ParameterInfo
 
     public override void SetValue(string Value)
     {
-        this.ContractId = Value;
+        try
+        {
+            this.ClearInputError();
+            this.ContractId = Value;
+        }
+        catch (Exception ex)
+        {
+            this.SetInputError(ex.Message);
+        }
+    }
+
+    public override string EditableValue
+    {
+        get => this.ContractId;
+        set => this.SetValue(value);
     }
 
     public override Task ExecuteRemoveParameter()

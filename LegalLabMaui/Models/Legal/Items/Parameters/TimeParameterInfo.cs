@@ -20,6 +20,23 @@ public class TimeParameterInfo : ParameterInfo
         set { if (TimeSpan.TryParse(value, out TimeSpan ts)) this.TimeValue = ts; }
     }
 
+    public override string EditableValue
+    {
+        get => this.TimeString;
+        set => this.SetValue(value);
+    }
+
+    public override void SetValue(string Value)
+    {
+        string before = this.TimeString;
+        this.TimeString = Value;
+
+        if (this.TimeString == before && !string.Equals(Value, before, StringComparison.Ordinal))
+            this.SetInputError("Enter a valid time, for example 14:30:00.");
+        else
+            this.ClearInputError();
+    }
+
     protected override void SetParameterValue(object? value)
     {
         if (this.Parameter is TimeParameter tp && value is TimeSpan ts)

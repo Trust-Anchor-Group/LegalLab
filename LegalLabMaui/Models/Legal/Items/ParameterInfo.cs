@@ -1,6 +1,7 @@
 using LegalLabMaui.Extensions;
 using LegalLabMaui.Models.Design;
 using LegalLabMaui.Models.Items;
+using System.Globalization;
 using System.Windows.Input;
 using Waher.Script;
 using Waher.Networking.XMPP.Contracts;
@@ -65,6 +66,7 @@ public abstract class ParameterInfo : OrderedItem, INamedItem, ITranslatable
         this.Value = this.parameter.ObjectValue;
         this.ErrorReason = this.parameter.ErrorReason;
         this.ErrorText = this.parameter.ErrorText;
+        this.RaisePropertyChanged(nameof(this.EditableValue));
     }
 
     public string Name
@@ -101,8 +103,23 @@ public abstract class ParameterInfo : OrderedItem, INamedItem, ITranslatable
         {
             this.@value.Value = value;
             this.SetParameterValue(value);
+            this.RaisePropertyChanged(nameof(this.EditableValue));
             this.designModel?.ParameterValueChanged(this);
         }
+    }
+
+    public virtual bool CanEditValue => true;
+
+    public virtual string EditableValue
+    {
+        get => this.Value switch
+        {
+            null => string.Empty,
+            DateTime dateTime => dateTime.ToString(CultureInfo.CurrentCulture),
+            bool boolean => boolean ? "True" : "False",
+            _ => this.Value.ToString() ?? string.Empty
+        };
+        set => this.SetValue(value);
     }
 
     protected abstract void SetParameterValue(object? value);
@@ -173,6 +190,21 @@ public abstract class ParameterInfo : OrderedItem, INamedItem, ITranslatable
     {
         get => this.errorText.Value;
         set => this.errorText.Value = value;
+    }
+
+    protected void SetInputError(string Message)
+    {
+        this.ErrorReason = null;
+        this.ErrorText = Message;
+    }
+
+    protected void ClearInputError()
+    {
+        if (this.ErrorReason is null && string.IsNullOrEmpty(this.ErrorText))
+            return;
+
+        this.ErrorReason = null;
+        this.ErrorText = null;
     }
 
     public ICommand RemoveParameter => this.removeParameter;

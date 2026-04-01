@@ -8,5 +8,7 @@ public class RoleParameterInfo : ParameterInfo
     public RoleParameterInfo(Contract Contract, RoleParameter Parameter, DesignModel? DesignModel, IProperty Parameters)
         : base(Contract, Parameter, DesignModel, Parameters) { }
 
+    public override bool CanEditValue => false;
+
     protected override void SetParameterValue(object? value) { }
 }

@@ -75,6 +75,7 @@ namespace LegalLabMaui.Models.Legal
 
 		private readonly ContractsClient contracts;
 		private readonly HttpFileUploadClient httpFileUploadClient;
+		private int selectionLoadId;
 		private ContractModel currentContract;
 
 		/// <summary>
@@ -275,7 +276,13 @@ namespace LegalLabMaui.Models.Legal
 				}
 
 				await Shell.Current.GoToAsync("//ContractsPage");
-				await this.LoadContract(e.ContractId);
+
+				int LoadId = ++this.selectionLoadId;
+				this.existingContractId.Value = e.ContractId;
+				this.contractTemplateName.Value = string.Empty;
+				this.RaisePropertyChanged(nameof(this.ExistingContractId));
+				this.RaisePropertyChanged(nameof(this.ContractTemplateName));
+				await this.LoadContract(e.ContractId, LoadId);
 
 				if (this.AutoSignProposals)
 					await this.currentContract.SignAsRole(e.Role, false);
@@ -1178,12 +1185,27 @@ namespace LegalLabMaui.Models.Legal
 			get => this.contractTemplateName.Value;
 			set
 			{
+				if (string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(this.existingContractId.Value))
+					return;
+
+				if (this.contractTemplateName.Value == value && string.IsNullOrEmpty(this.existingContractId.Value))
+					return;
+
 				this.contractTemplateName.Value = value;
-				this.existingContractId.Value = string.Empty;
+
+				if (!string.IsNullOrEmpty(this.existingContractId.Value))
+				{
+					this.existingContractId.Value = string.Empty;
+					this.RaisePropertyChanged(nameof(this.ExistingContractId));
+				}
+
+				if (string.IsNullOrEmpty(value))
+					return;
+
+				int LoadId = ++this.selectionLoadId;
 				AppService.UpdateGui(async () =>
 				{
-					this.RaisePropertyChanged(nameof(this.ExistingContractId));
-					await this.LoadTemplate(value, null);
+					await this.LoadTemplate(value, null, LoadId);
 				});
 			}
 		}
@@ -1205,12 +1227,27 @@ namespace LegalLabMaui.Models.Legal
 			get => this.existingContractId.Value;
 			set
 			{
+				if (string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(this.contractTemplateName.Value))
+					return;
+
+				if (this.existingContractId.Value == value && string.IsNullOrEmpty(this.contractTemplateName.Value))
+					return;
+
 				this.existingContractId.Value = value;
-				this.contractTemplateName.Value = string.Empty;
+
+				if (!string.IsNullOrEmpty(this.contractTemplateName.Value))
+				{
+					this.contractTemplateName.Value = string.Empty;
+					this.RaisePropertyChanged(nameof(this.ContractTemplateName));
+				}
+
+				if (string.IsNullOrEmpty(value))
+					return;
+
+				int LoadId = ++this.selectionLoadId;
 				AppService.UpdateGui(async () =>
 				{
-					this.RaisePropertyChanged(nameof(this.ContractTemplateName));
-					await this.LoadContract(value);
+					await this.LoadContract(value, LoadId);
 				});
 			}
 		}
@@ -1222,9 +1259,12 @@ namespace LegalLabMaui.Models.Legal
 		/// <param name="PresetValues">Optional preset values. Can be null.</param>
 		public async Task SetContractTemplateName(string Name, Dictionary<CaseInsensitiveString, object> PresetValues)
 		{
+			int LoadId = ++this.selectionLoadId;
 			this.contractTemplateName.Value = Name;
+			this.existingContractId.Value = string.Empty;
+			this.RaisePropertyChanged(nameof(this.ExistingContractId));
 			this.RaisePropertyChanged(nameof(this.ContractTemplateName));
-			await this.LoadTemplate(Name, PresetValues);
+			await this.LoadTemplate(Name, PresetValues, LoadId);
 		}
 
 		/// <summary>
@@ -1294,24 +1334,38 @@ namespace LegalLabMaui.Models.Legal
 				this.ExistingContractId = Contract.ContractId;
 		}
 
-		private async Task LoadTemplate(string TemplateName, Dictionary<CaseInsensitiveString, object> PresetValues)
+		private bool IsCurrentSelectionLoad(int LoadId)
+			=> this.selectionLoadId == LoadId;
+
+		private async Task LoadTemplate(string TemplateName, Dictionary<CaseInsensitiveString, object> PresetValues, int LoadId)
 		{
+			if (string.IsNullOrEmpty(TemplateName) || !this.IsCurrentSelectionLoad(LoadId))
+				return;
+
 			string ContractId = await RuntimeSettings.GetAsync("Contract.Template." + TemplateName, string.Empty);
-			if (string.IsNullOrEmpty(ContractId))
+			if (string.IsNullOrEmpty(ContractId) || !this.IsCurrentSelectionLoad(LoadId))
 				return;
 
 			try
 			{
 				AppService.MouseHourglass();
-				this.Template = await this.contracts.GetContractAsync(ContractId);
-				this.IsTemplate = true;
-				this.IsContract = false;
-				AppService.MouseDefault();
+				Contract Template = await this.contracts.GetContractAsync(ContractId);
+				if (!this.IsCurrentSelectionLoad(LoadId))
+					return;
 
 				if (this.currentContract is not null)
 					await this.currentContract.Stop();
 
+				if (!this.IsCurrentSelectionLoad(LoadId))
+					return;
+
+				this.Template = Template;
+				this.IsTemplate = true;
+				this.IsContract = false;
 				this.currentContract = await ContractModel.CreateAsync(this.contracts, this.Template, AppService.DesignModel);
+				if (!this.IsCurrentSelectionLoad(LoadId))
+					return;
+
 				this.RaisePropertyChanged(nameof(this.CurrentContract));
 
 				await this.currentContract.Start();
@@ -1320,6 +1374,9 @@ namespace LegalLabMaui.Models.Legal
 			}
 			catch (Exception ex)
 			{
+				if (!this.IsCurrentSelectionLoad(LoadId))
+					return;
+
 				bool Remove = await AppService.MessageBox(
 					"Unable to load template. Do you want to remove it?\r\n\r\nError returned: " + ex.Message,
 					"Error", true);
@@ -1327,22 +1384,37 @@ namespace LegalLabMaui.Models.Legal
 				if (Remove)
 					await this.RemoveContract(ContractId);
 			}
+			finally
+			{
+				AppService.MouseDefault();
+			}
 		}
 
-		private async Task LoadContract(string ContractId)
+		private async Task LoadContract(string ContractId, int LoadId)
 		{
+			if (string.IsNullOrEmpty(ContractId) || !this.IsCurrentSelectionLoad(LoadId))
+				return;
+
 			try
 			{
 				AppService.MouseHourglass();
-				this.Template = await this.contracts.GetContractAsync(ContractId);
-				this.IsTemplate = false;
-				this.IsContract = true;
-				AppService.MouseDefault();
+				Contract Template = await this.contracts.GetContractAsync(ContractId);
+				if (!this.IsCurrentSelectionLoad(LoadId))
+					return;
 
 				if (this.currentContract is not null)
 					await this.currentContract.Stop();
 
+				if (!this.IsCurrentSelectionLoad(LoadId))
+					return;
+
+				this.Template = Template;
+				this.IsTemplate = false;
+				this.IsContract = true;
 				this.currentContract = await ContractModel.CreateAsync(this.contracts, this.Template, AppService.DesignModel);
+				if (!this.IsCurrentSelectionLoad(LoadId))
+					return;
+
 				this.RaisePropertyChanged(nameof(this.CurrentContract));
 
 				await this.currentContract.Start();
@@ -1351,12 +1423,19 @@ namespace LegalLabMaui.Models.Legal
 			}
 			catch (Exception ex)
 			{
+				if (!this.IsCurrentSelectionLoad(LoadId))
+					return;
+
 				bool Remove = await AppService.MessageBox(
 					"Unable to load contract. Do you want to remove it?\r\n\r\nError returned: " + ex.Message,
 					"Error", true);
 
 				if (Remove)
 					await this.RemoveContract(ContractId);
+			}
+			finally
+			{
+				AppService.MouseDefault();
 			}
 		}
 

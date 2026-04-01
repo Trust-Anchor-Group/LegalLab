@@ -22,6 +22,23 @@ public class GeoParameterInfo : ParameterInfo
         }
     }
 
+    public override string EditableValue
+    {
+        get => this.GpsString;
+        set => this.SetValue(value);
+    }
+
+    public override void SetValue(string Value)
+    {
+        string before = this.GpsString;
+        this.GpsString = Value;
+
+        if (this.GpsString == before && !string.Equals(Value, before, StringComparison.Ordinal))
+            this.SetInputError("Enter latitude and longitude separated by a comma.");
+        else
+            this.ClearInputError();
+    }
+
     protected override void SetParameterValue(object? value)
     {
         if (this.Parameter is GeoParameter gp && value is GeoPosition pos)
