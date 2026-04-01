@@ -106,71 +106,44 @@
                                                         SelectionMode="Single"
                                                         SelectionChanged="OnTransactionSelected"
                                                         HeightRequest="340">
-                                                <CollectionView.Header>
-                                                        <Grid Style="{StaticResource DenseHeaderGridStyle}">
-                                                                <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="*"/>
-                                                                        <ColumnDefinition Width="140"/>
-                                                                        <ColumnDefinition Width="*"/>
-                                                                        <ColumnDefinition Width="90"/>
-                                                                        <ColumnDefinition Width="90"/>
-                                                                        <ColumnDefinition Width="*"/>
-                                                                </Grid.ColumnDefinitions>
-                                                                <Label Grid.Column="0"
-                                                                       Text="Transaction"
-                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
-                                                                <Label Grid.Column="1"
-                                                                       Text="Timestamp"
-                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
-                                                                <Label Grid.Column="2"
-                                                                       Text="Remote"
-                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
-                                                                <Label Grid.Column="3"
-                                                                       Text="Change"
-                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
-                                                                <Label Grid.Column="4"
-                                                                       Text="Balance"
-                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
-                                                                <Label Grid.Column="5"
-                                                                       Text="Message"
-                                                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
-                                                        </Grid>
-                                                </CollectionView.Header>
                                                 <CollectionView.ItemTemplate>
                                                         <DataTemplate x:DataType="wallet:AccountEventWrapper">
-                                                                <Grid Padding="10,6"
-                                                                      ColumnSpacing="10">
-                                                                        <Grid.ColumnDefinitions>
-                                                                                <ColumnDefinition Width="*"/>
-                                                                                <ColumnDefinition Width="140"/>
-                                                                                <ColumnDefinition Width="*"/>
-                                                                                <ColumnDefinition Width="90"/>
-                                                                                <ColumnDefinition Width="90"/>
-                                                                                <ColumnDefinition Width="*"/>
-                                                                        </Grid.ColumnDefinitions>
-                                                                        <Label Grid.Column="0"
-                                                                               Text="{Binding TransactionId}"
-                                                                               Style="{StaticResource DenseCellLabelStyle}"
-                                                                               LineBreakMode="CharacterWrap"/>
-                                                                        <Label Grid.Column="1"
-                                                                               Text="{Binding Timestamp, Converter={conv:DateTimeToString}}"
-                                                                               Style="{StaticResource DenseCellLabelStyle}"/>
-                                                                        <Label Grid.Column="2"
-                                                                               Text="{Binding Remote}"
-                                                                               Style="{StaticResource DenseCellLabelStyle}"/>
-                                                                        <Label Grid.Column="3"
-                                                                               Text="{Binding Change, Converter={conv:MoneyToString}}"
-                                                                               Style="{StaticResource DenseCellLabelStyle}"
-                                                                               HorizontalOptions="End"/>
-                                                                        <Label Grid.Column="4"
-                                                                               Text="{Binding Balance, Converter={conv:MoneyToString}}"
-                                                                               Style="{StaticResource DenseCellLabelStyle}"
-                                                                               HorizontalOptions="End"/>
-                                                                        <Label Grid.Column="5"
-                                                                               Text="{Binding Message}"
-                                                                               Style="{StaticResource DenseCellLabelStyle}"
-                                                                               LineBreakMode="WordWrap"/>
-                                                                </Grid>
+                                                                <Border Style="{StaticResource CompactSectionCardStyle}"
+                                                                        Margin="0,0,0,8"
+                                                                        BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceMuted}, Dark={StaticResource Gray800}}">
+                                                                        <VerticalStackLayout Spacing="4">
+                                                                                <Grid ColumnDefinitions="*,Auto"
+                                                                                      ColumnSpacing="10">
+                                                                                        <Label Text="{Binding Remote}"
+                                                                                               Style="{StaticResource DenseCellLabelStyle}"
+                                                                                               LineBreakMode="TailTruncation"
+                                                                                               MaxLines="1"/>
+                                                                                        <Label Grid.Column="1"
+                                                                                               Text="{Binding Change, Converter={conv:MoneyToString}}"
+                                                                                               Style="{StaticResource DenseCellLabelStyle}"
+                                                                                               HorizontalOptions="End"/>
+                                                                                </Grid>
+                                                                                <Grid ColumnDefinitions="*,Auto"
+                                                                                      ColumnSpacing="10">
+                                                                                        <Label Text="{Binding Timestamp, Converter={conv:DateTimeToString}}"
+                                                                                               Style="{StaticResource FieldLabelStyle}"
+                                                                                               LineBreakMode="TailTruncation"
+                                                                                               MaxLines="1"/>
+                                                                                        <Label Grid.Column="1"
+                                                                                               Text="{Binding Balance, Converter={conv:MoneyToString}}"
+                                                                                               Style="{StaticResource FieldLabelStyle}"
+                                                                                               HorizontalOptions="End"/>
+                                                                                </Grid>
+                                                                                <Label Text="{Binding Message}"
+                                                                                       Style="{StaticResource DenseCellLabelStyle}"
+                                                                                       LineBreakMode="TailTruncation"
+                                                                                       MaxLines="1"/>
+                                                                                <Label Text="{Binding TransactionId}"
+                                                                                       Style="{StaticResource FieldLabelStyle}"
+                                                                                       LineBreakMode="TailTruncation"
+                                                                                       MaxLines="1"/>
+                                                                        </VerticalStackLayout>
+                                                                </Border>
                                                         </DataTemplate>
                                                 </CollectionView.ItemTemplate>
                                         </CollectionView>

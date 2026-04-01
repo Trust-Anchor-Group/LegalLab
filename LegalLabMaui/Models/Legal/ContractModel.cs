@@ -49,7 +49,6 @@ namespace LegalLabMaui.Models.Legal
 
 		private readonly Command addPart;
 		private readonly Command createContract;
-		private readonly Command explainCreateContract;
 		private readonly Command removeTemplate;
 		private readonly Command removeContract;
 		private readonly Command uploadAttachment;
@@ -87,8 +86,7 @@ namespace LegalLabMaui.Models.Legal
 			this.ParameterOptions = [];
 
 			this.addPart = new Command(this.ExecuteAddPart);
-			this.createContract = new Command(this.CanExecuteCreateContract, this.ExecuteCreateContract);
-			this.explainCreateContract = new Command(this.ExecuteExplainCreateContract);
+			this.createContract = new Command(this.ExecuteCreateContract);
 			this.removeTemplate = new Command(this.CanExecuteRemoveTemplate, this.ExecuteRemoveTemplate);
 			this.removeContract = new Command(this.CanExecuteRemoveContract, this.ExecuteRemoveContract);
 			this.uploadAttachment = new Command(this.CanExecuteUploadAttachment, this.ExecuteUploadAttachment);
@@ -680,11 +678,6 @@ namespace LegalLabMaui.Models.Legal
 		public ICommand CreateContract => this.createContract;
 
 		/// <summary>
-		/// Displays the current create-contract availability details.
-		/// </summary>
-		public ICommand ExplainCreateContract => this.explainCreateContract;
-
-		/// <summary>
 		/// If the create contract command can be exeucted.
 		/// </summary>
 		/// <returns>If command can be executed.</returns>
@@ -726,12 +719,6 @@ namespace LegalLabMaui.Models.Legal
 			return "Ready to create a contract from the selected template.";
 		}
 
-		private Task ExecuteExplainCreateContract()
-		{
-			string Title = this.CreateContractAvailable ? "Create Contract" : "Create Contract Unavailable";
-			return AppService.MessageBox(this.CreateContractFeedback, Title);
-		}
-
 		/// <summary>
 		/// Creates a contract.
 		/// </summary>
@@ -739,9 +726,15 @@ namespace LegalLabMaui.Models.Legal
 		{
 			try
 			{
+				if (!this.CanExecuteCreateContract())
+				{
+					await AppService.MessageBox(this.CreateContractFeedback, "Create Contract");
+					return;
+				}
+
 				bool Confirmed = await AppService.MessageBox(
-					"Are you sure you want to create the contract on " + this.contracts.ComponentAddress + "?",
-					"Confirm", true);
+					"Create a new contract from the selected template on " + this.contracts.ComponentAddress + "?",
+					"Create Contract", true);
 
 				if (!Confirmed)
 					return;
@@ -757,7 +750,8 @@ namespace LegalLabMaui.Models.Legal
 
 				await this.SetContract(Contract);
 
-				AppService.SuccessBox("Contract successfully created.");
+				await AppService.MessageBox("Contract successfully created.\r\n\r\nContract ID: " + Contract.ContractId,
+					"Contract Created");
 			}
 			catch (Exception ex)
 			{

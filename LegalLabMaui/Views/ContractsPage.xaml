@@ -7,6 +7,7 @@
              xmlns:items="clr-namespace:LegalLabMaui.Models.Legal.Items"
              xmlns:standards="clr-namespace:LegalLabMaui.Models.Standards"
              x:Class="LegalLabMaui.Views.ContractsPage"
+             x:Name="ContractsPageRoot"
              x:DataType="legal:ContractModel"
              Title="Contracts">
         <ContentPage.Resources>
@@ -52,16 +53,16 @@
                                                 <VerticalStackLayout Spacing="6">
                                                         <Label Text="Template"
                                                                Style="{StaticResource FieldLabelStyle}"/>
-                                                        <Picker ItemsSource="{Binding Templates}"
+                                                        <Picker ItemsSource="{Binding Source={x:Reference ContractsPageRoot}, Path=Templates}"
                                                                 ItemDisplayBinding="{Binding TemplateName, x:DataType=legal:TemplateReferenceModel}"
-                                                                SelectedItem="{Binding SelectedTemplate}"/>
+                                                                SelectedItem="{Binding Source={x:Reference ContractsPageRoot}, Path=SelectedTemplate}"/>
                                                 </VerticalStackLayout>
                                                 <VerticalStackLayout Spacing="6">
                                                         <Label Text="Existing Contract"
                                                                Style="{StaticResource FieldLabelStyle}"/>
-                                                        <Picker ItemsSource="{Binding ExistingContracts}"
+                                                        <Picker ItemsSource="{Binding Source={x:Reference ContractsPageRoot}, Path=ExistingContracts}"
                                                                 ItemDisplayBinding="{Binding ContractName, x:DataType=legal:ContractReferenceModel}"
-                                                                SelectedItem="{Binding SelectedExistingContract}"/>
+                                                                SelectedItem="{Binding Source={x:Reference ContractsPageRoot}, Path=SelectedExistingContract}"/>
                                                 </VerticalStackLayout>
                                                 <VerticalStackLayout Spacing="6">
                                                         <Label Text="Language"
@@ -78,13 +79,16 @@
                                                        VerticalOptions="Center"/>
                                         </HorizontalStackLayout>
 
+                                             <Label Text="{Binding Source={x:Reference ContractsPageRoot}, Path=TemplateSourceFeedback}"
+                                                     Style="{StaticResource SectionCaptionStyle}"
+                                                     LineBreakMode="WordWrap"/>
+
                                         <FlexLayout Wrap="Wrap"
                                                     Direction="Row">
                                                 <Button Text="Create Contract"
-                                                        Command="{Binding CreateContract}"
-                                                        IsEnabled="{Binding ParametersOk}"/>
-                                                <Button Text="Why unavailable?"
-                                                        Command="{Binding ExplainCreateContract}"
+                                                        Command="{Binding CreateContract}"/>
+                                                <Button Text="Fetch Remote Template"
+                                                        Clicked="OnFetchRemoteTemplateClicked"
                                                         Style="{StaticResource SecondaryButtonStyle}"/>
                                                 <Button Text="Remove Template"
                                                         Command="{Binding RemoveTemplate}"

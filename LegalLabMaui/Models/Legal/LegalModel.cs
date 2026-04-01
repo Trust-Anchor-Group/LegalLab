@@ -1268,6 +1268,64 @@ namespace LegalLabMaui.Models.Legal
 		}
 
 		/// <summary>
+		/// Loads a remote template by contract ID without saving it locally.
+		/// </summary>
+		/// <param name="ContractId">Remote template contract ID.</param>
+		public async Task LoadRemoteTemplate(string ContractId)
+		{
+			if (string.IsNullOrWhiteSpace(ContractId))
+				return;
+
+			int LoadId = ++this.selectionLoadId;
+			ContractId = ContractId.Trim();
+
+			this.contractTemplateName.Value = string.Empty;
+			this.existingContractId.Value = string.Empty;
+			this.RaisePropertyChanged(nameof(this.ContractTemplateName));
+			this.RaisePropertyChanged(nameof(this.ExistingContractId));
+
+			try
+			{
+				AppService.MouseHourglass();
+
+				Contract Template = await this.contracts.GetContractAsync(ContractId);
+				if (!this.IsCurrentSelectionLoad(LoadId))
+					return;
+
+				if (!Template.CanActAsTemplate)
+					throw new InvalidOperationException("Contract is not a template.");
+
+				if (this.currentContract is not null)
+					await this.currentContract.Stop();
+
+				if (!this.IsCurrentSelectionLoad(LoadId))
+					return;
+
+				this.Template = Template;
+				this.IsTemplate = true;
+				this.IsContract = false;
+				this.currentContract = await ContractModel.CreateAsync(this.contracts, this.Template, AppService.DesignModel);
+				if (!this.IsCurrentSelectionLoad(LoadId))
+					return;
+
+				this.RaisePropertyChanged(nameof(this.CurrentContract));
+				await this.currentContract.Start();
+				await this.currentContract.PopulateParameters(null);
+			}
+			catch (Exception ex)
+			{
+				if (!this.IsCurrentSelectionLoad(LoadId))
+					return;
+
+				AppService.ErrorBox("Unable to load remote template. " + ex.Message);
+			}
+			finally
+			{
+				AppService.MouseDefault();
+			}
+		}
+
+		/// <summary>
 		/// Template selected as basis for new contracts
 		/// </summary>
 		public Contract Template
