@@ -4,12 +4,12 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <Color x:Key="Primary">#512BD4</Color>
-    <Color x:Key="PrimaryDark">#ac99ea</Color>
-    <Color x:Key="PrimaryDarkText">#242424</Color>
-    <Color x:Key="Secondary">#DFD8F7</Color>
-    <Color x:Key="SecondaryDarkText">#9880e5</Color>
-    <Color x:Key="Tertiary">#2B0B98</Color>
+    <Color x:Key="Primary">#1F5D78</Color>
+    <Color x:Key="PrimaryDark">#D7E9F0</Color>
+    <Color x:Key="PrimaryDarkText">#18323D</Color>
+    <Color x:Key="Secondary">#E8EEF1</Color>
+    <Color x:Key="SecondaryDarkText">#4D6471</Color>
+    <Color x:Key="Tertiary">#153847</Color>
 
     <Color x:Key="White">White</Color>
     <Color x:Key="Black">Black</Color>
@@ -18,21 +18,44 @@
     <Color x:Key="MidnightBlue">#190649</Color>
     <Color x:Key="OffBlack">#1f1f1f</Color>
 
+    <Color x:Key="AppBackground">#F3F5F6</Color>
+    <Color x:Key="Surface">#FFFFFF</Color>
+    <Color x:Key="SurfaceMuted">#EDF2F4</Color>
+    <Color x:Key="SurfaceStrong">#E2E9ED</Color>
+    <Color x:Key="MonoSurface">#F6F8F9</Color>
+    <Color x:Key="BorderSubtle">#D1DBE1</Color>
+    <Color x:Key="BorderStrong">#AEBCC4</Color>
+    <Color x:Key="TextPrimary">#17212B</Color>
+    <Color x:Key="TextMuted">#5F6B7A</Color>
+    <Color x:Key="TextSoft">#7A8795</Color>
+    <Color x:Key="Info">#245D78</Color>
+    <Color x:Key="InfoSoft">#E6F1F5</Color>
+    <Color x:Key="Success">#2E6E49</Color>
+    <Color x:Key="SuccessSoft">#E9F5ED</Color>
+    <Color x:Key="Warning">#A6651A</Color>
+    <Color x:Key="WarningSoft">#FFF3E1</Color>
+    <Color x:Key="Danger">#A14141</Color>
+    <Color x:Key="DangerSoft">#FBEAEA</Color>
+
     <Color x:Key="Gray100">#E1E1E1</Color>
     <Color x:Key="Gray200">#C8C8C8</Color>
     <Color x:Key="Gray300">#ADADAD</Color>
     <Color x:Key="Gray400">#919191</Color>
     <Color x:Key="Gray500">#6E6E6E</Color>
     <Color x:Key="Gray600">#404040</Color>
+    <Color x:Key="Gray700">#303030</Color>
+    <Color x:Key="Gray800">#262626</Color>
     <Color x:Key="Gray900">#212121</Color>
     <Color x:Key="Gray950">#141414</Color>
-
-    <Color x:Key="AppBackground">#FFE5E5E5</Color>
 
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
     <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
     <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}"/>
     <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource Black}"/>
+    <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource Surface}"/>
+    <SolidColorBrush x:Key="SurfaceMutedBrush" Color="{StaticResource SurfaceMuted}"/>
+    <SolidColorBrush x:Key="BorderSubtleBrush" Color="{StaticResource BorderSubtle}"/>
+    <SolidColorBrush x:Key="TextMutedBrush" Color="{StaticResource TextMuted}"/>
 
 </ResourceDictionary>

@@ -6,53 +6,86 @@
              x:DataType="dialogs:BuyEDalerModel"
              Title="Buy eDaler®">
         <ScrollView>
-                <VerticalStackLayout Padding="16"
-                                Spacing="12">
-                        <Label Text="Select Service Provider:"
-                                        FontAttributes="Bold"/>
-                        <CollectionView ItemsSource="{Binding ServiceProviders}"
-                                        SelectionMode="Single"
-                                        SelectedItem="{Binding SelectedServiceProvider}"
-                                        HeightRequest="180">
+                <VerticalStackLayout Style="{StaticResource PageStackStyle}">
+                        <Border Style="{StaticResource SectionCardStyle}">
+                                <VerticalStackLayout Spacing="6">
+                                        <Label Text="Buy eDaler®"
+                                               Style="{StaticResource SectionTitleStyle}"/>
+                                        <Label Text="Choose a service provider and define the purchase amount."
+                                               Style="{StaticResource SectionCaptionStyle}"/>
+                                </VerticalStackLayout>
+                        </Border>
+
+                        <Border Style="{StaticResource SectionCardStyle}">
+                                <VerticalStackLayout Spacing="10">
+                                        <Label Text="Service Provider"
+                                               Style="{StaticResource FieldLabelStyle}"/>
+                                        <CollectionView ItemsSource="{Binding ServiceProviders}"
+                                                        SelectionMode="Single"
+                                                        SelectedItem="{Binding SelectedServiceProvider}"
+                                                        HeightRequest="180">
                                 <CollectionView.ItemsLayout>
                                         <LinearItemsLayout Orientation="Horizontal"
                                                         ItemSpacing="8"/>
                                 </CollectionView.ItemsLayout>
                                 <CollectionView.ItemTemplate>
                                         <DataTemplate x:DataType="dialogs:ServiceProviderModel">
-                                                <VerticalStackLayout WidthRequest="100"
-                                                                HeightRequest="100"
-                                                                Padding="4">
-                                                        <Image Source="{Binding IconUrl}"
-                                                               WidthRequest="{Binding IconWidth}"
-                                                               HeightRequest="{Binding IconHeight}"
-                                                               HorizontalOptions="Center"
-                                                               VerticalOptions="Center"/>
-                                                </VerticalStackLayout>
+                                                <Border Stroke="{StaticResource BorderSubtleBrush}"
+                                                        StrokeThickness="1"
+                                                        BackgroundColor="{StaticResource SurfaceMuted}"
+                                                        StrokeShape="RoundRectangle 16"
+                                                        Padding="12"
+                                                        Margin="0,0,8,0">
+                                                        <VerticalStackLayout WidthRequest="100"
+                                                                             HeightRequest="100"
+                                                                             Spacing="8"
+                                                                             VerticalOptions="Center"
+                                                                             HorizontalOptions="Center">
+                                                                <Image Source="{Binding IconUrl}"
+                                                                       WidthRequest="{Binding IconWidth}"
+                                                                       HeightRequest="{Binding IconHeight}"
+                                                                       HorizontalOptions="Center"
+                                                                       VerticalOptions="Center"/>
+                                                        </VerticalStackLayout>
+                                                </Border>
                                         </DataTemplate>
                                 </CollectionView.ItemTemplate>
                         </CollectionView>
+                                </VerticalStackLayout>
+                        </Border>
 
-                        <Label Text="Amount:"
-                                        FontAttributes="Bold"/>
-                        <Entry x:Name="Amount"
-                                        Text="{Binding Amount}"
-                                        Keyboard="Numeric"/>
+                        <Border Style="{StaticResource SectionCardStyle}">
+                                <Grid ColumnDefinitions="*,*"
+                                      RowDefinitions="Auto,Auto"
+                                      ColumnSpacing="16"
+                                      RowSpacing="12">
+                                        <Label Grid.Row="0"
+                                               Grid.Column="0"
+                                               Text="Amount"
+                                               Style="{StaticResource FieldLabelStyle}"/>
+                                        <Label Grid.Row="0"
+                                               Grid.Column="1"
+                                               Text="Currency"
+                                               Style="{StaticResource FieldLabelStyle}"/>
+                                        <Entry Grid.Row="1"
+                                               Grid.Column="0"
+                                               x:Name="Amount"
+                                               Text="{Binding Amount}"
+                                               Keyboard="Numeric"/>
+                                        <Entry Grid.Row="1"
+                                               Grid.Column="1"
+                                               x:Name="Currency"
+                                               Text="{Binding Currency}"/>
+                                </Grid>
+                        </Border>
 
-                        <Label Text="Currency:"
-                                        FontAttributes="Bold"/>
-                        <Entry x:Name="Currency"
-                                        Text="{Binding Currency}"/>
-
-                        <HorizontalStackLayout HorizontalOptions="Center"
-                                        Spacing="16"
-                                        Margin="0,8,0,0">
-                                <Button Text="Buy"
-                                                Command="{Binding Buy}"
-                                                WidthRequest="100"/>
+                        <HorizontalStackLayout HorizontalOptions="End"
+                                               Spacing="12">
                                 <Button Text="Cancel"
-                                                Command="{Binding Cancel}"
-                                                WidthRequest="100"/>
+                                        Command="{Binding Cancel}"
+                                        Style="{StaticResource SecondaryButtonStyle}"/>
+                                <Button Text="Buy"
+                                        Command="{Binding Buy}"/>
                         </HorizontalStackLayout>
                 </VerticalStackLayout>
         </ScrollView>

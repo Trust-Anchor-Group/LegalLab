@@ -7,204 +7,306 @@
              x:Class="LegalLabMaui.Views.LegalIdPage"
              x:DataType="legal:LegalModel"
              Title="Legal ID">
-        <Grid>
-                <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="280"/>
-                        <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+    <ScrollView>
+         <VerticalStackLayout Style="{StaticResource PageStackStyle}">
+             <Border Style="{StaticResource SectionCardStyle}">
+                  <VerticalStackLayout Spacing="6">
+                      <Label Text="Legal Identity"
+                              Style="{StaticResource PageTitleStyle}"/>
+                      <Label Text="Edit personal and organization data, preview a digital identity, and manage issued identities from the same workspace."
+                              Style="{StaticResource SectionCaptionStyle}"/>
+                  </VerticalStackLayout>
+             </Border>
 
-                <!-- Left: Personal/Organization fields -->
-                <ScrollView Grid.Column="0">
-                        <VerticalStackLayout Padding="16"
-                                        Spacing="6">
-
-                                <Label Text="Personal Information"
-                                                FontAttributes="Bold"
-                                                FontSize="18"
-                                       HorizontalOptions="Center"
-                                                TextDecorations="Underline"/>
-
-                                <Label Text="First Name:"/>
+             <Border Style="{StaticResource SectionCardStyle}">
+                  <VerticalStackLayout Spacing="14">
+                      <Label Text="Personal Information"
+                              Style="{StaticResource SectionTitleStyle}"/>
+                         <Grid ColumnDefinitions="*,*"
+                                 RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                                 ColumnSpacing="16"
+                                 RowSpacing="12">
+                           <VerticalStackLayout Spacing="6">
+                                <Label Text="First Name"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding FirstName}"/>
-                                <Label Text="Middle Name:"
-                                                Margin="0,8,0,0"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Column="1"
+                                                   Spacing="6">
+                                <Label Text="Middle Name"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding MiddleName}"/>
-                                <Label Text="Last Name:"
-                                                Margin="0,8,0,0"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="1"
+                                                   Spacing="6">
+                                <Label Text="Last Name"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding LastName}"/>
-                                <Label Text="Personal Number:"
-                                                Margin="0,8,0,0"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="1"
+                                                   Grid.Column="1"
+                                                   Spacing="6">
+                                <Label Text="Personal Number"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding PersonalNumber}"/>
-                                <Label Text="Address:"
-                                                Margin="0,8,0,0"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="2"
+                                                   Grid.ColumnSpan="2"
+                                                   Spacing="6">
+                                <Label Text="Address"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding Address}"/>
-                                <Label Text="Address, row 2:"
-                                                Margin="0,8,0,0"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="3"
+                                                   Grid.ColumnSpan="2"
+                                                   Spacing="6">
+                                <Label Text="Address, row 2"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding Address2}"/>
-                                <Label Text="Postal Code (or ZIP):"
-                                                Margin="0,8,0,0"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="4"
+                                                   Spacing="6">
+                                <Label Text="Postal Code"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding Zip}"/>
-                                <Label Text="Area:"
-                                                Margin="0,8,0,0"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="4"
+                                                   Grid.Column="1"
+                                                   Spacing="6">
+                                <Label Text="Area"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding Area}"/>
-                                <Label Text="City:"
-                                                Margin="0,8,0,0"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="5"
+                                                   Spacing="6">
+                                <Label Text="City"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding City}"/>
-                                <Label Text="Region:"
-                                                Margin="0,8,0,0"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="5"
+                                                   Grid.Column="1"
+                                                   Spacing="6">
+                                <Label Text="Region"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding Region}"/>
-                                <Label Text="Country:"
-                                                Margin="0,8,0,0"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="6"
+                                                   Spacing="6">
+                                <Label Text="Country"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Picker ItemsSource="{Binding CountryCodes}"
-                                        ItemDisplayBinding="{Binding Country, x:DataType=standards:Iso_3166_1+Record}"
-                                        SelectedItem="{Binding SelectedCountry}"/>
-                                <Label Text="Nationality:"
-                                                Margin="0,8,0,0"/>
+                                         ItemDisplayBinding="{Binding Country, x:DataType=standards:Iso_3166_1+Record}"
+                                         SelectedItem="{Binding SelectedCountry}"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="6"
+                                                   Grid.Column="1"
+                                                   Spacing="6">
+                                <Label Text="Nationality"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Picker ItemsSource="{Binding CountryCodes}"
-                                        ItemDisplayBinding="{Binding Country, x:DataType=standards:Iso_3166_1+Record}"
-                                        SelectedItem="{Binding SelectedNationality}"/>
-                                <Label Text="Gender:"
-                                                Margin="0,8,0,0"/>
+                                         ItemDisplayBinding="{Binding Country, x:DataType=standards:Iso_3166_1+Record}"
+                                         SelectedItem="{Binding SelectedNationality}"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="7"
+                                                   Spacing="6">
+                                <Label Text="Gender"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Picker ItemsSource="{Binding GenderCodes}"
-                                        ItemDisplayBinding="{Binding Gender, x:DataType=standards:Iso_5218+Record}"
-                                        SelectedItem="{Binding SelectedGender}"/>
-                                <Label Text="Birth Date:"
-                                                Margin="0,8,0,0"/>
+                                         ItemDisplayBinding="{Binding Gender, x:DataType=standards:Iso_5218+Record}"
+                                         SelectedItem="{Binding SelectedGender}"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="7"
+                                                   Grid.Column="1"
+                                                   Spacing="6">
+                                <Label Text="Birth Date"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding BirthDate, Converter={conv:DateToString}}"/>
-                                <Label Text="E-mail address:"
-                                                Margin="0,8,0,0"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="8"
+                                                   Grid.ColumnSpan="2"
+                                                   Spacing="6">
+                                <Label Text="E-mail Address"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding EMail}"
-                                                Keyboard="Email"/>
+                                        Keyboard="Email"/>
+                           </VerticalStackLayout>
+                      </Grid>
+                  </VerticalStackLayout>
+             </Border>
 
-                                <Label Text="Organization Information"
-                                                FontAttributes="Bold"
-                                                FontSize="18"
-                                       HorizontalOptions="Center"
-                                                TextDecorations="Underline"
-                                                Margin="0,16,0,0"/>
-
-                                <Label Text="Name:"/>
+             <Border Style="{StaticResource SectionCardStyle}">
+                  <VerticalStackLayout Spacing="14">
+                      <Label Text="Organization Information"
+                              Style="{StaticResource SectionTitleStyle}"/>
+                         <Grid ColumnDefinitions="*,*"
+                                 RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                                 ColumnSpacing="16"
+                                 RowSpacing="12">
+                           <VerticalStackLayout Spacing="6">
+                                <Label Text="Name"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding OrgName}"/>
-                                <Label Text="Department:"
-                                                Margin="0,8,0,0"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Column="1"
+                                                   Spacing="6">
+                                <Label Text="Department"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding OrgDepartment}"/>
-                                <Label Text="Role:"
-                                                Margin="0,8,0,0"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="1"
+                                                   Spacing="6">
+                                <Label Text="Role"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding OrgRole}"/>
-                                <Label Text="Organization Number:"
-                                                Margin="0,8,0,0"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="1"
+                                                   Grid.Column="1"
+                                                   Spacing="6">
+                                <Label Text="Organization Number"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding OrgNumber}"/>
-                                <Label Text="Address:"
-                                                Margin="0,8,0,0"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="2"
+                                                   Grid.ColumnSpan="2"
+                                                   Spacing="6">
+                                <Label Text="Address"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding OrgAddress}"/>
-                                <Label Text="Address, row 2:"
-                                                Margin="0,8,0,0"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="3"
+                                                   Grid.ColumnSpan="2"
+                                                   Spacing="6">
+                                <Label Text="Address, row 2"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding OrgAddress2}"/>
-                                <Label Text="Postal Code (or ZIP):"
-                                                Margin="0,8,0,0"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="4"
+                                                   Spacing="6">
+                                <Label Text="Postal Code"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding OrgZip}"/>
-                                <Label Text="Area:"
-                                                Margin="0,8,0,0"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="4"
+                                                   Grid.Column="1"
+                                                   Spacing="6">
+                                <Label Text="Area"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding OrgArea}"/>
-                                <Label Text="City:"
-                                                Margin="0,8,0,0"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="5"
+                                                   Spacing="6">
+                                <Label Text="City"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding OrgCity}"/>
-                                <Label Text="Region:"
-                                                Margin="0,8,0,0"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="5"
+                                                   Grid.Column="1"
+                                                   Spacing="6">
+                                <Label Text="Region"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Entry Text="{Binding OrgRegion}"/>
-                                <Label Text="Country:"
-                                                Margin="0,8,0,0"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="6"
+                                                   Grid.ColumnSpan="2"
+                                                   Spacing="6">
+                                <Label Text="Country"
+                                        Style="{StaticResource FieldLabelStyle}"/>
                                 <Picker ItemsSource="{Binding CountryCodes}"
-                                        ItemDisplayBinding="{Binding Country, x:DataType=standards:Iso_3166_1+Record}"
-                                        SelectedItem="{Binding SelectedOrgCountry}"/>
+                                         ItemDisplayBinding="{Binding Country, x:DataType=standards:Iso_3166_1+Record}"
+                                         SelectedItem="{Binding SelectedOrgCountry}"/>
+                           </VerticalStackLayout>
+                      </Grid>
+                  </VerticalStackLayout>
+             </Border>
 
-                                <Label Text="Other"
-                                                FontAttributes="Bold"
-                                                FontSize="18"
-                                       HorizontalOptions="Center"
-                                                TextDecorations="Underline"
-                                                Margin="0,16,0,0"/>
-                                <Label Text="Preview ID:"
-                                                Margin="0,8,0,0"/>
-                                <Entry Text="{Binding PreviewId}"/>
+             <Border Style="{StaticResource SectionCardStyle}">
+                  <VerticalStackLayout Spacing="14">
+                      <Label Text="Preview and Commands"
+                              Style="{StaticResource SectionTitleStyle}"/>
+                      <VerticalStackLayout Spacing="6">
+                           <Label Text="Preview ID"
+                                   Style="{StaticResource FieldLabelStyle}"/>
+                           <Entry Text="{Binding PreviewId}"/>
+                      </VerticalStackLayout>
+                      <FlexLayout Wrap="Wrap"
+                                    Direction="Row">
+                           <Button Text="Preview"
+                                    Command="{Binding Preview}"/>
+                           <Button Text="Apply"
+                                    Command="{Binding Apply}"
+                                    Style="{StaticResource SecondaryButtonStyle}"/>
+                      </FlexLayout>
+                  </VerticalStackLayout>
+             </Border>
 
-                                <Label Text="Commands"
-                                                FontAttributes="Bold"
-                                                FontSize="18"
-                                       HorizontalOptions="Center"
-                                                TextDecorations="Underline"
-                                                Margin="0,16,0,0"/>
-                                <Button Text="Preview"
-                                                Command="{Binding Preview}"
-                                                Margin="0,8,0,0"/>
-                                <Button Text="Apply"
-                                                Command="{Binding Apply}"
-                                                Margin="0,4,0,0"/>
-                        </VerticalStackLayout>
-                </ScrollView>
-
-                <!-- Right: Identities list -->
-                <CollectionView Grid.Column="1"
-                                ItemsSource="{Binding Identities}"
-                                SelectionMode="Single">
-                        <CollectionView.Header>
-                                <Grid Padding="8,4"
-                                                BackgroundColor="#DDDDDD">
-                                        <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="120"/>
-                                                <ColumnDefinition Width="90"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="0"
-                                                        Text="ID"
-                                                        FontAttributes="Bold"/>
-                                        <Label Grid.Column="1"
-                                                        Text="Created"
-                                                        FontAttributes="Bold"/>
-                                        <Label Grid.Column="2"
-                                                        Text="State"
-                                                        FontAttributes="Bold"/>
+             <Border Style="{StaticResource SectionCardStyle}">
+                  <VerticalStackLayout Spacing="14">
+                      <VerticalStackLayout Spacing="4">
+                           <Label Text="Issued Identities"
+                                   Style="{StaticResource SectionTitleStyle}"/>
+                           <Label Text="Review current identity records, open QR codes, and continue approval actions."
+                                   Style="{StaticResource SectionCaptionStyle}"/>
+                      </VerticalStackLayout>
+                      <CollectionView ItemsSource="{Binding Identities}"
+                                         SelectionMode="Single"
+                                         HeightRequest="460">
+                           <CollectionView.Header>
+                                <Grid Style="{StaticResource DenseHeaderGridStyle}">
+                                    <Grid.ColumnDefinitions>
+                                         <ColumnDefinition Width="*"/>
+                                         <ColumnDefinition Width="140"/>
+                                         <ColumnDefinition Width="110"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Column="0"
+                                            Text="Identity"
+                                            Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                    <Label Grid.Column="1"
+                                            Text="Created"
+                                            Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                    <Label Grid.Column="2"
+                                            Text="State"
+                                            Style="{StaticResource DenseHeaderLabelStyle}"/>
                                 </Grid>
-                        </CollectionView.Header>
-                        <CollectionView.ItemTemplate>
+                           </CollectionView.Header>
+                           <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="legal:IdentityWrapper">
-                                        <Grid Padding="8,4">
-                                                <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="120"/>
-                                                        <ColumnDefinition Width="90"/>
-                                                </Grid.ColumnDefinitions>
-                                                <VerticalStackLayout Grid.Column="0">
-                                                        <Label Text="{Binding Id}"
-                                                                        LineBreakMode="CharacterWrap"
-                                                                        FontSize="12"/>
-                                                        <Image Source="{Binding QrCodeUrl}"
-                                                                        WidthRequest="150"
-                                                                        HeightRequest="150"
-                                                               IsVisible="{Binding IsSelected}"
-                                                                        Margin="0,4,0,0"/>
-                                                        <Button Text="Upload Attachment"
-                                                                        Command="{Binding UploadAttachment}"
-                                                                IsVisible="{Binding IsCreated}"
-                                                                        Margin="0,4,0,0"
-                                                                        Padding="8,2"/>
-                                                        <Button Text="Ready For Approval"
-                                                                        Command="{Binding ReadyForApproval}"
-                                                                IsVisible="{Binding IsCreated}"
-                                                                        Margin="0,4,0,0"
-                                                                        Padding="8,2"/>
-                                                </VerticalStackLayout>
-                                                <Label Grid.Column="1"
-                                                                Text="{Binding Created, Converter={conv:DateTimeToString}}"
-                                                       FontSize="12"
-                                                                VerticalOptions="Start"/>
-                                                <Label Grid.Column="2"
-                                                                Text="{Binding State, Converter={conv:ToString}}"
-                                                       FontSize="12"
-                                                                VerticalOptions="Start"/>
-                                        </Grid>
+                                    <Border Style="{StaticResource CompactSectionCardStyle}"
+                                             Margin="0,0,0,10">
+                                         <Grid ColumnDefinitions="*,140,110"
+                                                ColumnSpacing="12">
+                                             <VerticalStackLayout Grid.Column="0"
+                                                                     Spacing="8">
+                                                  <Label Text="{Binding Id}"
+                                                          Style="{StaticResource DenseCellLabelStyle}"
+                                                          LineBreakMode="CharacterWrap"/>
+                                                  <Image Source="{Binding QrCodeUrl}"
+                                                          WidthRequest="150"
+                                                          HeightRequest="150"
+                                                          IsVisible="{Binding IsSelected}"/>
+                                                  <FlexLayout Wrap="Wrap"
+                                                                Direction="Row"
+                                                                IsVisible="{Binding IsCreated}">
+                                                      <Button Text="Upload Attachment"
+                                                                Command="{Binding UploadAttachment}"
+                                                                Style="{StaticResource CompactButtonStyle}"/>
+                                                      <Button Text="Ready For Approval"
+                                                                Command="{Binding ReadyForApproval}"
+                                                                Style="{StaticResource CompactButtonStyle}"/>
+                                                  </FlexLayout>
+                                             </VerticalStackLayout>
+                                             <Label Grid.Column="1"
+                                                     Text="{Binding Created, Converter={conv:DateTimeToString}}"
+                                                     Style="{StaticResource DenseCellLabelStyle}"/>
+                                             <Label Grid.Column="2"
+                                                     Text="{Binding State, Converter={conv:ToString}}"
+                                                     Style="{StaticResource DenseCellLabelStyle}"/>
+                                         </Grid>
+                                    </Border>
                                 </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                </CollectionView>
-        </Grid>
+                           </CollectionView.ItemTemplate>
+                      </CollectionView>
+                  </VerticalStackLayout>
+             </Border>
+         </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

@@ -7,13 +7,29 @@
              Title="Report">
     <ScrollView x:Name="ReportScrollView">
         <VerticalStackLayout x:Name="ReportPanel"
-                Padding="10"
-                Spacing="8">
-            <!-- Report content is added programmatically via UpdateReport() -->
-            <Label x:Name="ReportContentLabel"
-                   Text="{Binding ReportText}"
-                   LineBreakMode="WordWrap"
-                   FontSize="14"/>
+                             Style="{StaticResource PageStackStyle}">
+            <Border Style="{StaticResource SectionCardStyle}">
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="Report Viewer"
+                           Style="{StaticResource PageTitleStyle}"/>
+                    <Label Text="Reports opened from tokens or tools are rendered here as a reading surface with stable spacing and line wrapping."
+                           Style="{StaticResource SectionCaptionStyle}"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource SectionCardStyle}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Rendered Report"
+                           Style="{StaticResource SectionTitleStyle}"/>
+                    <Border Style="{StaticResource CompactSectionCardStyle}"
+                            BackgroundColor="{StaticResource SurfaceMuted}">
+                        <Label x:Name="ReportContentLabel"
+                               Text="{Binding ReportText}"
+                               LineBreakMode="WordWrap"
+                               FontSize="14"/>
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

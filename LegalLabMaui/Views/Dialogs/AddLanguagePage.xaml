@@ -6,23 +6,36 @@
              x:Class="LegalLabMaui.Views.Dialogs.AddLanguagePage"
              x:DataType="dialogs:AddLanguageModel"
              Title="Add Language">
-        <VerticalStackLayout Padding="16"
-                        Spacing="12"
-                        VerticalOptions="Center">
-                <Label Text="Select Language to add:"
-                                FontAttributes="Bold"/>
-                <Picker x:Name="LanguageCombo"
-                        ItemsSource="{Binding Languages}"
-                        ItemDisplayBinding="{Binding Language, x:DataType=standards:Iso__639_1+Record}"
-                        SelectedItem="{Binding SelectedLanguageRecord}"/>
-                <HorizontalStackLayout HorizontalOptions="Center"
-                                Spacing="16">
-                        <Button Text="Add"
-                                        Command="{Binding Add}"
-                                        WidthRequest="100"/>
-                        <Button Text="Cancel"
+        <ScrollView>
+                <VerticalStackLayout Style="{StaticResource PageStackStyle}">
+                        <Border Style="{StaticResource SectionCardStyle}">
+                                <VerticalStackLayout Spacing="6">
+                                        <Label Text="Add Language"
+                                               Style="{StaticResource SectionTitleStyle}"/>
+                                        <Label Text="Choose an additional language for the active workflow."
+                                               Style="{StaticResource SectionCaptionStyle}"/>
+                                </VerticalStackLayout>
+                        </Border>
+
+                        <Border Style="{StaticResource SectionCardStyle}">
+                                <VerticalStackLayout Spacing="10">
+                                        <Label Text="Language"
+                                               Style="{StaticResource FieldLabelStyle}"/>
+                                        <Picker x:Name="LanguageCombo"
+                                                ItemsSource="{Binding Languages}"
+                                                ItemDisplayBinding="{Binding Language, x:DataType=standards:Iso__639_1+Record}"
+                                                SelectedItem="{Binding SelectedLanguageRecord}"/>
+                                </VerticalStackLayout>
+                        </Border>
+
+                        <HorizontalStackLayout HorizontalOptions="End"
+                                               Spacing="12">
+                                <Button Text="Cancel"
                                         Command="{Binding Cancel}"
-                                        WidthRequest="100"/>
-                </HorizontalStackLayout>
-        </VerticalStackLayout>
+                                        Style="{StaticResource SecondaryButtonStyle}"/>
+                                <Button Text="Add"
+                                        Command="{Binding Add}"/>
+                        </HorizontalStackLayout>
+                </VerticalStackLayout>
+        </ScrollView>
 </ContentPage>

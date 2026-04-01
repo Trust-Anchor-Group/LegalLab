@@ -6,87 +6,78 @@
              x:Class="LegalLabMaui.Views.EventsPage"
              x:DataType="events:ObservableEventSink"
              Title="Events">
-        <CollectionView ItemsSource="{Binding Events}"
-                        SelectionMode="Single">
-                <CollectionView.Header>
-                        <Grid Padding="8,4"
-                                        BackgroundColor="#DDDDDD">
-                                <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="70"/>
-                                        <ColumnDefinition Width="70"/>
-                                        <ColumnDefinition Width="70"/>
-                                        <ColumnDefinition Width="110"/>
-                                        <ColumnDefinition Width="200"/>
-                                        <ColumnDefinition Width="200"/>
-                                        <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Label Grid.Column="0"
-                                                Text="Time"
-                                                FontAttributes="Bold"/>
-                                <Label Grid.Column="1"
-                                                Text="Type"
-                                                FontAttributes="Bold"/>
-                                <Label Grid.Column="2"
-                                                Text="Level"
-                                                FontAttributes="Bold"/>
-                                <Label Grid.Column="3"
-                                                Text="Event ID"
-                                                FontAttributes="Bold"/>
-                                <Label Grid.Column="4"
-                                                Text="Object"
-                                                FontAttributes="Bold"/>
-                                <Label Grid.Column="5"
-                                                Text="Actor"
-                                                FontAttributes="Bold"/>
-                                <Label Grid.Column="6"
-                                                Text="Message"
-                                                FontAttributes="Bold"/>
-                        </Grid>
-                </CollectionView.Header>
-                <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="events:LogItem">
-                                <Grid Padding="8,2"
-                                                BackgroundColor="{Binding BackgroundColor}">
-                                        <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="70"/>
-                                                <ColumnDefinition Width="70"/>
-                                                <ColumnDefinition Width="70"/>
-                                                <ColumnDefinition Width="110"/>
-                                                <ColumnDefinition Width="200"/>
-                                                <ColumnDefinition Width="200"/>
-                                                <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="0"
-                                                        Text="{Binding Time}"
-                                                        FontSize="12"
-                                               TextColor="{Binding ForegroundColor}"/>
-                                        <Label Grid.Column="1"
-                                                        Text="{Binding Type}"
-                                                        FontSize="12"
-                                               TextColor="{Binding ForegroundColor}"/>
-                                        <Label Grid.Column="2"
-                                                        Text="{Binding Level}"
-                                                        FontSize="12"
-                                               TextColor="{Binding ForegroundColor}"/>
-                                        <Label Grid.Column="3"
-                                                        Text="{Binding EventId}"
-                                                        FontSize="12"
-                                               TextColor="{Binding ForegroundColor}"/>
-                                        <Label Grid.Column="4"
-                                                        Text="{Binding Object}"
-                                                        FontSize="12"
-                                               TextColor="{Binding ForegroundColor}"/>
-                                        <Label Grid.Column="5"
-                                                        Text="{Binding Actor}"
-                                                        FontSize="12"
-                                               TextColor="{Binding ForegroundColor}"/>
-                                        <Label Grid.Column="6"
-                                                        Text="{Binding Message}"
-                                                        FontSize="12"
-                                               LineBreakMode="WordWrap"
-                                               TextColor="{Binding ForegroundColor}"/>
-                                </Grid>
-                        </DataTemplate>
-                </CollectionView.ItemTemplate>
-        </CollectionView>
+    <Grid Padding="24,20,24,28"
+           RowDefinitions="Auto,*"
+           RowSpacing="18">
+         <Border Style="{StaticResource SectionCardStyle}">
+             <VerticalStackLayout Spacing="6">
+                  <Label Text="Event Feed"
+                          Style="{StaticResource PageTitleStyle}"/>
+                  <Label Text="Operational events, actors, and messages are listed chronologically with severity coloring preserved from the model."
+                          Style="{StaticResource SectionCaptionStyle}"/>
+             </VerticalStackLayout>
+         </Border>
+
+         <Border Grid.Row="1"
+                  Style="{StaticResource SectionCardStyle}">
+             <CollectionView ItemsSource="{Binding Events}"
+                                SelectionMode="Single">
+                  <CollectionView.ItemTemplate>
+                      <DataTemplate x:DataType="events:LogItem">
+                           <Border Style="{StaticResource CompactSectionCardStyle}"
+                                    Margin="0,0,0,10"
+                                    BackgroundColor="{Binding BackgroundColor}">
+                                <VerticalStackLayout Spacing="8">
+                                    <Grid ColumnDefinitions="Auto,Auto,Auto,*"
+                                           ColumnSpacing="10">
+                                         <Label Text="{Binding Time}"
+                                                 TextColor="{Binding ForegroundColor}"
+                                                 Style="{StaticResource DenseCellLabelStyle}"/>
+                                         <Label Grid.Column="1"
+                                                 Text="{Binding Type}"
+                                                 TextColor="{Binding ForegroundColor}"
+                                                 Style="{StaticResource DenseCellLabelStyle}"/>
+                                         <Label Grid.Column="2"
+                                                 Text="{Binding Level}"
+                                                 TextColor="{Binding ForegroundColor}"
+                                                 Style="{StaticResource DenseCellLabelStyle}"/>
+                                         <Label Grid.Column="3"
+                                                 Text="{Binding EventId}"
+                                                 TextColor="{Binding ForegroundColor}"
+                                                 Style="{StaticResource DenseCellLabelStyle}"
+                                                 HorizontalOptions="End"/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="*,*"
+                                           ColumnSpacing="12">
+                                         <VerticalStackLayout Spacing="3">
+                                             <Label Text="Object"
+                                                     Style="{StaticResource FieldLabelStyle}"/>
+                                             <Label Text="{Binding Object}"
+                                                     TextColor="{Binding ForegroundColor}"
+                                                     Style="{StaticResource DenseCellLabelStyle}"/>
+                                         </VerticalStackLayout>
+                                         <VerticalStackLayout Grid.Column="1"
+                                                                 Spacing="3">
+                                             <Label Text="Actor"
+                                                     Style="{StaticResource FieldLabelStyle}"/>
+                                             <Label Text="{Binding Actor}"
+                                                     TextColor="{Binding ForegroundColor}"
+                                                     Style="{StaticResource DenseCellLabelStyle}"/>
+                                         </VerticalStackLayout>
+                                    </Grid>
+                                    <VerticalStackLayout Spacing="3">
+                                         <Label Text="Message"
+                                                 Style="{StaticResource FieldLabelStyle}"/>
+                                         <Label Text="{Binding Message}"
+                                                 TextColor="{Binding ForegroundColor}"
+                                                 Style="{StaticResource DenseCellLabelStyle}"
+                                                 LineBreakMode="WordWrap"/>
+                                    </VerticalStackLayout>
+                                </VerticalStackLayout>
+                           </Border>
+                      </DataTemplate>
+                  </CollectionView.ItemTemplate>
+             </CollectionView>
+         </Border>
+    </Grid>
 </ContentPage>

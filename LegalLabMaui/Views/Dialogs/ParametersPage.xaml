@@ -5,31 +5,39 @@
              x:Class="LegalLabMaui.Views.Dialogs.ParametersPage"
              x:DataType="legal:ContractParametersModel"
              Title="Parameters">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-
-        <ScrollView Grid.Row="0">
-            <VerticalStackLayout x:Name="ParametersPanel"
-                    Padding="16"
-                    Spacing="8">
-                <!-- Parameters are added programmatically -->
+    <Grid Padding="24,20,24,24"
+          RowDefinitions="Auto,*,Auto"
+          RowSpacing="18">
+        <Border Style="{StaticResource SectionCardStyle}">
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Contract Parameters"
+                       Style="{StaticResource PageTitleStyle}"/>
+                <Label Text="Review required inputs, complete missing values, and confirm when parameter validation is satisfied."
+                       Style="{StaticResource SectionCaptionStyle}"/>
             </VerticalStackLayout>
-        </ScrollView>
+        </Border>
 
-        <HorizontalStackLayout Grid.Row="1"
-                HorizontalOptions="Center"
-                Spacing="16"
-                Padding="16">
+        <Border Grid.Row="1"
+                Style="{StaticResource SectionCardStyle}">
+            <ScrollView>
+                <VerticalStackLayout x:Name="ParametersPanel"
+                                     Spacing="12">
+                    <!-- Parameters are added programmatically -->
+                </VerticalStackLayout>
+            </ScrollView>
+        </Border>
+
+        <HorizontalStackLayout Grid.Row="2"
+                               HorizontalOptions="End"
+                               Spacing="12">
+            <Button Text="Cancel"
+                    WidthRequest="110"
+                    Style="{StaticResource SecondaryButtonStyle}"
+                    Clicked="CancelButton_Clicked"/>
             <Button Text="OK"
-                    WidthRequest="100"
+                    WidthRequest="110"
                     IsEnabled="{Binding ParametersOk}"
                     Clicked="OkButton_Clicked"/>
-            <Button Text="Cancel"
-                    WidthRequest="100"
-                    Clicked="CancelButton_Clicked"/>
         </HorizontalStackLayout>
     </Grid>
 </ContentPage>

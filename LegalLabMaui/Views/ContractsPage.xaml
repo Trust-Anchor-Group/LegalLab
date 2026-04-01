@@ -1,501 +1,347 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:conv="clr-namespace:LegalLabMaui.Converters"
-             xmlns:legal="clr-namespace:LegalLabMaui.Models.Legal"
-             xmlns:items="clr-namespace:LegalLabMaui.Models.Legal.Items"
-             xmlns:standards="clr-namespace:LegalLabMaui.Models.Standards"
-             x:Class="LegalLabMaui.Views.ContractsPage"
-             x:DataType="legal:ContractModel"
-             Title="Contracts">
-        <Grid>
-                <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="280"/>
-                        <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+                         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                         xmlns:conv="clr-namespace:LegalLabMaui.Converters"
+                         xmlns:legal="clr-namespace:LegalLabMaui.Models.Legal"
+                         xmlns:items="clr-namespace:LegalLabMaui.Models.Legal.Items"
+                         xmlns:standards="clr-namespace:LegalLabMaui.Models.Standards"
+                         x:Class="LegalLabMaui.Views.ContractsPage"
+                         x:DataType="legal:ContractModel"
+                         Title="Contracts">
+        <ScrollView>
+                <VerticalStackLayout Style="{StaticResource PageStackStyle}">
+                        <Border Style="{StaticResource SectionCardStyle}">
+                                <VerticalStackLayout Spacing="6">
+                                        <Label Text="Contracts"
+                                                   Style="{StaticResource PageTitleStyle}"/>
+                                        <Label Text="Select templates, review live contracts, inspect signatures and attachments, and complete role-based actions from one workspace."
+                                                   Style="{StaticResource SectionCaptionStyle}"/>
+                                </VerticalStackLayout>
+                        </Border>
 
-                <!-- Left: Template/contract selection and commands -->
-                <ScrollView Grid.Column="0">
-                        <VerticalStackLayout Padding="16"
-                                        Spacing="6">
-                                <Label Text="Template:"/>
-                                <Picker ItemsSource="{Binding Templates}"
-                                        ItemDisplayBinding="{Binding TemplateName, x:DataType=legal:TemplateReferenceModel}"
-                                        SelectedItem="{Binding SelectedTemplate}"/>
+                        <Border Style="{StaticResource SectionCardStyle}">
+                                <VerticalStackLayout Spacing="14">
+                                        <Label Text="Selection and Actions" Style="{StaticResource SectionTitleStyle}"/>
+                                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="16" RowSpacing="12">
+                                                <VerticalStackLayout Spacing="6">
+                                                        <Label Text="Template" Style="{StaticResource FieldLabelStyle}"/>
+                                                        <Picker ItemsSource="{Binding Templates}"
+                                                                        ItemDisplayBinding="{Binding TemplateName, x:DataType=legal:TemplateReferenceModel}"
+                                                                        SelectedItem="{Binding SelectedTemplate}"/>
+                                                </VerticalStackLayout>
+                                                <VerticalStackLayout Grid.Column="1" Spacing="6">
+                                                        <Label Text="Existing Contract" Style="{StaticResource FieldLabelStyle}"/>
+                                                        <Picker ItemsSource="{Binding ExistingContracts}"
+                                                                        ItemDisplayBinding="{Binding ContractName, x:DataType=legal:ContractReferenceModel}"
+                                                                        SelectedItem="{Binding SelectedExistingContract}"/>
+                                                </VerticalStackLayout>
+                                                <VerticalStackLayout Grid.Column="2" Spacing="6">
+                                                        <Label Text="Language" Style="{StaticResource FieldLabelStyle}"/>
+                                                        <Picker ItemsSource="{Binding Languages}"
+                                                                        ItemDisplayBinding="{Binding Language, x:DataType=standards:Iso__639_1+Record}"
+                                                                        SelectedItem="{Binding SelectedLanguage}"/>
+                                                </VerticalStackLayout>
+                                        </Grid>
 
-                                <Label Text="Existing contracts:"
-                                                Margin="0,8,0,0"/>
-                                <Picker ItemsSource="{Binding ExistingContracts}"
-                                        ItemDisplayBinding="{Binding ContractName, x:DataType=legal:ContractReferenceModel}"
-                                        SelectedItem="{Binding SelectedExistingContract}"/>
+                                        <HorizontalStackLayout Spacing="10">
+                                                <CheckBox IsChecked="{Binding AutoSignProposals}"/>
+                                                <Label Text="Auto-sign contract proposals." VerticalOptions="Center"/>
+                                        </HorizontalStackLayout>
 
-                                <Label Text="Language:"
-                                                Margin="0,8,0,0"/>
-                                <Picker ItemsSource="{Binding Languages}"
-                                        ItemDisplayBinding="{Binding Language, x:DataType=standards:Iso__639_1+Record}"
-                                        SelectedItem="{Binding SelectedLanguage}"/>
+                                        <FlexLayout Wrap="Wrap" Direction="Row">
+                                                <Button Text="Create Contract" Command="{Binding CreateContract}" IsEnabled="{Binding ParametersOk}"/>
+                                                <Button Text="Remove Template" Command="{Binding RemoveTemplate}" IsVisible="{Binding IsTemplate}" Style="{StaticResource SecondaryButtonStyle}"/>
+                                                <Button Text="Remove Contract" Command="{Binding RemoveContract}" IsVisible="{Binding IsContract}" Style="{StaticResource DangerButtonStyle}"/>
+                                        </FlexLayout>
+                                </VerticalStackLayout>
+                        </Border>
 
-                                <CheckBox IsChecked="{Binding AutoSignProposals}"
-                                                Margin="0,8,0,0"/>
-                                <Label Text="Auto-sign contract proposals."
-                                                Margin="0,-4,0,0"/>
+                        <Border Style="{StaticResource SectionCardStyle}">
+                                <VerticalStackLayout Spacing="14">
+                                        <Label Text="Contract Summary" Style="{StaticResource SectionTitleStyle}"/>
+                                        <Grid ColumnDefinitions="*,220" ColumnSpacing="16">
+                                                <VerticalStackLayout Spacing="10">
+                                                        <VerticalStackLayout Spacing="6">
+                                                                <Label Text="Contract ID" Style="{StaticResource FieldLabelStyle}"/>
+                                                                <Entry Text="{Binding ContractId}" IsReadOnly="True"/>
+                                                        </VerticalStackLayout>
+                                                        <CollectionView ItemsSource="{Binding GeneralInformation}" HeightRequest="180">
+                                                                <CollectionView.ItemTemplate>
+                                                                        <DataTemplate x:DataType="items:GenInfo">
+                                                                                <Grid Padding="8,4" ColumnSpacing="12">
+                                                                                        <Grid.ColumnDefinitions>
+                                                                                                <ColumnDefinition Width="170"/>
+                                                                                                <ColumnDefinition Width="*"/>
+                                                                                        </Grid.ColumnDefinitions>
+                                                                                        <Label Grid.Column="0" Text="{Binding Name}" Style="{StaticResource FieldLabelStyle}"/>
+                                                                                        <Label Grid.Column="1" Text="{Binding Value}" Style="{StaticResource DenseCellLabelStyle}" LineBreakMode="WordWrap"/>
+                                                                                </Grid>
+                                                                        </DataTemplate>
+                                                                </CollectionView.ItemTemplate>
+                                                        </CollectionView>
+                                                </VerticalStackLayout>
+                                                <Border Grid.Column="1" Style="{StaticResource CompactSectionCardStyle}" BackgroundColor="{StaticResource SurfaceMuted}">
+                                                        <VerticalStackLayout Spacing="8">
+                                                                <Label Text="QR Access" Style="{StaticResource FieldLabelStyle}"/>
+                                                                <Image Source="{Binding QrCodeUri}"
+                                                                           WidthRequest="180"
+                                                                           HeightRequest="180"
+                                                                           HorizontalOptions="Center"
+                                                                           IsVisible="{Binding HasId}"/>
+                                                                <Label Text="Scan this code to open the contract from another device."
+                                                                           Style="{StaticResource SectionCaptionStyle}"
+                                                                           HorizontalTextAlignment="Center"
+                                                                           IsVisible="{Binding HasId}"/>
+                                                        </VerticalStackLayout>
+                                                </Border>
+                                        </Grid>
+                                </VerticalStackLayout>
+                        </Border>
 
-                                <Button Text="Create Contract"
-                                                Command="{Binding CreateContract}"
-                                        IsEnabled="{Binding ParametersOk}"
-                                                Margin="0,12,0,0"/>
-                                <Button Text="Remove Template"
-                                                Command="{Binding RemoveTemplate}"
-                                        IsVisible="{Binding IsTemplate}"
-                                                Margin="0,4,0,0"/>
-                                <Button Text="Remove Contract"
-                                                Command="{Binding RemoveContract}"
-                                        IsVisible="{Binding IsContract}"
-                                                Margin="0,4,0,0"/>
-                        </VerticalStackLayout>
-                </ScrollView>
-
-                <!-- Right: Contract details -->
-                <ScrollView Grid.Column="1">
-                        <VerticalStackLayout Padding="16"
-                                        Spacing="8">
-
-                                <Label Text="Contract ID"
-                                                FontSize="20"
-                                                FontAttributes="Bold"/>
-                                <Label Text="ID of the contract:"/>
-                                <Entry Text="{Binding ContractId}"
-                                                IsReadOnly="True"/>
-                                <Label Text="Scan this code to access the contract from another device:"/>
-                                <Image Source="{Binding QrCodeUri}"
-                                                WidthRequest="200"
-                                                HeightRequest="200"
-                                       HorizontalOptions="Start"
-                                                Margin="16"
-                                       IsVisible="{Binding HasId}"/>
-
-                                <Label Text="General Information"
-                                                FontSize="20"
-                                                FontAttributes="Bold"
-                                                Margin="0,8,0,0"/>
-                                <Label Text="Following is some general information about the loaded contract:"/>
-                                <CollectionView ItemsSource="{Binding GeneralInformation}">
-                                        <CollectionView.ItemTemplate>
-                                                <DataTemplate x:DataType="items:GenInfo">
-                                                        <Grid Padding="4,2">
+                        <Border Style="{StaticResource SectionCardStyle}">
+                                <VerticalStackLayout Spacing="14">
+                                        <Label Text="Roles" Style="{StaticResource SectionTitleStyle}"/>
+                                        <CollectionView ItemsSource="{Binding Roles}" HeightRequest="280">
+                                                <CollectionView.Header>
+                                                        <Grid Style="{StaticResource DenseHeaderGridStyle}">
                                                                 <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="160"/>
+                                                                        <ColumnDefinition Width="110"/>
                                                                         <ColumnDefinition Width="*"/>
+                                                                        <ColumnDefinition Width="55"/>
+                                                                        <ColumnDefinition Width="55"/>
+                                                                        <ColumnDefinition Width="95"/>
+                                                                        <ColumnDefinition Width="70"/>
+                                                                        <ColumnDefinition Width="84"/>
                                                                 </Grid.ColumnDefinitions>
-                                                                <Label Grid.Column="0"
-                                                                                Text="{Binding Name}"
-                                                                                FontAttributes="Bold"
-                                                                                FontSize="12"/>
-                                                                <Label Grid.Column="1"
-                                                                                Text="{Binding Value}"
-                                                                                FontSize="12"/>
+                                                                <Label Grid.Column="0" Text="Role" Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                <Label Grid.Column="1" Text="Description" Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                <Label Grid.Column="2" Text="Min" Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                <Label Grid.Column="3" Text="Max" Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                <Label Grid.Column="4" Text="Revoke" Style="{StaticResource DenseHeaderLabelStyle}"/>
                                                         </Grid>
-                                                </DataTemplate>
-                                        </CollectionView.ItemTemplate>
-                                </CollectionView>
+                                                </CollectionView.Header>
+                                                <CollectionView.ItemTemplate>
+                                                        <DataTemplate x:DataType="items:RoleInfo">
+                                                                <Grid Padding="10,6" ColumnSpacing="8">
+                                                                        <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition Width="110"/>
+                                                                                <ColumnDefinition Width="*"/>
+                                                                                <ColumnDefinition Width="55"/>
+                                                                                <ColumnDefinition Width="55"/>
+                                                                                <ColumnDefinition Width="95"/>
+                                                                                <ColumnDefinition Width="70"/>
+                                                                                <ColumnDefinition Width="84"/>
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <Label Grid.Column="0" Text="{Binding Name}" Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                        <Label Grid.Column="1" Text="{Binding DescriptionAsText}" Style="{StaticResource DenseCellLabelStyle}" LineBreakMode="WordWrap"/>
+                                                                        <Label Grid.Column="2" Text="{Binding MinCount}" Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                        <Label Grid.Column="3" Text="{Binding MaxCount}" Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                        <Label Grid.Column="4" Text="{Binding CanRevoke, Converter={conv:BooleanToYesNo}}" Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                        <Button Grid.Column="5" Text="Sign" Command="{Binding SignAsRole}" IsEnabled="{Binding CanBeSigned}" Style="{StaticResource CompactButtonStyle}"/>
+                                                                        <Button Grid.Column="6" Text="Propose" Command="{Binding ProposeForRole}" IsEnabled="{Binding CanBeSigned}" Style="{StaticResource CompactButtonStyle}"/>
+                                                                </Grid>
+                                                        </DataTemplate>
+                                                </CollectionView.ItemTemplate>
+                                        </CollectionView>
+                                </VerticalStackLayout>
+                        </Border>
 
-                                <Label Text="Roles"
-                                                FontSize="20"
-                                                FontAttributes="Bold"
-                                                Margin="0,8,0,0"/>
-                                <Label Text="Following are roles defined in the contract:"/>
-                                <CollectionView ItemsSource="{Binding Roles}">
-                                        <CollectionView.Header>
-                                                <Grid Padding="4,2"
-                                                                BackgroundColor="#DDDDDD">
-                                                        <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="100"/>
-                                                                <ColumnDefinition Width="*"/>
-                                                                <ColumnDefinition Width="40"/>
-                                                                <ColumnDefinition Width="40"/>
-                                                                <ColumnDefinition Width="70"/>
-                                                                <ColumnDefinition Width="70"/>
-                                                                <ColumnDefinition Width="70"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Label Grid.Column="0"
-                                                                        Text="Role"
-                                                                        FontAttributes="Bold"/>
-                                                        <Label Grid.Column="1"
-                                                                        Text="Description"
-                                                                        FontAttributes="Bold"/>
-                                                        <Label Grid.Column="2"
-                                                                        Text="Min"
-                                                                        FontAttributes="Bold"/>
-                                                        <Label Grid.Column="3"
-                                                                        Text="Max"
-                                                                        FontAttributes="Bold"/>
-                                                        <Label Grid.Column="4"
-                                                                        Text="Can Revoke"
-                                                                        FontAttributes="Bold"/>
-                                                </Grid>
-                                        </CollectionView.Header>
-                                        <CollectionView.ItemTemplate>
-                                                <DataTemplate x:DataType="items:RoleInfo">
-                                                        <Grid Padding="4,2">
-                                                                <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="100"/>
-                                                                        <ColumnDefinition Width="*"/>
-                                                                        <ColumnDefinition Width="40"/>
-                                                                        <ColumnDefinition Width="40"/>
-                                                                        <ColumnDefinition Width="70"/>
-                                                                        <ColumnDefinition Width="70"/>
-                                                                        <ColumnDefinition Width="70"/>
-                                                                </Grid.ColumnDefinitions>
-                                                                <Label Grid.Column="0"
-                                                                                Text="{Binding Name}"
-                                                                                FontSize="12"/>
-                                                                <Label Grid.Column="1"
-                                                                                Text="{Binding DescriptionAsText}"
-                                                                                FontSize="12"/>
-                                                                <Label Grid.Column="2"
-                                                                                Text="{Binding MinCount}"
-                                                                                FontSize="12"/>
-                                                                <Label Grid.Column="3"
-                                                                                Text="{Binding MaxCount}"
-                                                                                FontSize="12"/>
-                                                                <Label Grid.Column="4"
-                                                                                Text="{Binding CanRevoke, Converter={conv:BooleanToYesNo}}"
-                                                                                FontSize="12"/>
-                                                                <Button Grid.Column="5"
-                                                                                Text="Sign"
-                                                                                Command="{Binding SignAsRole}"
-                                                                        IsEnabled="{Binding CanBeSigned}"
-                                                                                Padding="4,0"
-                                                                                FontSize="11"/>
-                                                                <Button Grid.Column="6"
-                                                                                Text="Propose"
-                                                                                Command="{Binding ProposeForRole}"
-                                                                        IsEnabled="{Binding CanBeSigned}"
-                                                                                Padding="4,0"
-                                                                                FontSize="11"/>
-                                                        </Grid>
-                                                </DataTemplate>
-                                        </CollectionView.ItemTemplate>
-                                </CollectionView>
+                        <Border Style="{StaticResource SectionCardStyle}">
+                                <VerticalStackLayout Spacing="14">
+                                        <Label Text="Parts and Parameters" Style="{StaticResource SectionTitleStyle}"/>
+                                        <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                                                <VerticalStackLayout Spacing="12">
+                                                        <Label Text="Parts" Style="{StaticResource FieldLabelStyle}"/>
+                                                        <CollectionView ItemsSource="{Binding Parts}" HeightRequest="240">
+                                                                <CollectionView.Header>
+                                                                        <Grid Style="{StaticResource DenseHeaderGridStyle}">
+                                                                                <Grid.ColumnDefinitions>
+                                                                                        <ColumnDefinition Width="*"/>
+                                                                                        <ColumnDefinition Width="120"/>
+                                                                                        <ColumnDefinition Width="60"/>
+                                                                                        <ColumnDefinition Width="60"/>
+                                                                                        <ColumnDefinition Width="84"/>
+                                                                                </Grid.ColumnDefinitions>
+                                                                                <Label Grid.Column="0" Text="Legal ID" Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                                <Label Grid.Column="1" Text="Role" Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                        </Grid>
+                                                                </CollectionView.Header>
+                                                                <CollectionView.ItemTemplate>
+                                                                        <DataTemplate x:DataType="items:PartInfo">
+                                                                                <Grid Padding="10,6" ColumnSpacing="8">
+                                                                                        <Grid.ColumnDefinitions>
+                                                                                                <ColumnDefinition Width="*"/>
+                                                                                                <ColumnDefinition Width="120"/>
+                                                                                                <ColumnDefinition Width="60"/>
+                                                                                                <ColumnDefinition Width="60"/>
+                                                                                                <ColumnDefinition Width="84"/>
+                                                                                        </Grid.ColumnDefinitions>
+                                                                                        <Label Grid.Column="0" Text="{Binding LegalId}" Style="{StaticResource DenseCellLabelStyle}" LineBreakMode="CharacterWrap"/>
+                                                                                        <Picker Grid.Column="1" ItemsSource="{Binding Roles}" SelectedItem="{Binding Role}" FontSize="12"/>
+                                                                                        <Button Grid.Column="2" Text="Up" Command="{Binding MoveUp}" Style="{StaticResource CompactButtonStyle}"/>
+                                                                                        <Button Grid.Column="3" Text="Down" Command="{Binding MoveDown}" Style="{StaticResource CompactButtonStyle}"/>
+                                                                                        <Button Grid.Column="4" Text="Remove" Command="{Binding RemovePart}" Style="{StaticResource CompactButtonStyle}"/>
+                                                                                </Grid>
+                                                                        </DataTemplate>
+                                                                </CollectionView.ItemTemplate>
+                                                        </CollectionView>
+                                                        <Button Text="Add Part" Command="{Binding AddPart}" HorizontalOptions="Start" WidthRequest="120"/>
+                                                </VerticalStackLayout>
 
-                                <Label Text="Parts"
-                                                FontSize="20"
-                                                FontAttributes="Bold"
-                                                Margin="0,8,0,0"/>
-                                <Label Text="Following are parts defined in the contract:"/>
-                                <CollectionView ItemsSource="{Binding Parts}">
-                                        <CollectionView.Header>
-                                                <Grid Padding="4,2"
-                                                                BackgroundColor="#DDDDDD">
-                                                        <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"/>
-                                                                <ColumnDefinition Width="120"/>
-                                                                <ColumnDefinition Width="50"/>
-                                                                <ColumnDefinition Width="50"/>
-                                                                <ColumnDefinition Width="60"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Label Grid.Column="0"
-                                                                        Text="Legal ID"
-                                                                        FontAttributes="Bold"/>
-                                                        <Label Grid.Column="1"
-                                                                        Text="Role"
-                                                                        FontAttributes="Bold"/>
-                                                </Grid>
-                                        </CollectionView.Header>
-                                        <CollectionView.ItemTemplate>
-                                                <DataTemplate x:DataType="items:PartInfo">
-                                                        <Grid Padding="4,2">
+                                                <VerticalStackLayout Grid.Column="1" Spacing="12">
+                                                        <Label Text="Parameters" Style="{StaticResource FieldLabelStyle}"/>
+                                                        <CollectionView ItemsSource="{Binding Parameters}" HeightRequest="240">
+                                                                <CollectionView.Header>
+                                                                        <Grid Style="{StaticResource DenseHeaderGridStyle}">
+                                                                                <Grid.ColumnDefinitions>
+                                                                                        <ColumnDefinition Width="120"/>
+                                                                                        <ColumnDefinition Width="130"/>
+                                                                                        <ColumnDefinition Width="*"/>
+                                                                                </Grid.ColumnDefinitions>
+                                                                                <Label Grid.Column="0" Text="Parameter" Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                                <Label Grid.Column="1" Text="Value" Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                                <Label Grid.Column="2" Text="Description" Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                        </Grid>
+                                                                </CollectionView.Header>
+                                                                <CollectionView.ItemTemplate>
+                                                                        <DataTemplate x:DataType="items:ParameterInfo">
+                                                                                <Grid Padding="10,6" ColumnSpacing="8">
+                                                                                        <Grid.ColumnDefinitions>
+                                                                                                <ColumnDefinition Width="120"/>
+                                                                                                <ColumnDefinition Width="130"/>
+                                                                                                <ColumnDefinition Width="*"/>
+                                                                                        </Grid.ColumnDefinitions>
+                                                                                        <Label Grid.Column="0" Text="{Binding Name}" Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                                        <Label Grid.Column="1" Text="{Binding Value, Converter={conv:MoneyToString}}" Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                                        <Label Grid.Column="2" Text="{Binding DescriptionAsText}" Style="{StaticResource DenseCellLabelStyle}" LineBreakMode="WordWrap"/>
+                                                                                </Grid>
+                                                                        </DataTemplate>
+                                                                </CollectionView.ItemTemplate>
+                                                        </CollectionView>
+                                                </VerticalStackLayout>
+                                        </Grid>
+                                </VerticalStackLayout>
+                        </Border>
+
+                        <Border Style="{StaticResource SectionCardStyle}">
+                                <VerticalStackLayout Spacing="12">
+                                        <Label Text="Contract Content" Style="{StaticResource SectionTitleStyle}"/>
+                                        <Label Text="Machine-readable content" Style="{StaticResource FieldLabelStyle}"/>
+                                        <Editor x:Name="MachineReadableXmlEditor"
+                                                        Style="{StaticResource MonoEditorStyle}"
+                                                        IsReadOnly="True"
+                                                        AutoSize="TextChanges"
+                                                        MinimumHeightRequest="220"/>
+                                        <Label Text="Human-readable content" Style="{StaticResource FieldLabelStyle}"/>
+                                        <Border Style="{StaticResource CompactSectionCardStyle}" BackgroundColor="{StaticResource SurfaceMuted}">
+                                                <Label Text="{Binding HumanReadableText}" LineBreakMode="WordWrap"/>
+                                        </Border>
+                                </VerticalStackLayout>
+                        </Border>
+
+                        <Border Style="{StaticResource SectionCardStyle}">
+                                <VerticalStackLayout Spacing="14">
+                                        <Label Text="Attachments" Style="{StaticResource SectionTitleStyle}"/>
+                                        <CollectionView ItemsSource="{Binding Attachments}" HeightRequest="260">
+                                                <CollectionView.Header>
+                                                        <Grid Style="{StaticResource DenseHeaderGridStyle}">
                                                                 <Grid.ColumnDefinitions>
                                                                         <ColumnDefinition Width="*"/>
                                                                         <ColumnDefinition Width="120"/>
-                                                                        <ColumnDefinition Width="50"/>
-                                                                        <ColumnDefinition Width="50"/>
-                                                                        <ColumnDefinition Width="60"/>
-                                                                </Grid.ColumnDefinitions>
-                                                                <Label Grid.Column="0"
-                                                                                Text="{Binding LegalId}"
-                                                                                FontSize="12"/>
-                                                                <Picker Grid.Column="1"
-                                                                                ItemsSource="{Binding Roles}"
-                                                                        SelectedItem="{Binding Role}"
-                                                                                FontSize="12"/>
-                                                                <Button Grid.Column="2"
-                                                                                Text="Up"
-                                                                                Command="{Binding MoveUp}"
-                                                                                Padding="4,0"
-                                                                                FontSize="11"/>
-                                                                <Button Grid.Column="3"
-                                                                                Text="Down"
-                                                                                Command="{Binding MoveDown}"
-                                                                                Padding="4,0"
-                                                                                FontSize="11"/>
-                                                                <Button Grid.Column="4"
-                                                                                Text="Remove"
-                                                                                Command="{Binding RemovePart}"
-                                                                                Padding="4,0"
-                                                                                FontSize="11"/>
-                                                        </Grid>
-                                                </DataTemplate>
-                                        </CollectionView.ItemTemplate>
-                                </CollectionView>
-                                <Button Text="Add Part"
-                                                Command="{Binding AddPart}"
-                                                HorizontalOptions="Start"
-                                                WidthRequest="100"/>
-
-                                <Label Text="Parameters"
-                                                FontSize="20"
-                                                FontAttributes="Bold"
-                                                Margin="0,8,0,0"/>
-                                <Label Text="Following are parameters defined in the contract:"/>
-                                <CollectionView ItemsSource="{Binding Parameters}">
-                                        <CollectionView.Header>
-                                                <Grid Padding="4,2"
-                                                                BackgroundColor="#DDDDDD">
-                                                        <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="120"/>
-                                                                <ColumnDefinition Width="120"/>
-                                                                <ColumnDefinition Width="*"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Label Grid.Column="0"
-                                                                        Text="Parameter"
-                                                                        FontAttributes="Bold"/>
-                                                        <Label Grid.Column="1"
-                                                                        Text="Value"
-                                                                        FontAttributes="Bold"/>
-                                                        <Label Grid.Column="2"
-                                                                        Text="Description"
-                                                                        FontAttributes="Bold"/>
-                                                </Grid>
-                                        </CollectionView.Header>
-                                        <CollectionView.ItemTemplate>
-                                                <DataTemplate x:DataType="items:ParameterInfo">
-                                                        <Grid Padding="4,2">
-                                                                <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="120"/>
-                                                                        <ColumnDefinition Width="120"/>
-                                                                        <ColumnDefinition Width="*"/>
-                                                                </Grid.ColumnDefinitions>
-                                                                <Label Grid.Column="0"
-                                                                                Text="{Binding Name}"
-                                                                                FontSize="12"/>
-                                                                <Label Grid.Column="1"
-                                                                                Text="{Binding Value, Converter={conv:MoneyToString}}"
-                                                                                FontSize="12"/>
-                                                                <Label Grid.Column="2"
-                                                                                Text="{Binding DescriptionAsText}"
-                                                                                FontSize="12"/>
-                                                        </Grid>
-                                                </DataTemplate>
-                                        </CollectionView.ItemTemplate>
-                                </CollectionView>
-
-                                <Label Text="Machine-Readable Content"
-                                                FontSize="20"
-                                                FontAttributes="Bold"
-                                                Margin="0,8,0,0"/>
-                                <Label Text="Following is the embedded Machine-readable content of the contract:"/>
-                                <Editor x:Name="MachineReadableXmlEditor"
-                                        FontFamily="Courier New"
-                                        FontSize="13"
-                                        IsReadOnly="True"
-                                        AutoSize="TextChanges"
-                                        MinimumHeightRequest="100"/>
-
-                                <Label Text="Human-Readable Content"
-                                                FontSize="20"
-                                                FontAttributes="Bold"
-                                                Margin="0,8,0,0"/>
-                                <Label Text="{Binding HumanReadableText}"
-                                                BackgroundColor="White"
-                                                Padding="10"/>
-
-                                <Label Text="Attachments"
-                                                FontSize="20"
-                                                FontAttributes="Bold"
-                                                Margin="0,8,0,0"/>
-                                <Label Text="Following attachments have been uploaded to the contract:"/>
-                                <CollectionView ItemsSource="{Binding Attachments}">
-                                        <CollectionView.Header>
-                                                <Grid Padding="4,2"
-                                                                BackgroundColor="#DDDDDD">
-                                                        <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"/>
-                                                                <ColumnDefinition Width="120"/>
-                                                                <ColumnDefinition Width="100"/>
-                                                                <ColumnDefinition Width="120"/>
-                                                                <ColumnDefinition Width="70"/>
-                                                                <ColumnDefinition Width="70"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Label Grid.Column="0"
-                                                                        Text="Attachment ID"
-                                                                        FontAttributes="Bold"/>
-                                                        <Label Grid.Column="1"
-                                                                        Text="Filename"
-                                                                        FontAttributes="Bold"/>
-                                                        <Label Grid.Column="2"
-                                                                        Text="Content-Type"
-                                                                        FontAttributes="Bold"/>
-                                                        <Label Grid.Column="3"
-                                                                        Text="Timestamp"
-                                                                        FontAttributes="Bold"/>
-                                                </Grid>
-                                        </CollectionView.Header>
-                                        <CollectionView.ItemTemplate>
-                                                <DataTemplate x:DataType="items:AttachmentInfo">
-                                                        <Grid Padding="4,2">
-                                                                <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="*"/>
-                                                                        <ColumnDefinition Width="120"/>
-                                                                        <ColumnDefinition Width="100"/>
-                                                                        <ColumnDefinition Width="120"/>
-                                                                        <ColumnDefinition Width="70"/>
-                                                                        <ColumnDefinition Width="70"/>
-                                                                </Grid.ColumnDefinitions>
-                                                                <Label Grid.Column="0"
-                                                                                Text="{Binding Id}"
-                                                                                FontSize="12"/>
-                                                                <Label Grid.Column="1"
-                                                                                Text="{Binding FileName}"
-                                                                                FontSize="12"/>
-                                                                <Label Grid.Column="2"
-                                                                                Text="{Binding ContentType}"
-                                                                                FontSize="12"/>
-                                                                <Label Grid.Column="3"
-                                                                                Text="{Binding Timestamp, Converter={conv:DateTimeToString}}"
-                                                                                FontSize="12"/>
-                                                                <Button Grid.Column="4"
-                                                                                Text="Download"
-                                                                                Command="{Binding DownloadAttachment}"
-                                                                        IsEnabled="{Binding CanDownloadAttachment}"
-                                                                                Padding="4,0"
-                                                                                FontSize="11"/>
-                                                                <Button Grid.Column="5"
-                                                                                Text="Remove"
-                                                                                Command="{Binding RemoveAttachment}"
-                                                                        IsEnabled="{Binding CanRemoveAttachment}"
-                                                                                Padding="4,0"
-                                                                                FontSize="11"/>
-                                                        </Grid>
-                                                </DataTemplate>
-                                        </CollectionView.ItemTemplate>
-                                </CollectionView>
-                                <Button Text="Upload Attachment"
-                                                Command="{Binding UploadAttachment}"
-                                        IsEnabled="{Binding CanUploadAttachment}"
-                                                HorizontalOptions="Start"
-                                                WidthRequest="160"/>
-
-                                <Label Text="Client Signatures"
-                                                FontSize="20"
-                                                FontAttributes="Bold"
-                                                Margin="0,8,0,0"/>
-                                <Label Text="Following are client signatures available in the contract:"/>
-                                <CollectionView ItemsSource="{Binding ClientSignatures}">
-                                        <CollectionView.Header>
-                                                <Grid Padding="4,2"
-                                                                BackgroundColor="#DDDDDD">
-                                                        <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"/>
-                                                                <ColumnDefinition Width="*"/>
-                                                                <ColumnDefinition Width="80"/>
-                                                                <ColumnDefinition Width="120"/>
-                                                                <ColumnDefinition Width="80"/>
-                                                                <ColumnDefinition Width="*"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Label Grid.Column="0"
-                                                                        Text="Network JID"
-                                                                        FontAttributes="Bold"/>
-                                                        <Label Grid.Column="1"
-                                                                        Text="Legal ID"
-                                                                        FontAttributes="Bold"/>
-                                                        <Label Grid.Column="2"
-                                                                        Text="Role"
-                                                                        FontAttributes="Bold"/>
-                                                        <Label Grid.Column="3"
-                                                                        Text="Timestamp"
-                                                                        FontAttributes="Bold"/>
-                                                        <Label Grid.Column="4"
-                                                                        Text="Transferable"
-                                                                        FontAttributes="Bold"/>
-                                                        <Label Grid.Column="5"
-                                                                        Text="Signature"
-                                                                        FontAttributes="Bold"/>
-                                                </Grid>
-                                        </CollectionView.Header>
-                                        <CollectionView.ItemTemplate>
-                                                <DataTemplate x:DataType="items:ClientSignatureInfo">
-                                                        <Grid Padding="4,2">
-                                                                <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="*"/>
-                                                                        <ColumnDefinition Width="*"/>
+                                                                        <ColumnDefinition Width="110"/>
+                                                                        <ColumnDefinition Width="140"/>
                                                                         <ColumnDefinition Width="80"/>
-                                                                        <ColumnDefinition Width="120"/>
-                                                                        <ColumnDefinition Width="80"/>
-                                                                        <ColumnDefinition Width="*"/>
+                                                                        <ColumnDefinition Width="84"/>
                                                                 </Grid.ColumnDefinitions>
-                                                                <Label Grid.Column="0"
-                                                                                Text="{Binding BareJid}"
-                                                                                FontSize="12"/>
-                                                                <Label Grid.Column="1"
-                                                                                Text="{Binding LegalId}"
-                                                                                FontSize="12"/>
-                                                                <Label Grid.Column="2"
-                                                                                Text="{Binding Role}"
-                                                                                FontSize="12"/>
-                                                                <Label Grid.Column="3"
-                                                                                Text="{Binding Timestamp, Converter={conv:DateTimeToString}}"
-                                                                                FontSize="12"/>
-                                                                <Label Grid.Column="4"
-                                                                                Text="{Binding Transferable, Converter={conv:BooleanToYesNo}}"
-                                                                                FontSize="12"/>
-                                                                <Label Grid.Column="5"
-                                                                                Text="{Binding Signature, Converter={conv:ToBase64}}"
-                                                                                FontSize="12"/>
+                                                                <Label Grid.Column="0" Text="Attachment" Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                <Label Grid.Column="1" Text="Filename" Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                <Label Grid.Column="2" Text="Type" Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                                <Label Grid.Column="3" Text="Timestamp" Style="{StaticResource DenseHeaderLabelStyle}"/>
                                                         </Grid>
-                                                </DataTemplate>
-                                        </CollectionView.ItemTemplate>
-                                </CollectionView>
+                                                </CollectionView.Header>
+                                                <CollectionView.ItemTemplate>
+                                                        <DataTemplate x:DataType="items:AttachmentInfo">
+                                                                <Grid Padding="10,6" ColumnSpacing="8">
+                                                                        <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition Width="*"/>
+                                                                                <ColumnDefinition Width="120"/>
+                                                                                <ColumnDefinition Width="110"/>
+                                                                                <ColumnDefinition Width="140"/>
+                                                                                <ColumnDefinition Width="80"/>
+                                                                                <ColumnDefinition Width="84"/>
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <Label Grid.Column="0" Text="{Binding Id}" Style="{StaticResource DenseCellLabelStyle}" LineBreakMode="CharacterWrap"/>
+                                                                        <Label Grid.Column="1" Text="{Binding FileName}" Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                        <Label Grid.Column="2" Text="{Binding ContentType}" Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                        <Label Grid.Column="3" Text="{Binding Timestamp, Converter={conv:DateTimeToString}}" Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                        <Button Grid.Column="4" Text="Download" Command="{Binding DownloadAttachment}" IsEnabled="{Binding CanDownloadAttachment}" Style="{StaticResource CompactButtonStyle}"/>
+                                                                        <Button Grid.Column="5" Text="Remove" Command="{Binding RemoveAttachment}" IsEnabled="{Binding CanRemoveAttachment}" Style="{StaticResource CompactButtonStyle}"/>
+                                                                </Grid>
+                                                        </DataTemplate>
+                                                </CollectionView.ItemTemplate>
+                                        </CollectionView>
+                                        <Button Text="Upload Attachment" Command="{Binding UploadAttachment}" IsEnabled="{Binding CanUploadAttachment}" HorizontalOptions="Start" WidthRequest="160"/>
+                                </VerticalStackLayout>
+                        </Border>
 
-                                <Label Text="Server Signature"
-                                                FontSize="20"
-                                                FontAttributes="Bold"
-                                                Margin="0,8,0,0"/>
-                                <Label Text="Following is any server signature available in the contract:"/>
-                                <CollectionView ItemsSource="{Binding ServerSignatures}">
-                                        <CollectionView.Header>
-                                                <Grid Padding="4,2"
-                                                                BackgroundColor="#DDDDDD">
-                                                        <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="120"/>
-                                                                <ColumnDefinition Width="*"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Label Grid.Column="0"
-                                                                        Text="Timestamp"
-                                                                        FontAttributes="Bold"/>
-                                                        <Label Grid.Column="1"
-                                                                        Text="Signature"
-                                                                        FontAttributes="Bold"/>
-                                                </Grid>
-                                        </CollectionView.Header>
-                                        <CollectionView.ItemTemplate>
-                                                <DataTemplate x:DataType="items:ServerSignatureInfo">
-                                                        <Grid Padding="4,2">
-                                                                <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="120"/>
-                                                                        <ColumnDefinition Width="*"/>
-                                                                </Grid.ColumnDefinitions>
-                                                                <Label Grid.Column="0"
-                                                                                Text="{Binding Timestamp, Converter={conv:DateTimeToString}}"
-                                                                                FontSize="12"/>
-                                                                <Label Grid.Column="1"
-                                                                                Text="{Binding Signature, Converter={conv:ToBase64}}"
-                                                                                FontSize="12"/>
-                                                        </Grid>
-                                                </DataTemplate>
-                                        </CollectionView.ItemTemplate>
-                                </CollectionView>
-                        </VerticalStackLayout>
-                </ScrollView>
-        </Grid>
+                        <Border Style="{StaticResource SectionCardStyle}">
+                                <VerticalStackLayout Spacing="14">
+                                        <Label Text="Signatures" Style="{StaticResource SectionTitleStyle}"/>
+                                        <Label Text="Client signatures" Style="{StaticResource FieldLabelStyle}"/>
+                                        <CollectionView ItemsSource="{Binding ClientSignatures}" HeightRequest="240">
+                                                <CollectionView.ItemTemplate>
+                                                        <DataTemplate x:DataType="items:ClientSignatureInfo">
+                                                                <Border Style="{StaticResource CompactSectionCardStyle}" Margin="0,0,0,10">
+                                                                        <VerticalStackLayout Spacing="6">
+                                                                                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                                                                        <VerticalStackLayout Spacing="2">
+                                                                                                <Label Text="Network JID" Style="{StaticResource FieldLabelStyle}"/>
+                                                                                                <Label Text="{Binding BareJid}" Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                                        </VerticalStackLayout>
+                                                                                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                                                                                <Label Text="Legal ID" Style="{StaticResource FieldLabelStyle}"/>
+                                                                                                <Label Text="{Binding LegalId}" Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                                        </VerticalStackLayout>
+                                                                                </Grid>
+                                                                                <Grid ColumnDefinitions="100,140,100,*" ColumnSpacing="12">
+                                                                                        <VerticalStackLayout Spacing="2">
+                                                                                                <Label Text="Role" Style="{StaticResource FieldLabelStyle}"/>
+                                                                                                <Label Text="{Binding Role}" Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                                        </VerticalStackLayout>
+                                                                                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                                                                                <Label Text="Timestamp" Style="{StaticResource FieldLabelStyle}"/>
+                                                                                                <Label Text="{Binding Timestamp, Converter={conv:DateTimeToString}}" Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                                        </VerticalStackLayout>
+                                                                                        <VerticalStackLayout Grid.Column="2" Spacing="2">
+                                                                                                <Label Text="Transferable" Style="{StaticResource FieldLabelStyle}"/>
+                                                                                                <Label Text="{Binding Transferable, Converter={conv:BooleanToYesNo}}" Style="{StaticResource DenseCellLabelStyle}"/>
+                                                                                        </VerticalStackLayout>
+                                                                                        <VerticalStackLayout Grid.Column="3" Spacing="2">
+                                                                                                <Label Text="Signature" Style="{StaticResource FieldLabelStyle}"/>
+                                                                                                <Label Text="{Binding Signature, Converter={conv:ToBase64}}" Style="{StaticResource MonoLabelStyle}" LineBreakMode="CharacterWrap"/>
+                                                                                        </VerticalStackLayout>
+                                                                                </Grid>
+                                                                        </VerticalStackLayout>
+                                                                </Border>
+                                                        </DataTemplate>
+                                                </CollectionView.ItemTemplate>
+                                        </CollectionView>
+
+                                        <Label Text="Server signatures" Style="{StaticResource FieldLabelStyle}"/>
+                                        <CollectionView ItemsSource="{Binding ServerSignatures}" HeightRequest="180">
+                                                <CollectionView.ItemTemplate>
+                                                        <DataTemplate x:DataType="items:ServerSignatureInfo">
+                                                                <Border Style="{StaticResource CompactSectionCardStyle}" Margin="0,0,0,10">
+                                                                        <VerticalStackLayout Spacing="6">
+                                                                                <Label Text="{Binding Timestamp, Converter={conv:DateTimeToString}}" Style="{StaticResource FieldLabelStyle}"/>
+                                                                                <Label Text="{Binding Signature, Converter={conv:ToBase64}}" Style="{StaticResource MonoLabelStyle}" LineBreakMode="CharacterWrap"/>
+                                                                        </VerticalStackLayout>
+                                                                </Border>
+                                                        </DataTemplate>
+                                                </CollectionView.ItemTemplate>
+                                        </CollectionView>
+                                </VerticalStackLayout>
+                        </Border>
+                </VerticalStackLayout>
+        </ScrollView>
 </ContentPage>

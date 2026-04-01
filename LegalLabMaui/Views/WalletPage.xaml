@@ -6,239 +6,242 @@
              x:Class="LegalLabMaui.Views.WalletPage"
              x:DataType="wallet:WalletModel"
              Title="Wallet">
-        <Grid>
-                <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+    <ScrollView>
+         <VerticalStackLayout Style="{StaticResource PageStackStyle}">
+             <Border Style="{StaticResource SectionCardStyle}">
+                  <VerticalStackLayout Spacing="6">
+                      <Label Text="Wallet"
+                              Style="{StaticResource PageTitleStyle}"/>
+                      <Label Text="Track balance, generate payment URIs, and inspect transaction history without leaving the main workspace."
+                              Style="{StaticResource SectionCaptionStyle}"/>
+                  </VerticalStackLayout>
+             </Border>
 
-                <!-- Left: Wallet summary and actions -->
-                <ScrollView Grid.Row="0">
-                        <VerticalStackLayout Padding="16"
-                                        Spacing="6">
-                                <Label Text="Balance:"/>
-                                <Entry Text="{Binding Amount, Converter={conv:MoneyToString}}"
-                                                IsReadOnly="True"/>
+             <Border Style="{StaticResource SectionCardStyle}">
+                  <VerticalStackLayout Spacing="14">
+                      <Label Text="Account Summary"
+                              Style="{StaticResource SectionTitleStyle}"/>
+                         <Grid ColumnDefinitions="*,*,*"
+                                 RowDefinitions="Auto,Auto"
+                                 ColumnSpacing="16"
+                                 RowSpacing="14">
+                           <VerticalStackLayout Spacing="2">
+                                <Label Text="Balance"
+                                        Style="{StaticResource SummaryCaptionStyle}"/>
+                                <Label Text="{Binding Amount, Converter={conv:MoneyToString}}"
+                                        Style="{StaticResource SummaryValueStyle}"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Column="1"
+                                                   Spacing="2">
+                                <Label Text="Reserved"
+                                        Style="{StaticResource SummaryCaptionStyle}"/>
+                                <Label Text="{Binding Reserved, Converter={conv:MoneyToString}}"
+                                        Style="{StaticResource SummaryValueStyle}"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Column="2"
+                                                   Spacing="2">
+                                <Label Text="Pending"
+                                        Style="{StaticResource SummaryCaptionStyle}"/>
+                                <Label Text="{Binding Pending, Converter={conv:MoneyToString}}"
+                                        Style="{StaticResource SummaryValueStyle}"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="1"
+                                                   Spacing="2">
+                                <Label Text="Available"
+                                        Style="{StaticResource SummaryCaptionStyle}"/>
+                                <Label Text="{Binding Available, Converter={conv:MoneyToString}}"
+                                        Style="{StaticResource SummaryValueStyle}"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="1"
+                                                   Grid.Column="1"
+                                                   Spacing="2">
+                                <Label Text="Currency"
+                                        Style="{StaticResource SummaryCaptionStyle}"/>
+                                <Label Text="{Binding Currency}"
+                                        Style="{StaticResource SummaryValueStyle}"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="1"
+                                                   Grid.Column="2"
+                                                   Spacing="2">
+                                <Label Text="Updated"
+                                        Style="{StaticResource SummaryCaptionStyle}"/>
+                                <Label Text="{Binding Timestamp, Converter={conv:DateTimeToString}}"
+                                        Style="{StaticResource DenseCellLabelStyle}"/>
+                           </VerticalStackLayout>
+                      </Grid>
+                  </VerticalStackLayout>
+             </Border>
 
-                                <Label Text="Reserved:"
-                                                Margin="0,8,0,0"/>
-                                <Entry Text="{Binding Reserved, Converter={conv:MoneyToString}}"
-                                                IsReadOnly="True"/>
+             <Border Style="{StaticResource SectionCardStyle}">
+                  <VerticalStackLayout Spacing="14">
+                      <Label Text="Actions and URI"
+                              Style="{StaticResource SectionTitleStyle}"/>
+                      <Label Text="Use the generated URI for sharing or launch common eDaler actions directly."
+                              Style="{StaticResource SectionCaptionStyle}"/>
+                      <Editor Text="{Binding Uri}"
+                                Style="{StaticResource MonoEditorStyle}"
+                                MinimumHeightRequest="110"/>
+                      <FlexLayout Wrap="Wrap"
+                                    Direction="Row">
+                           <Button Text="Send URI"
+                                    Command="{Binding SendUri}"
+                                    Style="{StaticResource SecondaryButtonStyle}"/>
+                           <Button Text="Transfer eDaler®"
+                                    Command="{Binding TransferEDaler}"/>
+                           <Button Text="Buy eDaler®"
+                                    Command="{Binding BuyEDaler}"
+                                    Style="{StaticResource SecondaryButtonStyle}"/>
+                           <Button Text="Sell eDaler®"
+                                    Command="{Binding SellEDaler}"
+                                    Style="{StaticResource SecondaryButtonStyle}"/>
+                      </FlexLayout>
+                  </VerticalStackLayout>
+             </Border>
 
-                                <Label Text="Pending: (i.e. Offline payments)"
-                                                Margin="0,8,0,0"/>
-                                <Entry Text="{Binding Pending, Converter={conv:MoneyToString}}"
-                                                IsReadOnly="True"/>
-
-                                <Label Text="Available:"
-                                                Margin="0,8,0,0"/>
-                                <Entry Text="{Binding Available, Converter={conv:MoneyToString}}"
-                                                IsReadOnly="True"/>
-
-                                <Label Text="Currency:"
-                                                Margin="0,8,0,0"/>
-                                <Entry Text="{Binding Currency}"
-                                                IsReadOnly="True"/>
-
-                                <Label Text="Timestamp:"
-                                                Margin="0,8,0,0"/>
-                                <Entry Text="{Binding Timestamp, Converter={conv:DateTimeToString}}"
-                                                IsReadOnly="True"/>
-
-                                <BoxView HeightRequest="1"
-                                                Color="Black"
-                                                Margin="20,16"/>
-
-                                <Label Text="e-Daler URI:"/>
-                                <Editor Text="{Binding Uri}"
-                                                AutoSize="TextChanges"
-                                                MinimumHeightRequest="80"/>
-                                <Button Text="Send URI"
-                                                Command="{Binding SendUri}"
-                                                Margin="0,4,0,0"/>
-
-                                <BoxView HeightRequest="1"
-                                                Color="Black"
-                                                Margin="20,16"/>
-
-                                <Button Text="Transfer eDaler®"
-                                                Command="{Binding TransferEDaler}"/>
-                                <Button Text="Buy eDaler®"
-                                                Command="{Binding BuyEDaler}"
-                                                Margin="0,8,0,0"/>
-                                <Button Text="Sell eDaler®"
-                                                Command="{Binding SellEDaler}"
-                                                Margin="0,4,0,0"/>
-                        </VerticalStackLayout>
-                </ScrollView>
-
-                <!-- Transaction list -->
-                <CollectionView Grid.Row="1"
-                                ItemsSource="{Binding Events}"
-                                SelectionMode="Single"
-                                SelectionChanged="OnTransactionSelected">
-                        <CollectionView.Header>
-                                <Grid Padding="8,4"
-                                                BackgroundColor="#DDDDDD">
-                                        <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="120"/>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="70"/>
-                                                <ColumnDefinition Width="70"/>
-                                                <ColumnDefinition Width="70"/>
-                                                <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="0"
-                                                        Text="Transaction"
-                                                        FontAttributes="Bold"/>
-                                        <Label Grid.Column="1"
-                                                        Text="Timestamp"
-                                                        FontAttributes="Bold"/>
-                                        <Label Grid.Column="2"
-                                                        Text="Remote"
-                                                        FontAttributes="Bold"/>
-                                        <Label Grid.Column="3"
-                                                        Text="Change"
-                                                        FontAttributes="Bold"/>
-                                        <Label Grid.Column="4"
-                                                        Text="Balance"
-                                                        FontAttributes="Bold"/>
-                                        <Label Grid.Column="5"
-                                                        Text="Reserved"
-                                                        FontAttributes="Bold"/>
-                                        <Label Grid.Column="6"
-                                                        Text="Message"
-                                                        FontAttributes="Bold"/>
+             <Border Style="{StaticResource SectionCardStyle}">
+                  <VerticalStackLayout Spacing="14">
+                      <Label Text="Transactions"
+                              Style="{StaticResource SectionTitleStyle}"/>
+                      <CollectionView ItemsSource="{Binding Events}"
+                                         SelectionMode="Single"
+                                         SelectionChanged="OnTransactionSelected"
+                                         HeightRequest="340">
+                           <CollectionView.Header>
+                                <Grid Style="{StaticResource DenseHeaderGridStyle}">
+                                    <Grid.ColumnDefinitions>
+                                         <ColumnDefinition Width="*"/>
+                                         <ColumnDefinition Width="140"/>
+                                         <ColumnDefinition Width="*"/>
+                                         <ColumnDefinition Width="90"/>
+                                         <ColumnDefinition Width="90"/>
+                                         <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Column="0"
+                                            Text="Transaction"
+                                            Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                    <Label Grid.Column="1"
+                                            Text="Timestamp"
+                                            Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                    <Label Grid.Column="2"
+                                            Text="Remote"
+                                            Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                    <Label Grid.Column="3"
+                                            Text="Change"
+                                            Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                    <Label Grid.Column="4"
+                                            Text="Balance"
+                                            Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                    <Label Grid.Column="5"
+                                            Text="Message"
+                                            Style="{StaticResource DenseHeaderLabelStyle}"/>
                                 </Grid>
-                        </CollectionView.Header>
-                        <CollectionView.ItemTemplate>
+                           </CollectionView.Header>
+                           <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="wallet:AccountEventWrapper">
-                                        <Grid Padding="8,2">
-                                                <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="120"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="70"/>
-                                                        <ColumnDefinition Width="70"/>
-                                                        <ColumnDefinition Width="70"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Label Grid.Column="0"
-                                                                Text="{Binding TransactionId}"
-                                                                FontSize="12"
-                                                                LineBreakMode="CharacterWrap"/>
-                                                <Label Grid.Column="1"
-                                                                Text="{Binding Timestamp, Converter={conv:DateTimeToString}}"
-                                                                FontSize="12"/>
-                                                <Label Grid.Column="2"
-                                                                Text="{Binding Remote}"
-                                                                FontSize="12"/>
-                                                <Label Grid.Column="3"
-                                                                Text="{Binding Change, Converter={conv:MoneyToString}}"
-                                                                FontSize="12"
-                                                                HorizontalOptions="End"/>
-                                                <Label Grid.Column="4"
-                                                                Text="{Binding Balance, Converter={conv:MoneyToString}}"
-                                                                FontSize="12"
-                                                                HorizontalOptions="End"/>
-                                                <Label Grid.Column="5"
-                                                                Text="{Binding Reserved, Converter={conv:MoneyToString}}"
-                                                                FontSize="12"
-                                                                HorizontalOptions="End"/>
-                                                <Label Grid.Column="6"
-                                                                Text="{Binding Message}"
-                                                                FontSize="12"/>
-                                        </Grid>
+                                    <Grid Padding="10,6"
+                                           ColumnSpacing="10">
+                                         <Grid.ColumnDefinitions>
+                                             <ColumnDefinition Width="*"/>
+                                             <ColumnDefinition Width="140"/>
+                                             <ColumnDefinition Width="*"/>
+                                             <ColumnDefinition Width="90"/>
+                                             <ColumnDefinition Width="90"/>
+                                             <ColumnDefinition Width="*"/>
+                                         </Grid.ColumnDefinitions>
+                                         <Label Grid.Column="0"
+                                                 Text="{Binding TransactionId}"
+                                                 Style="{StaticResource DenseCellLabelStyle}"
+                                                 LineBreakMode="CharacterWrap"/>
+                                         <Label Grid.Column="1"
+                                                 Text="{Binding Timestamp, Converter={conv:DateTimeToString}}"
+                                                 Style="{StaticResource DenseCellLabelStyle}"/>
+                                         <Label Grid.Column="2"
+                                                 Text="{Binding Remote}"
+                                                 Style="{StaticResource DenseCellLabelStyle}"/>
+                                         <Label Grid.Column="3"
+                                                 Text="{Binding Change, Converter={conv:MoneyToString}}"
+                                                 Style="{StaticResource DenseCellLabelStyle}"
+                                                 HorizontalOptions="End"/>
+                                         <Label Grid.Column="4"
+                                                 Text="{Binding Balance, Converter={conv:MoneyToString}}"
+                                                 Style="{StaticResource DenseCellLabelStyle}"
+                                                 HorizontalOptions="End"/>
+                                         <Label Grid.Column="5"
+                                                 Text="{Binding Message}"
+                                                 Style="{StaticResource DenseCellLabelStyle}"
+                                                 LineBreakMode="WordWrap"/>
+                                    </Grid>
                                 </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                </CollectionView>
+                           </CollectionView.ItemTemplate>
+                      </CollectionView>
+                  </VerticalStackLayout>
+             </Border>
 
-                <!-- Selected transaction detail -->
-                <Grid Grid.Row="2"
-                                Margin="16"
-                                IsVisible="{Binding SelectedItem, Converter={conv:VisibleIfNotNull}}"
+             <Border Style="{StaticResource SectionCardStyle}"
+                      IsVisible="{Binding SelectedItem, Converter={conv:VisibleIfNotNull}}"
                       BindingContext="{Binding SelectedItem}"
                       x:DataType="wallet:AccountEventWrapper">
-                        <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-
-                        <Label Grid.Column="0"
-                                        Grid.Row="0"
-                                        Text="Transaction ID:"/>
-                        <Entry Grid.Column="0"
-                                        Grid.Row="1"
-                                        Text="{Binding TransactionId, Mode=OneWay}"
-                                        IsReadOnly="True"
-                                        Margin="0,0,8,0"/>
-                        <Label Grid.Column="0"
-                                        Grid.Row="2"
-                                        Text="Timestamp:"
-                                        Margin="0,8,0,0"/>
-                        <Entry Grid.Column="0"
-                                        Grid.Row="3"
-                                        Text="{Binding Timestamp, Mode=OneWay, Converter={conv:DateTimeToString}}"
-                                        IsReadOnly="True"
-                                        Margin="0,0,8,0"/>
-                        <Label Grid.Column="0"
-                                        Grid.Row="4"
-                                        Text="Remote party:"
-                                        Margin="0,8,0,0"/>
-                        <Entry Grid.Column="0"
-                                        Grid.Row="5"
-                                        Text="{Binding Remote, Mode=OneWay}"
-                                        IsReadOnly="True"
-                                        Margin="0,0,8,0"/>
-
-                        <Label Grid.Column="1"
-                                        Grid.Row="0"
-                                        Text="Change:"/>
-                        <Entry Grid.Column="1"
-                                        Grid.Row="1"
-                                        Text="{Binding Change, Mode=OneWay, Converter={conv:MoneyToString}}"
-                                        IsReadOnly="True"
-                                        Margin="0,0,8,0"/>
-                        <Label Grid.Column="1"
-                                        Grid.Row="2"
-                                        Text="Balance:"
-                                        Margin="0,8,0,0"/>
-                        <Entry Grid.Column="1"
-                                        Grid.Row="3"
-                                        Text="{Binding Balance, Mode=OneWay, Converter={conv:MoneyToString}}"
-                                        IsReadOnly="True"
-                                        Margin="0,0,8,0"/>
-
-                        <Label Grid.Column="2"
-                                        Grid.Row="2"
-                                        Text="Reserved:"
-                                        Margin="0,8,0,0"/>
-                        <Entry Grid.Column="2"
-                                        Grid.Row="3"
-                                        Text="{Binding Reserved, Mode=OneWay, Converter={conv:MoneyToString}}"
+                  <VerticalStackLayout Spacing="14">
+                      <Label Text="Selected Transaction"
+                              Style="{StaticResource SectionTitleStyle}"/>
+                         <Grid ColumnDefinitions="*,*"
+                                 RowDefinitions="Auto,Auto,Auto,Auto"
+                                 ColumnSpacing="16"
+                                 RowSpacing="12">
+                           <VerticalStackLayout Spacing="6">
+                                <Label Text="Transaction ID"
+                                        Style="{StaticResource FieldLabelStyle}"/>
+                                <Entry Text="{Binding TransactionId, Mode=OneWay}"
                                         IsReadOnly="True"/>
-
-                        <Label Grid.Column="1"
-                                        Grid.ColumnSpan="2"
-                                        Grid.Row="4"
-                                        Text="Message:"
-                                        Margin="0,8,0,0"/>
-                        <Entry Grid.Column="1"
-                                        Grid.ColumnSpan="2"
-                                        Grid.Row="5"
-                                        Text="{Binding Message, Mode=OneWay}"
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Column="1"
+                                                   Spacing="6">
+                                <Label Text="Timestamp"
+                                        Style="{StaticResource FieldLabelStyle}"/>
+                                <Entry Text="{Binding Timestamp, Mode=OneWay, Converter={conv:DateTimeToString}}"
                                         IsReadOnly="True"/>
-                </Grid>
-        </Grid>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="1"
+                                                   Spacing="6">
+                                <Label Text="Remote Party"
+                                        Style="{StaticResource FieldLabelStyle}"/>
+                                <Entry Text="{Binding Remote, Mode=OneWay}"
+                                        IsReadOnly="True"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="1"
+                                                   Grid.Column="1"
+                                                   Spacing="6">
+                                <Label Text="Change"
+                                        Style="{StaticResource FieldLabelStyle}"/>
+                                <Entry Text="{Binding Change, Mode=OneWay, Converter={conv:MoneyToString}}"
+                                        IsReadOnly="True"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="2"
+                                                   Spacing="6">
+                                <Label Text="Balance"
+                                        Style="{StaticResource FieldLabelStyle}"/>
+                                <Entry Text="{Binding Balance, Mode=OneWay, Converter={conv:MoneyToString}}"
+                                        IsReadOnly="True"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="2"
+                                                   Grid.Column="1"
+                                                   Spacing="6">
+                                <Label Text="Reserved"
+                                        Style="{StaticResource FieldLabelStyle}"/>
+                                <Entry Text="{Binding Reserved, Mode=OneWay, Converter={conv:MoneyToString}}"
+                                        IsReadOnly="True"/>
+                           </VerticalStackLayout>
+                           <VerticalStackLayout Grid.Row="3"
+                                                   Grid.ColumnSpan="2"
+                                                   Spacing="6">
+                                <Label Text="Message"
+                                        Style="{StaticResource FieldLabelStyle}"/>
+                                <Entry Text="{Binding Message, Mode=OneWay}"
+                                        IsReadOnly="True"/>
+                           </VerticalStackLayout>
+                      </Grid>
+                  </VerticalStackLayout>
+             </Border>
+         </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

@@ -5,21 +5,34 @@
              x:Class="LegalLabMaui.Views.Dialogs.PromptPage"
              x:DataType="dialogs:PromptModel"
              Title="{Binding Title}">
-        <VerticalStackLayout Padding="16"
-                        Spacing="12"
-                        VerticalOptions="Center">
-                <Label Text="{Binding Label}"
-                                FontAttributes="Bold"/>
-                <Entry Text="{Binding Text}"
-                       x:Name="UserInput"/>
-                <HorizontalStackLayout HorizontalOptions="Center"
-                                Spacing="16">
-                        <Button Text="{Binding OkText}"
-                                        Command="{Binding Ok}"
-                                        WidthRequest="100"/>
-                        <Button Text="{Binding CancelText}"
+        <ScrollView>
+                <VerticalStackLayout Style="{StaticResource PageStackStyle}">
+                        <Border Style="{StaticResource SectionCardStyle}">
+                                <VerticalStackLayout Spacing="6">
+                                        <Label Text="{Binding Title}"
+                                               Style="{StaticResource SectionTitleStyle}"/>
+                                        <Label Text="{Binding Label}"
+                                               Style="{StaticResource SectionCaptionStyle}"/>
+                                </VerticalStackLayout>
+                        </Border>
+
+                        <Border Style="{StaticResource SectionCardStyle}">
+                                <VerticalStackLayout Spacing="10">
+                                        <Label Text="Input"
+                                               Style="{StaticResource FieldLabelStyle}"/>
+                                        <Entry Text="{Binding Text}"
+                                               x:Name="UserInput"/>
+                                </VerticalStackLayout>
+                        </Border>
+
+                        <HorizontalStackLayout HorizontalOptions="End"
+                                               Spacing="12">
+                                <Button Text="{Binding CancelText}"
                                         Command="{Binding Cancel}"
-                                        WidthRequest="100"/>
-                </HorizontalStackLayout>
-        </VerticalStackLayout>
+                                        Style="{StaticResource SecondaryButtonStyle}"/>
+                                <Button Text="{Binding OkText}"
+                                        Command="{Binding Ok}"/>
+                        </HorizontalStackLayout>
+                </VerticalStackLayout>
+        </ScrollView>
 </ContentPage>

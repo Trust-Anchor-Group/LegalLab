@@ -6,75 +6,91 @@
              x:Class="LegalLabMaui.Views.XmlEditorPage"
              x:DataType="xmleditor:XmlEditorModel"
              Title="XML Editor">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <Grid Padding="24,20,24,28"
+          RowDefinitions="Auto,Auto,*"
+          RowSpacing="18">
+        <Border Style="{StaticResource SectionCardStyle}">
+            <VerticalStackLayout Spacing="6">
+                <Label Text="XML Workspace"
+                       Style="{StaticResource PageTitleStyle}"/>
+                <Label Text="Edit XML directly and keep a synchronized visualization panel visible during document work."
+                       Style="{StaticResource SectionCaptionStyle}"/>
+            </VerticalStackLayout>
+        </Border>
 
-        <!-- Toolbar -->
-        <HorizontalStackLayout Grid.Row="0"
-                Padding="8,4"
-                Spacing="8"
-                BackgroundColor="#F0F0F0">
-            <Button Text="New"
-                    Command="{Binding NewDocument}"
-                    WidthRequest="70"/>
-            <Button Text="Load"
-                    Command="{Binding LoadDocument}"
-                    WidthRequest="70"/>
-            <Button Text="Save"
-                    Command="{Binding SaveDocument}"
-                    IsEnabled="{Binding Changed}"
-                    WidthRequest="70"/>
-            <Label Text="Zoom:"
-                    VerticalOptions="Center"/>
-            <Picker x:Name="ZoomPicker"
-                    WidthRequest="130"
-                    SelectedItem="{Binding SelectedZoom}"
-                    SelectedIndexChanged="ZoomPicker_SelectedIndexChanged">
-                <Picker.Items>
-                    <x:String>Fit to size</x:String>
-                    <x:String>10%</x:String>
-                    <x:String>25%</x:String>
-                    <x:String>50%</x:String>
-                    <x:String>75%</x:String>
-                    <x:String>90%</x:String>
-                    <x:String>100%</x:String>
-                    <x:String>110%</x:String>
-                    <x:String>125%</x:String>
-                    <x:String>150%</x:String>
-                    <x:String>200%</x:String>
-                </Picker.Items>
-            </Picker>
-        </HorizontalStackLayout>
+        <Border Grid.Row="1"
+                Style="{StaticResource SectionCardStyle}">
+            <FlexLayout Wrap="Wrap"
+                        Direction="Row"
+                        AlignItems="Center">
+                <Button Text="New"
+                        Command="{Binding NewDocument}"
+                        WidthRequest="82"/>
+                <Button Text="Load"
+                        Command="{Binding LoadDocument}"
+                        WidthRequest="82"
+                        Style="{StaticResource SecondaryButtonStyle}"/>
+                <Button Text="Save"
+                        Command="{Binding SaveDocument}"
+                        IsEnabled="{Binding Changed}"
+                        WidthRequest="82"
+                        Style="{StaticResource SecondaryButtonStyle}"/>
+                <Label Text="Zoom"
+                       Margin="16,0,0,0"
+                       VerticalOptions="Center"
+                       Style="{StaticResource FieldLabelStyle}"/>
+                <Picker x:Name="ZoomPicker"
+                        WidthRequest="150"
+                        SelectedItem="{Binding SelectedZoom}"
+                        SelectedIndexChanged="ZoomPicker_SelectedIndexChanged">
+                    <Picker.Items>
+                        <x:String>Fit to size</x:String>
+                        <x:String>10%</x:String>
+                        <x:String>25%</x:String>
+                        <x:String>50%</x:String>
+                        <x:String>75%</x:String>
+                        <x:String>90%</x:String>
+                        <x:String>100%</x:String>
+                        <x:String>110%</x:String>
+                        <x:String>125%</x:String>
+                        <x:String>150%</x:String>
+                        <x:String>200%</x:String>
+                    </Picker.Items>
+                </Picker>
+            </FlexLayout>
+        </Border>
 
-        <!-- Editor and visualization split -->
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+        <Grid Grid.Row="2"
+              ColumnDefinitions="*,*"
+              ColumnSpacing="18">
+            <Border Grid.Column="0"
+                    Style="{StaticResource SectionCardStyle}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="XML Document"
+                           Style="{StaticResource SectionTitleStyle}"/>
+                    <Editor x:Name="XmlEditor"
+                            Text="{Binding Xml}"
+                            Style="{StaticResource MonoEditorStyle}"
+                            AutoSize="TextChanges"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="FillAndExpand"
+                            MinimumHeightRequest="420"/>
+                </VerticalStackLayout>
+            </Border>
 
-            <!-- XML Editor -->
-            <Editor Grid.Column="0"
-                    x:Name="XmlEditor"
-                    Text="{Binding Xml}"
-                    FontFamily="Courier New"
-                    FontSize="13"
-                    AutoSize="TextChanges"
-                    HorizontalOptions="Fill"
-                    VerticalOptions="Fill"
-                    Margin="4"/>
-
-            <!-- Visualization / preview -->
-            <ScrollView Grid.Column="1"
-                    x:Name="VisualizationViewer">
-                <Label Text="{Binding VisualizationText}"
-                       Padding="8"
-                       FontSize="{Binding ZoomFontSize}"
-                       LineBreakMode="WordWrap"/>
-            </ScrollView>
+            <Border Grid.Column="1"
+                    Style="{StaticResource SectionCardStyle}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Visualization"
+                           Style="{StaticResource SectionTitleStyle}"/>
+                    <ScrollView x:Name="VisualizationViewer">
+                        <Label Text="{Binding VisualizationText}"
+                               Padding="4"
+                               FontSize="{Binding ZoomFontSize}"
+                               LineBreakMode="WordWrap"/>
+                    </ScrollView>
+                </VerticalStackLayout>
+            </Border>
         </Grid>
     </Grid>
 </ContentPage>

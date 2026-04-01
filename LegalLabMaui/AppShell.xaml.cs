@@ -9,6 +9,7 @@ public partial class AppShell : Shell
     {
         InitializeComponent();
 
+        Routing.RegisterRoute(nameof(ReportPage), typeof(ReportPage));
         Routing.RegisterRoute(nameof(PromptPage), typeof(PromptPage));
         Routing.RegisterRoute(nameof(AddLanguagePage), typeof(AddLanguagePage));
         Routing.RegisterRoute(nameof(AddXmlNotePage), typeof(AddXmlNotePage));
