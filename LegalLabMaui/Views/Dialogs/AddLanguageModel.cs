@@ -46,7 +46,7 @@ namespace LegalLabMaui.Views.Dialogs
 		/// <summary>
 		/// ISO 639-1 language codes
 		/// </summary>
-		public static Iso__639_1.Record[] Languages => Iso__639_1.Data;
+		public Iso__639_1.Record[] Languages => Iso__639_1.Data;
 
 		public Iso__639_1.Record? SelectedLanguageRecord
 		{

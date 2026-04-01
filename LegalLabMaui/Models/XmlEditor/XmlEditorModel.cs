@@ -82,7 +82,18 @@ namespace LegalLabMaui.Models.XmlEditor
 			{
 				this.selectedZoom.Value = value;
 				this.Zoom = value > 0 ? value : 1;
+				this.RaisePropertyChanged(nameof(this.SelectedZoomText));
+				this.RaisePropertyChanged(nameof(this.ZoomFontSize));
 			}
+		}
+
+		/// <summary>
+		/// Selected zoom as UI text.
+		/// </summary>
+		public string SelectedZoomText
+		{
+			get => ToZoomText(this.SelectedZoom);
+			set => this.SelectedZoom = ParseZoomText(value);
 		}
 
 		/// <summary>
@@ -91,8 +102,17 @@ namespace LegalLabMaui.Models.XmlEditor
 		public double Zoom
 		{
 			get => this.zoom.Value;
-			set => this.zoom.Value = value;
+			set
+			{
+				this.zoom.Value = value;
+				this.RaisePropertyChanged(nameof(this.ZoomFontSize));
+			}
 		}
+
+		/// <summary>
+		/// Font size used in text-based visualization.
+		/// </summary>
+		public double ZoomFontSize => 14 * Math.Max(this.Zoom, 0.5);
 
 		/// <summary>
 		/// Text result of XML visualization / parsing (error message or formatted content).
@@ -123,6 +143,23 @@ namespace LegalLabMaui.Models.XmlEditor
 			}
 
 			this.timer = new Timer(this.UpdateVisualization, null, 1000, Timeout.Infinite);
+		}
+
+		private static string ToZoomText(double Zoom)
+		{
+			return Zoom <= 0 ? "Fit to size" : ((int)Math.Round(Zoom * 100)).ToString() + "%";
+		}
+
+		private static double ParseZoomText(string? Text)
+		{
+			if (string.IsNullOrWhiteSpace(Text) || string.Equals(Text, "Fit to size", StringComparison.OrdinalIgnoreCase))
+				return 0;
+
+			Text = Text.Trim();
+			if (Text.EndsWith("%", StringComparison.Ordinal))
+				Text = Text[..^1];
+
+			return double.TryParse(Text, out double Parsed) ? Parsed / 100 : 1;
 		}
 
 		/// <summary>

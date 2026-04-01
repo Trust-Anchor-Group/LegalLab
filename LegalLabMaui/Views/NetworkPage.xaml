@@ -7,206 +7,204 @@
              x:Class="LegalLabMaui.Views.NetworkPage"
              x:DataType="network:NetworkModel"
              Title="Network">
-    <ScrollView>
-        <VerticalStackLayout Style="{StaticResource PageStackStyle}">
-            <Border Style="{StaticResource SectionCardStyle}">
-                <VerticalStackLayout Spacing="16">
-                    <Grid ColumnDefinitions="*,Auto"
-                          ColumnSpacing="12">
-                        <VerticalStackLayout Spacing="4">
-                            <Label Text="Network Workspace"
-                                   Style="{StaticResource PageTitleStyle}"/>
-                            <Label Text="Manage XMPP connectivity, account creation, and credential storage from one place."
-                                   Style="{StaticResource SectionCaptionStyle}"/>
-                        </VerticalStackLayout>
-                        <Border Grid.Column="1"
-                                Style="{StaticResource BadgeBorderStyle}"
-                                BackgroundColor="{StaticResource SuccessSoft}"
-                                IsVisible="{Binding Connected}">
-                            <Label Text="Connected"
-                                   TextColor="{StaticResource Success}"
-                                   VerticalOptions="Center"
-                                   FontAttributes="Bold"/>
-                        </Border>
-                    </Grid>
+       <ScrollView>
+              <VerticalStackLayout Style="{StaticResource PageStackStyle}">
+                     <Border Style="{StaticResource SectionCardStyle}">
+                            <VerticalStackLayout Spacing="16">
+                                   <Grid ColumnDefinitions="*,Auto"
+                                         ColumnSpacing="12">
+                                          <VerticalStackLayout Spacing="4">
+                                                 <Label Text="Network Workspace"
+                                                        Style="{StaticResource PageTitleStyle}"/>
+                                                 <Label Text="Manage XMPP connectivity, account creation, and credential storage from one place."
+                                                        Style="{StaticResource SectionCaptionStyle}"/>
+                                          </VerticalStackLayout>
+                                          <Border Grid.Column="1"
+                                                  Style="{StaticResource BadgeBorderStyle}"
+                                                  BackgroundColor="{StaticResource SuccessSoft}"
+                                                  IsVisible="{Binding Connected}">
+                                                 <Label Text="Connected"
+                                                        TextColor="{StaticResource Success}"
+                                                        FontAttributes="Bold"/>
+                                          </Border>
+                                   </Grid>
 
-                    <Grid ColumnDefinitions="*,*"
-                          ColumnSpacing="16"
-                          RowSpacing="12">
-                        <VerticalStackLayout Grid.Column="0"
-                                             Spacing="6">
-                            <Label Text="XMPP Server"
-                                   Style="{StaticResource FieldLabelStyle}"/>
-                            <Entry Text="{Binding XmppServer}"
-                                   IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
-                        </VerticalStackLayout>
-                        <VerticalStackLayout Grid.Column="1"
-                                             Spacing="6">
-                            <Label Text="Account"
-                                   Style="{StaticResource FieldLabelStyle}"/>
-                            <Entry Text="{Binding Account}"
-                                   IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
-                        </VerticalStackLayout>
-                    </Grid>
+                                   <Grid ColumnDefinitions="*,*"
+                                         ColumnSpacing="16"
+                                         RowSpacing="12">
+                                          <VerticalStackLayout Grid.Column="0"
+                                                               Spacing="6">
+                                                 <Label Text="XMPP Server"
+                                                        Style="{StaticResource FieldLabelStyle}"/>
+                                                 <Entry Text="{Binding XmppServer}"
+                                                        IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                                          </VerticalStackLayout>
+                                          <VerticalStackLayout Grid.Column="1"
+                                                               Spacing="6">
+                                                 <Label Text="Account"
+                                                        Style="{StaticResource FieldLabelStyle}"/>
+                                                 <Entry Text="{Binding Account}"
+                                                        IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                                          </VerticalStackLayout>
+                                   </Grid>
 
-                    <VerticalStackLayout Spacing="6">
-                        <Label Text="Password"
-                               Style="{StaticResource FieldLabelStyle}"/>
-                        <Entry x:Name="XmppPassword"
-                               IsPassword="True"
-                               IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"
-                               TextChanged="XmppPassword_TextChanged"/>
-                    </VerticalStackLayout>
+                                   <VerticalStackLayout Spacing="6">
+                                          <Label Text="Password"
+                                                 Style="{StaticResource FieldLabelStyle}"/>
+                                          <Entry x:Name="XmppPassword"
+                                                 IsPassword="True"
+                                                 IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"
+                                                 TextChanged="XmppPassword_TextChanged"/>
+                                   </VerticalStackLayout>
 
-                    <VerticalStackLayout Spacing="10">
-                        <HorizontalStackLayout Spacing="10">
-                            <CheckBox IsChecked="{Binding CreateAccount}"
-                                      IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
-                            <Label Text="Create an account if none exists."
-                                   VerticalOptions="Center"/>
-                        </HorizontalStackLayout>
+                                   <VerticalStackLayout Spacing="10">
+                                          <HorizontalStackLayout Spacing="10">
+                                                 <CheckBox IsChecked="{Binding CreateAccount}"
+                                                           IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                                                 <Label Text="Create an account if none exists."
+                                                        VerticalOptions="Center"/>
+                                          </HorizontalStackLayout>
 
-                        <Grid IsVisible="{Binding CreateAccount}"
-                              ColumnDefinitions="*,*"
-                              ColumnSpacing="16"
-                              RowSpacing="12">
-                            <VerticalStackLayout Grid.Column="0"
-                                                 Spacing="6">
-                                <Label Text="Repeat Password"
-                                       Style="{StaticResource FieldLabelStyle}"/>
-                                <Entry x:Name="XmppPassword2"
-                                       IsPassword="True"
-                                       IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"
-                                       TextChanged="XmppPassword2_TextChanged"/>
+                                                 <VerticalStackLayout IsVisible="{Binding CreateAccount}"
+                                                                      Spacing="12">
+                                                        <Grid ColumnDefinitions="*,*"
+                                                              ColumnSpacing="16">
+                                                               <VerticalStackLayout Grid.Column="0"
+                                                                                    Spacing="6">
+                                                                      <Label Text="Repeat Password"
+                                                                             Style="{StaticResource FieldLabelStyle}"/>
+                                                                      <Entry x:Name="XmppPassword2"
+                                                                             IsPassword="True"
+                                                                             IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"
+                                                                             TextChanged="XmppPassword2_TextChanged"/>
+                                                               </VerticalStackLayout>
+                                                               <VerticalStackLayout Grid.Column="1"
+                                                                                    Spacing="6">
+                                                                      <Label Text="API Key"
+                                                                             Style="{StaticResource FieldLabelStyle}"/>
+                                                                      <Entry Text="{Binding ApiKey}"
+                                                                             IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                                                               </VerticalStackLayout>
+                                                        </Grid>
+                                                        <VerticalStackLayout Spacing="6">
+                                                               <Label Text="API Key Secret"
+                                                                      Style="{StaticResource FieldLabelStyle}"/>
+                                                               <Entry x:Name="ApiKeySecret"
+                                                                      IsPassword="True"
+                                                                      IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"
+                                                                      TextChanged="ApiKeySecret_TextChanged"/>
+                                                        </VerticalStackLayout>
+                                                 </VerticalStackLayout>
+
+                                          <HorizontalStackLayout Spacing="10">
+                                                 <CheckBox IsChecked="{Binding TrustServerCertificate}"
+                                                           IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                                                 <Label Text="Trust the server certificate."
+                                                        VerticalOptions="Center"/>
+                                          </HorizontalStackLayout>
+                                          <HorizontalStackLayout Spacing="10">
+                                                 <CheckBox IsChecked="{Binding AllowInsecureAlgorithms}"
+                                                           IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                                                 <Label Text="Allow insecure authentication."
+                                                        VerticalOptions="Center"/>
+                                          </HorizontalStackLayout>
+                                          <HorizontalStackLayout Spacing="10">
+                                                 <CheckBox IsChecked="{Binding StorePasswordInsteadOfDigest}"
+                                                           IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                                                 <Label Text="Store the password instead of a digest."
+                                                        VerticalOptions="Center"/>
+                                          </HorizontalStackLayout>
+                                   </VerticalStackLayout>
+
+                                   <FlexLayout Wrap="Wrap"
+                                               Direction="Row"
+                                               JustifyContent="Start"
+                                               AlignItems="Start">
+                                          <Button Text="Connect"
+                                                  Command="{Binding Connect}"
+                                                  IsVisible="{Binding Connected, Converter={conv:Not}}"/>
+                                          <Button Text="Disconnect"
+                                                  Command="{Binding Disconnect}"
+                                                  IsVisible="{Binding Connected}"
+                                                  Style="{StaticResource DangerButtonStyle}"/>
+                                          <Button Text="Randomize Password"
+                                                  Command="{Binding RandomizePassword}"
+                                                  IsEnabled="{Binding Connected, Converter={conv:Not}}"
+                                                  Style="{StaticResource SecondaryButtonStyle}"/>
+                                          <Button Text="New Account"
+                                                  Command="{Binding NewAccount}"
+                                                  Style="{StaticResource SecondaryButtonStyle}"/>
+                                          <Button Text="Save Credentials"
+                                                  Command="{Binding SaveCredentials}"
+                                                  Style="{StaticResource SecondaryButtonStyle}"/>
+                                          <Button Text="Delete Credentials"
+                                                  Command="{Binding DeleteCredentials}"
+                                                  Style="{StaticResource SecondaryButtonStyle}"/>
+                                   </FlexLayout>
+
+                                   <VerticalStackLayout Spacing="6">
+                                          <Label Text="Saved Accounts"
+                                                 Style="{StaticResource FieldLabelStyle}"/>
+                                          <Picker ItemsSource="{Binding SavedAccounts}"
+                                                  SelectedItem="{Binding SelectedAccount}"/>
+                                   </VerticalStackLayout>
                             </VerticalStackLayout>
-                            <VerticalStackLayout Grid.Column="1"
-                                                 Spacing="6">
-                                <Label Text="API Key"
-                                       Style="{StaticResource FieldLabelStyle}"/>
-                                <Entry Text="{Binding ApiKey}"
-                                       IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
+                     </Border>
+
+                     <Border Style="{StaticResource SectionCardStyle}">
+                            <VerticalStackLayout Spacing="14">
+                                   <VerticalStackLayout Spacing="4">
+                                          <Label Text="Traffic Sniffer"
+                                                 Style="{StaticResource SectionTitleStyle}"/>
+                                          <Label Text="Incoming and outgoing network traffic is streamed here in timestamp order."
+                                                 Style="{StaticResource SectionCaptionStyle}"/>
+                                   </VerticalStackLayout>
+
+                                   <CollectionView x:Name="SnifferCollectionView"
+                                                   ItemsSource="{Binding SnifferItems}"
+                                                   SelectionMode="None"
+                                                   HeightRequest="420">
+                                          <CollectionView.Header>
+                                                 <Grid Style="{StaticResource DenseHeaderGridStyle}">
+                                                        <Grid.ColumnDefinitions>
+                                                               <ColumnDefinition Width="88"/>
+                                                               <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Label Grid.Column="0"
+                                                               Text="Time"
+                                                               Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                        <Label Grid.Column="1"
+                                                               Text="Content"
+                                                               Style="{StaticResource DenseHeaderLabelStyle}"/>
+                                                 </Grid>
+                                          </CollectionView.Header>
+                                          <CollectionView.ItemTemplate>
+                                                 <DataTemplate x:DataType="sniffer:SniffItem">
+                                                        <Grid Padding="8,6"
+                                                              ColumnSpacing="10">
+                                                               <Grid.ColumnDefinitions>
+                                                                      <ColumnDefinition Width="88"/>
+                                                                      <ColumnDefinition Width="*"/>
+                                                               </Grid.ColumnDefinitions>
+                                                               <Label Grid.Column="0"
+                                                                      Text="{Binding Time}"
+                                                                      TextColor="{Binding ForegroundColor}"
+                                                                      BackgroundColor="{Binding BackgroundColor}"
+                                                                      Style="{StaticResource DenseCellLabelStyle}"
+                                                                      Padding="6,3"/>
+                                                               <Label Grid.Column="1"
+                                                                      Text="{Binding Message}"
+                                                                      TextColor="{Binding ForegroundColor}"
+                                                                      BackgroundColor="{Binding BackgroundColor}"
+                                                                      Style="{StaticResource DenseCellLabelStyle}"
+                                                                      Padding="6,3"
+                                                                      LineBreakMode="WordWrap"/>
+                                                        </Grid>
+                                                 </DataTemplate>
+                                          </CollectionView.ItemTemplate>
+                                   </CollectionView>
                             </VerticalStackLayout>
-                            <VerticalStackLayout Grid.ColumnSpan="2"
-                                                 Grid.Row="1"
-                                                 Spacing="6">
-                                <Label Text="API Key Secret"
-                                       Style="{StaticResource FieldLabelStyle}"/>
-                                <Entry x:Name="ApiKeySecret"
-                                       IsPassword="True"
-                                       IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"
-                                       TextChanged="ApiKeySecret_TextChanged"/>
-                            </VerticalStackLayout>
-                        </Grid>
-
-                        <HorizontalStackLayout Spacing="10">
-                            <CheckBox IsChecked="{Binding TrustServerCertificate}"
-                                      IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
-                            <Label Text="Trust the server certificate."
-                                   VerticalOptions="Center"/>
-                        </HorizontalStackLayout>
-                        <HorizontalStackLayout Spacing="10">
-                            <CheckBox IsChecked="{Binding AllowInsecureAlgorithms}"
-                                      IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
-                            <Label Text="Allow insecure authentication."
-                                   VerticalOptions="Center"/>
-                        </HorizontalStackLayout>
-                        <HorizontalStackLayout Spacing="10">
-                            <CheckBox IsChecked="{Binding StorePasswordInsteadOfDigest}"
-                                      IsEnabled="{Binding ConnectOnStartup, Converter={conv:Not}}"/>
-                            <Label Text="Store the password instead of a digest."
-                                   VerticalOptions="Center"/>
-                        </HorizontalStackLayout>
-                    </VerticalStackLayout>
-
-                    <FlexLayout Wrap="Wrap"
-                                Direction="Row"
-                                JustifyContent="Start"
-                                AlignItems="Start">
-                        <Button Text="Connect"
-                                Command="{Binding Connect}"
-                                IsVisible="{Binding Connected, Converter={conv:Not}}"/>
-                        <Button Text="Disconnect"
-                                Command="{Binding Disconnect}"
-                                IsVisible="{Binding Connected}"
-                                Style="{StaticResource DangerButtonStyle}"/>
-                        <Button Text="Randomize Password"
-                                Command="{Binding RandomizePassword}"
-                                IsEnabled="{Binding Connected, Converter={conv:Not}}"
-                                Style="{StaticResource SecondaryButtonStyle}"/>
-                        <Button Text="New Account"
-                                Command="{Binding NewAccount}"
-                                Style="{StaticResource SecondaryButtonStyle}"/>
-                        <Button Text="Save Credentials"
-                                Command="{Binding SaveCredentials}"
-                                Style="{StaticResource SecondaryButtonStyle}"/>
-                        <Button Text="Delete Credentials"
-                                Command="{Binding DeleteCredentials}"
-                                Style="{StaticResource SecondaryButtonStyle}"/>
-                    </FlexLayout>
-
-                    <VerticalStackLayout Spacing="6">
-                        <Label Text="Saved Accounts"
-                               Style="{StaticResource FieldLabelStyle}"/>
-                        <Picker ItemsSource="{Binding SavedAccounts}"
-                                SelectedItem="{Binding SelectedAccount}"/>
-                    </VerticalStackLayout>
-                </VerticalStackLayout>
-            </Border>
-
-            <Border Style="{StaticResource SectionCardStyle}">
-                <VerticalStackLayout Spacing="14">
-                    <VerticalStackLayout Spacing="4">
-                        <Label Text="Traffic Sniffer"
-                               Style="{StaticResource SectionTitleStyle}"/>
-                        <Label Text="Incoming and outgoing network traffic is streamed here in timestamp order."
-                               Style="{StaticResource SectionCaptionStyle}"/>
-                    </VerticalStackLayout>
-
-                    <CollectionView x:Name="SnifferCollectionView"
-                                    ItemsSource="{Binding SnifferItems}"
-                                    SelectionMode="None"
-                                    HeightRequest="420">
-                        <CollectionView.Header>
-                            <Grid Style="{StaticResource DenseHeaderGridStyle}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="88"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Label Grid.Column="0"
-                                       Text="Time"
-                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
-                                <Label Grid.Column="1"
-                                       Text="Content"
-                                       Style="{StaticResource DenseHeaderLabelStyle}"/>
-                            </Grid>
-                        </CollectionView.Header>
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="sniffer:SniffItem">
-                                <Grid Padding="8,6"
-                                      ColumnSpacing="10">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="88"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Label Grid.Column="0"
-                                           Text="{Binding Time}"
-                                           TextColor="{Binding ForegroundColor}"
-                                           BackgroundColor="{Binding BackgroundColor}"
-                                           Style="{StaticResource DenseCellLabelStyle}"
-                                           Padding="6,3"/>
-                                    <Label Grid.Column="1"
-                                           Text="{Binding Message}"
-                                           TextColor="{Binding ForegroundColor}"
-                                           BackgroundColor="{Binding BackgroundColor}"
-                                           Style="{StaticResource DenseCellLabelStyle}"
-                                           Padding="6,3"
-                                           LineBreakMode="WordWrap"/>
-                                </Grid>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </VerticalStackLayout>
-            </Border>
-        </VerticalStackLayout>
-    </ScrollView>
+                     </Border>
+              </VerticalStackLayout>
+       </ScrollView>
 </ContentPage>

@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:conv="clr-namespace:LegalLabMaui.Converters"
+             xmlns:controls="clr-namespace:LegalLabMaui.Controls"
              xmlns:design="clr-namespace:LegalLabMaui.Models.Design"
              xmlns:legal="clr-namespace:LegalLabMaui.Models.Legal.Items"
              xmlns:standards="clr-namespace:LegalLabMaui.Models.Standards"
@@ -429,9 +430,8 @@
                                                 MinimumHeightRequest="180"
                                                 Text="{Binding HumanReadableMarkdown}"/>
                                         <Border Style="{StaticResource CompactSectionCardStyle}"
-                                                BackgroundColor="Transparent">
-                                                <Label Text="{Binding HumanReadableText}"
-                                                       LineBreakMode="WordWrap"/>
+                                                BackgroundColor="{StaticResource Surface}">
+                                                <controls:MarkdownView Markdown="{Binding HumanReadableText}"/>
                                         </Border>
                                 </VerticalStackLayout>
                         </Border>

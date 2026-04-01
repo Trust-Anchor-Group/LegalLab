@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:conv="clr-namespace:LegalLabMaui.Converters"
+             xmlns:controls="clr-namespace:LegalLabMaui.Controls"
              xmlns:legal="clr-namespace:LegalLabMaui.Models.Legal"
              xmlns:items="clr-namespace:LegalLabMaui.Models.Legal.Items"
              xmlns:standards="clr-namespace:LegalLabMaui.Models.Standards"
@@ -338,6 +339,7 @@
                                         <Label Text="Machine-readable content"
                                                         Style="{StaticResource FieldLabelStyle}"/>
                                         <Editor x:Name="MachineReadableXmlEditor"
+                                                Text="{Binding MachineReadable}"
                                                 Style="{StaticResource MonoEditorStyle}"
                                                 IsReadOnly="True"
                                                 AutoSize="TextChanges"
@@ -345,9 +347,8 @@
                                         <Label Text="Human-readable content"
                                                         Style="{StaticResource FieldLabelStyle}"/>
                                         <Border Style="{StaticResource CompactSectionCardStyle}"
-                                                        BackgroundColor="{StaticResource SurfaceMuted}">
-                                                <Label Text="{Binding HumanReadableText}"
-                                                                LineBreakMode="WordWrap"/>
+                                                        BackgroundColor="{StaticResource Surface}">
+                                                <controls:MarkdownView Markdown="{Binding HumanReadableText}"/>
                                         </Border>
                                 </VerticalStackLayout>
                         </Border>

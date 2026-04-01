@@ -41,8 +41,7 @@
                        Style="{StaticResource FieldLabelStyle}"/>
                 <Picker x:Name="ZoomPicker"
                         WidthRequest="150"
-                        SelectedItem="{Binding SelectedZoom}"
-                        SelectedIndexChanged="ZoomPicker_SelectedIndexChanged">
+                        SelectedItem="{Binding SelectedZoomText}">
                     <Picker.Items>
                         <x:String>Fit to size</x:String>
                         <x:String>10%</x:String>

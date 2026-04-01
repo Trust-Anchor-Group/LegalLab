@@ -9,6 +9,6 @@ public partial class XmlEditorPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        BindingContext ??= AppService.XmlEditorModel;
+        BindingContext = AppService.XmlEditorModel;
     }
 }
