@@ -141,7 +141,8 @@ namespace LegalLab.Models.XmlEditor
 				return true;
 			
 			if (Key.StartsWith(MainWindow.NetworkModel.Legal.Contracts.ContractKeySettingsPrefix, StringComparison.Ordinal) ||
-				Key.StartsWith(MainWindow.NetworkModel.Legal.Contracts.KeySettingsPrefix, StringComparison.Ordinal))
+				Key.StartsWith(MainWindow.NetworkModel.Legal.Contracts.KeySettingsPrefix, StringComparison.Ordinal) ||
+				Key.Contains("Password"))
 			{
 				return false;
 			}
