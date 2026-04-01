@@ -41,6 +41,27 @@
                                                         Command="{Binding Propose}"/>
                                         </FlexLayout>
 
+                                        <Grid ColumnDefinitions="*,Auto"
+                                              ColumnSpacing="16"
+                                              RowSpacing="12">
+                                                <VerticalStackLayout Spacing="6">
+                                                        <Label Text="Bundled Example Contracts"
+                                                               Style="{StaticResource FieldLabelStyle}"/>
+                                                        <Picker ItemsSource="{Binding ExampleContracts}"
+                                                                ItemDisplayBinding="{Binding DisplayName, x:DataType=design:ExampleContractOption}"
+                                                                SelectedItem="{Binding SelectedExampleContract}"/>
+                                                </VerticalStackLayout>
+                                                <VerticalStackLayout Grid.Column="1"
+                                                                     Spacing="6"
+                                                                     VerticalOptions="End">
+                                                        <Label Text="Example Loader"
+                                                               Style="{StaticResource FieldLabelStyle}"/>
+                                                        <Button Text="Load Example"
+                                                                Command="{Binding LoadEmbeddedExampleCommand}"
+                                                                Style="{StaticResource SecondaryButtonStyle}"/>
+                                                </VerticalStackLayout>
+                                        </Grid>
+
                                         <Grid ColumnDefinitions="*,*"
                                               RowDefinitions="Auto,Auto,Auto,Auto"
                                               ColumnSpacing="16"

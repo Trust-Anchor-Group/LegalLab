@@ -45,9 +45,11 @@ namespace LegalLabMaui.Models.Legal
 		private readonly Property<string> templateName;
 		private readonly Property<string> contractId;
 		private readonly Property<string> humanReadableText;
+		private readonly Property<string> createContractFeedback;
 
 		private readonly Command addPart;
 		private readonly Command createContract;
+		private readonly Command explainCreateContract;
 		private readonly Command removeTemplate;
 		private readonly Command removeContract;
 		private readonly Command uploadAttachment;
@@ -80,11 +82,13 @@ namespace LegalLabMaui.Models.Legal
 			this.templateName = new Property<string>(nameof(this.TemplateName), string.Empty, this);
 			this.contractId = new Property<string>(nameof(this.ContractId), Contract.ContractId, this);
 			this.humanReadableText = new Property<string>(nameof(this.HumanReadableText), string.Empty, this);
+			this.createContractFeedback = new Property<string>(nameof(this.CreateContractFeedback), string.Empty, this);
 
 			this.ParameterOptions = [];
 
 			this.addPart = new Command(this.ExecuteAddPart);
 			this.createContract = new Command(this.CanExecuteCreateContract, this.ExecuteCreateContract);
+			this.explainCreateContract = new Command(this.ExecuteExplainCreateContract);
 			this.removeTemplate = new Command(this.CanExecuteRemoveTemplate, this.ExecuteRemoveTemplate);
 			this.removeContract = new Command(this.CanExecuteRemoveContract, this.ExecuteRemoveContract);
 			this.uploadAttachment = new Command(this.CanExecuteUploadAttachment, this.ExecuteUploadAttachment);
@@ -93,6 +97,7 @@ namespace LegalLabMaui.Models.Legal
 			this.contracts = Contracts;
 
 			this.TemplateName = Contract.ContractId;
+			this.UpdateCreateContractFeedback();
 		}
 
 		/// <summary>
@@ -228,6 +233,7 @@ namespace LegalLabMaui.Models.Legal
 				this.ServerSignatures = [new(this.Contract.ServerSignature)];
 
 			await this.PopulateHumanReadableText();
+			this.UpdateCreateContractFeedback();
 		}
 
 		/// <inheritdoc/>
@@ -261,6 +267,7 @@ namespace LegalLabMaui.Models.Legal
 
 				case nameof(LegalModel.ContractTemplateName):
 					this.RaisePropertyChanged(nameof(this.SelectedTemplate));
+					this.UpdateCreateContractFeedback();
 					break;
 
 				case nameof(LegalModel.ExistingContracts):
@@ -279,7 +286,7 @@ namespace LegalLabMaui.Models.Legal
 				case nameof(LegalModel.IsTemplate):
 					this.RaisePropertyChanged(nameof(this.IsTemplate));
 					this.removeTemplate.RaiseCanExecuteChanged();
-					this.createContract.RaiseCanExecuteChanged();
+					this.UpdateCreateContractFeedback();
 					break;
 
 				case nameof(LegalModel.IsContract):
@@ -355,8 +362,18 @@ namespace LegalLabMaui.Models.Legal
 
 		protected override void ParametersOkChanged()
 		{
-			this.createContract.RaiseCanExecuteChanged();
+			this.UpdateCreateContractFeedback();
 		}
+
+		public string CreateContractFeedback
+		{
+			get => this.createContractFeedback.Value;
+			set => this.createContractFeedback.Value = value;
+		}
+
+		public bool CreateContractAvailable => this.CanExecuteCreateContract();
+
+		public bool CreateContractBlocked => !this.CreateContractAvailable;
 
 		/// <summary>
 		/// If contract has an ID
@@ -663,12 +680,56 @@ namespace LegalLabMaui.Models.Legal
 		public ICommand CreateContract => this.createContract;
 
 		/// <summary>
+		/// Displays the current create-contract availability details.
+		/// </summary>
+		public ICommand ExplainCreateContract => this.explainCreateContract;
+
+		/// <summary>
 		/// If the create contract command can be exeucted.
 		/// </summary>
 		/// <returns>If command can be executed.</returns>
 		public bool CanExecuteCreateContract()
 		{
 			return this.ParametersOk && this.legalModel.Template is not null && this.legalModel.IsTemplate;
+		}
+
+		private void UpdateCreateContractFeedback()
+		{
+			this.createContract.RaiseCanExecuteChanged();
+			this.CreateContractFeedback = this.GetCreateContractFeedback();
+			this.RaisePropertyChanged(nameof(this.CreateContractAvailable));
+			this.RaisePropertyChanged(nameof(this.CreateContractBlocked));
+		}
+
+		private string GetCreateContractFeedback()
+		{
+			if (this.legalModel.Template is null)
+				return "Select a template to create a contract from it.";
+
+			if (!this.legalModel.IsTemplate)
+				return "Create Contract is only available while viewing a template, not an existing contract.";
+
+			List<string> InvalidParameters = [];
+
+			foreach (ParameterInfo Parameter in this.Parameters)
+			{
+				if (!string.IsNullOrEmpty(Parameter.ErrorText) || Parameter.ErrorReason.HasValue)
+					InvalidParameters.Add(string.IsNullOrEmpty(Parameter.Name) ? "unnamed parameter" : Parameter.Name);
+			}
+
+			if (InvalidParameters.Count > 0)
+				return "Fix invalid parameters before creating the contract: " + string.Join(", ", InvalidParameters) + ".";
+
+			if (!this.ParametersOk)
+				return "One or more parameters are incomplete or invalid.";
+
+			return "Ready to create a contract from the selected template.";
+		}
+
+		private Task ExecuteExplainCreateContract()
+		{
+			string Title = this.CreateContractAvailable ? "Create Contract" : "Create Contract Unavailable";
+			return AppService.MessageBox(this.CreateContractFeedback, Title);
 		}
 
 		/// <summary>

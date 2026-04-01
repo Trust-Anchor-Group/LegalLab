@@ -41,6 +41,7 @@
 
     <!-- Raw Assets -->
     <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+    <MauiAsset Include="..\ExampleContracts\**\*.xml" LogicalName="ExampleContracts/%(Filename)%(Extension)" />
   </ItemGroup>
 
   <ItemGroup>

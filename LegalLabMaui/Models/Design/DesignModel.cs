@@ -43,6 +43,7 @@ namespace LegalLabMaui.Models.Design
 		private readonly Property<ContractParts> partsMode;
 		private readonly Property<string> language;
 		private readonly Property<Iso__639_1.Record[]> languages;
+		private readonly Property<ExampleContractOption?> selectedExampleContract;
 		private readonly Property<DateTime?> signBefore;
 		private readonly Property<DateTime?> signAfter;
 		private readonly Property<string> contractId;
@@ -75,6 +76,7 @@ namespace LegalLabMaui.Models.Design
 		private readonly Command addContractReference;
 		private readonly Command @new;
 		private readonly Command load;
+		private readonly Command loadEmbeddedExample;
 		private readonly Command import;
 		private readonly Command save;
 		private readonly Command propose;
@@ -85,6 +87,49 @@ namespace LegalLabMaui.Models.Design
 		private NetworkModel? networkModel;
 		private bool connected;
 		private string lastLanguage = string.Empty;
+
+		private static readonly ExampleContractOption[] exampleContracts =
+		[
+			new("Construction/BimExample1.xml"),
+			new("Construction/BimExample2.xml"),
+			new("Construction/BimRegister.xml"),
+			new("Logistics/SimpleOrder.xml"),
+			new("Marketplace/Buying/BuyService.xml"),
+			new("Marketplace/Buying/OfferService.xml"),
+			new("Marketplace/Selling/OfferItem.xml"),
+			new("Marketplace/Selling/SellItem.xml"),
+			new("Marketplace/Selling/SellToken.xml"),
+			new("Memberships/Simple/Membership.xml"),
+			new("Memberships/Simple/SimpleOrganization.xml"),
+			new("StateMachines/BuyTransferSellEDaler.xml"),
+			new("StateMachines/Calculator.xml"),
+			new("StateMachines/CrowdFunding.xml"),
+			new("StateMachines/DigitalSensorTwin.xml"),
+			new("StateMachines/MicroLoan.xml"),
+			new("StateMachines/ProjectEscrow.xml"),
+			new("Syntax/CalculatedParameters.xml"),
+			new("Syntax/GeoSpatialParameters.xml"),
+			new("Syntax/Markdown.xml"),
+			new("Syntax/ParameterTypes.xml"),
+			new("Syntax/RoleReferenceParameters.xml"),
+			new("Tokens/Create/CreateTokenContract1.xml"),
+			new("Tokens/Create/CreateTokenContract1RandomId.xml"),
+			new("Tokens/Create/CreateTokenContract1UniqueId.xml"),
+			new("Tokens/Create/CreateTokenContract5.xml"),
+			new("Tokens/Create/CreateTokenContract5RandomId.xml"),
+			new("Tokens/Create/CreateTokenContract5UniqueId.xml"),
+			new("Tokens/Create/Specific/Achievement.xml"),
+			new("Tokens/Create/Specific/DemoToken.xml"),
+			new("Tokens/Create/Specific/DemoTokens5.xml"),
+			new("Tokens/Destroy/DestroyTokenContract1.xml"),
+			new("Tokens/Destroy/DestroyTokenContract5.xml"),
+			new("Tokens/Donate/DonateTokenContract1.xml"),
+			new("Tokens/Donate/DonateTokenContract5.xml"),
+			new("Tokens/Transfer/TransferTokenContract1.xml"),
+			new("Tokens/Transfer/TransferTokenContract5.xml"),
+			new("Voting/OpenBallotYesNoAbstain.xml"),
+			new("Voting/OpenVoteYesNoAbstain.xml")
+		];
 
 		/// <summary>
 		/// Design model
@@ -98,6 +143,7 @@ namespace LegalLabMaui.Models.Design
 			this.duration = new Property<Waher.Content.Duration?>(nameof(this.Duration), Waher.Content.Duration.Zero, this);
 			this.language = new Property<string>(nameof(this.Language), "en", this);
 			this.languages = new Property<Iso__639_1.Record[]>(nameof(this.Languages), [], this);
+			this.selectedExampleContract = new Property<ExampleContractOption?>(nameof(this.SelectedExampleContract), exampleContracts.FirstOrDefault(), this);
 			this.signBefore = new Property<DateTime?>(nameof(this.SignBefore), null, this);
 			this.signAfter = new Property<DateTime?>(nameof(this.SignAfter), null, this);
 			this.parametersOk = new Property<bool>(nameof(this.ParametersOk), false, this);
@@ -140,6 +186,7 @@ namespace LegalLabMaui.Models.Design
 			this.addContractReference = new Command(this.ExecuteAddContractReference);
 			this.@new = new Command(this.ExecuteNewContract);
 			this.load = new Command(this.ExecuteLoadContract);
+			this.loadEmbeddedExample = new Command(this.CanExecuteLoadEmbeddedExample, this.ExecuteLoadEmbeddedExample);
 			this.import = new Command(this.ExecuteImportContract);
 			this.save = new Command(this.ExecuteSaveContract);
 			this.propose = new Command(this.CanExecuteProposeContract, this.ExecuteProposeContract);
@@ -607,6 +654,18 @@ namespace LegalLabMaui.Models.Design
 		{
 			get => Array.Find(this.Languages, record => record.Code == this.Language);
 			set => this.Language = value?.Code ?? string.Empty;
+		}
+
+		public ExampleContractOption[] ExampleContracts => exampleContracts;
+
+		public ExampleContractOption? SelectedExampleContract
+		{
+			get => this.selectedExampleContract.Value;
+			set
+			{
+				this.selectedExampleContract.Value = value;
+				this.loadEmbeddedExample.RaiseCanExecuteChanged();
+			}
 		}
 
 		/// <summary>
@@ -1543,6 +1602,11 @@ namespace LegalLabMaui.Models.Design
 		/// </summary>
 		public ICommand LoadCommand => this.load;
 
+		/// <summary>
+		/// Loads the currently selected bundled example contract.
+		/// </summary>
+		public ICommand LoadEmbeddedExampleCommand => this.loadEmbeddedExample;
+
 		private async Task ExecuteLoadContract()
 		{
 			try
@@ -1562,27 +1626,57 @@ namespace LegalLabMaui.Models.Design
 				if (Result is null)
 					return;
 
-				XmlDocument Doc = new()
-				{
-					PreserveWhitespace = true
-				};
-
 				using (Stream stream = await Result.OpenReadAsync())
-					Doc.Load(stream);
-
-				ParsedContract Parsed = await Waher.Networking.XMPP.Contracts.Contract.Parse(Doc, this.networkModel?.Legal?.Contracts);
-				Contract Contract = Parsed.Contract
-					?? throw new InvalidOperationException("Not a valid Smart Contract file.");
-
-				if (!Contract.CanActAsTemplate)
-					throw new InvalidOperationException("Contract is not a template.");
-
-				await this.SetContract(Contract);
+					await this.LoadTemplateContract(stream);
 			}
 			catch (Exception ex)
 			{
 				AppService.ErrorBox(ex.Message);
 			}
+		}
+
+		private bool CanExecuteLoadEmbeddedExample()
+		{
+			return this.SelectedExampleContract is not null;
+		}
+
+		private async Task ExecuteLoadEmbeddedExample()
+		{
+			try
+			{
+				ExampleContractOption Example = this.SelectedExampleContract
+					?? throw new InvalidOperationException("Select an embedded example contract first.");
+
+				using Stream stream = await FileSystem.OpenAppPackageFileAsync(Example.AssetPath);
+				await this.LoadTemplateContract(stream);
+			}
+			catch (FileNotFoundException)
+			{
+				AppService.ErrorBox("The embedded example contract could not be found in the app package.");
+			}
+			catch (Exception ex)
+			{
+				AppService.ErrorBox(ex.Message);
+			}
+		}
+
+		private async Task LoadTemplateContract(Stream stream)
+		{
+			XmlDocument Doc = new()
+			{
+				PreserveWhitespace = true
+			};
+
+			Doc.Load(stream);
+
+			ParsedContract Parsed = await Waher.Networking.XMPP.Contracts.Contract.Parse(Doc, this.networkModel?.Legal?.Contracts);
+			Contract Contract = Parsed.Contract
+				?? throw new InvalidOperationException("Not a valid Smart Contract file.");
+
+			if (!Contract.CanActAsTemplate)
+				throw new InvalidOperationException("Contract is not a template.");
+
+			await this.SetContract(Contract);
 		}
 
 		/// <summary>
