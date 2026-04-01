@@ -558,17 +558,25 @@ namespace LegalLab.Models.XmlEditor
 					}
 				}
 
-				StringBuilder Xml = new();
-				XmlWriter XmlOutput = XmlWriter.Create(Xml, XML.WriterSettings(true, true));
-				using XmlDatabaseExport Output = new(XmlOutput, 256);
+				MainWindow.MouseHourglass();
+				try
 				{
-					await Database.Export(Output);
-				}
+					StringBuilder Xml = new();
+					XmlWriter XmlOutput = XmlWriter.Create(Xml, XML.WriterSettings(true, true));
+					using XmlDatabaseExport Output = new(XmlOutput, 256);
+					{
+						await Database.Export(Output);
+					}
 
-				XmlOutput.Close();
-				XmlOutput.Flush();
-				this.Xml = Xml.ToString();
-				this.Changed = !string.IsNullOrEmpty(this.Xml);
+					XmlOutput.Close();
+					XmlOutput.Flush();
+					this.Xml = Xml.ToString();
+					this.Changed = !string.IsNullOrEmpty(this.Xml);
+				}
+				finally
+				{
+					MainWindow.MouseDefault();
+				}
 
 				return true;
 			}

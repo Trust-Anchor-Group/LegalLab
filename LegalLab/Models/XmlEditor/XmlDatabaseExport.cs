@@ -38,10 +38,15 @@ namespace LegalLab.Models.XmlEditor
 		/// <summary>
 		/// Is called when export of database is started.
 		/// </summary>
+		/// <param name="Provider">Provider doing the export. Can be null if export is done from outside a provider.</param>
 		/// <returns>If export can continue.</returns>
-		public Task<bool> StartDatabase()
+		public Task<bool> StartDatabase(IDatabaseProvider Provider)
 		{
 			this.output.WriteStartElement("Database");
+
+			if (Provider is not null)
+				this.output.WriteAttributeString(string.Empty, "provider", string.Empty, Provider.GetType().FullName);
+
 			return Task.FromResult(true);
 		}
 
@@ -138,7 +143,7 @@ namespace LegalLab.Models.XmlEditor
 			if (Key.StartsWith(MainWindow.NetworkModel.Legal.Contracts.ContractKeySettingsPrefix, StringComparison.Ordinal) ||
 				Key.StartsWith(MainWindow.NetworkModel.Legal.Contracts.KeySettingsPrefix, StringComparison.Ordinal))
 			{
-				return true;	// false;
+				return false;
 			}
 
 			return true;
@@ -164,7 +169,7 @@ namespace LegalLab.Models.XmlEditor
 		/// <param name="PropertyName">Property name.</param>
 		/// <param name="PropertyValue">Property value.</param>
 		/// <returns>If export can continue.</returns>
-		public async Task<bool> ReportProperty(string? PropertyName, object? PropertyValue)
+		public async Task<bool> ReportProperty(string PropertyName, object PropertyValue)
 		{
 			if (PropertyValue is null)
 			{
@@ -429,7 +434,7 @@ namespace LegalLab.Models.XmlEditor
 									this.output.WriteAttributeString("v", Convert.ToBase64String(Bin));
 								else
 								{
-									byte[]? Buf = null;
+									byte[] Buf = null;
 									long i = 0;
 									long d;
 									int j;
@@ -498,7 +503,7 @@ namespace LegalLab.Models.XmlEditor
 
 							this.output.WriteAttributeString("type", string.Empty, Obj.TypeName);
 
-							foreach (KeyValuePair<string, object?> P in Obj)
+							foreach (KeyValuePair<string, object> P in Obj)
 								await this.ReportProperty(P.Key, P.Value);
 
 							this.output.WriteEndElement();
