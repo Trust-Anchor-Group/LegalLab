@@ -8,20 +8,11 @@
     <Grid Padding="24,20,24,28"
           RowDefinitions="Auto,*,Auto"
           RowSpacing="18">
-        <Border Style="{StaticResource SectionCardStyle}">
-            <VerticalStackLayout Spacing="6">
-                <Label Text="Script Console"
-                       Style="{StaticResource PageTitleStyle}"/>
-                <Label Text="Run scripts, review results, and recall previous commands directly from the execution history."
-                       Style="{StaticResource SectionCaptionStyle}"/>
-            </VerticalStackLayout>
-        </Border>
-
         <Border Grid.Row="1"
                 Style="{StaticResource SectionCardStyle}">
             <VerticalStackLayout Spacing="14">
-                <Label Text="History"
-                       Style="{StaticResource SectionTitleStyle}"/>
+                <Label Text="Script Console"
+                       Style="{StaticResource PageTitleStyle}" />
                 <CollectionView x:Name="HistoryCollectionView"
                                 ItemsSource="{Binding History}"
                                 SelectionMode="Single"
@@ -82,7 +73,7 @@
                        Style="{StaticResource SectionCaptionStyle}">
                     <Label.FormattedText>
                         <FormattedString>
-                            <Span Text="Use Ctrl+Enter on Windows or the Run button below. Script reference: "/>
+                            <Span Text="Script reference: "/>
                             <Span Text="{Binding ReferenceUri}"
                                   TextDecorations="Underline"
                                   TextColor="{StaticResource Primary}"/>
