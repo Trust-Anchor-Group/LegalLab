@@ -246,9 +246,7 @@ namespace LegalLab.Models.XmlEditor
 								this.Visualization = View;
 							}
 							else
-							{
 								this.Visualization = null;
-							}
 						}
 						if (Visualization is PixelInformation Pixels)
 						{
@@ -571,7 +569,7 @@ namespace LegalLab.Models.XmlEditor
 					XmlOutput.Close();
 					XmlOutput.Flush();
 					this.Xml = Xml.ToString();
-					this.Changed = !string.IsNullOrEmpty(this.Xml);
+					this.Changed = false;
 				}
 				finally
 				{
