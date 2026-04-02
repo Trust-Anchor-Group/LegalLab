@@ -63,7 +63,7 @@
     <PackageReference Include="Waher.Runtime.Profiling" Version="1.1.3" />
     <PackageReference Include="Waher.Runtime.Settings" Version="1.2.1" />
     <PackageReference Include="Waher.Runtime.Temporary" Version="1.1.0" />
-    <PackageReference Include="Waher.Runtime.Text" Version="1.2.0" />
+    <PackageReference Include="Waher.Runtime.Text" Version="1.3.0" />
     <PackageReference Include="Waher.Runtime.Threading" Version="2.2.0" />
     <PackageReference Include="Waher.Runtime.Timing" Version="2.1.1" />
     <PackageReference Include="Waher.Script" Version="2.13.8" />
