@@ -131,7 +131,7 @@ namespace LegalLab.Models.Legal
 			this.apply = new Command(this.CanExecuteApply, this.ExecuteApply);
 
 			this.contracts = new ContractsClient(Client, ComponentJid);
-			this.contracts.EnableE2eEncryption(true);
+			this.contracts.EnableE2eEncryption();
 			this.contracts.IdentityUpdated += this.Contracts_IdentityUpdated;
 			this.contracts.ContractCreated += this.Contracts_ContractCreated;
 			this.contracts.ContractDeleted += this.Contracts_ContractDeleted;

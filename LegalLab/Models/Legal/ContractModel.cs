@@ -1256,16 +1256,9 @@ namespace LegalLab.Models.Legal
 
 				string FileName = Path.GetFileName(Dialog.FileName);
 				byte[] Data = await Files.ReadAllBytesAsync(Dialog.FileName);
-				long Size = Data.Length;
-				byte[] Signature = await this.contracts.SignAsync(Data, SignWith.CurrentKeys);
 
-				HttpFileUploadEventArgs Slot = await this.legalModel.FileUpload.RequestUploadSlotAsync(FileName, ContentType, Size, true);
-				if (!Slot.Ok)
-					throw Slot.StanzaError;
-
-				await Slot.PUT(Data, ContentType, 30000);
-
-				Contract Contract = await this.contracts.AddContractAttachmentAsync(this.Contract.ContractId, Slot.GetUrl, Signature);
+				Contract Contract = await this.contracts.UploadContractAttachmentAsync(
+					this.Contract.ContractId, FileName, Data, ContentType);
 
 				await this.SetContract(Contract);
 

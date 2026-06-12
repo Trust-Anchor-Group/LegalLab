@@ -130,16 +130,8 @@ namespace LegalLab.Models.Legal
 				else if (!InternetContent.TryGetContentType(Path.GetExtension(FileName), out ContentType))
 					throw new Exception("Unsupported file type: " + FileName);
 
-				byte[] Signature = await this.legalModel.Contracts.SignAsync(fs, SignWith.CurrentKeys);
-
-				HttpFileUploadEventArgs e = await UploadClient.RequestUploadSlotAsync(
-					FileName, ContentType, fs.Length, true);
-
-				fs.Position = 0;
-				await e.PUT(fs, ContentType, 60000);
-
-				this.identity = await this.legalModel.Contracts.AddLegalIdAttachmentAsync(
-					this.identity.Id, e.GetUrl, Signature);
+				this.identity = await this.legalModel.Contracts.UploadLegalIdAttachmentAsync(
+					this.identity.Id, FileName, fs, ContentType);
 
 				MainWindow.SuccessBox("Attachment uploaded successfully.");
 			}
