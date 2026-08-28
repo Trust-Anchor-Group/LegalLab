@@ -574,6 +574,7 @@ namespace LegalLab.Models.Network
 				}
 
 				ListViewSniffer Sniffer = new(MainWindow.currentInstance.NetworkTab.SnifferListView, 1000);
+				Sniffer.DisableMask();
 				Sniffer.SelectionChanged += this.Sniffer_SelectionChanged;
 
 				if (string.IsNullOrEmpty(this.PasswordMethod))
