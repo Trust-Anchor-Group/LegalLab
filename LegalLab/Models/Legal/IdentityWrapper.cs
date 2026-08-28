@@ -2,9 +2,11 @@
 using Microsoft.Win32;
 using System;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Waher.Content;
+using Waher.Content.Xml;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.HttpFileUpload;
@@ -23,6 +25,7 @@ namespace LegalLab.Models.Legal
 
 		private readonly Command uploadAttachment;
 		private readonly Command readyForApproval;
+		private readonly Command quickLogin;
 
 		/// <summary>
 		/// Wrapper around a <see cref="LegalIdentity"/>, for purposes of displaying it to the user.
@@ -38,6 +41,7 @@ namespace LegalLab.Models.Legal
 
 			this.uploadAttachment = new Command(this.CanExecuteUploadAttachment, this.ExecuteUploadAttachment);
 			this.readyForApproval = new Command(this.CanExecuteReadyForApproval, this.ExecuteReadyForApproval);
+			this.quickLogin = new Command(this.CanExecuteQuickLogin, this.ExecuteQuickLogin);
 		}
 
 		/// <summary>
@@ -61,9 +65,14 @@ namespace LegalLab.Models.Legal
 		public string URL => ContractsClient.LegalIdUriString(this.identity.Id);
 
 		/// <summary>
-		/// If the identity is in a created state.
+		/// If the identity is in the Created state.
 		/// </summary>
 		public bool IsCreated => this.identity.State == IdentityState.Created;
+
+		/// <summary>
+		/// If the identity is in the Approved state.
+		/// </summary>
+		public bool IsApproved => this.identity.State == IdentityState.Approved;
 
 		/// <summary>
 		/// URL for displaying a QR-code for the <see cref="URL"/>.
@@ -169,5 +178,67 @@ namespace LegalLab.Models.Legal
 				MainWindow.ErrorBox(ex.Message);
 			}
 		}
+
+		/// <summary>
+		/// Quick-Login command
+		/// </summary>
+		public ICommand QuickLogin => this.quickLogin;
+
+		private bool CanExecuteQuickLogin()
+		{
+			return this.identity is not null &&
+				this.legalModel is not null &&
+				this.identity.State == IdentityState.Approved &&
+				this.legalModel.Contracts.Client.State == XmppState.Connected;
+		}
+
+		private async Task ExecuteQuickLogin()
+		{
+			try
+			{
+				string TagSign = MainWindow.PromptUser("Quick-Login", 
+					"Enter a tagsign URI to initiate Quick-Login:");
+
+				Uri Uri = new(TagSign);
+				if (Uri.Scheme != "tagsign")
+					throw new Exception("Invalid tagsign URI.");
+
+				string s = Uri.AbsolutePath;
+				int i = s.IndexOf(',');
+				
+				if (i < 0)
+					throw new Exception("Invalid tagsign URI.");
+
+				string JID = System.Web.HttpUtility.UrlDecode(s[..i]);
+				string Key = s[(i + 1)..];
+
+				if (this.identity is null)
+					throw new Exception("No selected Legal Identity.");
+
+				if (this.legalModel is null)
+					throw new Exception("No Legal Model.");
+
+				if (this.identity.State	!= IdentityState.Approved)
+					throw new Exception("Legal Identity not Approved.");
+
+				if (this.legalModel.Contracts.Client.State != XmppState.Connected)
+					throw new Exception("Not connected to XMPP network.");
+
+				StringBuilder Xml = new();
+
+				Xml.Append("<ql xmlns='https://tagroot.io/schema/Signature' key='");
+				Xml.Append(XML.Encode(Key));
+				Xml.Append("' legalId='");
+				Xml.Append(XML.Encode(this.identity.Id));
+				Xml.Append("'/>");
+
+				await this.legalModel.Contracts.Client.IqSetAsync(JID, Xml.ToString());
+			}
+			catch (Exception ex)
+			{
+				MainWindow.ErrorBox(ex.Message);
+			}
+		}
+
 	}
 }

@@ -98,6 +98,7 @@
 										<StackPanel Orientation="Vertical" Visibility="{Binding IsSelected, Converter={conv:BooleanToVisibility}}">
 											<Button Margin="10,10,10,0" Padding="20,1" Command="{Binding UploadAttachment}" Visibility="{Binding IsCreated, Converter={conv:BooleanToVisibility}}">Upload Attachment</Button>
 											<Button Margin="10,10,10,0" Padding="20,1" Command="{Binding ReadyForApproval}" Visibility="{Binding IsCreated, Converter={conv:BooleanToVisibility}}">Ready For Approval</Button>
+											<Button Margin="10,10,10,0" Padding="20,1" Command="{Binding QuickLogin}" Visibility="{Binding IsApproved, Converter={conv:BooleanToVisibility}}">Quick-Login</Button>
 										</StackPanel>
 									</StackPanel>
                                 </StackPanel>
