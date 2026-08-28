@@ -199,6 +199,9 @@ namespace LegalLab.Models.Legal
 				string TagSign = MainWindow.PromptUser("Quick-Login", 
 					"Enter a tagsign URI to initiate Quick-Login:");
 
+				if (string.IsNullOrEmpty(TagSign))
+					return;
+
 				Uri Uri = new(TagSign);
 				if (Uri.Scheme != "tagsign")
 					throw new Exception("Invalid tagsign URI.");
