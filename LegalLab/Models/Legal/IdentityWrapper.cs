@@ -10,6 +10,7 @@ using Waher.Content.Xml;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.HttpFileUpload;
+using Waher.Security;
 
 namespace LegalLab.Models.Legal
 {

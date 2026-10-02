@@ -21,6 +21,7 @@ using Waher.Runtime.Collections;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Language;
 using Waher.Runtime.Settings;
+using Waher.Security;
 
 namespace LegalLab.Models.Legal
 {
